@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using Microsoft.Azure.Kinect.Sensor;
 
+using UnityEngine.Profiling;
+
 public class KinectAPI : MonoBehaviour
 {
 
@@ -50,38 +52,22 @@ public class KinectAPI : MonoBehaviour
         this.kinect.Dispose();
     }
 
-    private Texture2D depthMapTexture;
     [SerializeField] private bool running = false;
 
-    public ref Texture2D SubscribeDepthTexture() {
-        //if (depthMapTexture) { // Check if referenced texture is already created
-            depthMapTexture = new Texture2D(colourWidth, colourHeight);
-        //}
-
-        running = true;
-
-        return ref depthMapTexture;
+    public int getWidth() {
+        return colourWidth;
     }
 
-    public void UnsubscribeDepthTexture() {
-        running = false;
-        
-        //Dispose code here
-
-        return;
+    public int getHeight() {
+        return colourHeight;
     }
 
-    public void Update() {
-        if (running) {
-            GetDepthTextureFromKinect();
-        }
-    }
-
-    private void GetDepthTextureFromKinect() {
+    public void GetDepthTextureFromKinect(ref Texture2D depthMapTexture) {
 
         using (Capture capture = kinect.GetCapture())
         using (Image transformedDepth = new Image(ImageFormat.Depth16, colourWidth, colourHeight, colourWidth * sizeof(UInt16))) {
             // Transform the depth image to the colour capera perspective
+
             transformation.DepthImageToColorCamera(capture, transformedDepth);
 
             // Create Depth Buffer
@@ -100,17 +86,17 @@ public class KinectAPI : MonoBehaviour
                 Color32 colour;
                 if (depth == 0) // No depth image
                 {
-                    colour = new Color32(0, 0, 0, Convert.ToByte(255));
+                    colour = new Color32(0, 0, 0, 0);
 
                 } else if (depth >= _MaximumSandDepth) {
-                    colour = new Color32(0, 0, 0, Convert.ToByte(255));
+                    colour = new Color32(0, 0, 0, 0);
 
                 } else if (depth < _MinimumSandDepth) {
 
-                    colour = new Color32(Convert.ToByte(255), 0, 0, Convert.ToByte(255));
+                    colour = new Color32(Convert.ToByte(255), 0, 0, 0);
 
                 } else {
-                    colour = new Color32(Convert.ToByte((int) pixelValue), 0, 0, Convert.ToByte(255));
+                    colour = new Color32(Convert.ToByte((int) pixelValue), 0, 0, 0);
 
                 }
 
@@ -118,11 +104,11 @@ public class KinectAPI : MonoBehaviour
 
             }
 
-            capture.Dispose();
-
             // Set texture pixels
             depthMapTexture.SetPixels32(colourArray);
             depthMapTexture.Apply();
+
+            return;
         }
     }
 }
