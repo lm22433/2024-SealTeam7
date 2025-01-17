@@ -103,9 +103,10 @@ public struct HeightSampler : IJobParallelFor {
     public float Scale;
     
     public void Execute(int index) {
+        var step = (float) Heights.Length / Vertices.Length;
         var p = Vertices[index];
         var y = p.y;
-        y = Heights[index].r / 255f * Scale;
+        y = Heights[(int) (index * step)].r / 255f * Scale;
         p.y = y;
         Vertices[index] = p;
     }
