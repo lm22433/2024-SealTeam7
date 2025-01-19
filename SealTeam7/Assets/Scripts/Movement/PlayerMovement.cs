@@ -12,19 +12,30 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpCooldown;
     [SerializeField] private float airMultiplier;
 
-    [SerializeField] private  float walkSpeed;
+    [SerializeField] private float walkSpeed;
     [SerializeField] private float sprintSpeed;
+    [SerializeField] private float crouchSpeed;
+    private bool sprinting;
+
 
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftControl;
+    [SerializeField] private KeyCode crouchKey = KeyCode.LeftShift;
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundDist;
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private float playerHeight;
-    bool grounded;
+    private bool grounded;
+    
+    [Header("Crouching")]
+    [SerializeField] private float crouchYScale;
+    //[SerializeField] private float walkSpeed;
+    private float startYScale;
+    private bool crouched;
+
 
     [SerializeField] private Transform orientation;
 
@@ -43,6 +54,11 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         
         readyToJump = true;
+        sprinting = false;
+        crouched = false;
+
+        moveSpeed = walkSpeed;
+        startYScale = transform.localScale.y;
     }
 
     // Update is called once per frame
@@ -53,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
         grounded = Physics.CheckSphere(groundCheck.position, groundDist, whatIsGround);
         
         MoveInput();
-        SpeedControl();
+        SpeedLimit();
 
         if(grounded) {
             rb.linearDamping = friction;
@@ -73,23 +89,76 @@ public class PlayerMovement : MonoBehaviour
         horInput = Input.GetAxisRaw("Horizontal");
         verInput = Input.GetAxisRaw("Vertical");
 
-        if(Input.GetKey(jumpKey) && readyToJump && grounded) {
-            readyToJump = false;
+        //Jumping
+        if(Input.GetKeyDown(jumpKey) && crouched && grounded) {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
+            rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
+            crouched = false;
 
+            readyToJump = false;
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+        else if(Input.GetKeyDown(jumpKey) && readyToJump && grounded) {
+            readyToJump = false;
             Jump();
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
-        if(Input.GetKey(sprintKey) && grounded && horInput == 0f && verInput > 0) {
+        //Sprinting
+        if(Input.GetKeyDown(sprintKey) && !sprinting) {
+            sprinting = !sprinting;
+        }
+        if (verInput < 0 && grounded) {
+            sprinting = false;
+        }
+        else if(verInput == 0 && horInput == 0) {
+            sprinting = false;
+        }
+
+        //Crouching
+        if(Input.GetKeyDown(crouchKey) && !crouched) {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
+            crouched = true;
+        }
+        else if(Input.GetKeyDown(crouchKey) && crouched) {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            if(grounded) {
+                rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
+                rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
+            }
+            crouched = false;
+        }
+
+        //check if grounded
+        grounded = Physics.CheckSphere(groundCheck.position, groundDist, whatIsGround);
+
+        //Controls the different speeds
+        SpeedControl();
+    }
+
+    private void SpeedControl()
+    {
+        if(sprinting && grounded && horInput == 0f && verInput > 0) {
             moveSpeed = sprintSpeed;
+        }
+        else if(sprinting && grounded && verInput > 0) {
+            moveSpeed = walkSpeed + (sprintSpeed - walkSpeed)*0.5f;
+        }
+        else if(crouched && grounded) {
+            moveSpeed = crouchSpeed;
+        }
+        else if(!grounded) {
+            moveSpeed = walkSpeed * airMultiplier;
         }
         else {
             moveSpeed = walkSpeed;
         }
     }
 
-    private void SpeedControl()
+    private void SpeedLimit()
     {
         Vector3 vel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
@@ -103,6 +172,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
+
         //Calculate movement Direction
         moveDir = orientation.forward * verInput + orientation.right * horInput;
         moveDir = moveDir.normalized;
