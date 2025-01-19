@@ -585,6 +585,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: crouchYScale
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: jumpCooldown
       value: 0.15
       objectReference: {fileID: 0}

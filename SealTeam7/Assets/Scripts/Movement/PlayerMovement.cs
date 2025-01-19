@@ -122,6 +122,9 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
             crouched = true;
+
+            //temp until I add sliding
+            sprinting = false;
         }
         else if(Input.GetKeyDown(crouchKey) && crouched) {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
