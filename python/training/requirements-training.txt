@@ -1,0 +1,2 @@
+jupyterlab
+mediapipe-model-maker
