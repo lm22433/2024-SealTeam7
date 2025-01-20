@@ -7,15 +7,11 @@ public class MoveCamera : MonoBehaviour
 
     [SerializeField] private Transform cameraPosition;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    /*void Start()
-    {
-        
-    }*/
-
     // Update is called once per frame
     private void Update()
     {
-        transform.position = cameraPosition.position;
+        transform.position = new Vector3(cameraPosition.position.x,
+                                        cameraPosition.position.y + 0.9f * cameraPosition.localScale.y,
+                                        cameraPosition.position.z);
     }
 }

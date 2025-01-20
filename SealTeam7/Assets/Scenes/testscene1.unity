@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 46268848}
   - component: {fileID: 46268847}
   - component: {fileID: 46268846}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: floorhigher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -604,7 +604,7 @@ GameObject:
   - component: {fileID: 1027739911}
   - component: {fileID: 1027739910}
   - component: {fileID: 1027739909}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: step
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -845,7 +845,7 @@ GameObject:
   - component: {fileID: 1843092844}
   - component: {fileID: 1843092843}
   - component: {fileID: 1843092842}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: slope
   m_TagString: Untagged
   m_Icon: {fileID: 0}

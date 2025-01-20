@@ -8,14 +8,16 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float friction;
 
-    [SerializeField] private float jumpForce;
-    [SerializeField] private float jumpCooldown;
-    [SerializeField] private float airMultiplier;
-
     [SerializeField] private float walkSpeed;
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float crouchSpeed;
     private bool sprinting;
+
+    [Header("Aerial")]
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float jumpCooldown;
+    [SerializeField] private float airMultiplier;
+    [SerializeField] private float boostForce;
 
 
     [Header("Keybinds")]
@@ -38,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     [SerializeField] private Transform orientation;
+    [SerializeField] private Transform camPos;
 
     private float horInput;
     private float verInput;
@@ -46,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
 
     private bool readyToJump;
+    private bool doubleJumpReady;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
@@ -54,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         
         readyToJump = true;
+        doubleJumpReady = true;
         sprinting = false;
         crouched = false;
 
@@ -92,6 +97,7 @@ public class PlayerMovement : MonoBehaviour
         //Jumping
         if(Input.GetKeyDown(jumpKey) && crouched && grounded) {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            camPos.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
             rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
             crouched = false;
@@ -104,6 +110,10 @@ public class PlayerMovement : MonoBehaviour
             Jump();
 
             Invoke(nameof(ResetJump), jumpCooldown);
+        }
+        else if(Input.GetKeyDown(jumpKey) && !grounded && doubleJumpReady) {
+            doubleJumpReady = false;
+            BoostJump();
         }
 
         //Sprinting
@@ -120,6 +130,7 @@ public class PlayerMovement : MonoBehaviour
         //Crouching
         if(Input.GetKeyDown(crouchKey) && !crouched) {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            camPos.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
             crouched = true;
 
@@ -128,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(Input.GetKeyDown(crouchKey) && crouched) {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            camPos.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             if(grounded) {
                 rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
                 rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
@@ -137,6 +149,7 @@ public class PlayerMovement : MonoBehaviour
 
         //check if grounded
         grounded = Physics.CheckSphere(groundCheck.position, groundDist, whatIsGround);
+        if(grounded) doubleJumpReady = true;
 
         //Controls the different speeds
         SpeedControl();
@@ -193,6 +206,13 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void BoostJump()
+    {
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        Vector3 moveDir = orientation.forward*verInput + orientation.up + orientation.right * horInput;
+        rb.AddForce(moveDir.normalized * boostForce, ForceMode.Impulse);
     }
 
     private void ResetJump()
