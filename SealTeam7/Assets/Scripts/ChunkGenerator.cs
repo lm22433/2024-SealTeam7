@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [Serializable]
 public struct ChunkSettings {
@@ -11,22 +12,26 @@ public struct ChunkSettings {
     public ushort length;
     public ushort spacing;
     public ushort heightScale;
+    public ushort x;
+    public ushort z;
 }
 
 public class ChunkGenerator : MonoBehaviour {
     
-    private ChunkSettings _settings;
-    private Texture2D _heightMap;
+    [SerializeField] private ChunkSettings settings;
+    [SerializeField] private Texture2D heightMap;
     private NativeArray<float3> _vertices;
     private Mesh _mesh;
-
-    public ChunkGenerator(ChunkSettings s, Texture2D t) {
-        _settings = s;
-        _heightMap = t;
+    
+    public void SetSettings(ChunkSettings s)
+    {
+        settings = s;
     }
-
+    
     private void OnEnable() {
         _mesh = CreateMesh();
+        if (!heightMap) heightMap = new Texture2D(settings.width, settings.length);
+        GetTexture(ref heightMap);
     }
 
     private void OnDisable() {
@@ -34,35 +39,40 @@ public class ChunkGenerator : MonoBehaviour {
     }
 
     private void Update() {
-        if (_heightMap) UpdateMesh();
+        if (heightMap) UpdateMesh();
+    }
+
+    private void GetTexture(ref Texture2D texture)
+    {
+        //GetChunkTexture(texture, settings.x, settings.z);
     }
 
     private Mesh CreateMesh() {
         Mesh mesh = new Mesh {name = "Generated Mesh"};
-        _vertices = new NativeArray<float3>(_settings.width * _settings.length, Allocator.Persistent);
+        _vertices = new NativeArray<float3>(settings.width * settings.length, Allocator.Persistent);
 
         // generate grid
         var index = 0;
-        for (int x = 0; x < _settings.width; x++) {
-            for (int z = 0; z < _settings.length; z++) {
-                _vertices[index++] = new Vector3(x * _settings.spacing, 0f, z * _settings.spacing);
+        for (int x = 0; x < settings.width; x++) {
+            for (int z = 0; z < settings.length; z++) {
+                _vertices[index++] = new Vector3(x * settings.spacing, 0f, z * settings.spacing);
             }
         }
         
         // index triangles from vertices
-        var indices = new int[(_settings.width - 1) * (_settings.length - 1) * 6];
+        var indices = new int[(settings.width - 1) * (settings.length - 1) * 6];
         index = 0;
-        for (var y = 0; y < _settings.length - 1; y++)
+        for (var y = 0; y < settings.length - 1; y++)
         {		
-            for (var x = 0; x < _settings.width - 1; x++)
+            for (var x = 0; x < settings.width - 1; x++)
             {
-                var baseIndex = y * _settings.width + x;
+                var baseIndex = y * settings.width + x;
                 indices[index++] = baseIndex;
                 indices[index++] = baseIndex + 1;
-                indices[index++] = baseIndex + _settings.width + 1;
+                indices[index++] = baseIndex + settings.width + 1;
                 indices[index++] = baseIndex; 
-                indices[index++] = baseIndex + _settings.width + 1;
-                indices[index++] = baseIndex + _settings.width;
+                indices[index++] = baseIndex + settings.width + 1;
+                indices[index++] = baseIndex + settings.width;
             }
         }
         
@@ -78,16 +88,16 @@ public class ChunkGenerator : MonoBehaviour {
 
     private void UpdateMesh() {
         // choose appropriate mipmap level from mesh size
-        //var mip = (int) math.clamp(math.log2(math.min((float) heightMap.height / settings.length, (float) heightMap.width / settings.width)), 0f, 10f); 
-        //var heights = heightMap.GetPixelData<Color32>(mip);
+        var mip = (int) math.clamp(math.log2(math.min((float) heightMap.height / settings.length, (float) heightMap.width / settings.width)), 0f, 10f); 
+        var heights = heightMap.GetPixelData<Color32>(mip);
 
-        var heights = _heightMap.GetPixelData<Color32>(0);
+        //var heights = heightMap.GetPixelData<Color32>(0);
         
         var posHandle = new HeightSampler {
             Vertices = _vertices,
             Heights = heights,
-            Scale = _settings.heightScale
-        }.Schedule(_settings.width * _settings.length, 1);
+            Scale = settings.heightScale
+        }.Schedule(settings.width * settings.length, 1);
         posHandle.Complete();
         
         _mesh.MarkDynamic();
@@ -107,7 +117,6 @@ public struct HeightSampler : IJobParallelFor {
     public float Scale;
     
     public void Execute(int index) {
-        var step = (float) Heights.Length / Vertices.Length;
         var p = Vertices[index];
         var y = p.y;
         y = Heights[index].r / 255f * Scale;
