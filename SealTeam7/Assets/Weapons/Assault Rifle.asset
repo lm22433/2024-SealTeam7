@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a24a7889adf4c67b537ff752883fe74, type: 3}
+  m_Name: Assault Rifle
+  m_EditorClassIdentifier: 
+  weaponName: Assault Rifle
+  weaponType: 0
+  weaponModel: {fileID: 3773515458589958960, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
+  spawnPosition: {x: 0.45, y: -0.25, z: 0.9}
+  spawnRotation: {x: 0, y: 0, z: 0}
+  isAutomatic: 1
+  gunDamage: 10
+  gunRange: 100
+  gunFireRate: 10
+  gunCurrentAmmo: 0
+  gunMaxAmmo: 30
+  gunReloadTime: 0
+  gunTotalAmmo: 210
+  muzzleFlash: {fileID: 6161986668836556939, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
+  gunShotSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  emptyMagazineSound: {fileID: 0}

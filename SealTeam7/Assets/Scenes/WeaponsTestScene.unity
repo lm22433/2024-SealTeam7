@@ -538,13 +538,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1909127780349365990, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: meleeWeapon
+      value: 
+      objectReference: {fileID: 11400000, guid: 8401cc4816f964473973601e1e5427fa, type: 2}
+    - target: {fileID: 1909127780349365990, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: cameraHolder
       value: 
       objectReference: {fileID: 196265808}
     - target: {fileID: 1909127780349365990, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: primaryWeapon
       value: 
-      objectReference: {fileID: 11400000, guid: fd4ffe66156534596abcd7a3d86d9006, type: 2}
+      objectReference: {fileID: 11400000, guid: d86cdb4b4c24e4393b607878c80dff98, type: 2}
+    - target: {fileID: 1909127780349365990, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: secondaryWeapon
+      value: 
+      objectReference: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
     - target: {fileID: 3280914580326757287, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_ClearFlags
       value: 2
