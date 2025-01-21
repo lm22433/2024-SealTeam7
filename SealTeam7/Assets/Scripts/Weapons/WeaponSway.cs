@@ -18,7 +18,7 @@ namespace Weapons
             
             Quaternion targetRotation = rotationX * rotationY;
             
-            
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, Time.deltaTime * smooth);
         }
     }
 }

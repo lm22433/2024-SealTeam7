@@ -21,11 +21,6 @@ MonoBehaviour:
   gunDamage: 10
   gunRange: 100
   gunFireRate: 10
-  gunCurrentAmmo: 0
-  gunMaxAmmo: 30
+  defaultMaxAmmo: 30
   gunReloadTime: 0
-  gunTotalAmmo: 210
-  muzzleFlash: {fileID: 6161986668836556939, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
-  gunShotSound: {fileID: 0}
-  reloadSound: {fileID: 0}
-  emptyMagazineSound: {fileID: 0}
+  defaultTotalAmmo: 240

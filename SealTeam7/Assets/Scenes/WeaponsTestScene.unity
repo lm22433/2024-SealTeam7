@@ -621,11 +621,58 @@ PrefabInstance:
       propertyPath: sensitivityY
       value: 200
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1909127780349365990, guid: e50841c90738b2c49922093ea34609ae, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7393633358596136717, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1996594036}
+    - targetCorrespondingSourceObject: {fileID: 7393633358596136717, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1996594035}
   m_SourcePrefab: {fileID: 100100000, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+--- !u!1 &1996594033 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7393633358596136717, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+  m_PrefabInstance: {fileID: 1488575774}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1996594034 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4394227876815751589, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+  m_PrefabInstance: {fileID: 1488575774}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1996594035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996594033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eac859fa1ba4d889139e338513ebe2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smooth: 8
+  swayMultiplier: 6
+--- !u!114 &1996594036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996594033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2498eb054ac4780835ce79090f540c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  primaryWeapon: {fileID: 11400000, guid: d86cdb4b4c24e4393b607878c80dff98, type: 2}
+  secondaryWeapon: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
+  meleeWeapon: {fileID: 11400000, guid: 8401cc4816f964473973601e1e5427fa, type: 2}
+  weaponHolder: {fileID: 1996594034}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
