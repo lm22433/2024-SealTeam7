@@ -8,8 +8,8 @@ public class KinectAPI : MonoBehaviour
 {
 
     [Header("Depth Calibrations")]
-    [SerializeField, Range(300f, 1000f)] private int _MinimumSandDepth;
-    [SerializeField, Range(600f, 1500f)] private int _MaximumSandDepth;
+    [SerializeField, Range(300f, 1000f)] private ushort _MinimumSandDepth;
+    [SerializeField, Range(600f, 1500f)] private ushort _MaximumSandDepth;
 
     [Header("IR Calibrations")]
     [SerializeField, Range(0, 255f)] private int _IRThreshold;
@@ -25,7 +25,8 @@ public class KinectAPI : MonoBehaviour
 
     private int colourHeight = 0;
 
-    private Texture2D depthMapTexture;
+    private ushort[] depthMapArray;
+    private int dimensions;
     private bool running;
     private int chuckSize;
 
@@ -57,7 +58,8 @@ public class KinectAPI : MonoBehaviour
     }
 
     public void StartKinect(int dimensions) {
-        depthMapTexture = new Texture2D(dimensions, dimensions);
+        this.dimensions = dimensions;
+        depthMapArray = new ushort[dimensions * dimensions];
 
         running = true;
     }
@@ -68,8 +70,7 @@ public class KinectAPI : MonoBehaviour
         this.kinect.Dispose();
     }
 
-    public void GetChunkTexture(ref Texture2D texture, int chunkX, int chunkY) {
-        Color32[] colourArray = texture.GetPixels32();
+    public void GetChunkTexture(ref ushort[] depths, int chunkX, int chunkY) {
         float similarity = 0;
 
         int yChunkOffset = chunkY * chuckSize - 1;
@@ -78,10 +79,10 @@ public class KinectAPI : MonoBehaviour
         //Similarity Check
         for (int y = 0; y <= chuckSize + 1; y++ ) {
             for (int x = 0; x <= chuckSize + 1; x++) {
-                var col = colourArray[y * chuckSize + x];
-                var curr = depthMapTexture.GetPixel(y + yChunkOffset, xChunkOffset + x);
+                var col = depths[y * chuckSize + x];
+                var curr = depthMapArray[(y + yChunkOffset) * chuckSize + xChunkOffset + x];
 
-                similarity += Mathf.Pow(Mathf.Abs(col.r - curr.r), 2);
+                similarity += Mathf.Pow(Mathf.Abs(col - curr), 2);
             }
         }
 
@@ -94,12 +95,9 @@ public class KinectAPI : MonoBehaviour
         //Write changed texture
         for (int y = (chunkY * chuckSize) - 1; y < (chuckSize * (chunkY + 1)); y++ ) {
             for (int x = (chunkX * chuckSize) - 1; x < (chuckSize * (chunkX + 1)); x++ ) {
-                colourArray[y * chuckSize + x] = depthMapTexture.GetPixel(y + yChunkOffset, xChunkOffset + x);
+                depths[y * chuckSize + x] = depthMapArray[(y + yChunkOffset) * chuckSize + xChunkOffset + x];
             }
         }
-
-        texture.SetPixels32(colourArray);
-        texture.Apply();
 
     }
 
@@ -121,46 +119,38 @@ public class KinectAPI : MonoBehaviour
             Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
             Span<ushort> IRBuffer = capture.IR.GetPixels<ushort>().Span;
 
-            Color32[] colourArray = depthMapTexture.GetPixels32();
-            int imageXOffset = (colourWidth - depthMapTexture.width) / 2;
-            int imageYOffset = (colourHeight - depthMapTexture.height) / 2;
+            int imageXOffset = (colourWidth - dimensions) / 2;
+            int imageYOffset = (colourHeight - dimensions) / 2;
 
             // Create a new image with data from the depth and colour image
-            for (int y = 0; y < depthMapTexture.height; y++) {
-                for (int x = 0; x < depthMapTexture.width; x++) {
+            for (int y = 0; y < dimensions; y++) {
+                for (int x = 0; x < dimensions; x++) {
                     var depth = depthBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
                     var ir = IRBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
 
                     // Calculate pixel values
-                    float depthRange = _MaximumSandDepth - _MinimumSandDepth;
-                    float pixelValue = 255 - ((depth - _MinimumSandDepth) / depthRange * 255);
+                    ushort depthRange = (ushort)(_MaximumSandDepth - _MinimumSandDepth);
+                    ushort pixelValue = (ushort)(depth - _MinimumSandDepth);
 
                     if(ir < _IRThreshold) {    
-                        Color32 colour;
-
+                        ushort val = 0;
                         if (depth == 0 || depth >= _MaximumSandDepth) // No depth image
                         {
-                            colour = new Color32(0, 0, 0, 0);
+                            val = 0;
 
                         } else if (depth < _MinimumSandDepth) {
 
-                            colour = new Color32(Convert.ToByte(255), 0, 0, 0);
+                            val = depthRange;
 
                         } else {
-                            colour = new Color32(Convert.ToByte((int) pixelValue), 0, 0, 0);
+                            val =  pixelValue;
 
                         }
 
-                        colourArray[y * depthMapTexture.width + x] = colour;
+                        depthMapArray[y * dimensions + x] = val;
                     } 
                 }
             }
-
-            // Set texture pixels
-            depthMapTexture.SetPixels32(colourArray);
-            depthMapTexture.Apply();
-
-            return;
         }
     }
 }
