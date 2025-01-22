@@ -4,10 +4,8 @@ public class PlayerMovement : MonoBehaviour
 {
 
     [Header("Movement")]
-    [SerializeField] private float moveSpeed;
-
+    private float moveSpeed;
     [SerializeField] private float friction;
-
     [SerializeField] private float walkSpeed;
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float crouchSpeed;
@@ -17,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] private float jumpCooldown;
     [SerializeField] private float airMultiplier;
+    [SerializeField] private float airRes;
     [SerializeField] private float boostForce;
 
 
@@ -34,9 +33,15 @@ public class PlayerMovement : MonoBehaviour
     
     [Header("Crouching")]
     [SerializeField] private float crouchYScale;
-    //[SerializeField] private float walkSpeed;
     private float startYScale;
     private bool crouched;
+
+    [Header("Sliding")]
+    [SerializeField] private float maxSlideTime;
+    [SerializeField] private float slideForce;
+    private float slideTimer;
+    private bool sliding;
+    private Vector3 slideDir;
 
     [Header("Aiming")]
     [SerializeField] private Transform orientation;
@@ -66,6 +71,10 @@ public class PlayerMovement : MonoBehaviour
         sprinting = false;
         crouched = false;
         exitingSlope = false;
+        sliding = false;
+
+        slideTimer = 0;
+
 
         moveSpeed = walkSpeed;
         startYScale = transform.localScale.y;
@@ -79,19 +88,26 @@ public class PlayerMovement : MonoBehaviour
         grounded = Physics.CheckSphere(groundCheck.position, groundDist, whatIsGround);
         
         MoveInput();
-        SpeedLimit();
+        if(grounded && !sliding) {
+            SpeedLimit();
+        }
 
         if(grounded) {
             rb.linearDamping = friction;
         }
         else {
-            rb.linearDamping = 0;
+            rb.linearDamping = airRes;
         }
     }
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        if(sliding) {
+            SlidingMovement();
+        }
+        else {
+            MovePlayer();
+        }
     }
 
     private void MoveInput()
@@ -124,20 +140,18 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetKeyDown(sprintKey) && !sprinting) {
             sprinting = !sprinting;
         }
-        if (verInput < 0 && grounded) {
+        if (verInput < 0 && grounded && !sliding) {
             sprinting = false;
         }
-        else if(verInput == 0 && horInput == 0) {
+        else if(verInput == 0 && horInput == 0 && !sliding) {
             sprinting = false;
         }
 
         //Crouching
-        if(Input.GetKeyDown(crouchKey) && !crouched) {
+        if(Input.GetKeyDown(crouchKey) && !crouched && !sprinting) {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
             crouched = true;
-
-            //temp until I add sliding
             sprinting = false;
         }
         else if(Input.GetKeyDown(crouchKey) && crouched) {
@@ -147,6 +161,13 @@ public class PlayerMovement : MonoBehaviour
                 rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
             }
             crouched = false;
+        }
+
+        if(Input.GetKeyDown(crouchKey) && verInput > 0 && horInput == 0 && sprinting && !sliding) {
+            StartSlide();
+        }
+        else if(Input.GetKeyDown(crouchKey) && sliding) {
+            StopSlide();
         }
 
         //check if grounded
@@ -221,7 +242,6 @@ public class PlayerMovement : MonoBehaviour
 
         //bit jank but turn off gravity when on slope
         rb.useGravity = !OnSlope();
-        Debug.Log(rb.useGravity);
     }
 
     private void Jump()
@@ -236,6 +256,7 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         moveDir = orientation.forward*verInput + orientation.up + orientation.right * horInput;
         rb.AddForce(moveDir.normalized * boostForce, ForceMode.Impulse);
+        //rb.AddForce(orientation.up * boostForce, ForceMode.Impulse);
     }
 
     private void ResetJump()
@@ -256,5 +277,36 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDir, slopeHit.normal).normalized;
+    }
+
+    private void StartSlide()
+    {
+        sliding = true;
+        crouched = true;
+
+        slideDir = orientation.forward.normalized;
+
+        transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+        if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
+
+
+        slideTimer = maxSlideTime;
+        //rb.AddForce(slideDir * slideForce *5f, ForceMode.Impulse);
+    }
+
+    private void SlidingMovement()
+    {
+        slideTimer -= Time.deltaTime;
+        rb.AddForce(slideDir * slideForce * 10f * (slideTimer / maxSlideTime), ForceMode.Force);
+        if(slideTimer < 0) {
+            StopSlide();
+            sprinting = false;
+        }
+    }
+
+    private void StopSlide()
+    {
+        slideTimer = 0;
+        sliding = false;
     }
 }
