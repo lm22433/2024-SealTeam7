@@ -116,13 +116,23 @@ public class PlayerMovement : MonoBehaviour
         verInput = Input.GetAxisRaw("Vertical");
 
         //Jumping
-        if(Input.GetKeyDown(jumpKey) && crouched && grounded) {
+        if(Input.GetKeyDown(jumpKey) && crouched && grounded && !sliding) {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
             rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
             crouched = false;
 
             readyToJump = false;
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+        else if(Input.GetKeyDown(jumpKey) && readyToJump && grounded && sliding) {
+            readyToJump = false;
+            Jump();
+
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            sliding = false;
+            crouched = false;
+
             Invoke(nameof(ResetJump), jumpCooldown);
         }
         else if(Input.GetKeyDown(jumpKey) && readyToJump && grounded) {
@@ -163,6 +173,7 @@ public class PlayerMovement : MonoBehaviour
             crouched = false;
         }
 
+        //Sliding
         if(Input.GetKeyDown(crouchKey) && verInput > 0 && horInput == 0 && sprinting && !sliding) {
             StartSlide();
         }
@@ -294,13 +305,32 @@ public class PlayerMovement : MonoBehaviour
         //rb.AddForce(slideDir * slideForce *5f, ForceMode.Impulse);
     }
 
+    private Vector3 GetSlopeSlideDirection()
+    {
+        return Vector3.ProjectOnPlane(slideDir, slopeHit.normal).normalized;
+    }
+
     private void SlidingMovement()
     {
-        slideTimer -= Time.deltaTime;
-        rb.AddForce(slideDir * slideForce * 10f * (slideTimer / maxSlideTime), ForceMode.Force);
+        if(OnSlope() && !exitingSlope) {
+            rb.AddForce(GetSlopeSlideDirection() * slideForce * 10.0f * (slideTimer / maxSlideTime), ForceMode.Force);
+
+            //stops bouncing up slopes
+            if(rb.linearVelocity.y > 0) {
+                slideTimer -= Time.deltaTime;
+                //rb.AddForce(Vector3.down * 20.0f, ForceMode.Force);
+            }
+        }
+        else if(grounded) {
+            slideTimer -= Time.deltaTime;
+            rb.AddForce(slideDir * slideForce * 10f * (slideTimer / maxSlideTime), ForceMode.Force);
+        }
         if(slideTimer < 0) {
             StopSlide();
             sprinting = false;
+        }
+        if(!grounded) {
+            StopSlide();
         }
     }
 
@@ -308,5 +338,9 @@ public class PlayerMovement : MonoBehaviour
     {
         slideTimer = 0;
         sliding = false;
+
+        if(OnSlope()) {
+            rb.AddForce(Vector3.up * 0.5f, ForceMode.Impulse);
+        }
     }
 }
