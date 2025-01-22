@@ -4,7 +4,7 @@ namespace Weapons.Test
 {
     public class TestDummy : MonoBehaviour, IDamageable
     {
-        [SerializeField] private float health = 100f;
+        [SerializeField] private float health = 150f;
 
         public void TakeDamage(float dmg)
         {

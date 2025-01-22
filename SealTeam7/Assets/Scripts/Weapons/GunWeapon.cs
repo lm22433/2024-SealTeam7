@@ -17,25 +17,25 @@ namespace Weapons
         public float gunReloadTime = 2f;
         public int defaultTotalAmmo = 210;
         
-        [System.NonSerialized] private bool isReloading;
-        [System.NonSerialized] private float nextTimeToFire;
-        [System.NonSerialized] private int currentAmmo;
-        [System.NonSerialized] private int totalAmmo;
-        [System.NonSerialized] private WeaponInstance weaponInstance;
+        [System.NonSerialized] private bool _isReloading;
+        [System.NonSerialized] private float _nextTimeToFire;
+        [System.NonSerialized] private int _currentAmmo;
+        [System.NonSerialized] private int _totalAmmo;
+        [System.NonSerialized] private WeaponInstance _weaponInstance;
 
         public override void Initialize(WeaponInstance instance)
         {
-            weaponInstance = instance;
-            weaponInstance.Initialize();
+            _weaponInstance = instance;
+            _weaponInstance.Initialize();
 
-            if (currentAmmo == 0 && totalAmmo == 0)
+            if (_currentAmmo == 0 && _totalAmmo == 0)
             {
-                currentAmmo = defaultMaxAmmo;
-                totalAmmo = defaultTotalAmmo;
+                _currentAmmo = defaultMaxAmmo;
+                _totalAmmo = defaultTotalAmmo;
             }
 
-            nextTimeToFire = 0f;
-            isReloading = false;
+            _nextTimeToFire = 0f;
+            _isReloading = false;
         }
 
         public override void Attack()
@@ -44,55 +44,50 @@ namespace Weapons
             {
                 Fire();
             }
-            else if (currentAmmo == 0 && !isReloading)
+            else if (_currentAmmo == 0 && !_isReloading)
             {
                 Debug.Log("Plz reload!");
-                weaponInstance.PlayEmptySound();
+                _weaponInstance.PlayEmptySound();
             }
         }
 
         private bool CanFire()
         {
-            return !isReloading && 
-                   currentAmmo > 0 && 
-                   Time.time >= nextTimeToFire;
+            return !_isReloading && 
+                   _currentAmmo > 0 && 
+                   Time.time >= _nextTimeToFire;
         }
 
         private void Fire()
         {
-            nextTimeToFire = Time.time + 60f / gunFireRate;
-            currentAmmo--;
+            _nextTimeToFire = Time.time + 60f / gunFireRate;
+            _currentAmmo--;
             
-            weaponInstance.PlayMuzzleFlash();
-            weaponInstance.PlayShootSound();
+            _weaponInstance.PlayMuzzleFlash();
+            _weaponInstance.PlayShootSound();
             
-            Debug.Log("You fired a bullet! You have " + currentAmmo + " bullets left!");
+            Debug.Log("You fired a bullet! You have " + _currentAmmo + " bullets left!");
 
             RaycastHit hit;
-            Ray ray = weaponInstance.GetFireRay();
+            Ray ray = _weaponInstance.GetFireRay();
             
             if (Physics.Raycast(ray, out hit, gunRange))
             {
-            //     if (bulletTrailPrefab != null)
-            //     {
-            //         TrailRenderer trail = Instantiate(bulletTrailPrefab, weaponInstance.GetMuzzlePosition(), Quaternion.identity);
-            //         MonoBehaviour runner = weaponInstance as MonoBehaviour;
-            //         runner.StartCoroutine(SpawnTrail(trail, hit.point));
-            //     }
-            //
-            IDamageable damageable = hit.collider.GetComponent<IDamageable>();
-            damageable?.TakeDamage(gunDamage);
+                //TODO: Implement trail renderer.
+                
+                IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+                damageable?.TakeDamage(gunDamage);
             }
         }
 
         public void TryReload()
         {
-            if (!isReloading && currentAmmo < defaultMaxAmmo && totalAmmo > 0)
+            if (!_isReloading && _currentAmmo < defaultMaxAmmo && _totalAmmo > 0)
             {
-                isReloading = true;
-                weaponInstance.PlayReloadSound();
+                _isReloading = true;
+                _weaponInstance.PlayReloadSound();
 
-                weaponInstance.StartCoroutine(ReloadCoroutine());
+                _weaponInstance.StartCoroutine(ReloadCoroutine());
             } 
         }
 
@@ -100,13 +95,13 @@ namespace Weapons
         {
             yield return new WaitForSeconds(gunReloadTime);
             
-            int ammoToReload = Mathf.Min(defaultMaxAmmo - currentAmmo, totalAmmo);
-            currentAmmo += ammoToReload;
-            totalAmmo -= ammoToReload;
+            int ammoToReload = Mathf.Min(defaultMaxAmmo - _currentAmmo, _totalAmmo);
+            _currentAmmo += ammoToReload;
+            _totalAmmo -= ammoToReload;
             
-            Debug.Log("You have reloaded " + ammoToReload + " bullets. You have " + currentAmmo + " bullets in the mag. You have " + totalAmmo + " bullets left!");
+            Debug.Log("You have reloaded " + ammoToReload + " bullets. You have " + _currentAmmo + " bullets in the mag. You have " + _totalAmmo + " bullets left!");
             
-            isReloading = false;
+            _isReloading = false;
         }
     }
 }

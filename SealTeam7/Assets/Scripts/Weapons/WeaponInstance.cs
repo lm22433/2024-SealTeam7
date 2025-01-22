@@ -14,11 +14,11 @@ namespace Weapons
         public AudioClip reloadSound;
         public AudioClip emptyMagazineSound;
 
-        private Camera mainCamera;
+        private Camera _mainCamera;
         
         public void Initialize()
         {
-            mainCamera = Camera.main;
+            _mainCamera = Camera.main;
         }
 
         public void PlayMuzzleFlash()
@@ -60,7 +60,7 @@ namespace Weapons
 
         public Ray GetFireRay()
         {
-            return mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            return _mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         }
     }
 }

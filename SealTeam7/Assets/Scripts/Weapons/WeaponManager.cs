@@ -9,8 +9,8 @@ namespace Weapons
         public GunWeapon secondaryWeapon;
         public MeleeWeapon meleeWeapon;
 
-        private Weapon currentWeapon;
-        private GameObject currentWeaponInstance;
+        private Weapon _currentWeapon;
+        private GameObject _currentWeaponInstance;
         
         [Header("References")]
         [SerializeField] private Transform weaponHolder;
@@ -28,27 +28,27 @@ namespace Weapons
                 return;
             }
 
-            if (weapon == currentWeapon)
+            if (weapon == _currentWeapon)
             {
                 return;
             }
 
-            if (currentWeaponInstance != null)
+            if (_currentWeaponInstance != null)
             {
-                Destroy(currentWeaponInstance);
+                Destroy(_currentWeaponInstance);
             }
 
             // Instantiate the new weapon model
-            currentWeaponInstance = Instantiate(weapon.weaponModel, weaponHolder);
-            currentWeaponInstance.transform.localPosition = weapon.spawnPosition;
-            currentWeaponInstance.transform.localEulerAngles = weapon.spawnRotation;
+            _currentWeaponInstance = Instantiate(weapon.weaponModel, weaponHolder);
+            _currentWeaponInstance.transform.localPosition = weapon.spawnPosition;
+            _currentWeaponInstance.transform.localEulerAngles = weapon.spawnRotation;
 
-            currentWeapon = weapon;
+            _currentWeapon = weapon;
             
             // Initialize gun-specific features
-            if (currentWeapon is GunWeapon gun)
+            if (_currentWeapon is GunWeapon gun)
             {
-                WeaponInstance instance = currentWeaponInstance.GetComponent<WeaponInstance>();
+                WeaponInstance instance = _currentWeaponInstance.GetComponent<WeaponInstance>();
                 if (instance == null)
                 {
                     Debug.LogError("Weapon model prefab is missing WeaponInstance component!");
@@ -61,7 +61,7 @@ namespace Weapons
 
         private void Update()
         {
-            switch (currentWeapon)
+            switch (_currentWeapon)
             {
                 case GunWeapon gun:
                 {
