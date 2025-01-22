@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a24a7889adf4c67b537ff752883fe74, type: 3}
-  m_Name: Pistol
+  m_Name: Assault Rifle 2
   m_EditorClassIdentifier: 
-  weaponName: Pistol
-  weaponModel: {fileID: 991574168030808980, guid: 6a706ea73f7a7c34d93a69fbe7b97086, type: 3}
+  weaponName: Assault Rifle 2
+  weaponModel: {fileID: 3773515458589958960, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
   spawnPosition: {x: 0.45, y: -0.25, z: 0.9}
   spawnRotation: {x: 0, y: 0, z: 0}
-  isAutomatic: 0
-  gunDamage: 46
+  isAutomatic: 1
+  gunDamage: 34
   gunRange: 100
-  gunFireRate: 491
-  defaultMaxAmmo: 12
-  gunReloadTime: 0
-  defaultTotalAmmo: 36
+  gunFireRate: 615
+  defaultMaxAmmo: 30
+  gunReloadTime: 2
+  defaultTotalAmmo: 210

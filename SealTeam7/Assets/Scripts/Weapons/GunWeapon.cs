@@ -28,7 +28,6 @@ namespace Weapons
             weaponInstance = instance;
             weaponInstance.Initialize();
 
-            // Only initialize ammo if it hasn't been set (first time equipping)
             if (currentAmmo == 0 && totalAmmo == 0)
             {
                 currentAmmo = defaultMaxAmmo;
@@ -61,22 +60,19 @@ namespace Weapons
 
         private void Fire()
         {
-            nextTimeToFire = Time.time + 1f / gunFireRate;
+            nextTimeToFire = Time.time + 60f / gunFireRate;
             currentAmmo--;
-
-            // Visual and audio effects
+            
             weaponInstance.PlayMuzzleFlash();
             weaponInstance.PlayShootSound();
             
             Debug.Log("You fired a bullet! You have " + currentAmmo + " bullets left!");
 
-            // // Raycast for hit detection
-            // RaycastHit hit;
-            // Ray ray = weaponInstance.GetFireRay();
-            //
-            // if (Physics.Raycast(ray, out hit, gunRange))
-            // {
-            //     // Spawn bullet trail
+            RaycastHit hit;
+            Ray ray = weaponInstance.GetFireRay();
+            
+            if (Physics.Raycast(ray, out hit, gunRange))
+            {
             //     if (bulletTrailPrefab != null)
             //     {
             //         TrailRenderer trail = Instantiate(bulletTrailPrefab, weaponInstance.GetMuzzlePosition(), Quaternion.identity);
@@ -84,12 +80,9 @@ namespace Weapons
             //         runner.StartCoroutine(SpawnTrail(trail, hit.point));
             //     }
             //
-            //     // Check for damageable object
-            //     IDamageable damageable = hit.collider.GetComponent<IDamageable>();
-            //     damageable?.TakeDamage(gunDamage);
-            //
-            //     // You might want to spawn impact effects here
-            // }
+            IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+            damageable?.TakeDamage(gunDamage);
+            }
         }
 
         public void TryReload()

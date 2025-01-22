@@ -6,7 +6,6 @@ namespace Weapons
     {
         [Header("Weapon Settings")]
         public string weaponName;
-        public WeaponType weaponType;
         
         [Header("Weapon Model Settings")]
         public GameObject weaponModel;

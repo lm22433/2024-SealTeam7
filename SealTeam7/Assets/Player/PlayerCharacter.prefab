@@ -445,6 +445,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4394227876815751589}
+  - component: {fileID: 7353300167999312155}
   m_Layer: 0
   m_Name: WeaponHolder
   m_TagString: Untagged
@@ -467,6 +468,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6253553088981420950}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7353300167999312155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7393633358596136717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2498eb054ac4780835ce79090f540c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  primaryWeapon: {fileID: 0}
+  secondaryWeapon: {fileID: 0}
+  meleeWeapon: {fileID: 0}
+  weaponHolder: {fileID: 4394227876815751589}
 --- !u!1 &8194321815041351153
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,7 +495,6 @@ GameObject:
   - component: {fileID: 3915829004000205839}
   - component: {fileID: 3930889070967431486}
   - component: {fileID: 6962307559515549268}
-  - component: {fileID: 1909127780349365990}
   m_Layer: 0
   m_Name: PlayerHolder
   m_TagString: Untagged
@@ -560,20 +576,3 @@ MonoBehaviour:
     m_Bits: 0
   playerHeight: 0
   orientation: {fileID: 1256677882820726538}
---- !u!114 &1909127780349365990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8194321815041351153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c2498eb054ac4780835ce79090f540c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  primaryWeapon: {fileID: 0}
-  secondaryWeapon: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
-  meleeWeapon: {fileID: 0}
-  weaponHolder: {fileID: 4394227876815751589}
-  cameraHolder: {fileID: 0}
