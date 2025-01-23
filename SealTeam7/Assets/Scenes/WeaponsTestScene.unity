@@ -752,7 +752,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3280914580326757287, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_ClearFlags
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3280914580326757287, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_BackGroundColor.g
@@ -770,13 +770,25 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4110011527559211832, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: m_Dithering
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: airRes
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: jumpKey
-      value: 32
+      value: Jump
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: friction
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: crouchKey
+      value: Crouch
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: jumpForce
@@ -787,7 +799,23 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: sprintKey
+      value: Sprint
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: walkSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: boostForce
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: groundDist
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: slideForce
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
@@ -795,8 +823,16 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: crouchYScale
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: jumpCooldown
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: maxSlideTime
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: playerHeight
@@ -807,8 +843,24 @@ PrefabInstance:
       value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: maxSlopeAngle
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: whatIsGround.m_Bits
       value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 7894323579929965187, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: jumpKey
+      value: Jump
+      objectReference: {fileID: 0}
+    - target: {fileID: 7894323579929965187, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: crouchKey
+      value: Crouch
+      objectReference: {fileID: 0}
+    - target: {fileID: 7894323579929965187, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: sprintKey
+      value: Sprint
       objectReference: {fileID: 0}
     - target: {fileID: 8116472272456324572, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: sensitivityX
@@ -819,8 +871,9 @@ PrefabInstance:
       value: 200
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 1909127780349365990, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+    - {fileID: 0}
     - {fileID: 7353300167999312155, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+    - {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

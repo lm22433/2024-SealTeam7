@@ -743,7 +743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29033bdfd45444e9beeccc66a8bc63de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crosshairSize: 35
+  crosshairSize: 50
 --- !u!1 &7117901007386700924
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,9 +894,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c2498eb054ac4780835ce79090f540c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  primaryWeapon: {fileID: 11400000, guid: d86cdb4b4c24e4393b607878c80dff98, type: 2}
-  secondaryWeapon: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
-  meleeWeapon: {fileID: 11400000, guid: 8401cc4816f964473973601e1e5427fa, type: 2}
+  primaryWeapon: {fileID: 0}
+  secondaryWeapon: {fileID: 0}
+  meleeWeapon: {fileID: 0}
   weaponHolder: {fileID: 4394227876815751589}
 --- !u!1 &8194321815041351153
 GameObject:
@@ -978,14 +978,14 @@ MonoBehaviour:
   walkSpeed: 4
   sprintSpeed: 8
   crouchSpeed: 2.5
-  jumpForce: 6
+  jumpForce: 7.5
   jumpCooldown: 0.15
   airMultiplier: 0.4
   airRes: 1.5
   boostForce: 6
-  jumpKey: 32
-  sprintKey: 304
-  crouchKey: 306
+  jumpKey: Jump
+  sprintKey: Sprint
+  crouchKey: Crouch
   groundCheck: {fileID: 9095023509047750781}
   groundDist: 0.6
   whatIsGround:
@@ -1032,7 +1032,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 12, y: 2}
+  m_SizeDelta: {x: 12.5, y: 2}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &7646138839123185836
 CanvasRenderer:
