@@ -909,7 +909,6 @@ GameObject:
   - component: {fileID: 3915829004000205839}
   - component: {fileID: 3930889070967431486}
   - component: {fileID: 7894323579929965187}
-  - component: {fileID: 6962307559515549268}
   m_Layer: 0
   m_Name: PlayerHolder
   m_TagString: Untagged
@@ -984,9 +983,9 @@ MonoBehaviour:
   airMultiplier: 0.4
   airRes: 1.5
   boostForce: 6
-  jumpKey: 32
-  sprintKey: 306
-  crouchKey: 304
+  jumpKey: Jump
+  sprintKey: Sprint
+  crouchKey: Crouch
   groundCheck: {fileID: 9095023509047750781}
   groundDist: 0.6
   whatIsGround:
@@ -998,41 +997,6 @@ MonoBehaviour:
   slideForce: 5
   orientation: {fileID: 1256677882820726538}
   maxSlopeAngle: 40
---- !u!114 &6962307559515549268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8194321815041351153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e48582c5682132c4fa8e635ed3fd3742, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  friction: 13
-  walkSpeed: 0
-  sprintSpeed: 0
-  crouchSpeed: 0
-  jumpForce: 0
-  jumpCooldown: 0
-  airMultiplier: 0
-  airRes: 0
-  boostForce: 0
-  jumpKey: 32
-  sprintKey: 304
-  crouchKey: 304
-  groundCheck: {fileID: 9095023509047750781}
-  groundDist: 0.4
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 0
-  playerHeight: 0
-  crouchYScale: 0
-  maxSlideTime: 0
-  slideForce: 0
-  orientation: {fileID: 1256677882820726538}
-  maxSlopeAngle: 0
 --- !u!1 &9138342415170533693
 GameObject:
   m_ObjectHideFlags: 0

@@ -849,11 +849,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: jumpKey
-      value: 32
+      value: Jump
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: friction
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: crouchKey
+      value: Crouch
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: jumpForce
@@ -862,6 +866,10 @@ PrefabInstance:
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: moveSpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: sprintKey
+      value: Sprint
       objectReference: {fileID: 0}
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: walkSpeed
@@ -886,6 +894,18 @@ PrefabInstance:
     - target: {fileID: 6962307559515549268, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: whatIsGround.m_Bits
       value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 7894323579929965187, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: jumpKey
+      value: Jump
+      objectReference: {fileID: 0}
+    - target: {fileID: 7894323579929965187, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: crouchKey
+      value: Crouch
+      objectReference: {fileID: 0}
+    - target: {fileID: 7894323579929965187, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: sprintKey
+      value: Sprint
       objectReference: {fileID: 0}
     - target: {fileID: 8116472272456324572, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: sensitivityX
