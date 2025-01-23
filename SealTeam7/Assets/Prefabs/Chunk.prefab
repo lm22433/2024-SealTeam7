@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2175159662765393360}
   - component: {fileID: 5746010189181975162}
   - component: {fileID: 3060958238548502678}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Chunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,15 +48,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    width: 128
-    length: 128
-    spacing: 16
-    heightScale: 1
-    lerpFactor: 0.1
+    size: 34
+    spacing: 10.666667
+    heightScale: 15
+    lerpFactor: 1
     x: 0
     z: 0
-    hasPlayer: 0
-  heightMap: 
+    hasPlayer: 1
+  heightMap: []
 --- !u!64 &2175159662765393360
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -110,7 +109,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 853ef616ed4030a0e8df009b6bee2f80, type: 2}
+  - {fileID: 2100000, guid: 64a6f42d9ccf65c43a2d314ecbd1404a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
