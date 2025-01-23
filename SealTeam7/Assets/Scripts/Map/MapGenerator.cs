@@ -37,7 +37,7 @@ namespace Map
                 spacing = spacing,
                 heightScale = settings.heightScale,
                 lerpFactor = settings.lerpFactor,
-                hasPlayer = false
+                hasPlayer = true
             };
 
             _noise.StartNoise(settings.size + 2, settings.chunkSize);
