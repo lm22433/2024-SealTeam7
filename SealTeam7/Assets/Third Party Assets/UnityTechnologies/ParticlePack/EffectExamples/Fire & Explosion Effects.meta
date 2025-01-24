@@ -1,9 +1,15 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:SealTeam7/Assets/Prefabs.meta
+guid: 12600a522f5ad7a4590a31004ebb0bc4
+folderAsset: yes
+========
 guid: 9c9c292c9091a7d4fbaf34fdd81b85fc
 folderAsset: yes
 timeCreated: 1473950888
 licenseType: Store
+>>>>>>>> dev:SealTeam7/Assets/Third Party Assets/UnityTechnologies/ParticlePack/EffectExamples/Fire & Explosion Effects.meta
 DefaultImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
