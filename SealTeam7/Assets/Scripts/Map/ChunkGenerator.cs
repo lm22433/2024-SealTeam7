@@ -21,7 +21,7 @@ namespace Map
     public class ChunkGenerator : MonoBehaviour {
         
         [SerializeField] private ChunkSettings settings;
-        [SerializeField] private float[] heightMap;
+        private float[] _heightMap;
         private NativeArray<float3> _vertices;
         private Mesh _mesh;
         private MeshCollider _meshCollider;
@@ -29,10 +29,12 @@ namespace Map
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
+        public void SetPlayer(bool p) { settings.hasPlayer = p; }
+        
         private void Awake() {
             _mesh = CreateMesh();
             _meshCollider = GetComponent<MeshCollider>();
-            heightMap = new float[settings.size * settings.size];
+            _heightMap = new float[settings.size * settings.size];
             _noiseGenerator = GetComponentInParent<NoiseGenerator>();
             
             GetHeights();
@@ -42,7 +44,7 @@ namespace Map
 
         private void Update() { UpdateMesh(); }
 
-        private void GetHeights() { _noiseGenerator.GetChunkNoise(ref heightMap, settings.z, settings.x); }
+        private void GetHeights() { _noiseGenerator.GetChunkNoise(ref _heightMap, settings.z, settings.x); }
 
         private Mesh CreateMesh() {
             Mesh mesh = new Mesh {name = "Generated Mesh"};
@@ -87,7 +89,7 @@ namespace Map
 
         private void UpdateMesh() {
             GetHeights();
-            var heights = new NativeArray<float>(heightMap, Allocator.TempJob);
+            var heights = new NativeArray<float>(_heightMap, Allocator.TempJob);
             
             var posHandle = new HeightSampler {
                 Vertices = _vertices,
@@ -101,7 +103,18 @@ namespace Map
             _mesh.RecalculateBounds();
             _mesh.RecalculateNormals();
             _mesh.RecalculateTangents();
-            if (settings.hasPlayer) _meshCollider.sharedMesh = _mesh;
+            if (settings.hasPlayer && !_meshCollider.enabled) {
+                _meshCollider.enabled = true;
+                _meshCollider.sharedMesh = _mesh;
+            }
+            else if (settings.hasPlayer)
+            {
+                _meshCollider.sharedMesh = _mesh;
+            }
+            else
+            {
+                _meshCollider.enabled = false;
+            }
             
             heights.Dispose();
         }

@@ -287,11 +287,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
     size: 500
-    chunks: 25
-    chunkSize: 25
+    chunks: 100
+    chunkSize: 10
     heightScale: 25
-    lerpFactor: 1
-    chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
+    lerpFactor: 0.1
+  chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   player: {fileID: 1937079306}
 --- !u!114 &1673330774
 MonoBehaviour:
@@ -305,7 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7911bfb62cdd416ab3b08764346d59bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.156
+  speed: 0.247
   noiseScale: 0.1
 --- !u!1001 &1937079305
 PrefabInstance:
