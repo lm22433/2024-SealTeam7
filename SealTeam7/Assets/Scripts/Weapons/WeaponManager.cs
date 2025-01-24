@@ -65,21 +65,22 @@ namespace Weapons
             {
                 case GunWeapon gun:
                 {
-                    if (Input.GetKeyDown(KeyCode.R))
+                    if (Input.GetButtonDown("Reload"))
                     {
                         gun.TryReload();
                     }
 
                     if (gun.isAutomatic)
                     {
-                        if (Input.GetButton("Fire1"))
+                        if (Input.GetButton("Shoot1") || Input.GetAxis("Shoot2") > 0.5f)
                         {
                             gun.Attack();
                         }
                     }
                     else
                     {
-                        if (Input.GetButtonDown("Fire1"))
+                        // TODO: Implement semi automatic trigger
+                        if (Input.GetButtonDown("Shoot1"))
                         {
                             gun.Attack();
                         }
@@ -89,7 +90,7 @@ namespace Weapons
                 }
                 case MeleeWeapon melee:
                 {
-                    if (Input.GetKeyDown(KeyCode.Mouse0))
+                    if (Input.GetButtonDown("Shoot"))
                     {
                         melee.Attack();
                     }
