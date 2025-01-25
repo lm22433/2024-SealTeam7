@@ -1,18 +1,27 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Weapons
+namespace Weapons.Gun
 {
     [CreateAssetMenu(fileName = "Gun", menuName = "Weapons/Gun", order = 0)]
-    public class GunWeapon : Weapon
+    public class Gun : ScriptableObject
     {
-        [Header("Gun Settings")]
+        [Header("General Settings")]
+        public string gunName;
+        public string gunDescription;
+
+        [Header("Model Settings")]
+        public GameObject gunModel;
+        public Vector3 spawnPosition;
+        public Vector3 spawnRotation;
+        
+        [Header("Settings")]
         public bool isAutomatic;
         public float gunDamage = 10f;
         public float gunRange = 100f;
         public float gunFireRate = 10f;
 
-        [Header("Gun Ammo Settings")] 
+        [Header("Ammo Settings")] 
         public int defaultMaxAmmo = 30;
         public float gunReloadTime = 2f;
         public int defaultTotalAmmo = 210;
@@ -21,12 +30,12 @@ namespace Weapons
         [System.NonSerialized] private float _nextTimeToFire;
         [System.NonSerialized] private int _currentAmmo;
         [System.NonSerialized] private int _totalAmmo;
-        [System.NonSerialized] private WeaponInstance _weaponInstance;
+        [System.NonSerialized] private GunInstance _gunInstance;
 
-        public override void Initialize(WeaponInstance instance)
+        public void Initialize(GunInstance instance)
         {
-            _weaponInstance = instance;
-            _weaponInstance.Initialize();
+            _gunInstance = instance;
+            _gunInstance.Initialize();
 
             if (_currentAmmo == 0 && _totalAmmo == 0)
             {
@@ -38,7 +47,7 @@ namespace Weapons
             _isReloading = false;
         }
 
-        public override void Attack()
+        public void Attack()
         {
             if (CanFire())
             {
@@ -47,7 +56,7 @@ namespace Weapons
             else if (_currentAmmo == 0 && !_isReloading)
             {
                 Debug.Log("Plz reload!");
-                _weaponInstance.PlayEmptySound();
+                _gunInstance.PlayEmptySound();
             }
         }
 
@@ -63,13 +72,13 @@ namespace Weapons
             _nextTimeToFire = Time.time + 60f / gunFireRate;
             _currentAmmo--;
             
-            _weaponInstance.PlayMuzzleFlash();
-            _weaponInstance.PlayShootSound();
+            _gunInstance.PlayMuzzleFlash();
+            _gunInstance.PlayShootSound();
             
             Debug.Log("You fired a bullet! You have " + _currentAmmo + " bullets left!");
 
             RaycastHit hit;
-            Ray ray = _weaponInstance.GetFireRay();
+            Ray ray = _gunInstance.GetFireRay();
             
             if (Physics.Raycast(ray, out hit, gunRange))
             {
@@ -85,9 +94,9 @@ namespace Weapons
             if (!_isReloading && _currentAmmo < defaultMaxAmmo && _totalAmmo > 0)
             {
                 _isReloading = true;
-                _weaponInstance.PlayReloadSound();
+                _gunInstance.PlayReloadSound();
 
-                _weaponInstance.StartCoroutine(ReloadCoroutine());
+                _gunInstance.StartCoroutine(ReloadCoroutine());
             } 
         }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Weapons
 {
-    public class WeaponInstance : MonoBehaviour
+    public class GunInstance : MonoBehaviour
     {
         [Header("Effects")]
         public ParticleSystem muzzleFlash;

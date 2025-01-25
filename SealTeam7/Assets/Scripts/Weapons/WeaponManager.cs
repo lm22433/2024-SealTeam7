@@ -4,115 +4,119 @@ namespace Weapons
 {
     public class WeaponManager : MonoBehaviour
     {
-        [Header("Weapons")]
-        public GunWeapon primaryWeapon;
-        public GunWeapon secondaryWeapon;
+        [Header("Guns")]
+        public Gun.Gun primaryWeapon;
+        public Gun.Gun secondaryWeapon;
+        
+        [Header("Melee Weapon")]
         public MeleeWeapon meleeWeapon;
-
-        private Weapon _currentWeapon;
-        private GameObject _currentWeaponInstance;
         
         [Header("References")]
         [SerializeField] private Transform weaponHolder;
-    
+
+        private Gun.Gun _currentGun;
+        private GameObject _currentGunInstance;
+        
         private void Start()
         {
             EquipWeapon(primaryWeapon);
         }
 
-        public void EquipWeapon(Weapon weapon)
+        public void EquipWeapon(Gun.Gun gun)
         {
-            if (weapon == null)
+            if (gun == null)
             {
                 Debug.LogWarning("Attempted to equip a null weapon. This should never happen.");
                 return;
             }
 
-            if (weapon == _currentWeapon)
+            if (gun == _currentGun)
             {
                 return;
             }
 
-            if (_currentWeaponInstance != null)
+            if (_currentGunInstance != null)
             {
-                Destroy(_currentWeaponInstance);
+                Destroy(_currentGunInstance);
             }
 
             // Instantiate the new weapon model
-            _currentWeaponInstance = Instantiate(weapon.weaponModel, weaponHolder);
-            _currentWeaponInstance.transform.localPosition = weapon.spawnPosition;
-            _currentWeaponInstance.transform.localEulerAngles = weapon.spawnRotation;
+            _currentGunInstance = Instantiate(gun.gunModel, weaponHolder);
+            _currentGunInstance.transform.localPosition = gun.spawnPosition;
+            _currentGunInstance.transform.localEulerAngles = gun.spawnRotation;
 
-            _currentWeapon = weapon;
+            _currentGun = gun;
             
-            // Initialize gun-specific features
-            if (_currentWeapon is GunWeapon gun)
+            GunInstance instance = _currentGunInstance.GetComponent<GunInstance>();
+            if (instance == null)
             {
-                WeaponInstance instance = _currentWeaponInstance.GetComponent<WeaponInstance>();
-                if (instance == null)
-                {
-                    Debug.LogError("Weapon model prefab is missing WeaponInstance component!");
-                    return;
-                }
-                gun.Initialize(instance);
+                Debug.LogError("Weapon model prefab is missing WeaponInstance component!");
+                return;
             }
+            gun.Initialize(instance);
         }
 
 
         private void Update()
         {
-            switch (_currentWeapon)
+            if (_currentGun is Gun.Gun gun)
             {
-                case GunWeapon gun:
+                if (Input.GetButtonDown("Reload"))
                 {
-                    if (Input.GetButtonDown("Reload"))
-                    {
-                        gun.TryReload();
-                    }
-
-                    if (gun.isAutomatic)
-                    {
-                        if (Input.GetButton("Shoot1") || Input.GetAxis("Shoot2") > 0.5f)
-                        {
-                            gun.Attack();
-                        }
-                    }
-                    else
-                    {
-                        // TODO: Implement semi automatic trigger
-                        if (Input.GetButtonDown("Shoot1"))
-                        {
-                            gun.Attack();
-                        }
-                    }
-
-                    break;
+                    gun.TryReload();
                 }
-                case MeleeWeapon melee:
-                {
-                    if (Input.GetButtonDown("Shoot"))
-                    {
-                        melee.Attack();
-                    }
 
-                    break;
+                if (gun.isAutomatic)
+                {
+                    if (Input.GetButton("Shoot1") || Input.GetAxis("Shoot2") > 0.5f)
+                    {
+                        gun.Attack();
+                    }
+                }
+                else
+                {
+                    // TODO: Implement semi automatic trigger
+                    if (Input.GetButtonDown("Shoot1"))
+                    {
+                        gun.Attack();
+                    }
                 }
             }
+            
+            // Button to Melee
+            if (Input.GetButtonDown("Melee"))
+            {
+                meleeWeapon.Attack();
+            }
 
+            // Scroll Wheel to Swap Weapons
+            if (Input.GetAxis("Mouse ScrollWheel") != 0.0f)
+            {
+                SwapWeapon();
+            }
+            
+            // Button to Swap Weapons
+            if (Input.GetButtonDown("SwapWeapon"))
+            {
+                SwapWeapon();
+            }
+            
+            // Button to Change to Primary Weapon
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 EquipWeapon(primaryWeapon);
             }
             
+            // Button to Change to Secondary Weapon
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 EquipWeapon(secondaryWeapon);
             }
-            
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                EquipWeapon(meleeWeapon);
-            }
+        }
+        
+        private void SwapWeapon ()
+        {
+            EquipWeapon(_currentGun == primaryWeapon ? secondaryWeapon : primaryWeapon);
         }
     }
 }

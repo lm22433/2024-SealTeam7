@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a24a7889adf4c67b537ff752883fe74, type: 3}
   m_Name: Assault Rifle
   m_EditorClassIdentifier: 
-  weaponName: Assault Rifle
-  weaponModel: {fileID: 3773515458589958960, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
+  gunName: Assault Rifle
+  gunDescription: 
+  gunModel: {fileID: 3773515458589958960, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
   spawnPosition: {x: 0.45, y: -0.25, z: 0.9}
   spawnRotation: {x: 0, y: 0, z: 0}
   isAutomatic: 1
