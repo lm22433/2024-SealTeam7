@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd5d36db2f63420b8c7564cc743b8c85, type: 3}
   m_Name: Knife
   m_EditorClassIdentifier: 
-  weaponName: Knife
-  weaponType: 1
-  weaponModel: {fileID: 4204588182932001324, guid: 864fa3fe3663b412796ee9271e58d73a, type: 3}
+  meleeName: Knife
+  meleeDescription: 
+  meleeModel: {fileID: 4204588182932001324, guid: 864fa3fe3663b412796ee9271e58d73a, type: 3}
   spawnPosition: {x: 0.45, y: -0.25, z: 0.9}
   spawnRotation: {x: 45, y: 0, z: 0}
   meleeDamage: 20
