@@ -3,6 +3,13 @@ using UnityEngine;
 
 namespace Weapons.Gun
 {
+    public enum FireMode
+    {
+        SemiAutomatic,
+        Automatic,
+        Burst
+    }
+    
     [CreateAssetMenu(fileName = "Gun", menuName = "Weapons/Gun", order = 0)]
     public class Gun : ScriptableObject
     {
@@ -15,8 +22,8 @@ namespace Weapons.Gun
         public Vector3 spawnPosition;
         public Vector3 spawnRotation;
         
-        [Header("Settings")]
-        public bool isAutomatic;
+        [Header("Gun Settings")]
+        public FireMode fireMode;
         public float gunDamage = 10f;
         public float gunRange = 100f;
         public float gunFireRate = 10f;

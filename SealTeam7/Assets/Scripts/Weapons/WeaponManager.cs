@@ -1,4 +1,5 @@
 using UnityEngine;
+using Weapons.Gun;
 
 namespace Weapons
 {
@@ -16,6 +17,8 @@ namespace Weapons
 
         private Gun.Gun _currentGun;
         private GameObject _currentGunInstance;
+        
+        private float _previousTriggerValue;
         
         private void Start()
         {
@@ -59,55 +62,59 @@ namespace Weapons
 
         private void Update()
         {
-            if (_currentGun is Gun.Gun gun)
+            switch (_currentGun.fireMode)
             {
-                if (Input.GetButtonDown("Reload"))
-                {
-                    gun.TryReload();
-                }
-
-                if (gun.isAutomatic)
+                case FireMode.Automatic:
                 {
                     if (Input.GetButton("Shoot1") || Input.GetAxis("Shoot2") > 0.5f)
                     {
-                        gun.Attack();
+                        _currentGun.Attack();
                     }
+
+                    break;
                 }
-                else
+                case FireMode.SemiAutomatic:
                 {
-                    // TODO: Implement semi automatic trigger
-                    if (Input.GetButtonDown("Shoot1"))
+                    if (Input.GetButtonDown("Shoot1") || TriggerPressed())
                     {
-                        gun.Attack();
+                        _currentGun.Attack();
                     }
+
+                    break;
                 }
             }
             
-            // Button to Melee
+            // Reloading
+            if (Input.GetButtonDown("Reload"))
+            {
+                _currentGun.TryReload();
+            }
+            
+            // Melee Attack
             if (Input.GetButtonDown("Melee"))
             {
                 meleeWeapon.Attack();
             }
 
-            // Scroll Wheel to Swap Weapons
+            // Scrolling to Swap Weapons
             if (Input.GetAxis("Mouse ScrollWheel") != 0.0f)
             {
                 SwapWeapon();
             }
             
-            // Button to Swap Weapons
+            // Swap Weapons
             if (Input.GetButtonDown("SwapWeapon"))
             {
                 SwapWeapon();
             }
             
-            // Button to Change to Primary Weapon
+            // Equip Primary Weapon
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 EquipWeapon(primaryWeapon);
             }
             
-            // Button to Change to Secondary Weapon
+            // Equip Primary Secondary Weapon
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 EquipWeapon(secondaryWeapon);
@@ -117,6 +124,15 @@ namespace Weapons
         private void SwapWeapon ()
         {
             EquipWeapon(_currentGun == primaryWeapon ? secondaryWeapon : primaryWeapon);
+        }
+        
+        private bool TriggerPressed()
+        {
+            float triggerThreshold = 0.5f;
+            float triggerValue = Input.GetAxis("Shoot2");
+            bool wasPressed = _previousTriggerValue <= triggerThreshold && triggerValue > triggerThreshold;
+            _previousTriggerValue = triggerValue;
+            return wasPressed;
         }
     }
 }
