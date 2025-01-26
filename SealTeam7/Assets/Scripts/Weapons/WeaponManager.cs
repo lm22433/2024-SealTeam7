@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Weapons.Gun;
 
 namespace Weapons
@@ -17,6 +18,7 @@ namespace Weapons
 
         private Gun.Gun _currentGun;
         private GameObject _currentGunInstance;
+        private bool _isAiming;
         
         private float _previousTriggerValue;
         
@@ -57,6 +59,8 @@ namespace Weapons
                 return;
             }
             gun.Initialize(instance);
+
+            _isAiming = false;
         }
 
 
@@ -82,6 +86,15 @@ namespace Weapons
 
                     break;
                 }
+            }
+            
+            // Aiming
+            if ((Input.GetButton("ADS1") || Input.GetAxis("ADS2") > 0.5f) && !_isAiming)
+            {
+                StartAiming();
+            } else if ((!Input.GetButton("ADS1") && Input.GetAxis("ADS2") <= 0.5f) && _isAiming)
+            {
+                StopAiming();
             }
             
             // Reloading
@@ -121,6 +134,18 @@ namespace Weapons
             }
         }
         
+        private void StartAiming() 
+        {
+            _isAiming = true;
+            Debug.Log("Started Aiming");
+        }
+
+        private void StopAiming()
+        {
+            _isAiming = false;
+            Debug.Log("Stopped Aiming");
+        }
+        
         private void SwapWeapon ()
         {
             EquipWeapon(_currentGun == primaryWeapon ? secondaryWeapon : primaryWeapon);
@@ -133,6 +158,16 @@ namespace Weapons
             bool wasPressed = _previousTriggerValue <= triggerThreshold && triggerValue > triggerThreshold;
             _previousTriggerValue = triggerValue;
             return wasPressed;
+        }
+        
+        public bool IsPrimaryWeaponEquipped()
+        {
+            return _currentGun == primaryWeapon;
+        }
+        
+        public bool IsSecondaryWeaponEquipped()
+        {
+            return _currentGun == secondaryWeapon;
         }
     }
 }
