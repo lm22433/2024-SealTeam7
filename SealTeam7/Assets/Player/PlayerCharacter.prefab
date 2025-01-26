@@ -859,6 +859,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4394227876815751589}
+  - component: {fileID: 1652145623499674596}
   - component: {fileID: 3422467509229774557}
   m_Layer: 0
   m_Name: WeaponHolder
@@ -882,6 +883,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6253553088981420950}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1652145623499674596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7393633358596136717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2498eb054ac4780835ce79090f540c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  primaryWeapon: {fileID: 11400000, guid: d86cdb4b4c24e4393b607878c80dff98, type: 2}
+  secondaryWeapon: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
+  meleeWeapon: {fileID: 11400000, guid: 8401cc4816f964473973601e1e5427fa, type: 2}
+  weaponHolder: {fileID: 4394227876815751589}
 --- !u!114 &3422467509229774557
 MonoBehaviour:
   m_ObjectHideFlags: 0
