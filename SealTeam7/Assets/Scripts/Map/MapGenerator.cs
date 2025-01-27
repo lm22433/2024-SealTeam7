@@ -12,6 +12,7 @@ namespace Map
         public ushort chunkSize;
         public float heightScale;
         public float lerpFactor;
+        public ushort lodSwitchDistance;
     }
     
     public class MapGenerator : MonoBehaviour {
@@ -19,7 +20,7 @@ namespace Map
         [SerializeField] private GameObject chunkPrefab;
         [SerializeField] private GameObject player;
         private NoiseGenerator _noise;
-        private List<ChunkGenerator> _chunks;
+        private List<Chunk> _chunks;
         private float _spacing;
         private ushort _chunkRow;
         private ushort _chunkWithPlayer;
@@ -27,29 +28,28 @@ namespace Map
         private void Awake()
         {
             _chunkRow = (ushort) math.sqrt(settings.chunks);
-            _chunks = new List<ChunkGenerator>(_chunkRow);
+            _chunks = new List<Chunk>(_chunkRow);
             
             _noise = GetComponent<NoiseGenerator>();
-            
-            var prefabScript = chunkPrefab.GetComponent<ChunkGenerator>();
             _spacing = ((float) settings.size / _chunkRow / settings.chunkSize);
             
             ChunkSettings chunkSettings = new ChunkSettings
             {
-                size = (ushort) (settings.chunkSize + 2),
+                size = settings.chunkSize,
                 spacing = _spacing,
                 heightScale = settings.heightScale,
                 lerpFactor = settings.lerpFactor,
-                hasPlayer = false
+                hasPlayer = false,
+                lodFactor = 4
             };
 
-            _noise.StartNoise(settings.size + 2, settings.chunkSize);
-            prefabScript.SetSettings(chunkSettings);
+            _noise.StartNoise(settings.size, settings.chunkSize);
+            chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
             
             for (float x = 0; x < settings.size; x += settings.chunkSize * _spacing) {
                 for (float z = 0; z < settings.size; z += settings.chunkSize * _spacing)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<ChunkGenerator>();
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<Chunk>();
                     chunkSettings.x = (ushort) (x / (settings.chunkSize * _spacing));
                     chunkSettings.z = (ushort) (z / (settings.chunkSize * _spacing));
                     chunk.SetSettings(chunkSettings);
@@ -58,13 +58,24 @@ namespace Map
             }
             
             _chunks[_chunkWithPlayer].SetPlayer(true);
+            _chunks[_chunkWithPlayer].SetLod(0);
         }
 
-        private void MoveChunk(ushort newChunkWithPlayer)
+        private void UpdateChunkLods(ushort newChunkWithPlayer)
         {
+            /*
+            foreach (var chunk in _chunks)
+            {
+                Vector3.SqrMagnitude(chunk.transform.position - player.transform.position);
+                chunk.SetLod(0);
+            }
+            */
+            
             _chunks[_chunkWithPlayer].SetPlayer(false);
+            _chunks[_chunkWithPlayer].SetLod(2);
             _chunkWithPlayer = newChunkWithPlayer;
             _chunks[_chunkWithPlayer].SetPlayer(true);
+            _chunks[_chunkWithPlayer].SetLod(0);
         }
 
         private void Update()
@@ -72,7 +83,7 @@ namespace Map
             var playerPos = player.transform.position;
             var x = (ushort) Mathf.Floor(playerPos.x / (settings.chunkSize * _spacing));
             var z = (ushort) Mathf.Floor(playerPos.z / (settings.chunkSize * _spacing));
-            if (x * _chunkRow + z != _chunkWithPlayer) MoveChunk((ushort) (x * _chunkRow + z));
+            if (x * _chunkRow + z != _chunkWithPlayer) UpdateChunkLods((ushort) (x * _chunkRow + z));
         }
     }
 }
