@@ -23,12 +23,13 @@ public class AdvancedMovement : MonoBehaviour
     [SerializeField] private float crouchSpeed;
     private bool grounded;
 
-    [Header("Aerial")]
+    [Header("Arial")]
     [SerializeField] private float jumpForce;
     [SerializeField] private float jumpCooldown;
     [SerializeField] private float airMultiplier;
     [SerializeField] private float airRes;
     [SerializeField] private float boostForce;
+    private Vector3 momentum;
 
     [Header("Keybinds")]
     [SerializeField] private string jumpKey = "Jump";
@@ -171,6 +172,9 @@ public class AdvancedMovement : MonoBehaviour
             else if(curState == State.sprintAir) {
                 curState = State.sprinting;
             }
+            else if(curState == State.airCrouch) {
+                curState = State.crouching;
+            }
         }
 
         //Sprinting
@@ -298,6 +302,10 @@ public class AdvancedMovement : MonoBehaviour
         moveDir = orientation.forward * verInput + orientation.right * horInput;
         moveDir = moveDir.normalized;
 
+        if(grounded) {
+            momentum = moveDir;
+        }
+
         //physically move player
         if(OnSlope() && !exitingSlope) {
             rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 10.0f, ForceMode.Force);
@@ -311,7 +319,7 @@ public class AdvancedMovement : MonoBehaviour
             rb.AddForce(moveDir * moveSpeed * 10.0f, ForceMode.Force);   
         }
         else {
-            rb.AddForce((moveDir + orientation.forward).normalized * moveSpeed * 10.0f * airMultiplier, ForceMode.Force);
+            rb.AddForce((moveDir + momentum).normalized * moveSpeed * 10.0f * airMultiplier, ForceMode.Force);
         }
 
         //bit jank but turn off gravity when on slope
