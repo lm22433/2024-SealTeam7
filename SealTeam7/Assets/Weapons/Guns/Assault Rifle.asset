@@ -26,4 +26,4 @@ MonoBehaviour:
   defaultTotalAmmo: 120
   gunSprite: {fileID: 21300000, guid: 0c8205df033f14ac5b6db5991a53c36b, type: 3}
   spriteScale: {x: 256, y: 256}
-  spritePosition: {x: -828.4, y: -460, z: 0}
+  spritePosition: {x: -828.4, y: -375, z: 0}
