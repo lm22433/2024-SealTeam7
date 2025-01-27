@@ -41,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slideForce;
     private float slideTimer;
     private bool sliding;
+    private bool readyToSlide;
     private Vector3 slideDir;
 
     [Header("Aiming")]
@@ -72,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
         crouched = false;
         exitingSlope = false;
         sliding = false;
+        readyToSlide = false;
 
         slideTimer = 0;
 
@@ -174,11 +176,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Sliding
-        if(Input.GetButtonDown(crouchKey) && verInput > 0 && horInput == 0 && sprinting && !sliding) {
+        if(Input.GetButtonDown(crouchKey) && verInput > 0 && horInput == 0 && sprinting && !sliding && grounded) {
             StartSlide();
         }
         else if(Input.GetButtonDown(crouchKey) && sliding) {
             StopSlide();
+        }
+        else if(Input.GetButtonDown(crouchKey) && !grounded && sprinting && !readyToSlide) {
+            readyToSlide = true;
+        }
+        else if(Input.GetButtonDown(crouchKey) && !grounded && sprinting && !readyToSlide) {
+            readyToSlide = false;
+        }
+
+        if(readyToSlide) {
+            StartSlide();
         }
 
         //check if grounded
@@ -295,6 +307,7 @@ public class PlayerMovement : MonoBehaviour
     {
         sliding = true;
         crouched = true;
+        readyToSlide = false;
 
         slideDir = orientation.forward.normalized;
 
@@ -313,7 +326,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void SlidingMovement()
     {
-        if(OnSlope() && !exitingSlope) {
+        if(OnSlope() && !exitingSlope) {            
             rb.AddForce(GetSlopeSlideDirection() * slideForce * 10.0f * (slideTimer / maxSlideTime), ForceMode.Force);
 
             //stops bouncing up slopes
