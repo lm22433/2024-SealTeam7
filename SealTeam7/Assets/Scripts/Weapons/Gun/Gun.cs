@@ -32,6 +32,11 @@ namespace Weapons.Gun
         public int defaultMaxAmmo = 30;
         public float gunReloadTime = 2f;
         public int defaultTotalAmmo = 210;
+
+        [Header("HUD Settings")] 
+        public Sprite gunSprite;
+        public Vector2 spriteScale;
+        public Vector3 spritePosition;
         
         [System.NonSerialized] private bool _isReloading;
         [System.NonSerialized] private float _nextTimeToFire;
