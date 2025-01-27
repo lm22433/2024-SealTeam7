@@ -147,7 +147,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Sprinting
-        if(Input.GetButtonDown(sprintKey) && !sprinting) {
+        if(Input.GetButtonDown(sprintKey) && !sprinting && !crouched) {
             sprinting = !sprinting;
         }
         if (verInput < 0 && grounded && !sliding) {
@@ -217,7 +217,7 @@ public class PlayerMovement : MonoBehaviour
                 rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
             }
         }
-        else {
+        else if(grounded || !sprinting){
             Vector3 vel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             // limit velocity if needed
             if(vel.magnitude > moveSpeed)
@@ -264,6 +264,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void BoostJump()
     {
+        exitingSlope = true;
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         moveDir = orientation.forward*verInput + orientation.up + orientation.right * horInput;
         rb.AddForce(moveDir.normalized * boostForce, ForceMode.Impulse);
@@ -331,6 +332,9 @@ public class PlayerMovement : MonoBehaviour
         }
         if(!grounded) {
             StopSlide();
+            readyToJump = false;
+
+            Invoke(nameof(ResetJump), jumpCooldown);
         }
     }
 
