@@ -48,14 +48,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 27
-    spacing: 4
-    heightScale: 25
+    size: 120
+    spacing: 2
+    heightScale: 20
     lerpFactor: 1
     x: 0
     z: 0
-    hasPlayer: 0
-  heightMap: []
+    lod: 0
 --- !u!33 &5746010189181975162
 MeshFilter:
   m_ObjectHideFlags: 0

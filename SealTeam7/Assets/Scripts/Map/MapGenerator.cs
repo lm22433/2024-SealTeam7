@@ -6,13 +6,21 @@ using Unity.Mathematics;
 namespace Map
 {
     [Serializable]
+    public struct LOD
+    {
+        public float maxViewDistance;
+        public ushort lod;
+    }
+    
+    [Serializable]
     public struct MapSettings {
         public ushort size;
         public ushort chunks;
         public ushort chunkSize;
         public float heightScale;
         public float lerpFactor;
-        public ushort lodSwitchDistance;
+        public LOD[] lodLevels;
+        public float playerMoveThreshold;
     }
     
     public class MapGenerator : MonoBehaviour {
@@ -23,10 +31,13 @@ namespace Map
         private List<Chunk> _chunks;
         private float _spacing;
         private ushort _chunkRow;
-        private ushort _chunkWithPlayer;
+        private float _sqrPlayerMoveThreshold;
+        private Vector2 _playerPosition;
+        private Vector2 _playerPositionOld;
     
         private void Awake()
         {
+            _sqrPlayerMoveThreshold = settings.playerMoveThreshold * settings.playerMoveThreshold;
             _chunkRow = (ushort) math.sqrt(settings.chunks);
             _chunks = new List<Chunk>(_chunkRow);
             
@@ -39,8 +50,7 @@ namespace Map
                 spacing = _spacing,
                 heightScale = settings.heightScale,
                 lerpFactor = settings.lerpFactor,
-                hasPlayer = false,
-                lodFactor = 4
+                lod = settings.lodLevels[^1].lod
             };
 
             _noise.StartNoise(settings.size, settings.chunkSize);
@@ -49,7 +59,7 @@ namespace Map
             for (float x = 0; x < settings.size; x += settings.chunkSize * _spacing) {
                 for (float z = 0; z < settings.size; z += settings.chunkSize * _spacing)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<Chunk>();
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x - 0.5f * settings.size, 0f, z - 0.5f * settings.size), Quaternion.identity, transform).GetComponent<Chunk>();
                     chunkSettings.x = (ushort) (x / (settings.chunkSize * _spacing));
                     chunkSettings.z = (ushort) (z / (settings.chunkSize * _spacing));
                     chunk.SetSettings(chunkSettings);
@@ -57,33 +67,38 @@ namespace Map
                 }
             }
             
-            _chunks[_chunkWithPlayer].SetPlayer(true);
-            _chunks[_chunkWithPlayer].SetLod(0);
+            UpdateChunkLods();
         }
 
-        private void UpdateChunkLods(ushort newChunkWithPlayer)
+        private void UpdateChunkLods()
         {
-            /*
             foreach (var chunk in _chunks)
             {
-                Vector3.SqrMagnitude(chunk.transform.position - player.transform.position);
-                chunk.SetLod(0);
+                var chunkPosition = new Vector2(chunk.transform.position.x, chunk.transform.position.z);
+                var playerOffset = (chunkPosition - _playerPosition).SqrMagnitude();
+
+                if (playerOffset > settings.lodLevels[^1].maxViewDistance) chunk.SetVisible(false);
+                
+                foreach (var lod in settings.lodLevels)
+                {
+                    if (playerOffset <= lod.maxViewDistance * lod.maxViewDistance)
+                    {
+                        chunk.SetVisible(true);
+                        chunk.SetLod(lod.lod);
+                        break;
+                    }
+                }
             }
-            */
-            
-            _chunks[_chunkWithPlayer].SetPlayer(false);
-            _chunks[_chunkWithPlayer].SetLod(2);
-            _chunkWithPlayer = newChunkWithPlayer;
-            _chunks[_chunkWithPlayer].SetPlayer(true);
-            _chunks[_chunkWithPlayer].SetLod(0);
         }
 
         private void Update()
         {
-            var playerPos = player.transform.position;
-            var x = (ushort) Mathf.Floor(playerPos.x / (settings.chunkSize * _spacing));
-            var z = (ushort) Mathf.Floor(playerPos.z / (settings.chunkSize * _spacing));
-            if (x * _chunkRow + z != _chunkWithPlayer) UpdateChunkLods((ushort) (x * _chunkRow + z));
+            _playerPosition = player.transform.position;
+            if ((_playerPositionOld - _playerPosition).SqrMagnitude() > _sqrPlayerMoveThreshold)
+            {
+                _playerPositionOld = _playerPosition;
+                UpdateChunkLods();
+            }
         }
     }
 }

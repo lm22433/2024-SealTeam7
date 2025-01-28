@@ -15,33 +15,45 @@ namespace Map
         public float lerpFactor;
         public ushort x;
         public ushort z;
-        public bool hasPlayer;
-        public int lodFactor;
+        public ushort lod;
     }
 
     public class Chunk : MonoBehaviour {
         
         [SerializeField] private ChunkSettings settings;
+        private int _lodFactor;
         private NativeArray<float3> _vertices;
         private float[] _heightMap;
         private int _vertexSideCount;
         private Mesh _mesh;
         private MeshCollider _meshCollider;
+        private MeshFilter _meshFilter;
         private NoiseGenerator _noiseGenerator;
+        private Bounds _bounds;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
-        public void SetPlayer(bool p) { settings.hasPlayer = p; }
-        public void SetLod(int lod)
+        
+        public void SetLod(ushort lod)
         {
-            settings.lodFactor = lod == 0 ? 1 : lod * 2;
-            _vertexSideCount = settings.size / settings.lodFactor + 1;
+            settings.lod = lod;
+            _lodFactor = lod == 0 ? 1 : lod * 2;
+            _vertexSideCount = settings.size / _lodFactor + 1;
             _heightMap = new float[_vertexSideCount * _vertexSideCount];
-            UpdateMesh();
+            _meshCollider.enabled = lod == 0;
+            if (_mesh) UpdateMesh();
+        }
+
+        public void SetVisible(bool visible)
+        {
+            _meshFilter.sharedMesh = visible ? _mesh : null;
         }
         
         private void Awake()
         {
-            _vertexSideCount = settings.size / settings.lodFactor + 1;
+            //TODO: use Bounds object to calculate player distance
+            //_bounds = new Bounds(transform.position, Vector2.one * settings.size);
+            _lodFactor = 1;
+            _vertexSideCount = settings.size / _lodFactor + 1;
             _vertices = new NativeArray<float3>(_vertexSideCount * _vertexSideCount, Allocator.Persistent);
             
             _mesh = new Mesh {name = "Generated Mesh"};
@@ -49,9 +61,11 @@ namespace Map
             
             UpdateMesh();
             
-            GetComponent<MeshFilter>().sharedMesh = _mesh;
+            _meshFilter = GetComponent<MeshFilter>();
+            _meshFilter.sharedMesh = _mesh;
             _meshCollider = GetComponent<MeshCollider>();
             _meshCollider.sharedMesh = _mesh;
+            _meshCollider.enabled = false;
             
             _heightMap = new float[_vertexSideCount * _vertexSideCount];
             _noiseGenerator = GetComponentInParent<NoiseGenerator>();
@@ -64,7 +78,7 @@ namespace Map
 
         private void UpdateHeights()
         {
-            _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lodFactor, settings.z, settings.x);
+            _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.z, settings.x);
             var heights = new NativeArray<float>(_heightMap, Allocator.TempJob);
             
             var heightUpdate = new HeightUpdate {
@@ -78,23 +92,15 @@ namespace Map
             _mesh.SetVertices(_vertices);
             _mesh.RecalculateNormals();
             _mesh.RecalculateBounds();
-            
-            if (settings.hasPlayer)
-            {
-                _meshCollider.enabled = true;
-                _meshCollider.sharedMesh = _mesh;
-            }
-            else
-            {
-                _meshCollider.enabled = false;
-            }
+
+            if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
             
             heights.Dispose();
         }
 
         private void UpdateMesh() {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var numberOfTriangles = (settings.size / settings.lodFactor) * (settings.size / settings.lodFactor) * 6;
+            var numberOfTriangles = (settings.size / _lodFactor) * (settings.size / _lodFactor) * 6;
 
             _vertices.Dispose();
             _vertices = new NativeArray<float3>(numberOfVertices, Allocator.Persistent);
@@ -104,7 +110,8 @@ namespace Map
             {
                 Vertices = _vertices,
                 VertexSideCount = _vertexSideCount,
-                Spacing = settings.spacing * settings.lodFactor
+                Spacing = settings.spacing * _lodFactor,
+                Size = settings.size
             }.Schedule(numberOfVertices, 1);
 
             var meshTriangleUpdate = new MeshTriangleUpdate
@@ -123,15 +130,6 @@ namespace Map
             //_mesh.RecalculateTangents();
             
             triangles.Dispose();
-        }
-        
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.cyan;
-            foreach (var v in _vertices)
-            {
-                Gizmos.DrawSphere(v, 0.1f);
-            }
         }
     }
 
@@ -158,6 +156,7 @@ namespace Map
         public NativeArray<float3> Vertices;
         public int VertexSideCount;
         public float Spacing;
+        public int Size;
         
         public void Execute(int index)
         {
