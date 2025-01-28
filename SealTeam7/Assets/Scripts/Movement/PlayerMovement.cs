@@ -1,3 +1,4 @@
+using Input;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -112,11 +113,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void MoveInput()
     {
-        horInput = Input.GetAxisRaw("Horizontal");
-        verInput = Input.GetAxisRaw("Vertical");
+        Vector2 moveInput = InputController.GetInstance().GetMoveInput();
+        horInput = moveInput.x;
+        verInput = moveInput.y;
 
         //Jumping
-        if(Input.GetButtonDown(jumpKey) && crouched && grounded && !sliding) {
+        if(InputController.GetInstance().GetJumpInput() && crouched && grounded && !sliding) {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
             rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
@@ -125,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
             readyToJump = false;
             Invoke(nameof(ResetJump), jumpCooldown);
         }
-        else if(Input.GetButtonDown(jumpKey) && readyToJump && grounded && sliding) {
+        else if(InputController.GetInstance().GetJumpInput() && readyToJump && grounded && sliding) {
             readyToJump = false;
             Jump();
 
@@ -135,19 +137,19 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
-        else if(Input.GetButtonDown(jumpKey) && readyToJump && grounded) {
+        else if(InputController.GetInstance().GetJumpInput() && readyToJump && grounded) {
             readyToJump = false;
             Jump();
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
-        else if(Input.GetButtonDown(jumpKey) && !grounded && doubleJumpReady) {
+        else if(InputController.GetInstance().GetJumpInput() && !grounded && doubleJumpReady) {
             doubleJumpReady = false;
             BoostJump();
         }
 
         //Sprinting
-        if(Input.GetButtonDown(sprintKey) && !sprinting) {
+        if(InputController.GetInstance().GetSprintInput() && !sprinting) {
             sprinting = !sprinting;
         }
         if (verInput < 0 && grounded && !sliding) {
@@ -158,13 +160,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Crouching
-        if(Input.GetButtonDown(crouchKey) && !crouched && !sprinting) {
+        if(InputController.GetInstance().GetCrouchInput() && !crouched && !sprinting) {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
             crouched = true;
             sprinting = false;
         }
-        else if(Input.GetButtonDown(crouchKey) && crouched) {
+        else if(InputController.GetInstance().GetCrouchInput() && crouched) {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             if(grounded) {
                 rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
@@ -174,10 +176,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Sliding
-        if(Input.GetButtonDown(crouchKey) && verInput > 0 && horInput == 0 && sprinting && !sliding) {
+        if(InputController.GetInstance().GetCrouchInput() && verInput > 0 && horInput == 0 && sprinting && !sliding) {
             StartSlide();
         }
-        else if(Input.GetButtonDown(crouchKey) && sliding) {
+        else if(InputController.GetInstance().GetCrouchInput() && sliding) {
             StopSlide();
         }
 

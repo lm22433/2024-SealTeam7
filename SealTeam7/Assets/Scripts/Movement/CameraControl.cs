@@ -1,46 +1,49 @@
+using Input;
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
-public class CameraControl : MonoBehaviour
+namespace Movement
 {
-
-    [SerializeField] private float sensitivityX;
-    [SerializeField] private float sensitivityY;
-    [SerializeField] private Transform orientation;
-    private float xRotation;
-    private float yRotation;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Start()
+    public class CameraControl : MonoBehaviour
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        //mouse inputs
-        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensitivityX;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensitivityY;
+        [SerializeField] private float sensitivityX;
+        [SerializeField] private float sensitivityY;
+        [SerializeField] private Transform orientation;
+        private float _xRotation;
+        private float _yRotation;
 
-        yRotation += mouseX;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        if (yRotation > 360f) {
-            yRotation -= 360f;
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        private void Start()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
-        if (yRotation < -360f) {
-            yRotation += 360f;
-        }
+        // Update is called once per frame
+        private void Update()
+        {
+            // Look Input
+            Vector2 lookInput = InputController.GetInstance().GetLookInput();
+            float x = lookInput.x * Time.deltaTime * sensitivityX;
+            float y = lookInput.y * Time.deltaTime * sensitivityY;
 
-        //rotate the camera
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+            _yRotation += x;
+
+            _xRotation -= y;
+            _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
+
+            if (_yRotation > 360f) {
+                _yRotation -= 360f;
+            }
+
+            if (_yRotation < -360f) {
+                _yRotation += 360f;
+            }
+
+            //rotate the camera
+            transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
+            orientation.rotation = Quaternion.Euler(0, _yRotation, 0);
+        }
     }
 }

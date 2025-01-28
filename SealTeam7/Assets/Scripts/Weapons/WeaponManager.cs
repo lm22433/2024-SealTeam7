@@ -1,3 +1,4 @@
+using Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Weapons.Gun;
@@ -70,65 +71,65 @@ namespace Weapons
             {
                 case FireMode.Automatic:
                 {
-                    if (Input.GetButton("Shoot1") || Input.GetAxis("Shoot2") > 0.5f)
+                    if (InputController.GetInstance().GetShootInputHeld())
                     {
                         _currentGun.Attack();
                     }
-
+            
                     break;
                 }
                 case FireMode.SemiAutomatic:
                 {
-                    if (Input.GetButtonDown("Shoot1") || TriggerPressed())
+                    if (InputController.GetInstance().GetShootInputPressed())
                     {
                         _currentGun.Attack();
                     }
-
+            
                     break;
                 }
             }
             
             // Aiming
-            if ((Input.GetButton("ADS1") || Input.GetAxis("ADS2") > 0.5f) && !_isAiming)
+            if (InputController.GetInstance().GetAimInputHeld() && !_isAiming)
             {
                 StartAiming();
-            } else if ((!Input.GetButton("ADS1") && Input.GetAxis("ADS2") <= 0.5f) && _isAiming)
+            } else if (!InputController.GetInstance().GetAimInputHeld() && _isAiming)
             {
                 StopAiming();
             }
             
             // Reloading
-            if (Input.GetButtonDown("Reload"))
+            if (InputController.GetInstance().GetReloadInput())
             {
                 _currentGun.TryReload();
             }
             
             // Melee Attack
-            if (Input.GetButtonDown("Melee"))
+            if (InputController.GetInstance().GetMeleeInput())
             {
                 meleeWeapon.Attack();
             }
 
             // Scrolling to Swap Weapons
-            if (Input.GetAxis("Mouse ScrollWheel") != 0.0f)
-            {
-                SwapWeapon();
-            }
+            // if (Input.GetAxis("Mouse ScrollWheel") != 0.0f)
+            // {
+            //     SwapWeapon();
+            // }
             
             // Swap Weapons
-            if (Input.GetButtonDown("SwapWeapon"))
+            if (InputController.GetInstance().GetSwapWeaponInput())
             {
                 SwapWeapon();
             }
             
             // Equip Primary Weapon
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (InputController.GetInstance().GetEquipPrimaryInput())
             {
                 EquipWeapon(primaryWeapon);
             }
             
             // Equip Primary Secondary Weapon
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (InputController.GetInstance().GetEquipSecondaryInput())
             {
                 EquipWeapon(secondaryWeapon);
             }
@@ -149,15 +150,6 @@ namespace Weapons
         private void SwapWeapon ()
         {
             EquipWeapon(_currentGun == primaryWeapon ? secondaryWeapon : primaryWeapon);
-        }
-        
-        private bool TriggerPressed()
-        {
-            float triggerThreshold = 0.5f;
-            float triggerValue = Input.GetAxis("Shoot2");
-            bool wasPressed = _previousTriggerValue <= triggerThreshold && triggerValue > triggerThreshold;
-            _previousTriggerValue = triggerValue;
-            return wasPressed;
         }
         
         public bool IsPrimaryWeaponEquipped()
