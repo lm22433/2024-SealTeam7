@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
 
+using Unity.Multiplayer;
+
 namespace Map
 {
     [Serializable]
@@ -23,6 +25,10 @@ namespace Map
     
         private void Awake()
         {
+            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
+                return;
+            }
+
             var chunkRow = (int) math.sqrt(settings.chunks);
             _chunks = new List<ChunkGenerator>(chunkRow);
             
