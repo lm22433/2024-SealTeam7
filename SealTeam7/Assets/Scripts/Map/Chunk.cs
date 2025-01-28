@@ -22,7 +22,6 @@ namespace Map
         
         [SerializeField] private ChunkSettings settings;
         private int _lodFactor;
-        private NativeArray<float3> _vertices;
         private float[] _heightMap;
         private int _vertexSideCount;
         private Mesh _mesh;
@@ -59,7 +58,6 @@ namespace Map
         {
             _lodFactor = 1;
             _vertexSideCount = settings.size / _lodFactor + 1;
-            _vertices = new NativeArray<float3>(_vertexSideCount * _vertexSideCount, Allocator.Persistent);
             
             _mesh = new Mesh {name = "Generated Mesh"};
             _mesh.MarkDynamic();
@@ -87,35 +85,36 @@ namespace Map
         {
             _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.z, settings.x);
             var heights = new NativeArray<float>(_heightMap, Allocator.TempJob);
+            var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
             
             var heightUpdate = new HeightUpdate {
-                Vertices = _vertices,
+                Vertices = vertices,
                 Heights = heights,
                 Scale = settings.maxHeight,
                 LerpFactor = settings.lerpFactor
             }.Schedule(_vertexSideCount * _vertexSideCount, 1);
             heightUpdate.Complete();
             
-            _mesh.SetVertices(_vertices);
+            _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
             _mesh.RecalculateBounds();
 
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
             
-            heights.Dispose();
+            vertices.Dispose(heightUpdate);
+            heights.Dispose(heightUpdate);
         }
 
         private void UpdateMesh() {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
             var numberOfTriangles = (settings.size / _lodFactor) * (settings.size / _lodFactor) * 6;
-
-            _vertices.Dispose();
-            _vertices = new NativeArray<float3>(numberOfVertices, Allocator.Persistent);
+            
+            var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
 
             var meshVertexUpdate = new MeshVertexUpdate
             {
-                Vertices = _vertices,
+                Vertices = vertices,
                 VertexSideCount = _vertexSideCount,
                 Spacing = settings.spacing,
                 Size = settings.size,
@@ -131,13 +130,14 @@ namespace Map
             meshTriangleUpdate.Complete();
             
             _mesh.Clear();
-            _mesh.SetVertices(_vertices);
+            _mesh.SetVertices(vertices);
             _mesh.SetTriangles(triangles.ToArray(), 0);
             _mesh.RecalculateNormals();
             _mesh.RecalculateBounds();
             //_mesh.RecalculateTangents();
-            
-            triangles.Dispose();
+
+            vertices.Dispose(meshVertexUpdate);
+            triangles.Dispose(meshTriangleUpdate);
         }
     }
 
