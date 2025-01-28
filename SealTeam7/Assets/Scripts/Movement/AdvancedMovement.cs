@@ -355,7 +355,7 @@ public class AdvancedMovement : MonoBehaviour
     {
         curState = State.sliding;
 
-        slideDir = orientation.forward.normalized;
+        slideDir = momentum.normalized;
 
         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
         if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);

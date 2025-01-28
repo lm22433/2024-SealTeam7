@@ -1076,8 +1076,8 @@ MonoBehaviour:
     m_Bits: 1024
   playerHeight: 2
   crouchYScale: 0.6
-  maxSlideTime: 1.5
-  slideForce: 5
+  maxSlideTime: 1.7
+  slideForce: 8
   orientation: {fileID: 1256677882820726538}
   maxSlopeAngle: 40
   curState: 0
