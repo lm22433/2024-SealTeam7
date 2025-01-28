@@ -480,6 +480,7 @@ namespace FishNet.Transporting.Tugboat
         /// </summary>
         private bool StartServer()
         {
+            Debug.Log("Starting server" + _port.ToString());
             _server.Initialize(this, _unreliableMtu, _packetLayer, _enableIpv6, _dontRoute);
             UpdateTimeout();
             return _server.StartConnection(_port, _maximumClients, _ipv4BindAddress, _ipv6BindAddress);

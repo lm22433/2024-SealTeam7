@@ -287,11 +287,6 @@ namespace FishNet.Managing
             Initialized = true;
         }
 
-        private void Start()
-        {
-            ServerManager.StartForHeadless();
-        }
-
         private void OnDestroy()
         {
             _instances.Remove(this);
