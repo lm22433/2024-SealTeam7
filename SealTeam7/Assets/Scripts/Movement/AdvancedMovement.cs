@@ -137,6 +137,8 @@ public class AdvancedMovement : MonoBehaviour
             }
             else if(curState == State.sliding && readyToJump) {
 
+                curState = State.sprintAir;
+
                 readyToJump = false;
                 Jump();
 
