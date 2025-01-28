@@ -3,8 +3,11 @@ using System;
 using Microsoft.Azure.Kinect.Sensor;
 
 using UnityEngine.Profiling;
+using FishNet.Object;
+using Unity.Multiplayer;
+using FishNet.Connection;
 
-public class KinectAPI : MonoBehaviour
+public class KinectAPI : NetworkBehaviour
 {
 
     [Header("Depth Calibrations")]
@@ -26,12 +29,17 @@ public class KinectAPI : MonoBehaviour
     private int colourHeight = 0;
 
     private ushort[] depthMapArray;
-    private int dimensions;
+    [SerializeField] private int dimensions;
     private bool running;
-    private int chuckSize;
+    private int chunkSize;
 
-    void Awake()
-    {
+    override public void OnStartServer()
+    {   
+        //base.OnStartServer();
+        if (MultiplayerRolesManager.ActiveMultiplayerRoleMask != MultiplayerRoleFlags.Server) {
+            return;
+        }
+
         if (_MinimumSandDepth > _MaximumSandDepth) {
             Debug.LogError("Minimum depth is greater than maximum depth");
         }
@@ -55,10 +63,11 @@ public class KinectAPI : MonoBehaviour
         this.colourWidth = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
         this.colourHeight = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
 
+        StartKinect();
+
     }
 
-    public void StartKinect(int dimensions) {
-        this.dimensions = dimensions;
+    private void StartKinect() {
         depthMapArray = new ushort[dimensions * dimensions];
 
         running = true;
@@ -70,39 +79,42 @@ public class KinectAPI : MonoBehaviour
         this.kinect.Dispose();
     }
 
-    public void GetChunkTexture(ref ushort[] depths, int chunkX, int chunkY) {
-        float similarity = 0;
+    [TargetRpc]
+    public void GetChunkTexture(NetworkConnection conn, ushort[] depths, int chunkX, int chunkY) {
+        //float similarity = 0;
 
-        int yChunkOffset = chunkY * chuckSize - 1;
-        int xChunkOffset = chunkX * chuckSize - 1;
+        int yChunkOffset = chunkY * chunkSize - 1;
+        int xChunkOffset = chunkX * chunkSize - 1;
 
         //Similarity Check
-        for (int y = 0; y <= chuckSize + 1; y++ ) {
-            for (int x = 0; x <= chuckSize + 1; x++) {
-                var col = depths[y * chuckSize + x];
-                var curr = depthMapArray[(y + yChunkOffset) * chuckSize + xChunkOffset + x];
+        /*
+        for (int y = 0; y <= chunkSize + 1; y++ ) {
+            for (int x = 0; x <= chunkSize + 1; x++) {
+                var col = depths[y * chunkSize + x];
+                var curr = depthMapArray[(y + yChunkOffset) * chunkSize + xChunkOffset + x];
 
                 similarity += Mathf.Pow(Mathf.Abs(col - curr), 2);
             }
         }
 
-        similarity = Mathf.Sqrt(similarity) / chuckSize;
+        similarity = Mathf.Sqrt(similarity) / chunkSize;
 
         if (similarity > _SimilarityThreshold) {
             return;
         }
+        */
 
         //Write changed texture
-        for (int y = (chunkY * chuckSize) - 1; y < (chuckSize * (chunkY + 1)); y++ ) {
-            for (int x = (chunkX * chuckSize) - 1; x < (chuckSize * (chunkX + 1)); x++ ) {
-                depths[y * chuckSize + x] = depthMapArray[(y + yChunkOffset) * chuckSize + xChunkOffset + x];
+        for (int y = (chunkY * chunkSize) - 1; y < (chunkSize * (chunkY + 1)); y++ ) {
+            for (int x = (chunkX * chunkSize) - 1; x < (chunkSize * (chunkX + 1)); x++ ) {
+                depths[y * chunkSize + x] = depthMapArray[(y + yChunkOffset) * chunkSize + xChunkOffset + x];
             }
         }
 
     }
 
     private void Update() {
-        if (running){
+        if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server && running){
             GetDepthTextureFromKinect();
         }
     }
@@ -117,7 +129,7 @@ public class KinectAPI : MonoBehaviour
 
             // Create Depth Buffer
             Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
-            Span<ushort> IRBuffer = capture.IR.GetPixels<ushort>().Span;
+            //Span<ushort> IRBuffer = capture.IR.GetPixels<ushort>().Span;
 
             int imageXOffset = (colourWidth - dimensions) / 2;
             int imageYOffset = (colourHeight - dimensions) / 2;
@@ -126,13 +138,13 @@ public class KinectAPI : MonoBehaviour
             for (int y = 0; y < dimensions; y++) {
                 for (int x = 0; x < dimensions; x++) {
                     var depth = depthBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
-                    var ir = IRBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
+                    //var ir = IRBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
 
                     // Calculate pixel values
                     ushort depthRange = (ushort)(_MaximumSandDepth - _MinimumSandDepth);
                     ushort pixelValue = (ushort)(depth - _MinimumSandDepth);
 
-                    if(ir < _IRThreshold) {    
+                    if(-1 < _IRThreshold) {    
                         ushort val = 0;
                         if (depth == 0 || depth >= _MaximumSandDepth) // No depth image
                         {

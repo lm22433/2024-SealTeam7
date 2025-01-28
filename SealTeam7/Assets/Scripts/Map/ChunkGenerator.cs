@@ -1,4 +1,6 @@
 using System;
+using FishNet;
+using FishNet.Object;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -18,21 +20,21 @@ namespace Map
         public bool hasPlayer;
     }
 
-    public class ChunkGenerator : MonoBehaviour {
+    public class ChunkGenerator : NetworkBehaviour {
         
         [SerializeField] private ChunkSettings settings;
-        [SerializeField] private float[] heightMap;
+        [SerializeField] private ushort[] heightMap;
         private NativeArray<float3> _vertices;
         private Mesh _mesh;
         private MeshCollider _meshCollider;
         private NoiseGenerator _noiseGenerator;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
-        
-        private void Awake() {
+        override public void OnStartClient() {
+            base.OnStartClient();
             _mesh = CreateMesh();
             _meshCollider = GetComponent<MeshCollider>();
-            heightMap = new float[settings.size * settings.size];
+            heightMap = new ushort[settings.size * settings.size];
             _noiseGenerator = GetComponentInParent<NoiseGenerator>();
             
             GetHeights();
@@ -42,7 +44,8 @@ namespace Map
 
         private void Update() { UpdateMesh(); }
 
-        private void GetHeights() { _noiseGenerator.GetChunkNoise(ref heightMap, settings.z, settings.x); }
+        private void GetHeights() { 
+            FindFirstObjectByType<KinectAPI>().GetChunkTexture(base.Owner, heightMap, settings.z, settings.x); }
 
         private Mesh CreateMesh() {
             Mesh mesh = new Mesh {name = "Generated Mesh"};
@@ -87,7 +90,7 @@ namespace Map
 
         private void UpdateMesh() {
             GetHeights();
-            var heights = new NativeArray<float>(heightMap, Allocator.TempJob);
+            var heights = new NativeArray<ushort>(heightMap, Allocator.TempJob);
             
             var posHandle = new HeightSampler {
                 Vertices = _vertices,
@@ -111,7 +114,7 @@ namespace Map
     public struct HeightSampler : IJobParallelFor {
 
         public NativeArray<float3> Vertices;
-        public NativeArray<float> Heights;
+        public NativeArray<ushort> Heights;
         public float LerpFactor;
         public float Scale;
         

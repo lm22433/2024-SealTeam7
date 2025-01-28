@@ -10,7 +10,6 @@ using System.Collections;
 public class MultiplayerStarter : MonoBehaviour {
     
     [SerializeField] private NetworkManager _networkManager;
-    bool isServer = false;
     
     private void Start()
     {
@@ -19,7 +18,6 @@ public class MultiplayerStarter : MonoBehaviour {
         {
             case MultiplayerRoleFlags.Server:
                 Debug.Log("Server Started");
-                isServer = true;
                 StartServer();
                 break;
             case MultiplayerRoleFlags.Client:
