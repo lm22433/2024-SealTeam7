@@ -19,6 +19,7 @@ namespace Map
             _size = size;
             _chunkSize = chunkSize;
             _running = true;
+            UpdateNoise();
         }
 
         private void Update()
@@ -26,7 +27,7 @@ namespace Map
             _time += Time.deltaTime;
             if (_running)
             {
-                UpdateNoise();
+                //UpdateNoise();
             }
         }
 
@@ -43,16 +44,18 @@ namespace Map
             }
         }
         
-        public void GetChunkNoise(ref float[] noise, int chunkX, int chunkZ)
+        public void GetChunkNoise(ref float[] noise, int lod, int chunkX, int chunkZ)
         {
+            var lodFactor = lod == 0 ? 1 : lod * 2;
+            var resolution = _chunkSize / lodFactor;
             int zChunkOffset = chunkZ * _chunkSize;
             int xChunkOffset = chunkX * _chunkSize;
             
-            for (int z = 0; z < _chunkSize + 2; z++)
+            for (int z = 0; z < resolution + 1; z++)
             {
-                for (int x = 0; x < _chunkSize + 2; x++)
+                for (int x = 0; x < resolution + 1; x++)
                 {
-                    noise[z * (_chunkSize + 2) + x] = _noise[(z + zChunkOffset) * _size + xChunkOffset + x];
+                    noise[z * (resolution + 1) + x] = _noise[(lodFactor * z + zChunkOffset) * _size + xChunkOffset + lodFactor * x];
                 }
             }
         }
