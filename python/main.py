@@ -6,7 +6,6 @@ import threading
 import time
 import cv2
 import mediapipe as mp
-import psutil
 from mediapipe.tasks.python import BaseOptions
 from mediapipe.tasks.python.components.containers.detections import DetectionResult
 from mediapipe.tasks.python.vision import ObjectDetector, ObjectDetectorOptions, RunningMode
@@ -56,19 +55,18 @@ def handle_client(conn):
                     print("Waiting for START control signal...")
                 try:
                     message = conn.recv(1024).decode()
-                    if message:
-                        message = message.strip()
-                        print(f"Control signal received: {message}")
-                        if message == "START":
-                            object_detection_running = True
-                            conn.setblocking(False)  # no longer should block and wait for control signals
-                            video_capture = cv2.VideoCapture(0)
-                        elif message == "STOP":
-                            object_detection_running = False
-                            conn.setblocking(True)  # block until START control signal received again
-                            video_capture.release()
-                        elif message == "EXIT":
-                            break
+                    print(f"Control signal received: {message}")
+                    if message == "START":
+                        object_detection_running = True
+                        conn.setblocking(False)  # no longer should block and wait for control signals
+                        video_capture = cv2.VideoCapture(0)
+                    elif message == "STOP":
+                        object_detection_running = False
+                        conn.setblocking(True)  # block until START control signal received again
+                        video_capture.release()
+                    elif message == "":  # Empty string means client disconnected
+                        print("Client disconnected, closing server.")
+                        break
                 except BlockingIOError:
                     pass  # No control signal in buffer - that's normal, continue
 
@@ -82,10 +80,6 @@ def handle_client(conn):
                     else:
                         print("Failed to read frame.")
 
-            except ConnectionResetError:
-                print("Connection lost.")
-                break
-
             except KeyboardInterrupt:
                 print("Shutting down server.")
                 break
@@ -98,6 +92,7 @@ def handle_client(conn):
     # clean up
     if video_capture is not None and video_capture.isOpened():
         video_capture.release()
+    cv2.destroyAllWindows()
 
 
 def start_server(host="127.0.0.1", port=9455):  # 127.0.0.1 is localhost
