@@ -1,3 +1,4 @@
+using Input;
 using UnityEngine;
 
 enum State {
@@ -117,11 +118,12 @@ public class AdvancedMovement : MonoBehaviour
     private void MoveInput()
     {
         //Movement Inputs
-        horInput = Input.GetAxisRaw("Horizontal");
-        verInput = Input.GetAxisRaw("Vertical");
+        Vector2 moveInput = InputController.GetInstance().GetMoveInput();
+        horInput = moveInput.x;
+        verInput = moveInput.y;
 
         //Jumping
-        if(Input.GetButtonDown(jumpKey)) {
+        if(InputController.GetInstance().GetJumpInput()) {
             if(curState == State.crouching) {
 
                 curState = State.walking;
@@ -178,7 +180,7 @@ public class AdvancedMovement : MonoBehaviour
         }
 
         //Sprinting
-        if(Input.GetButtonDown(sprintKey)) {
+        if(InputController.GetInstance().GetSprintInput()) {
             if(curState == State.walking || curState == State.crouching) {
                 curState = State.sprinting;
             }
@@ -197,7 +199,7 @@ public class AdvancedMovement : MonoBehaviour
         }
 
         //Crouching
-        if(Input.GetButtonDown(crouchKey)) {
+        if(InputController.GetInstance().GetCrouchInput()) {
             if(curState == State.walking) {
                 transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
                 rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
@@ -224,7 +226,7 @@ public class AdvancedMovement : MonoBehaviour
         }
 
         //Sliding
-        if(Input.GetButtonDown(crouchKey)) {
+        if(InputController.GetInstance().GetCrouchInput()) {
             if(verInput > 0 && curState == State.sprinting) {
                 StartSlide();
             }
