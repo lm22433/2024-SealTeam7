@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using UnityEngine.Serialization;
 
 namespace Map
 {
@@ -17,7 +18,7 @@ namespace Map
         public ushort size;
         public ushort chunks;
         public ushort chunkSize;
-        public float heightScale;
+        public float maxHeight;
         public float lerpFactor;
         public LOD[] lodLevels;
         public float playerMoveThreshold;
@@ -48,7 +49,7 @@ namespace Map
             {
                 size = settings.chunkSize,
                 spacing = _spacing,
-                heightScale = settings.heightScale,
+                maxHeight = settings.maxHeight,
                 lerpFactor = settings.lerpFactor,
                 lod = settings.lodLevels[^1].lod
             };
@@ -59,7 +60,7 @@ namespace Map
             for (float x = 0; x < settings.size; x += settings.chunkSize * _spacing) {
                 for (float z = 0; z < settings.size; z += settings.chunkSize * _spacing)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x - 0.5f * settings.size, 0f, z - 0.5f * settings.size), Quaternion.identity, transform).GetComponent<Chunk>();
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x - 0.5f * settings.size - 0.5f * settings.chunkSize * _spacing, 0f, z - 0.5f * settings.size - 0.5f * settings.chunkSize * _spacing), Quaternion.identity, transform).GetComponent<Chunk>();
                     chunkSettings.x = (ushort) (x / (settings.chunkSize * _spacing));
                     chunkSettings.z = (ushort) (z / (settings.chunkSize * _spacing));
                     chunk.SetSettings(chunkSettings);
@@ -74,14 +75,15 @@ namespace Map
         {
             foreach (var chunk in _chunks)
             {
-                var chunkPosition = new Vector2(chunk.transform.position.x, chunk.transform.position.z);
-                var playerOffset = (chunkPosition - _playerPosition).SqrMagnitude();
-
-                if (playerOffset > settings.lodLevels[^1].maxViewDistance) chunk.SetVisible(false);
+                var sqrDistanceToPlayer = chunk.SqrDistanceToPlayer(_playerPosition);
+                if (sqrDistanceToPlayer > settings.lodLevels[^1].maxViewDistance * settings.lodLevels[^1].maxViewDistance)
+                {
+                    chunk.SetVisible(false); continue;
+                }
                 
                 foreach (var lod in settings.lodLevels)
                 {
-                    if (playerOffset <= lod.maxViewDistance * lod.maxViewDistance)
+                    if (sqrDistanceToPlayer <= lod.maxViewDistance * lod.maxViewDistance)
                     {
                         chunk.SetVisible(true);
                         chunk.SetLod(lod.lod);
@@ -93,7 +95,7 @@ namespace Map
 
         private void Update()
         {
-            _playerPosition = player.transform.position;
+            _playerPosition = new Vector2(player.transform.position.x, player.transform.position.z);
             if ((_playerPositionOld - _playerPosition).SqrMagnitude() > _sqrPlayerMoveThreshold)
             {
                 _playerPositionOld = _playerPosition;

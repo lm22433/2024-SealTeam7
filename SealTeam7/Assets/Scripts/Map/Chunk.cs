@@ -11,7 +11,7 @@ namespace Map
     public struct ChunkSettings {
         public ushort size;
         public float spacing;
-        public float heightScale;
+        public float maxHeight;
         public float lerpFactor;
         public ushort x;
         public ushort z;
@@ -28,6 +28,7 @@ namespace Map
         private Mesh _mesh;
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
+        private MeshRenderer _meshRenderer;
         private NoiseGenerator _noiseGenerator;
         private Bounds _bounds;
         
@@ -45,13 +46,17 @@ namespace Map
 
         public void SetVisible(bool visible)
         {
-            _meshFilter.sharedMesh = visible ? _mesh : null;
+            _meshRenderer.enabled = visible;
+            enabled = visible;
+        }
+
+        public float SqrDistanceToPlayer(Vector2 playerPos)
+        {
+            return _bounds.SqrDistance(new Vector3(playerPos.x, 0f, playerPos.y));
         }
         
         private void Awake()
         {
-            //TODO: use Bounds object to calculate player distance
-            //_bounds = new Bounds(transform.position, Vector2.one * settings.size);
             _lodFactor = 1;
             _vertexSideCount = settings.size / _lodFactor + 1;
             _vertices = new NativeArray<float3>(_vertexSideCount * _vertexSideCount, Allocator.Persistent);
@@ -61,14 +66,16 @@ namespace Map
             
             UpdateMesh();
             
+            _meshRenderer = GetComponent<MeshRenderer>();
             _meshFilter = GetComponent<MeshFilter>();
-            _meshFilter.sharedMesh = _mesh;
             _meshCollider = GetComponent<MeshCollider>();
+            _meshFilter.sharedMesh = _mesh;
             _meshCollider.sharedMesh = _mesh;
             _meshCollider.enabled = false;
             
             _heightMap = new float[_vertexSideCount * _vertexSideCount];
             _noiseGenerator = GetComponentInParent<NoiseGenerator>();
+            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, settings.maxHeight, settings.size * settings.spacing));
         }
 
         private void Update()
@@ -84,7 +91,7 @@ namespace Map
             var heightUpdate = new HeightUpdate {
                 Vertices = _vertices,
                 Heights = heights,
-                Scale = settings.heightScale,
+                Scale = settings.maxHeight,
                 LerpFactor = settings.lerpFactor
             }.Schedule(_vertexSideCount * _vertexSideCount, 1);
             heightUpdate.Complete();
@@ -110,8 +117,9 @@ namespace Map
             {
                 Vertices = _vertices,
                 VertexSideCount = _vertexSideCount,
-                Spacing = settings.spacing * _lodFactor,
-                Size = settings.size
+                Spacing = settings.spacing,
+                Size = settings.size,
+                LODFactor = _lodFactor
             }.Schedule(numberOfVertices, 1);
 
             var meshTriangleUpdate = new MeshTriangleUpdate
@@ -156,12 +164,13 @@ namespace Map
         public NativeArray<float3> Vertices;
         public int VertexSideCount;
         public float Spacing;
+        public float LODFactor;
         public int Size;
         
         public void Execute(int index)
         {
-            var x = index / VertexSideCount;
-            var z = index % VertexSideCount;
+            var x = (int) (index / VertexSideCount) * LODFactor - 0.5f * Size;
+            var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * Size;
             Vertices[index] = new float3(x * Spacing, 0f, z * Spacing);
         }
     }
