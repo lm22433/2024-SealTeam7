@@ -42,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slideForce;
     private float slideTimer;
     private bool sliding;
+    private bool readyToSlide;
     private Vector3 slideDir;
 
     [Header("Aiming")]
@@ -73,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
         crouched = false;
         exitingSlope = false;
         sliding = false;
+        readyToSlide = false;
 
         slideTimer = 0;
 
@@ -149,7 +151,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Sprinting
-        if(InputController.GetInstance().GetSprintInput() && !sprinting) {
+        if(InputController.GetInstance().GetSprintInput() && !sprinting && !crouched) {
             sprinting = !sprinting;
         }
         if (verInput < 0 && grounded && !sliding) {
@@ -176,11 +178,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Sliding
-        if(InputController.GetInstance().GetCrouchInput() && verInput > 0 && horInput == 0 && sprinting && !sliding) {
+        if(InputController.GetInstance().GetCrouchInput() && verInput > 0 && horInput == 0 && sprinting && !sliding && grounded) {
             StartSlide();
         }
         else if(InputController.GetInstance().GetCrouchInput() && sliding) {
             StopSlide();
+        }
+        else if(InputController.GetInstance().GetCrouchInput() && !grounded && sprinting && !readyToSlide) {
+            readyToSlide = true;
+        }
+        else if(InputController.GetInstance().GetCrouchInput() && !grounded && sprinting && !readyToSlide) {
+            readyToSlide = false;
+        }
+
+        if(readyToSlide) {
+            StartSlide();
         }
 
         //check if grounded
@@ -219,7 +231,7 @@ public class PlayerMovement : MonoBehaviour
                 rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
             }
         }
-        else {
+        else if(grounded || !sprinting){
             Vector3 vel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             // limit velocity if needed
             if(vel.magnitude > moveSpeed)
@@ -266,6 +278,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void BoostJump()
     {
+        exitingSlope = true;
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         moveDir = orientation.forward*verInput + orientation.up + orientation.right * horInput;
         rb.AddForce(moveDir.normalized * boostForce, ForceMode.Impulse);
@@ -296,6 +309,7 @@ public class PlayerMovement : MonoBehaviour
     {
         sliding = true;
         crouched = true;
+        readyToSlide = false;
 
         slideDir = orientation.forward.normalized;
 
@@ -314,7 +328,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void SlidingMovement()
     {
-        if(OnSlope() && !exitingSlope) {
+        if(OnSlope() && !exitingSlope) {            
             rb.AddForce(GetSlopeSlideDirection() * slideForce * 10.0f * (slideTimer / maxSlideTime), ForceMode.Force);
 
             //stops bouncing up slopes
@@ -333,6 +347,9 @@ public class PlayerMovement : MonoBehaviour
         }
         if(!grounded) {
             StopSlide();
+            readyToJump = false;
+
+            Invoke(nameof(ResetJump), jumpCooldown);
         }
     }
 
