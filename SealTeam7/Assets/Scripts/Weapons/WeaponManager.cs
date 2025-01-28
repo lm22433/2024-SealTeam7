@@ -111,10 +111,10 @@ namespace Weapons
             }
 
             // Scrolling to Swap Weapons
-            // if (Input.GetAxis("Mouse ScrollWheel") != 0.0f)
-            // {
-            //     SwapWeapon();
-            // }
+            if (InputController.GetInstance().GetScrollSwapWeaponInput() != 0.0f)
+            {
+                SwapWeapon();
+            }
             
             // Swap Weapons
             if (InputController.GetInstance().GetSwapWeaponInput())

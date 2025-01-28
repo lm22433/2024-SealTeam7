@@ -92,5 +92,10 @@ namespace Input
         {
             return _playerInputActions.Player.EquipSecondary.triggered;
         }
+
+        public float GetScrollSwapWeaponInput()
+        {
+            return _playerInputActions.Player.ScrollSwapWeapon.ReadValue<Vector2>().y;
+        }
     }
 }

@@ -136,6 +136,15 @@ namespace Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Scroll Swap Weapon"",
+                    ""type"": ""Value"",
+                    ""id"": ""5f5ba67b-e811-4524-a430-08f2997d92b7"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -424,6 +433,17 @@ namespace Input
                     ""action"": ""Equip Secondary"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5a0bd8d5-6529-4509-82bd-929455a6a22d"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard and Mouse"",
+                    ""action"": ""Scroll Swap Weapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -472,6 +492,7 @@ namespace Input
             m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
             m_Player_EquipPrimary = m_Player.FindAction("Equip Primary", throwIfNotFound: true);
             m_Player_EquipSecondary = m_Player.FindAction("Equip Secondary", throwIfNotFound: true);
+            m_Player_ScrollSwapWeapon = m_Player.FindAction("Scroll Swap Weapon", throwIfNotFound: true);
         }
 
         ~@PlayerInputActions()
@@ -550,6 +571,7 @@ namespace Input
         private readonly InputAction m_Player_Shoot;
         private readonly InputAction m_Player_EquipPrimary;
         private readonly InputAction m_Player_EquipSecondary;
+        private readonly InputAction m_Player_ScrollSwapWeapon;
         public struct PlayerActions
         {
             private @PlayerInputActions m_Wrapper;
@@ -566,6 +588,7 @@ namespace Input
             public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
             public InputAction @EquipPrimary => m_Wrapper.m_Player_EquipPrimary;
             public InputAction @EquipSecondary => m_Wrapper.m_Player_EquipSecondary;
+            public InputAction @ScrollSwapWeapon => m_Wrapper.m_Player_ScrollSwapWeapon;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -611,6 +634,9 @@ namespace Input
                 @EquipSecondary.started += instance.OnEquipSecondary;
                 @EquipSecondary.performed += instance.OnEquipSecondary;
                 @EquipSecondary.canceled += instance.OnEquipSecondary;
+                @ScrollSwapWeapon.started += instance.OnScrollSwapWeapon;
+                @ScrollSwapWeapon.performed += instance.OnScrollSwapWeapon;
+                @ScrollSwapWeapon.canceled += instance.OnScrollSwapWeapon;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -651,6 +677,9 @@ namespace Input
                 @EquipSecondary.started -= instance.OnEquipSecondary;
                 @EquipSecondary.performed -= instance.OnEquipSecondary;
                 @EquipSecondary.canceled -= instance.OnEquipSecondary;
+                @ScrollSwapWeapon.started -= instance.OnScrollSwapWeapon;
+                @ScrollSwapWeapon.performed -= instance.OnScrollSwapWeapon;
+                @ScrollSwapWeapon.canceled -= instance.OnScrollSwapWeapon;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -700,6 +729,7 @@ namespace Input
             void OnShoot(InputAction.CallbackContext context);
             void OnEquipPrimary(InputAction.CallbackContext context);
             void OnEquipSecondary(InputAction.CallbackContext context);
+            void OnScrollSwapWeapon(InputAction.CallbackContext context);
         }
     }
 }
