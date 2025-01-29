@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 
 using Unity.Multiplayer;
-using System.Drawing;
-using FishNet.Object;
 
 namespace Map
 {
@@ -19,16 +17,16 @@ namespace Map
         public GameObject chunkPrefab;
     }
     
-    public class MapGenerator : NetworkBehaviour {
+    public class MapGenerator : MonoBehaviour {
         [SerializeField] private MapSettings settings;
         [SerializeField] private GameObject player;
-        private List<ChunkGenerator> _chunks;
+        public List<ChunkGenerator> _chunks;
     
-        override public void OnStartClient()
+        private void Awake() 
         {
-            //base.OnStartServer();
+            //base.OnStartClient();
             
-            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask != MultiplayerRoleFlags.Server) {
+            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
 
                 return;
             }
@@ -58,6 +56,7 @@ namespace Map
                     chunkSettings.z = (ushort) (z / (settings.chunkSize * spacing));
                     chunk.SetSettings(chunkSettings);
                     _chunks.Add(chunk);
+                    chunk.CreateChunk();
                 }
             }
         }

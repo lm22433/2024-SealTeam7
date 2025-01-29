@@ -1,169 +1,215 @@
 using UnityEngine;
 using System;
+using System.Threading.Tasks;
 using Microsoft.Azure.Kinect.Sensor;
-
-using UnityEngine.Profiling;
 using FishNet.Object;
-using Unity.Multiplayer;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.MemoryProfiler;
 using FishNet.Connection;
+using Map;
 
-public class KinectAPI : NetworkBehaviour
+namespace Kinect
 {
-
-    [Header("Depth Calibrations")]
-    [SerializeField, Range(300f, 1000f)] private ushort _MinimumSandDepth;
-    [SerializeField, Range(600f, 1500f)] private ushort _MaximumSandDepth;
-
-    [Header("IR Calibrations")]
-    [SerializeField, Range(0, 255f)] private int _IRThreshold;
-
-    [Header("Similarity Threshold")]
-    [SerializeField, Range(0.5f, 1f)] private float _SimilarityThreshold;
-
-    //Internal Variables
-    private Device kinect = null;
-    private Transformation transformation = null;
-
-    private int colourWidth = 0;
-
-    private int colourHeight = 0;
-
-    private ushort[] depthMapArray;
-    [SerializeField] private int dimensions;
-    private bool running;
-    private int chunkSize;
-
-    override public void OnStartServer()
-    {   
-        //base.OnStartServer();
-        if (MultiplayerRolesManager.ActiveMultiplayerRoleMask != MultiplayerRoleFlags.Server) {
-            return;
-        }
-
-        if (_MinimumSandDepth > _MaximumSandDepth) {
-            Debug.LogError("Minimum depth is greater than maximum depth");
-        }
-
-        this.kinect = Device.Open();
-
-        // Configure camera modes
-        this.kinect.StartCameras(new DeviceConfiguration
-        {
-            ColorFormat = ImageFormat.ColorBGRA32,
-            ColorResolution = ColorResolution.R1080p,
-            DepthMode = DepthMode.NFOV_2x2Binned,
-            SynchronizedImagesOnly = true
-        });
-
-        Debug.Log("AKDK Serial Number: " + this.kinect.SerialNum);
-
-        // Initialize the transformation engine
-        this.transformation = this.kinect.GetCalibration().CreateTransformation();
-
-        this.colourWidth = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
-        this.colourHeight = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
-
-        StartKinect();
-
-    }
-
-    private void StartKinect() {
-        depthMapArray = new ushort[dimensions * dimensions];
-
-        running = true;
-    }
-
-    void OnApplicationQuit()
+    public class KinectAPI : NetworkBehaviour
     {
-        running = false;
-        this.kinect.Dispose();
-    }
 
-    [TargetRpc]
-    public void GetChunkTexture(NetworkConnection conn, ushort[] depths, int chunkX, int chunkY) {
-        //float similarity = 0;
+        [Header("Depth Calibrations")] [SerializeField, Range(300f, 1000f)]
+        private ushort _MinimumSandDepth;
 
-        int yChunkOffset = chunkY * chunkSize - 1;
-        int xChunkOffset = chunkX * chunkSize - 1;
+        [SerializeField, Range(600f, 1500f)] private ushort _MaximumSandDepth;
 
-        //Similarity Check
-        /*
-        for (int y = 0; y <= chunkSize + 1; y++ ) {
-            for (int x = 0; x <= chunkSize + 1; x++) {
-                var col = depths[y * chunkSize + x];
-                var curr = depthMapArray[(y + yChunkOffset) * chunkSize + xChunkOffset + x];
+        [Header("IR Calibrations")] [SerializeField, Range(0, 255f)]
+        private int _IRThreshold;
 
-                similarity += Mathf.Pow(Mathf.Abs(col - curr), 2);
+        [Header("Similarity Threshold")] [SerializeField, Range(0.5f, 1f)]
+        private float _SimilarityThreshold;
+
+        //Internal Variables
+        private Device kinect = null;
+        private Transformation transformation = null;
+
+        private int colourWidth = 0;
+
+        private int colourHeight = 0;
+
+        private ushort[] depthMapArray;
+        [SerializeField] private int dimensions;
+        [SerializeField] private int chunkSize;
+        bool running = false;
+
+        override public void OnStartServer()
+        {
+            if (_MinimumSandDepth > _MaximumSandDepth)
+            {
+                Debug.LogError("Minimum depth is greater than maximum depth");
+            }
+
+            this.kinect = Device.Open();
+
+            // Configure camera modes
+            this.kinect.StartCameras(new DeviceConfiguration
+            {
+                ColorFormat = ImageFormat.ColorBGRA32,
+                ColorResolution = ColorResolution.R1080p,
+                DepthMode = DepthMode.NFOV_2x2Binned,
+                SynchronizedImagesOnly = true,
+                CameraFPS = FPS.FPS30
+            });
+
+            Debug.Log("AKDK Serial Number: " + this.kinect.SerialNum);
+
+            // Initialize the transformation engine
+            this.transformation = this.kinect.GetCalibration().CreateTransformation();
+
+            this.colourWidth = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
+            this.colourHeight = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+
+            StartKinect();
+        }
+
+        public void StartKinect()
+        {
+            depthMapArray = new ushort[dimensions * dimensions];
+
+            running = true;
+            Task.Run(() => GetCaptureAsync());
+        }
+        
+        void OnApplicationQuit()
+        {
+            running = false;
+            kinect.StopCameras();
+            kinect.Dispose();
+        }
+
+        public void RequestTexture(int z, int x) {
+            RequestChunkTextureServerRpc(Owner.ClientId, z, x); 
+
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void RequestChunkTextureServerRpc(int clientId, int chunkX, int chunkY)
+        {
+            ushort[] depths = GetChunkTexture(chunkX, chunkY);
+
+            // Send the depth data back to the requesting client
+            NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
+
+            if (targetConnection != null)
+            {
+                SendChunkTextureTargetRpc(targetConnection, depths, chunkX, chunkY);
             }
         }
 
-        similarity = Mathf.Sqrt(similarity) / chunkSize;
-
-        if (similarity > _SimilarityThreshold) {
-            return;
+        [TargetRpc]
+        private void SendChunkTextureTargetRpc(NetworkConnection conn, ushort[] depths, int x, int z)
+        {
+            Debug.Log("Hi, I'am a callback!");
+            FindFirstObjectByType<MapGenerator>()._chunks[x * 5 + z].SetHeights(depths);
+            //callbackChunk.SetHeights(depths);
         }
-        */
+        
+        public ushort[] GetChunkTexture(int chunkX, int chunkY)
+        {
+            //float similarity = 0;
+            Debug.Log("Chunk: (" + chunkX + "," + chunkY + ")");
+            ushort[] depths = new ushort[(chunkSize + 2) * (chunkSize + 2)];
 
-        //Write changed texture
-        for (int y = (chunkY * chunkSize) - 1; y < (chunkSize * (chunkY + 1)); y++ ) {
-            for (int x = (chunkX * chunkSize) - 1; x < (chunkSize * (chunkX + 1)); x++ ) {
-                depths[y * chunkSize + x] = depthMapArray[(y + yChunkOffset) * chunkSize + xChunkOffset + x];
+            int yChunkOffset = chunkY * chunkSize;
+            int xChunkOffset = chunkX * chunkSize;
+
+            /*
+            //Similarity Check
+            for (int y = 0; y <= chunkSize + 1; y++ ) {
+                for (int x = 0; x <= chunkSize + 1; x++) {
+                    var col = depths[y * chunkSize + x];
+                    var curr = depthMapArray[(y + yChunkOffset) * chunkSize + xChunkOffset + x];
+
+                    similarity += Mathf.Pow(Mathf.Abs(col - curr), 2);
+                }
             }
+
+            similarity = Mathf.Sqrt(similarity) / chunkSize;
+
+            if (similarity > _SimilarityThreshold) {
+                //return;
+            }
+            */
+            //Write changed texture
+            for (int y = 0; y < chunkSize + 2; y++)
+            {
+                for (int x = 0; x < chunkSize + 2; x++)
+                {
+                    depths[y * (chunkSize + 2) + x] = depthMapArray[(y + yChunkOffset) * dimensions + xChunkOffset + x];
+                }
+            }
+
+            return depths;
         }
 
-    }
-
-    private void Update() {
-        if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server && running){
-            GetDepthTextureFromKinect();
+        public async Task GetCaptureAsync()
+        {
+            while (running)
+            {
+                using (Image transformedDepth = new Image(ImageFormat.Depth16, colourWidth, colourHeight, colourWidth * sizeof(UInt16)))
+                using (Capture capture = await Task.Run(() => kinect.GetCapture()))
+                {
+                    GetDepthTextureFromKinect(capture, transformedDepth);
+                }
+            }
+            
         }
-    }
 
-    private void GetDepthTextureFromKinect() {
-
-        using (Capture capture = kinect.GetCapture())
-        using (Image transformedDepth = new Image(ImageFormat.Depth16, colourWidth, colourHeight, colourWidth * sizeof(UInt16))) {
-            // Transform the depth image to the colour capera perspective
-
+        private void GetDepthTextureFromKinect(Capture capture, Image transformedDepth)
+        {
+            //using (Capture capture = kinect.GetCapture())
+            // Transform the depth image to the colour camera perspective
             transformation.DepthImageToColorCamera(capture, transformedDepth);
 
             // Create Depth Buffer
             Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
-            //Span<ushort> IRBuffer = capture.IR.GetPixels<ushort>().Span;
+            Span<ushort> IRBuffer = capture.IR.GetPixels<ushort>().Span;
 
             int imageXOffset = (colourWidth - dimensions) / 2;
             int imageYOffset = (colourHeight - dimensions) / 2;
 
             // Create a new image with data from the depth and colour image
-            for (int y = 0; y < dimensions; y++) {
-                for (int x = 0; x < dimensions; x++) {
+            for (int y = 0; y < dimensions; y++)
+            {
+                for (int x = 0; x < dimensions; x++)
+                {
                     var depth = depthBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
-                    //var ir = IRBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
+                    var ir = 0; //IRBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
 
                     // Calculate pixel values
                     ushort depthRange = (ushort)(_MaximumSandDepth - _MinimumSandDepth);
-                    ushort pixelValue = (ushort)(depth - _MinimumSandDepth);
+                    ushort pixelValue = (ushort)(_MaximumSandDepth - depth);
 
-                    if(-1 < _IRThreshold) {    
+                    if (ir < _IRThreshold)
+                    {
                         ushort val = 0;
                         if (depth == 0 || depth >= _MaximumSandDepth) // No depth image
                         {
                             val = 0;
 
-                        } else if (depth < _MinimumSandDepth) {
+                        }
+                        else if (depth < _MinimumSandDepth)
+                        {
 
                             val = depthRange;
 
-                        } else {
-                            val =  pixelValue;
+                        }
+                        else
+                        {
+                            val = pixelValue;
 
                         }
 
                         depthMapArray[y * dimensions + x] = val;
-                    } 
+                    }
                 }
             }
         }
     }
 }
-

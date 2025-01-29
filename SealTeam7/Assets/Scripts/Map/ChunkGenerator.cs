@@ -1,6 +1,7 @@
 using System;
 using FishNet;
 using FishNet.Object;
+using Kinect;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -19,33 +20,41 @@ namespace Map
         public ushort z;
         public bool hasPlayer;
     }
-
-    public class ChunkGenerator : NetworkBehaviour {
+    public class ChunkGenerator : MonoBehaviour {
         
         [SerializeField] private ChunkSettings settings;
         [SerializeField] private ushort[] heightMap;
+        private KinectAPI kinect;
         private NativeArray<float3> _vertices;
         private Mesh _mesh;
         private MeshCollider _meshCollider;
-        private NoiseGenerator _noiseGenerator;
+        bool isCreated = false;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
-        override public void OnStartClient() {
-            base.OnStartClient();
+        public void CreateChunk() {
             _mesh = CreateMesh();
             _meshCollider = GetComponent<MeshCollider>();
             heightMap = new ushort[settings.size * settings.size];
-            _noiseGenerator = GetComponentInParent<NoiseGenerator>();
+            kinect = FindAnyObjectByType<KinectAPI>();
             
             GetHeights();
+
+            isCreated = true;
         }
 
         private void OnDisable() { _vertices.Dispose(); }
 
-        private void Update() { UpdateMesh(); }
+        private void Update() { if (isCreated) {UpdateMesh();}}
 
         private void GetHeights() { 
-            FindFirstObjectByType<KinectAPI>().GetChunkTexture(base.Owner, heightMap, settings.z, settings.x); }
+           kinect.RequestTexture(settings.z, settings.x);
+        }
+
+        public void SetHeights(ushort[] heights) {
+            Debug.Log($"Height Set for ({settings.x}, {settings.z})");
+            heightMap = heights;
+        }
+
 
         private Mesh CreateMesh() {
             Mesh mesh = new Mesh {name = "Generated Mesh"};
