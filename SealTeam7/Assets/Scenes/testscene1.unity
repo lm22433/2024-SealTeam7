@@ -227,6 +227,48 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &97440735 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8194321815041351153, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+  m_PrefabInstance: {fileID: 1488575774}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &97440737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97440735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb06730bf6939fc44a85e07065ae6699, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  friction: 3
+  walkSpeed: 4
+  sprintSpeed: 8
+  crouchSpeed: 2.5
+  jumpForce: 7.5
+  jumpCooldown: 0.15
+  airMultiplier: 0.75
+  airRes: 1.5
+  boostForce: 6
+  jumpKey: Jump
+  sprintKey: Sprint
+  crouchKey: Crouch
+  groundCheck: {fileID: 1619315889}
+  groundDist: 0.6
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 1024
+  playerHeight: 2
+  crouchYScale: 0.6
+  maxSlideTime: 1.5
+  slideForce: 5
+  orientation: {fileID: 196265808}
+  maxSlopeAngle: 40
+  curState: 0
+  moveSpeed: 0
 --- !u!1 &111482197
 GameObject:
   m_ObjectHideFlags: 0
@@ -945,6 +987,10 @@ PrefabInstance:
       propertyPath: whatIsGround.m_Bits
       value: 1024
       objectReference: {fileID: 0}
+    - target: {fileID: 7894323579929965187, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8116472272456324572, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: sensitivityX
       value: 200
@@ -956,8 +1002,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8194321815041351153, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 97440737}
   m_SourcePrefab: {fileID: 100100000, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+--- !u!4 &1619315889 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9095023509047750781, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+  m_PrefabInstance: {fileID: 1488575774}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1702447658 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5279418975499219022, guid: e50841c90738b2c49922093ea34609ae, type: 3}

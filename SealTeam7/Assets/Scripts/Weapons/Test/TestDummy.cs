@@ -23,8 +23,6 @@ namespace Weapons.Test
             _health -= dmg;
             healthBar.value = _health;
             
-            Debug.Log($"{gameObject.name} took {dmg} damage. Remaining health: {_health}");
-
             if (_health <= 0)
             {
                 Die();
@@ -33,7 +31,6 @@ namespace Weapons.Test
 
         private void Die()
         {
-            Debug.Log($"{gameObject.name} has died!");
             Destroy(gameObject);
         }
 
