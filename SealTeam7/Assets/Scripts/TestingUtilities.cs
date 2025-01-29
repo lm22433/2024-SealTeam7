@@ -10,7 +10,15 @@ public class TestingUtilities : MonoBehaviour
             PythonManager.Connect();
             Thread.Sleep(1000);
             PythonManager.StartObjectDetection();
-            Thread.Sleep(5000);
+            Thread.Sleep(1000);
+            Debug.Log(PythonManager.GetSandboxObjects());
+            Thread.Sleep(1000);
+            Debug.Log(PythonManager.GetSandboxObjects());
+            Thread.Sleep(1000);
+            Debug.Log(PythonManager.GetSandboxObjects());
+            Thread.Sleep(1000);
+            Debug.Log(PythonManager.GetSandboxObjects());
+            Thread.Sleep(1000);
             PythonManager.StopObjectDetection();
             Thread.Sleep(5000);
             PythonManager.Disconnect();
