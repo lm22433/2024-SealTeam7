@@ -1,30 +1,39 @@
 using Input;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Movement
 {
     public class CameraControl : MonoBehaviour
     {
 
-        [SerializeField] private float sensitivityX;
-        [SerializeField] private float sensitivityY;
+        [Header("Mouse Sensitivity")]
+        [SerializeField] private float mouseSensitivityX;
+        [SerializeField] private float mouseSensitivityY;
+        
+        [Header("Controller Sensitivity")]
+        [SerializeField] private float controllerSensitivityX;
+        [SerializeField] private float controllerSensitivityY;
+        
         [SerializeField] private Transform orientation;
+        
         private float _xRotation;
         private float _yRotation;
 
-
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
 
-        // Update is called once per frame
         private void Update()
         {
             // Look Input
             Vector2 lookInput = InputController.GetInstance().GetLookInput();
+            
+            float sensitivityX = InputController.GetInstance().IsUsingController() ? controllerSensitivityX : mouseSensitivityX;
+            float sensitivityY = InputController.GetInstance().IsUsingController() ? controllerSensitivityY : mouseSensitivityY;
+            
             float x = lookInput.x * Time.deltaTime * sensitivityX;
             float y = lookInput.y * Time.deltaTime * sensitivityY;
 
