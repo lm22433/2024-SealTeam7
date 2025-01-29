@@ -21,7 +21,6 @@ namespace HUD
         private void Start()
         {
             primaryWeaponIcon.GetComponent<Image>().sprite = weaponManager.primaryWeapon.gunSprite;
-            Debug.Log(weaponManager.primaryWeapon.spritePosition);
             primaryWeaponIcon.localPosition = weaponManager.primaryWeapon.spritePosition;
             primaryWeaponIcon.sizeDelta = weaponManager.primaryWeapon.spriteScale;
             
