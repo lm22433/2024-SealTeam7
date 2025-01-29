@@ -9,23 +9,21 @@ namespace Weapons.Test
         [SerializeField] private float maxHealth = 150f;
         [SerializeField] private Slider healthBar;
         [SerializeField] private Transform player;
-        private float health;
+        private float _health;
 
         public void Start()
         {
-            health = maxHealth;
+            _health = maxHealth;
             healthBar.maxValue = maxHealth;
-            healthBar.value = health;
+            healthBar.value = _health;
         }
         
         public void TakeDamage(float dmg)
         {
-            health -= dmg;
-            healthBar.value = health;
+            _health -= dmg;
+            healthBar.value = _health;
             
-            Debug.Log($"{gameObject.name} took {dmg} damage. Remaining health: {health}");
-
-            if (health <= 0)
+            if (_health <= 0)
             {
                 Die();
             }
@@ -33,7 +31,6 @@ namespace Weapons.Test
 
         private void Die()
         {
-            Debug.Log($"{gameObject.name} has died!");
             Destroy(gameObject);
         }
 
