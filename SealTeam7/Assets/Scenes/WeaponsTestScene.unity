@@ -1491,22 +1491,6 @@ PrefabInstance:
       propertyPath: sensitivityY
       value: 200
       objectReference: {fileID: 0}
-    - target: {fileID: 8116472272456324572, guid: e50841c90738b2c49922093ea34609ae, type: 3}
-      propertyPath: mouseSensitivityX
-      value: 75
-      objectReference: {fileID: 0}
-    - target: {fileID: 8116472272456324572, guid: e50841c90738b2c49922093ea34609ae, type: 3}
-      propertyPath: mouseSensitivityY
-      value: 75
-      objectReference: {fileID: 0}
-    - target: {fileID: 8116472272456324572, guid: e50841c90738b2c49922093ea34609ae, type: 3}
-      propertyPath: controllerSensitivityX
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 8116472272456324572, guid: e50841c90738b2c49922093ea34609ae, type: 3}
-      propertyPath: controllerSensitivityY
-      value: 200
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
