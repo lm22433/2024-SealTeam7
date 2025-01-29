@@ -1,6 +1,5 @@
 using Input;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Weapons.Gun;
 
 namespace Weapons
@@ -85,7 +84,6 @@ namespace Weapons
             
             // Reloading
             if (inputController.GetReloadInput()) _currentGun.TryReload();
-            
             
             // Melee Attack
             if (inputController.GetMeleeInput()) meleeWeapon.Attack();
