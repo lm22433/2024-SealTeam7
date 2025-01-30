@@ -1065,10 +1065,7 @@ MonoBehaviour:
   jumpCooldown: 0.15
   airMultiplier: 0.75
   airRes: 1.5
-  boostForce: 6
-  jumpKey: Jump
-  sprintKey: Sprint
-  crouchKey: Crouch
+  boostForce: 7
   groundCheck: {fileID: 9095023509047750781}
   groundDist: 0.6
   whatIsGround:
@@ -1080,8 +1077,16 @@ MonoBehaviour:
   slideForce: 8
   orientation: {fileID: 1256677882820726538}
   maxSlopeAngle: 40
+  whatIsWall:
+    serializedVersion: 2
+    m_Bits: 2048
+  wallRunSpeed: 9
+  maxWallTime: 2
+  wallCheckDistance: 0.75
+  minJumpHeight: 1.4
   curState: 0
   moveSpeed: 0
+  wallRunTimer: 0
 --- !u!1 &9138342415170533693
 GameObject:
   m_ObjectHideFlags: 0

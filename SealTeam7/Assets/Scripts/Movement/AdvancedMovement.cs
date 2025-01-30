@@ -1,6 +1,13 @@
 using Input;
 using UnityEngine;
 
+enum WallStates {
+    forward,
+    still,
+    slide,
+    drop
+}
+
 enum State {
     walking,
     sprinting,
@@ -10,6 +17,8 @@ enum State {
     sprintAir,
     airSlide,
     airCrouch,
+    wallRunning,
+    grappling,
     debug
 }
 
@@ -31,11 +40,6 @@ public class AdvancedMovement : MonoBehaviour
     [SerializeField] private float airRes;
     [SerializeField] private float boostForce;
     private Vector3 momentum;
-
-    [Header("Keybinds")]
-    [SerializeField] private string jumpKey = "Jump";
-    [SerializeField] private string sprintKey = "Sprint";
-    [SerializeField] private string crouchKey = "Crouch";
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
@@ -70,9 +74,28 @@ public class AdvancedMovement : MonoBehaviour
     private bool readyToJump;
     private bool doubleJumpReady;
 
+    [Header("WallRunning")]
+    [SerializeField] private LayerMask whatIsWall;
+    [SerializeField] private float wallRunSpeed;
+    [SerializeField] private float maxWallTime;
+    [SerializeField] private float wallCheckDistance;
+    [SerializeField] private float minJumpHeight;
+    private RaycastHit leftWallCheck;
+    private RaycastHit rightWallCheck;
+    private RaycastHit frontWallCheck;
+    private RaycastHit backWallCheck;
+    private bool leftWallHit;
+    private bool rightWallHit;
+    private bool frontWallHit;
+    private bool backWallHit;
+
+    private bool readyToWallRun;
+
     [Header("Debugging")]
     [SerializeField] private State curState;
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float wallRunTimer;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -82,7 +105,13 @@ public class AdvancedMovement : MonoBehaviour
         rb.freezeRotation = true;
         readyToJump = true;
         doubleJumpReady = true;
+        readyToWallRun = true;
+        leftWallHit = false;
+        rightWallHit = false;
+        frontWallHit = false;
+        backWallHit = false;
         slideTimer = 0;
+        wallRunTimer = 0;
         moveSpeed = walkSpeed;
         startYScale = transform.localScale.y;
         curState = State.walking;
@@ -109,6 +138,9 @@ public class AdvancedMovement : MonoBehaviour
     {
         if(curState == State.sliding) {
             SlidingMovement();
+        }
+        else if(curState == State.wallRunning) {
+            WallRunMovement();
         }
         else {
             MovePlayer();
@@ -148,12 +180,15 @@ public class AdvancedMovement : MonoBehaviour
             }
             else if((curState == State.walking || curState == State.sprinting) && readyToJump) {
 
+                if(curState == State.walking) {
+                    curState = State.arial;
+                }
+                else curState = State.sprintAir;
                 readyToJump = false;
                 Jump();
 
                 Invoke(nameof(ResetJump), jumpCooldown);
-                if(curState == State.walking) curState = State.arial;
-                else curState = State.sprintAir;
+
             }
             else if(doubleJumpReady) {
 
@@ -170,13 +205,13 @@ public class AdvancedMovement : MonoBehaviour
         }
 
         if(grounded) {
-            if(curState == State.arial) {
+            if(curState == State.arial && readyToJump) {
                 curState = State.walking;
             }
-            else if(curState == State.sprintAir) {
+            else if(curState == State.sprintAir && readyToJump) {
                 curState = State.sprinting;
             }
-            else if(curState == State.airCrouch) {
+            else if(curState == State.airCrouch && readyToJump) {
                 curState = State.crouching;
             }
         }
@@ -241,7 +276,19 @@ public class AdvancedMovement : MonoBehaviour
             StartSlide();
         }
 
-        if(grounded) doubleJumpReady = true;
+        if(grounded) {
+            doubleJumpReady = true;
+            readyToWallRun = true;
+        }
+
+        if(!grounded && !OnSlope()) {
+            if(curState == State.walking) curState = State.arial;
+            else if(curState == State.sprinting) curState = State.sprintAir;
+            else if(curState == State.crouching) curState = State.airCrouch;
+        }
+
+        //Wall Running
+        CheckForWall();
 
         //SpeedControl
         SpeedControl();
@@ -273,6 +320,9 @@ public class AdvancedMovement : MonoBehaviour
                 break;
             case State.airSlide:
                 moveSpeed = sprintSpeed;
+                break;
+            case State.wallRunning:
+                moveSpeed = wallRunSpeed;
                 break;
             default:
                 moveSpeed = walkSpeed;
@@ -429,5 +479,163 @@ public class AdvancedMovement : MonoBehaviour
     private Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDir, slopeHit.normal).normalized;
+    }
+
+    private void CheckForWall()
+    {
+
+        leftWallHit = Physics.Raycast(transform.position, -orientation.right, out leftWallCheck, wallCheckDistance, whatIsWall);
+        rightWallHit = Physics.Raycast(transform.position, orientation.right, out rightWallCheck, wallCheckDistance, whatIsWall);
+        backWallHit = Physics.Raycast(transform.position, -orientation.forward, out backWallCheck, wallCheckDistance, whatIsWall);
+        frontWallHit = Physics.Raycast(transform.position, orientation.forward, out frontWallCheck, wallCheckDistance, whatIsWall);
+
+        if(curState == State.wallRunning) {
+            if(!leftWallHit && !rightWallHit && !backWallHit && !frontWallHit) {
+                StopWallRun();
+            }
+        }
+        else if (!Physics.Raycast(transform.position, Vector3.down, minJumpHeight, whatIsGround) && readyToWallRun) {
+            if(leftWallHit || rightWallHit || backWallHit || frontWallHit) {
+                StartWallRun();
+            }
+        }
+    }
+
+    private void StartWallRun()
+    {
+
+        curState = State.wallRunning;
+
+        rb.useGravity = false;
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+        wallRunTimer = maxWallTime;
+    }
+
+    private void StopWallRun()
+    {
+        rb.useGravity = true;
+        curState = State.arial;
+        wallRunTimer = 0;
+
+        Vector3 wallNormal;
+        if(leftWallHit) {
+            wallNormal = leftWallCheck.normal;
+        }
+        else if(rightWallHit){
+            wallNormal = rightWallCheck.normal;
+        }
+        else if(frontWallHit){
+            wallNormal = frontWallCheck.normal;
+        }
+        else if(backWallHit){
+            wallNormal = backWallCheck.normal;
+        }
+        else {
+            wallNormal = Vector3.forward;
+        }
+
+        rb.AddForce(wallNormal * 20f, ForceMode.Impulse);
+
+    }
+
+    private void WallRunMovement()
+    {
+
+        Vector3 wallNormal;
+        if(leftWallHit) {
+            wallNormal = leftWallCheck.normal;
+            if(verInput > 0) {
+                Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+                rb.AddForce(wallForward * wallRunSpeed*10f, ForceMode.Force);
+                wallRunTimer -= Time.deltaTime;
+            }
+            else if(verInput < 0 || horInput < 0) {
+                wallRunTimer -= Time.deltaTime;
+                rb.linearVelocity = new Vector3(0f,0f,0f);
+            }
+            else if(horInput > 0) {
+                StopWallRun();
+            }
+            else {
+                rb.AddForce( Vector3.down * 5f, ForceMode.Force);
+                wallRunTimer -= 2f * Time.deltaTime;
+            } 
+        }
+        else if(rightWallHit) {
+            wallNormal = rightWallCheck.normal;
+            if(verInput > 0) {
+                Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+                rb.AddForce(-wallForward * wallRunSpeed*10f, ForceMode.Force);
+                wallRunTimer -= Time.deltaTime;
+            }
+            else if(verInput < 0 || horInput > 0) {
+                wallRunTimer -= Time.deltaTime;
+                rb.linearVelocity = new Vector3(0f,0f,0f);
+            }
+            else if(horInput < 0) {
+                StopWallRun();
+            }
+            else {
+                rb.AddForce( Vector3.down * 5f, ForceMode.Force);
+                wallRunTimer -= 2f * Time.deltaTime;
+            } 
+        }
+        else if(frontWallHit) {
+            wallNormal = frontWallCheck.normal;
+            if(horInput > 0) {
+                Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+                rb.AddForce(wallForward * wallRunSpeed*10f, ForceMode.Force);
+                wallRunTimer -= Time.deltaTime;
+            }
+            else if(horInput < 0) {
+                Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+                rb.AddForce(-wallForward * wallRunSpeed*10f, ForceMode.Force);
+                wallRunTimer -= Time.deltaTime;
+            }
+            else if(verInput > 0) {
+                wallRunTimer -= Time.deltaTime;
+                rb.linearVelocity = new Vector3(0f,0f,0f);
+            }
+            else if(verInput < 0 && horInput == 0) {
+                StopWallRun();
+            }
+            else {
+                rb.AddForce( Vector3.down * 5f, ForceMode.Force);
+                wallRunTimer -= 2f * Time.deltaTime;
+            }
+        }
+        else if(backWallHit) {
+            wallNormal = backWallCheck.normal;
+            if(horInput < 0) {
+                Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+                rb.AddForce(wallForward * wallRunSpeed*10f, ForceMode.Force);
+                wallRunTimer -= Time.deltaTime;
+            }
+            else if(horInput > 0) {
+                Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+                rb.AddForce(-wallForward * wallRunSpeed*10f, ForceMode.Force);
+                wallRunTimer -= Time.deltaTime;
+            }
+            else if(verInput < 0) {
+                wallRunTimer -= Time.deltaTime;
+                rb.linearVelocity = new Vector3(0f,0f,0f);
+            }
+            else if(verInput > 0 && horInput == 0) {
+                StopWallRun();
+            }
+            else {
+                rb.AddForce( Vector3.down * 5f, ForceMode.Force);
+                wallRunTimer -= 2f * Time.deltaTime;
+            }
+        }
+        else {
+            StopWallRun();
+        }
+
+        if (wallRunTimer <= 0) {
+            StopWallRun();
+            readyToWallRun = false;
+        }
     }
 }
