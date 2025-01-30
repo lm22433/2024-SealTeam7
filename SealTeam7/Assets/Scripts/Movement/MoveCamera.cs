@@ -10,7 +10,6 @@ public class MoveCamera : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        return;
         if (base.IsOwner) {
             var mainCam = FindFirstObjectByType<Camera>().gameObject.transform;
             mainCam.SetParent(transform);

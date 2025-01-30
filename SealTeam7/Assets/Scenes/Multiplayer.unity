@@ -273,7 +273,7 @@ MonoBehaviour:
     chunks: 25
     chunkSize: 25
     heightScale: 0.25
-    lerpFactor: 0.2
+    lerpFactor: 0.005
     chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   player: {fileID: 0}
 --- !u!4 &304089665
@@ -581,12 +581,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dontRoute: 0
   _unreliableMtu: 1023
-  _ipv4BindAddress: 127.0.0.1
-  _enableIpv6: 1
+  _ipv4BindAddress: 192.168.86.73
+  _enableIpv6: 0
   _ipv6BindAddress: 
   _port: 7770
   _maximumClients: 12
-  _clientAddress: localhost
+  _clientAddress: 
 --- !u!114 &688602658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -625,7 +625,7 @@ GameObject:
   - component: {fileID: 933319496}
   - component: {fileID: 933319495}
   - component: {fileID: 933319494}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -808,8 +808,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988705582}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18622932, y: 0.34986266, z: -0.07116964, w: 0.91534126}
-  m_LocalPosition: {x: -72.29091, y: 301.4749, z: -81.75005}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
