@@ -51,7 +51,6 @@ namespace Map
         }
 
         public void SetHeights(ushort[] heights) {
-            Debug.Log($"Height Set for ({settings.x}, {settings.z})");
             heightMap = heights;
         }
 

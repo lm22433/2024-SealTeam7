@@ -3,11 +3,9 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.Kinect.Sensor;
 using FishNet.Object;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.MemoryProfiler;
 using FishNet.Connection;
 using Map;
+using FishNet.Transporting;
 
 namespace Kinect
 {
@@ -66,6 +64,15 @@ namespace Kinect
             this.colourHeight = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
 
             StartKinect();
+            ServerManager.OnRemoteConnectionState += OnClientConnected;
+        }
+
+        private void OnClientConnected(NetworkConnection conn, RemoteConnectionStateArgs args)
+        {
+            if (args.ConnectionState == RemoteConnectionState.Started)
+            {
+                GetComponent<NetworkObject>().GiveOwnership(conn);
+            }
         }
 
         public void StartKinect()
@@ -84,36 +91,33 @@ namespace Kinect
         }
 
         public void RequestTexture(int z, int x) {
-            RequestChunkTextureServerRpc(Owner.ClientId, z, x); 
+            RequestChunkTextureServerRpc(Owner.ClientId, x, z); 
 
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void RequestChunkTextureServerRpc(int clientId, int chunkX, int chunkY)
+        private void RequestChunkTextureServerRpc(int clientId, int x, int z)
         {
-            ushort[] depths = GetChunkTexture(chunkX, chunkY);
+            ushort[] depths = GetChunkTexture(x, z);
 
             // Send the depth data back to the requesting client
             NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
 
             if (targetConnection != null)
             {
-                SendChunkTextureTargetRpc(targetConnection, depths, chunkX, chunkY);
+                SendChunkTextureTargetRpc(targetConnection, depths, x, z);
             }
         }
 
         [TargetRpc]
         private void SendChunkTextureTargetRpc(NetworkConnection conn, ushort[] depths, int x, int z)
         {
-            Debug.Log("Hi, I'am a callback!");
-            FindFirstObjectByType<MapGenerator>()._chunks[x * 5 + z].SetHeights(depths);
-            //callbackChunk.SetHeights(depths);
+            FindFirstObjectByType<MapGenerator>().GetChunk(z, x).SetHeights(depths);
         }
         
         public ushort[] GetChunkTexture(int chunkX, int chunkY)
         {
             //float similarity = 0;
-            Debug.Log("Chunk: (" + chunkX + "," + chunkY + ")");
             ushort[] depths = new ushort[(chunkSize + 2) * (chunkSize + 2)];
 
             int yChunkOffset = chunkY * chunkSize;

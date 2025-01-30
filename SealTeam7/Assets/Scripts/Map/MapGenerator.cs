@@ -20,7 +20,7 @@ namespace Map
     public class MapGenerator : MonoBehaviour {
         [SerializeField] private MapSettings settings;
         [SerializeField] private GameObject player;
-        public List<ChunkGenerator> _chunks;
+        private List<ChunkGenerator> _chunks;
     
         private void Awake() 
         {
@@ -59,6 +59,11 @@ namespace Map
                     chunk.CreateChunk();
                 }
             }
+        }
+
+        public ChunkGenerator GetChunk(int x, int z) {
+            Debug.Log($"{_chunks.Count} - {x * (int) math.sqrt(settings.chunks) + z}");
+            return _chunks[x * (int) math.sqrt(settings.chunks) + z];
         }
     }
 }
