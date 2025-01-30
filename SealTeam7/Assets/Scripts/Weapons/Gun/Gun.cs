@@ -32,6 +32,10 @@ namespace Weapons.Gun
         public int defaultMaxAmmo = 30;
         public float gunReloadTime = 2f;
         public int defaultTotalAmmo = 210;
+        
+        [Header("Accuracy Settings")]
+        
+        [Header("Recoil Settings")]
 
         [Header("HUD Settings")] 
         public Sprite gunSprite;
