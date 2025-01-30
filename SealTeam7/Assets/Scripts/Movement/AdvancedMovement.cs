@@ -178,6 +178,9 @@ public class AdvancedMovement : MonoBehaviour
 
                 Invoke(nameof(ResetJump), jumpCooldown);
             }
+            else if(curState == State.wallRunning) {
+                WallJump();
+            }
             else if((curState == State.walking || curState == State.sprinting) && readyToJump) {
 
                 if(curState == State.walking) {
@@ -195,13 +198,6 @@ public class AdvancedMovement : MonoBehaviour
                 doubleJumpReady = false;
                 BoostJump();
             }
-            else {
-                curState = State.arial;
-
-                transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-                readyToJump = false;
-                Invoke(nameof(ResetJump), jumpCooldown);
-            }
         }
 
         if(grounded) {
@@ -218,7 +214,13 @@ public class AdvancedMovement : MonoBehaviour
 
         //Sprinting
         if(InputController.GetInstance().GetSprintInput()) {
-            if(curState == State.walking || curState == State.crouching) {
+            if(curState == State.walking) {
+                curState = State.sprinting;
+            }
+            else if(curState == State.crouching) {
+                transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+                rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
+                rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
                 curState = State.sprinting;
             }
             if(curState == State.sliding) {
@@ -356,7 +358,7 @@ public class AdvancedMovement : MonoBehaviour
         moveDir = orientation.forward * verInput + orientation.right * horInput;
         moveDir = moveDir.normalized;
 
-        if(grounded) {
+        if(curState != State.sliding) {
             momentum = moveDir;
         }
 
@@ -373,7 +375,7 @@ public class AdvancedMovement : MonoBehaviour
             rb.AddForce(moveDir * moveSpeed * 10.0f, ForceMode.Force);   
         }
         else {
-            rb.AddForce((moveDir + momentum).normalized * moveSpeed * 10.0f * airMultiplier, ForceMode.Force);
+            rb.AddForce((moveDir).normalized * moveSpeed * 10.0f * airMultiplier, ForceMode.Force);
         }
 
         //bit jank but turn off gravity when on slope
@@ -398,6 +400,7 @@ public class AdvancedMovement : MonoBehaviour
         exitingSlope = true;
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         moveDir = orientation.forward*verInput + orientation.up + orientation.right * horInput;
+        momentum = orientation.forward*verInput + orientation.right * horInput;
         rb.AddForce(moveDir.normalized * boostForce, ForceMode.Impulse);
     }
 
@@ -506,7 +509,11 @@ public class AdvancedMovement : MonoBehaviour
 
         curState = State.wallRunning;
 
+        transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+
         rb.useGravity = false;
+        doubleJumpReady = true;
+        readyToWallRun = false;
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
         wallRunTimer = maxWallTime;
@@ -514,28 +521,29 @@ public class AdvancedMovement : MonoBehaviour
 
     private void StopWallRun()
     {
+
         rb.useGravity = true;
-        curState = State.arial;
+        curState = State.sprintAir;
         wallRunTimer = 0;
 
         Vector3 wallNormal;
         if(leftWallHit) {
-            wallNormal = leftWallCheck.normal;
+            wallNormal = orientation.right;
         }
         else if(rightWallHit){
-            wallNormal = rightWallCheck.normal;
+            wallNormal = -orientation.right;
         }
         else if(frontWallHit){
-            wallNormal = frontWallCheck.normal;
+            wallNormal = -orientation.forward;
         }
         else if(backWallHit){
-            wallNormal = backWallCheck.normal;
+            wallNormal = orientation.forward;
         }
         else {
             wallNormal = Vector3.forward;
         }
 
-        rb.AddForce(wallNormal * 20f, ForceMode.Impulse);
+        rb.AddForce(wallNormal.normalized * 3f, ForceMode.Impulse);
 
     }
 
@@ -547,7 +555,7 @@ public class AdvancedMovement : MonoBehaviour
             wallNormal = leftWallCheck.normal;
             if(verInput > 0) {
                 Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                rb.AddForce(wallForward * wallRunSpeed*10f, ForceMode.Force);
+                rb.AddForce(wallForward * moveSpeed * 10f, ForceMode.Force);
                 wallRunTimer -= Time.deltaTime;
             }
             else if(verInput < 0 || horInput < 0) {
@@ -566,7 +574,7 @@ public class AdvancedMovement : MonoBehaviour
             wallNormal = rightWallCheck.normal;
             if(verInput > 0) {
                 Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                rb.AddForce(-wallForward * wallRunSpeed*10f, ForceMode.Force);
+                rb.AddForce(-wallForward * moveSpeed * 10f, ForceMode.Force);
                 wallRunTimer -= Time.deltaTime;
             }
             else if(verInput < 0 || horInput > 0) {
@@ -585,12 +593,12 @@ public class AdvancedMovement : MonoBehaviour
             wallNormal = frontWallCheck.normal;
             if(horInput > 0) {
                 Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                rb.AddForce(wallForward * wallRunSpeed*10f, ForceMode.Force);
+                rb.AddForce(wallForward * moveSpeed * 10f, ForceMode.Force);
                 wallRunTimer -= Time.deltaTime;
             }
             else if(horInput < 0) {
                 Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                rb.AddForce(-wallForward * wallRunSpeed*10f, ForceMode.Force);
+                rb.AddForce(-wallForward * moveSpeed * 10f, ForceMode.Force);
                 wallRunTimer -= Time.deltaTime;
             }
             else if(verInput > 0) {
@@ -609,12 +617,12 @@ public class AdvancedMovement : MonoBehaviour
             wallNormal = backWallCheck.normal;
             if(horInput < 0) {
                 Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                rb.AddForce(wallForward * wallRunSpeed*10f, ForceMode.Force);
+                rb.AddForce(wallForward * moveSpeed * 10f, ForceMode.Force);
                 wallRunTimer -= Time.deltaTime;
             }
             else if(horInput > 0) {
                 Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                rb.AddForce(-wallForward * wallRunSpeed*10f, ForceMode.Force);
+                rb.AddForce(-wallForward * moveSpeed * 10f, ForceMode.Force);
                 wallRunTimer -= Time.deltaTime;
             }
             else if(verInput < 0) {
@@ -637,5 +645,39 @@ public class AdvancedMovement : MonoBehaviour
             StopWallRun();
             readyToWallRun = false;
         }
+    }
+
+    private void ResetWallRun() {
+        readyToWallRun = true;
+    }
+
+    private void WallJump() {
+        rb.useGravity = true;
+        curState = State.sprintAir;
+        wallRunTimer = 0;
+        Invoke(nameof(ResetWallRun), jumpCooldown);
+
+        Vector3 wallNormal;
+        if(leftWallHit) {
+            wallNormal = orientation.right;
+        }
+        else if(rightWallHit){
+            wallNormal = -orientation.right;
+        }
+        else if(frontWallHit){
+            wallNormal = -orientation.forward;
+        }
+        else if(backWallHit){
+            wallNormal = orientation.forward;
+        }
+        else {
+            wallNormal = Vector3.forward;
+        }
+        momentum = wallNormal;
+
+        moveDir = (wallNormal.normalized + transform.up);
+
+        //rb.AddForce(wallNormal.normalized *, ForceMode.Impulse);
+        rb.AddForce(moveDir * jumpForce, ForceMode.Impulse);
     }
 }
