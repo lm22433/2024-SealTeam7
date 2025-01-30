@@ -358,7 +358,7 @@ public class AdvancedMovement : MonoBehaviour
         moveDir = orientation.forward * verInput + orientation.right * horInput;
         moveDir = moveDir.normalized;
 
-        if(curState != State.sliding) {
+        if(grounded) {
             momentum = moveDir;
         }
 
@@ -375,7 +375,7 @@ public class AdvancedMovement : MonoBehaviour
             rb.AddForce(moveDir * moveSpeed * 10.0f, ForceMode.Force);   
         }
         else {
-            rb.AddForce((moveDir).normalized * moveSpeed * 10.0f * airMultiplier, ForceMode.Force);
+            rb.AddForce((moveDir + momentum).normalized * moveSpeed * 10.0f * airMultiplier, ForceMode.Force);
         }
 
         //bit jank but turn off gravity when on slope
@@ -408,7 +408,8 @@ public class AdvancedMovement : MonoBehaviour
     {
         curState = State.sliding;
 
-        slideDir = momentum.normalized;
+        slideDir = moveDir.normalized;
+        slideDir.y = 0f;
 
         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
         if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
@@ -497,10 +498,13 @@ public class AdvancedMovement : MonoBehaviour
                 StopWallRun();
             }
         }
-        else if (!Physics.Raycast(transform.position, Vector3.down, minJumpHeight, whatIsGround) && readyToWallRun) {
+        else if(!Physics.Raycast(transform.position, Vector3.down, minJumpHeight, whatIsGround) && readyToWallRun) {
             if(leftWallHit || rightWallHit || backWallHit || frontWallHit) {
                 StartWallRun();
             }
+        }
+        else if((leftWallHit || rightWallHit || backWallHit || frontWallHit) && !grounded) {
+            rb.AddForce(Vector3.down *1f, ForceMode.Impulse);
         }
     }
 
