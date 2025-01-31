@@ -1082,11 +1082,15 @@ MonoBehaviour:
     m_Bits: 2048
   wallRunSpeed: 9
   maxWallTime: 2
-  wallCheckDistance: 0.75
+  wallCheckDistance: 1.1
   minJumpHeight: 1.4
   curState: 0
   moveSpeed: 0
   wallRunTimer: 0
+  leftWallHit: 0
+  rightWallHit: 0
+  frontWallHit: 0
+  backWallHit: 0
 --- !u!1 &9138342415170533693
 GameObject:
   m_ObjectHideFlags: 0

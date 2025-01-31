@@ -84,10 +84,6 @@ public class AdvancedMovement : MonoBehaviour
     private RaycastHit rightWallCheck;
     private RaycastHit frontWallCheck;
     private RaycastHit backWallCheck;
-    private bool leftWallHit;
-    private bool rightWallHit;
-    private bool frontWallHit;
-    private bool backWallHit;
 
     private bool readyToWallRun;
 
@@ -95,6 +91,10 @@ public class AdvancedMovement : MonoBehaviour
     [SerializeField] private State curState;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float wallRunTimer;
+    [SerializeField] private bool leftWallHit;
+    [SerializeField] private bool rightWallHit;
+    [SerializeField] private bool frontWallHit;
+    [SerializeField] private bool backWallHit;
 
 
 
@@ -595,7 +595,12 @@ public class AdvancedMovement : MonoBehaviour
         }
         else if(frontWallHit) {
             wallNormal = frontWallCheck.normal;
-            if(horInput > 0) {
+            if(verInput > 0) {
+                wallRunTimer -= Time.deltaTime * 1.5f;
+                rb.linearVelocity = new Vector3(0f,0f,0f);
+                rb.AddForce(Vector3.up * moveSpeed * 20f, ForceMode.Force);
+            }
+            else if(horInput > 0) {
                 Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
                 rb.AddForce(wallForward * moveSpeed * 10f, ForceMode.Force);
                 wallRunTimer -= Time.deltaTime;
@@ -604,10 +609,6 @@ public class AdvancedMovement : MonoBehaviour
                 Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
                 rb.AddForce(-wallForward * moveSpeed * 10f, ForceMode.Force);
                 wallRunTimer -= Time.deltaTime;
-            }
-            else if(verInput > 0) {
-                wallRunTimer -= Time.deltaTime;
-                rb.linearVelocity = new Vector3(0f,0f,0f);
             }
             else if(verInput < 0 && horInput == 0) {
                 StopWallRun();
@@ -659,7 +660,7 @@ public class AdvancedMovement : MonoBehaviour
         rb.useGravity = true;
         curState = State.sprintAir;
         wallRunTimer = 0;
-        Invoke(nameof(ResetWallRun), jumpCooldown);
+        Invoke(nameof(ResetWallRun), jumpCooldown * 2f);
 
         Vector3 wallNormal;
         if(leftWallHit) {

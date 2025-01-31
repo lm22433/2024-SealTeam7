@@ -1499,6 +1499,10 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4021904673930832748, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 2048
+      objectReference: {fileID: 0}
     - target: {fileID: 4110011527559211832, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_Dithering
       value: 1
