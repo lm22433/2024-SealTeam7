@@ -8,6 +8,7 @@ using Map;
 using FishNet.Transporting;
 using Unity.Mathematics;
 using Unity.Multiplayer;
+using UnityEngine.Serialization;
 
 namespace Kinect
 {
@@ -15,44 +16,43 @@ namespace Kinect
     {
 
         [Header("Depth Calibrations")] [SerializeField, Range(300f, 1000f)]
-        private ushort _MinimumSandDepth;
+        private ushort minimumSandDepth;
 
-        [SerializeField, Range(600f, 1500f)] private ushort _MaximumSandDepth;
+        [SerializeField, Range(600f, 1500f)] private ushort maximumSandDepth;
 
         [Header("IR Calibrations")] [SerializeField, Range(0, 255f)]
-        private int _IRThreshold;
+        private int irThreshold;
 
         [Header("Similarity Threshold")] [SerializeField, Range(0.5f, 1f)]
-        private float _SimilarityThreshold;
+        private float similarityThreshold;
 
         //Internal Variables
-        private Device kinect = null;
-        private Transformation transformation = null;
+        private Device _kinect;
+        private Transformation _transformation;
 
-        private int colourWidth = 0;
+        private int _colourWidth;
+        private int _colourHeight;
 
-        private int colourHeight = 0;
-
-        private half[] depthMapArray;
+        private half[] _depthMapArray;
         [SerializeField] private int dimensions;
         [SerializeField] private int chunkSize;
-        bool running = false;
+        private bool _running;
 
-        override public void OnStartServer()
+        public override void OnStartServer()
         {
             if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.ClientAndServer) {
                 return;
             }
 
-            if (_MinimumSandDepth > _MaximumSandDepth)
+            if (minimumSandDepth > maximumSandDepth)
             {
                 Debug.LogError("Minimum depth is greater than maximum depth");
             }
 
-            this.kinect = Device.Open();
+            this._kinect = Device.Open();
 
             // Configure camera modes
-            this.kinect.StartCameras(new DeviceConfiguration
+            this._kinect.StartCameras(new DeviceConfiguration
             {
                 ColorFormat = ImageFormat.ColorBGRA32,
                 ColorResolution = ColorResolution.R1080p,
@@ -61,13 +61,13 @@ namespace Kinect
                 CameraFPS = FPS.FPS30
             });
 
-            Debug.Log("AKDK Serial Number: " + this.kinect.SerialNum);
+            Debug.Log("AKDK Serial Number: " + this._kinect.SerialNum);
 
             // Initialize the transformation engine
-            this.transformation = this.kinect.GetCalibration().CreateTransformation();
+            this._transformation = this._kinect.GetCalibration().CreateTransformation();
 
-            this.colourWidth = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
-            this.colourHeight = this.kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+            this._colourWidth = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
+            this._colourHeight = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
 
             StartKinect();
             ServerManager.OnRemoteConnectionState += OnClientConnected;
@@ -81,30 +81,29 @@ namespace Kinect
             }
         }
 
-        public void StartKinect()
+        private void StartKinect()
         {
-            depthMapArray = new half[dimensions * dimensions];
+            _depthMapArray = new half[dimensions * dimensions];
 
-            running = true;
-            Task.Run(() => GetCaptureAsync());
+            _running = true;
+            Task.Run(GetCaptureAsync);
         }
         
         void OnApplicationQuit()
         {
-            running = false;
-            kinect.StopCameras();
-            kinect.Dispose();
+            _running = false;
+            _kinect.StopCameras();
+            _kinect.Dispose();
         }
 
-        public void RequestTexture(int z, int x) {
-            RequestChunkTextureServerRpc(Owner.ClientId, x, z); 
-
+        public void RequestTexture(ushort lod, int z, int x) {
+            RequestChunkTextureServerRpc(Owner.ClientId, lod, x, z); 
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void RequestChunkTextureServerRpc(int clientId, int x, int z)
+        private void RequestChunkTextureServerRpc(int clientId, ushort lod, int x, int z)
         {
-            half[] depths = GetChunkTexture(x, z);
+            half[] depths = GetChunkTexture(lod, x, z);
 
             // Send the depth data back to the requesting client
             NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
@@ -121,11 +120,15 @@ namespace Kinect
             FindFirstObjectByType<MapGenerator>().GetChunk(z, x).SetHeights(depths);
         }
         
-        public half[] GetChunkTexture(int chunkX, int chunkY)
+        public half[] GetChunkTexture(ushort lod, int chunkX, int chunkY)
         {
+            var lodFactor = lod == 0 ? 1 : lod * 2;
+            
             //float similarity = 0;
-            half[] depths = new half[(chunkSize + 2) * (chunkSize + 2)];
+            half[] depths = new half[(chunkSize / lodFactor + 1) * (chunkSize / lodFactor + 1)];
 
+            var resolution = chunkSize / lodFactor;
+            
             int yChunkOffset = chunkY * chunkSize;
             int xChunkOffset = chunkX * chunkSize;
 
@@ -147,11 +150,11 @@ namespace Kinect
             }
             */
             //Write changed texture
-            for (int y = 0; y < chunkSize + 2; y++)
+            for (int y = 0; y < resolution + 1; y++)
             {
-                for (int x = 0; x < chunkSize + 2; x++)
+                for (int x = 0; x < resolution + 1; x++)
                 {
-                    depths[y * (chunkSize + 2) + x] = depthMapArray[(y + yChunkOffset) * dimensions + xChunkOffset + x];
+                    depths[y * (resolution + 1) + x] = _depthMapArray[(lodFactor * y + yChunkOffset) * dimensions + xChunkOffset + lodFactor * x];
                 }
             }
 
@@ -160,13 +163,11 @@ namespace Kinect
 
         public async Task GetCaptureAsync()
         {
-            while (running)
+            while (_running)
             {
-                using (Image transformedDepth = new Image(ImageFormat.Depth16, colourWidth, colourHeight, colourWidth * sizeof(UInt16)))
-                using (Capture capture = await Task.Run(() => kinect.GetCapture()))
-                {
-                    GetDepthTextureFromKinect(capture, transformedDepth);
-                }
+                using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
+                using Capture capture = await Task.Run(() => _kinect.GetCapture());
+                GetDepthTextureFromKinect(capture, transformedDepth);
             }
             
         }
@@ -175,36 +176,36 @@ namespace Kinect
         {
             //using (Capture capture = kinect.GetCapture())
             // Transform the depth image to the colour camera perspective
-            transformation.DepthImageToColorCamera(capture, transformedDepth);
+            _transformation.DepthImageToColorCamera(capture, transformedDepth);
 
             // Create Depth Buffer
             Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
-            Span<ushort> IRBuffer = capture.IR.GetPixels<ushort>().Span;
+            Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
 
-            int imageXOffset = (colourWidth - dimensions) / 2;
-            int imageYOffset = (colourHeight - dimensions) / 2;
+            int imageXOffset = (_colourWidth - dimensions) / 2;
+            int imageYOffset = (_colourHeight - dimensions) / 2;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < dimensions; y++)
             {
                 for (int x = 0; x < dimensions; x++)
                 {
-                    var depth = depthBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
-                    var ir = 0; //IRBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
+                    var depth = depthBuffer[(y + imageYOffset) * _colourWidth + imageXOffset + x];
+                    var ir = 0; //irBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
 
                     // Calculate pixel values
-                    half depthRange = (half)(_MaximumSandDepth - _MinimumSandDepth);
-                    half pixelValue = (half)(_MaximumSandDepth - depth);
+                    half depthRange = (half)(maximumSandDepth - minimumSandDepth);
+                    half pixelValue = (half)(maximumSandDepth - depth);
 
-                    if (ir < _IRThreshold)
+                    if (ir < irThreshold)
                     {
                         half val = (half) 0;
-                        if (depth == 0 || depth >= _MaximumSandDepth) // No depth image
+                        if (depth == 0 || depth >= maximumSandDepth) // No depth image
                         {
                             val = (half) 0;
 
                         }
-                        else if (depth < _MinimumSandDepth)
+                        else if (depth < minimumSandDepth)
                         {
 
                             val = (half) 1;
@@ -216,7 +217,7 @@ namespace Kinect
 
                         }
 
-                        depthMapArray[y * dimensions + x] = val;
+                        _depthMapArray[y * dimensions + x] = val;
                     }
                 }
             }

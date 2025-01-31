@@ -129,7 +129,6 @@ namespace Map
         }
 
         public Chunk GetChunk(int x, int z) {
-            Debug.Log($"{_chunks.Count} - {x * (int) math.sqrt(settings.chunks) + z}");
             return _chunks[x * (int) math.sqrt(settings.chunks) + z];
         }
     }

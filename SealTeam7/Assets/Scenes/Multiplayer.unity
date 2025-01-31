@@ -269,11 +269,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 500
-    chunks: 25
+    size: 1000
+    chunks: 100
     chunkSize: 25
     maxHeight: 20
-    lerpFactor: 0.005
+    lerpFactor: 1
     lodLevels:
     - maxViewDistance: 10010
       lod: 0

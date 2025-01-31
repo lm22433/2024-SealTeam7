@@ -96,7 +96,7 @@ namespace Map
             if (settings.isLocalhost) {
                 _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.z, settings.x);
             } else {
-                _kinect.RequestTexture(settings.z, settings.x);
+                _kinect.RequestTexture(settings.lod, settings.z, settings.x);
             }
         }
 
