@@ -1,4 +1,4 @@
-using Input;
+using Player.Input;
 using UnityEngine;
 
 namespace Weapons

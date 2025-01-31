@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Weapons;
@@ -43,6 +42,8 @@ namespace HUD
                 primaryWeaponBackground.sprite = unselectedWeaponIcon;
                 secondaryWeaponBackground.sprite = selectedWeaponIcon;
             }
+            
+            
         }
     }
 }

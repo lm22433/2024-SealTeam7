@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Player;
 using UnityEngine;
 using UnityEngine.UI;
 using Weapons;
@@ -8,9 +8,10 @@ namespace Enemies
     public abstract class Enemy : MonoBehaviour, IDamageable
     {
         [SerializeField] public Slider healthBar;
-        [SerializeField] public Transform player;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected float damage;
+        protected GameObject PlayerObject;
+        protected IDamageable Player;
         private float _health;
 
         public virtual void Start()
@@ -18,6 +19,8 @@ namespace Enemies
             _health = maxHealth;
             healthBar.maxValue = maxHealth;
             healthBar.value = _health;
+            PlayerObject = GameObject.FindWithTag("Player");
+            Player = PlayerObject.GetComponent<PlayerManager>();
         }
 
         public void TakeDamage(float dmg)
@@ -40,7 +43,7 @@ namespace Enemies
 
         public virtual void Update()
         {
-            healthBar.transform.LookAt(player.position);
+            healthBar.transform.LookAt(PlayerObject.transform.position);
         }
     }
 }

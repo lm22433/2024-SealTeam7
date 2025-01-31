@@ -1,6 +1,5 @@
-using Input;
+using Player.Input;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Weapons.Gun;
 
 namespace Weapons
