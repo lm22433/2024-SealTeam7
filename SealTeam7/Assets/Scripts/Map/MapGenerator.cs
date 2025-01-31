@@ -37,8 +37,8 @@ namespace Map
         private float _spacing;
         private ushort _chunkRow;
         private float _sqrPlayerMoveThreshold;
-        private Vector2 _playerPosition;
-        private Vector2 _playerPositionOld;
+        private Vector3 _playerPosition;
+        private Vector3 _playerPositionOld;
         [SerializeField] private bool isLocalhost;
     
         private void Awake() 
@@ -112,16 +112,16 @@ namespace Map
         private void Update()
         {
             if(player) {
-                _playerPosition = new Vector2(player.transform.position.x, player.transform.position.z);
-                if ((_playerPositionOld - _playerPosition).SqrMagnitude() > _sqrPlayerMoveThreshold)
+                _playerPosition = player.transform.position;
+                if (Vector3.SqrMagnitude(_playerPositionOld - _playerPosition) > _sqrPlayerMoveThreshold)
                 {
                     _playerPositionOld = _playerPosition;
                     UpdateChunkLods();
                 }
             } else {
-                var players = FindObjectsByType<PlayerMovement>(FindObjectsSortMode.None);
-                foreach (PlayerMovement p in players) {
-                    if (p.gameObject.GetComponent<NetworkObject>().IsOwner) {
+                var players = GameObject.FindObjectsByType<AdvancedMovement>(FindObjectsSortMode.None);
+                foreach (var p in players) {
+                    if (p.gameObject.GetComponentInParent<NetworkObject>().IsOwner) {
                         player = p.gameObject;
                     }
                 }

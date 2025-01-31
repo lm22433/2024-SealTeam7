@@ -53,9 +53,9 @@ namespace Map
             enabled = visible;
         }
 
-        public float SqrDistanceToPlayer(Vector2 playerPos)
+        public float SqrDistanceToPlayer(Vector3 playerPos)
         {
-            return _bounds.SqrDistance(new Vector3(playerPos.x, 0f, playerPos.y));
+            return _bounds.SqrDistance(playerPos);
         }
         
         private void Awake()
@@ -84,7 +84,7 @@ namespace Map
                 _kinect = FindAnyObjectByType<KinectAPI>();
             }
 
-            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, settings.maxHeight, settings.size * settings.spacing));
+            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, 2f * settings.maxHeight, settings.size * settings.spacing));
         }
 
         private void Update()
