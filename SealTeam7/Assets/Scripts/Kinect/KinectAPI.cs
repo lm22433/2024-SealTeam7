@@ -91,9 +91,11 @@ namespace Kinect
         
         void OnApplicationQuit()
         {
-            _running = false;
-            _kinect.StopCameras();
-            _kinect.Dispose();
+            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
+                _running = false;
+                _kinect.StopCameras();
+                _kinect.Dispose();
+            }
         }
 
         public void RequestTexture(ushort lod, int z, int x) {

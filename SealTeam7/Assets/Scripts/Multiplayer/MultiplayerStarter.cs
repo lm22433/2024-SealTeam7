@@ -33,7 +33,7 @@ public class MultiplayerStarter : MonoBehaviour {
     }
 
     private IEnumerator WaitToConnectClient() {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(1);
 
         ConnectClient();
     }
