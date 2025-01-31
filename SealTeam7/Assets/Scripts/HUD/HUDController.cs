@@ -20,12 +20,12 @@ namespace HUD
 
         private void Start()
         {
-            primaryWeaponIcon.GetComponent<Image>().sprite = weaponManager.primaryWeapon.gunSprite;
+            primaryWeaponIcon.GetComponent<Image>().sprite = weaponManager.primaryWeapon.displaySprite;
             Debug.Log(weaponManager.primaryWeapon.spritePosition);
             primaryWeaponIcon.localPosition = weaponManager.primaryWeapon.spritePosition;
             primaryWeaponIcon.sizeDelta = weaponManager.primaryWeapon.spriteScale;
             
-            secondaryWeaponIcon.GetComponent<Image>().sprite = weaponManager.secondaryWeapon.gunSprite;
+            secondaryWeaponIcon.GetComponent<Image>().sprite = weaponManager.secondaryWeapon.displaySprite;
             secondaryWeaponIcon.localPosition = weaponManager.secondaryWeapon.spritePosition;
             secondaryWeaponIcon.sizeDelta = weaponManager.secondaryWeapon.spriteScale;
         }

@@ -9,21 +9,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a24a7889adf4c67b537ff752883fe74, type: 3}
-  m_Name: Assault Rifle
+  m_Script: {fileID: 11500000, guid: 0558c9ab33bc465b8572eede2ea4fa58, type: 3}
+  m_Name: Assault Rifle 1
   m_EditorClassIdentifier: 
-  gunName: Assault Rifle
-  gunDescription: 
-  gunModel: {fileID: 3773515458589958960, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
+  name: Assault Rifle
+  description: 
+  modelPrefab: {fileID: 3773515458589958960, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
   spawnPosition: {x: 0.45, y: -0.25, z: 0.9}
   spawnRotation: {x: 0, y: 0, z: 0}
   fireMode: 1
-  gunDamage: 32
-  gunRange: 100
-  gunFireRate: 746
-  defaultMaxAmmo: 40
-  gunReloadTime: 1.43
-  defaultTotalAmmo: 120
-  gunSprite: {fileID: 21300000, guid: 0c8205df033f14ac5b6db5991a53c36b, type: 3}
+  damage: 32
+  range: 100
+  fireRate: 746
+  magazineSize: 40
+  maxAmmo: 120
+  reloadTime: 1.43
+  displaySprite: {fileID: 21300000, guid: 0c8205df033f14ac5b6db5991a53c36b, type: 3}
   spriteScale: {x: 256, y: 256}
   spritePosition: {x: -828.4, y: -425, z: 0}

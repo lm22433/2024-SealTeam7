@@ -1351,6 +1351,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 275304694601727808, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: <SceneId>k__BackingField
+      value: 3891707647
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652145623499674596, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1962498067}
+    - target: {fileID: 1652145623499674596, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: primaryWeapon
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f0afadaccffe434e9009ee4ccf6f596, type: 2}
+    - target: {fileID: 1652145623499674596, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      propertyPath: secondaryWeapon
+      value: 
+      objectReference: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
     - target: {fileID: 1909127780349365990, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: meleeWeapon
       value: 
@@ -1366,7 +1382,7 @@ PrefabInstance:
     - target: {fileID: 1909127780349365990, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: secondaryWeapon
       value: 
-      objectReference: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 2039196786239549850, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_TagString
       value: MainCamera
@@ -1961,6 +1977,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &1962498067 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 3280914580326757287, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+  m_PrefabInstance: {fileID: 1488575774}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1996594038 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1652145623499674596, guid: e50841c90738b2c49922093ea34609ae, type: 3}
