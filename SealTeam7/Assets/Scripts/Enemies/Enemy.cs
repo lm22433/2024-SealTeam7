@@ -1,6 +1,7 @@
 ﻿using Player;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 using Weapons;
 
 namespace Enemies
@@ -10,6 +11,7 @@ namespace Enemies
         [SerializeField] public Slider healthBar;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected float damage;
+        [SerializeField] protected VisualEffect attackEffect;
         protected GameObject PlayerObject;
         protected IDamageable Player;
         private float _health;

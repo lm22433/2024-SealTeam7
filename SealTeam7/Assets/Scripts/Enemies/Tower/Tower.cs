@@ -15,6 +15,8 @@ namespace Enemies.Tower
             {
                 _timeSinceAttack = 0;
                 Player.TakeDamage(damage);
+                //attackEffect.shape.
+                attackEffect.Play();
             }
         }
         
