@@ -24,8 +24,18 @@ public class MultiplayerStarter : MonoBehaviour {
                 Debug.Log("Client Connecting");
                 ConnectClient();
                 break;
+            case MultiplayerRoleFlags.ClientAndServer:
+                StartServer();
+                StartCoroutine(WaitToConnectClient());
+                break;
 
         }
+    }
+
+    private IEnumerator WaitToConnectClient() {
+        yield return new WaitForSeconds(5);
+
+        ConnectClient();
     }
 
     private void StartServer() {

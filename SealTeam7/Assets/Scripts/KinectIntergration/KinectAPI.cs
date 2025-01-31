@@ -6,6 +6,8 @@ using FishNet.Object;
 using FishNet.Connection;
 using Map;
 using FishNet.Transporting;
+using Unity.Mathematics;
+using Unity.Multiplayer;
 
 namespace Kinect
 {
@@ -31,13 +33,17 @@ namespace Kinect
 
         private int colourHeight = 0;
 
-        private ushort[] depthMapArray;
+        private half[] depthMapArray;
         [SerializeField] private int dimensions;
         [SerializeField] private int chunkSize;
         bool running = false;
 
         override public void OnStartServer()
         {
+            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.ClientAndServer) {
+                return;
+            }
+
             if (_MinimumSandDepth > _MaximumSandDepth)
             {
                 Debug.LogError("Minimum depth is greater than maximum depth");
@@ -77,7 +83,7 @@ namespace Kinect
 
         public void StartKinect()
         {
-            depthMapArray = new ushort[dimensions * dimensions];
+            depthMapArray = new half[dimensions * dimensions];
 
             running = true;
             Task.Run(() => GetCaptureAsync());
@@ -98,7 +104,7 @@ namespace Kinect
         [ServerRpc(RequireOwnership = false)]
         private void RequestChunkTextureServerRpc(int clientId, int x, int z)
         {
-            ushort[] depths = GetChunkTexture(x, z);
+            half[] depths = GetChunkTexture(x, z);
 
             // Send the depth data back to the requesting client
             NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
@@ -110,15 +116,15 @@ namespace Kinect
         }
 
         [TargetRpc]
-        private void SendChunkTextureTargetRpc(NetworkConnection conn, ushort[] depths, int x, int z)
+        private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
         {
             FindFirstObjectByType<MapGenerator>().GetChunk(z, x).SetHeights(depths);
         }
         
-        public ushort[] GetChunkTexture(int chunkX, int chunkY)
+        public half[] GetChunkTexture(int chunkX, int chunkY)
         {
             //float similarity = 0;
-            ushort[] depths = new ushort[(chunkSize + 2) * (chunkSize + 2)];
+            half[] depths = new half[(chunkSize + 2) * (chunkSize + 2)];
 
             int yChunkOffset = chunkY * chunkSize;
             int xChunkOffset = chunkX * chunkSize;
@@ -187,26 +193,26 @@ namespace Kinect
                     var ir = 0; //IRBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
 
                     // Calculate pixel values
-                    ushort depthRange = (ushort)(_MaximumSandDepth - _MinimumSandDepth);
-                    ushort pixelValue = (ushort)(_MaximumSandDepth - depth);
+                    half depthRange = (half)(_MaximumSandDepth - _MinimumSandDepth);
+                    half pixelValue = (half)(_MaximumSandDepth - depth);
 
                     if (ir < _IRThreshold)
                     {
-                        ushort val = 0;
+                        half val = (half) 0;
                         if (depth == 0 || depth >= _MaximumSandDepth) // No depth image
                         {
-                            val = 0;
+                            val = (half) 0;
 
                         }
                         else if (depth < _MinimumSandDepth)
                         {
 
-                            val = depthRange;
+                            val = (half) 1;
 
                         }
                         else
                         {
-                            val = pixelValue;
+                            val = (half) (pixelValue / depthRange);
 
                         }
 

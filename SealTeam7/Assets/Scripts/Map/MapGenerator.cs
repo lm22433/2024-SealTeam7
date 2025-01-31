@@ -5,6 +5,8 @@ using Unity.Mathematics;
 using UnityEngine.Serialization;
 
 using Unity.Multiplayer;
+using Unity.VisualScripting;
+using FishNet.Object;
 
 namespace Map
 {
@@ -37,6 +39,7 @@ namespace Map
         private float _sqrPlayerMoveThreshold;
         private Vector2 _playerPosition;
         private Vector2 _playerPositionOld;
+        [SerializeField] private bool isLocalhost;
     
         private void Awake() 
         {
@@ -45,27 +48,29 @@ namespace Map
 
                 return;
             }
-            
-            var prefabScript = chunkPrefab.GetComponent<ChunkGenerator>();
 
             _sqrPlayerMoveThreshold = settings.playerMoveThreshold * settings.playerMoveThreshold;
             _chunkRow = (ushort) math.sqrt(settings.chunks);
             _chunks = new List<Chunk>(_chunkRow);
 
-            var spacing = (float) settings.size / _chunkRow / settings.chunkSize;
+            _spacing = (float) settings.size / _chunkRow / settings.chunkSize;
             
             _noise = GetComponent<NoiseGenerator>();
-            
+
+            if (isLocalhost) {
+                _noise.StartNoise(settings.size, settings.chunkSize);
+            }
+   
             ChunkSettings chunkSettings = new ChunkSettings
             {
                 size = settings.chunkSize,
                 spacing = _spacing,
                 maxHeight = settings.maxHeight,
                 lerpFactor = settings.lerpFactor,
-                lod = settings.lodLevels[^1].lod
+                lod = settings.lodLevels[^1].lod,
+                isLocalhost = isLocalhost
             };
 
-            _noise.StartNoise(settings.size, settings.chunkSize);
             chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
             
             for (float x = 0; x < settings.size; x += settings.chunkSize * _spacing) {
@@ -76,7 +81,6 @@ namespace Map
                     chunkSettings.z = (ushort) (z / (settings.chunkSize * _spacing));
                     chunk.SetSettings(chunkSettings);
                     _chunks.Add(chunk);
-                    chunk.CreateChunk();
                 }
             }
             
@@ -107,15 +111,24 @@ namespace Map
 
         private void Update()
         {
-            _playerPosition = new Vector2(player.transform.position.x, player.transform.position.z);
-            if ((_playerPositionOld - _playerPosition).SqrMagnitude() > _sqrPlayerMoveThreshold)
-            {
-                _playerPositionOld = _playerPosition;
-                UpdateChunkLods();
+            if(player) {
+                _playerPosition = new Vector2(player.transform.position.x, player.transform.position.z);
+                if ((_playerPositionOld - _playerPosition).SqrMagnitude() > _sqrPlayerMoveThreshold)
+                {
+                    _playerPositionOld = _playerPosition;
+                    UpdateChunkLods();
+                }
+            } else {
+                var players = FindObjectsByType<PlayerMovement>(FindObjectsSortMode.None);
+                foreach (PlayerMovement p in players) {
+                    if (p.gameObject.GetComponent<NetworkObject>().IsOwner) {
+                        player = p.gameObject;
+                    }
+                }
             }
         }
 
-        public ChunkGenerator GetChunk(int x, int z) {
+        public Chunk GetChunk(int x, int z) {
             Debug.Log($"{_chunks.Count} - {x * (int) math.sqrt(settings.chunks) + z}");
             return _chunks[x * (int) math.sqrt(settings.chunks) + z];
         }

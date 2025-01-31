@@ -152,8 +152,8 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
-  _MinimumSandDepth: 300
-  _MaximumSandDepth: 600
+  _MinimumSandDepth: 600
+  _MaximumSandDepth: 1200
   _IRThreshold: 255
   _SimilarityThreshold: 0.5
   dimensions: 502
@@ -272,10 +272,15 @@ MonoBehaviour:
     size: 500
     chunks: 25
     chunkSize: 25
-    heightScale: 0.25
+    maxHeight: 0
     lerpFactor: 0.005
-    chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
+    lodLevels:
+    - maxViewDistance: 10010
+      lod: 0
+    playerMoveThreshold: 3
+  chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   player: {fileID: 0}
+  isLocalhost: 1
 --- !u!4 &304089665
 Transform:
   m_ObjectHideFlags: 0
@@ -530,7 +535,7 @@ PrefabInstance:
     - target: {fileID: 7443408887813606060, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: _playerPrefab
       value: 
-      objectReference: {fileID: 8152363538660617097, guid: e50841c90738b2c49922093ea34609ae, type: 3}
+      objectReference: {fileID: -2440921334583525641, guid: e50841c90738b2c49922093ea34609ae, type: 3}
     - target: {fileID: 7443408887813606060, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: Spawns.Array.size
       value: 1
@@ -581,7 +586,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dontRoute: 0
   _unreliableMtu: 1023
-  _ipv4BindAddress: 192.168.86.73
+  _ipv4BindAddress: 
   _enableIpv6: 0
   _ipv6BindAddress: 
   _port: 7770
