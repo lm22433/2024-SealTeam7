@@ -269,9 +269,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 1000
+    size: 1200
     chunks: 100
-    chunkSize: 25
+    chunkSize: 24
     maxHeight: 20
     lerpFactor: 1
     lodLevels:
@@ -282,7 +282,7 @@ MonoBehaviour:
     - maxViewDistance: 300
       lod: 2
     - maxViewDistance: 600
-      lod: 6
+      lod: 3
     playerMoveThreshold: 3
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   player: {fileID: 0}
