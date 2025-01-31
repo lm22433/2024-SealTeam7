@@ -929,9 +929,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c2498eb054ac4780835ce79090f540c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  primaryWeapon: {fileID: 11400000, guid: d86cdb4b4c24e4393b607878c80dff98, type: 2}
+  primaryWeapon: {fileID: 11400000, guid: 8f0afadaccffe434e9009ee4ccf6f596, type: 2}
   secondaryWeapon: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
   meleeWeapon: {fileID: 11400000, guid: 8401cc4816f964473973601e1e5427fa, type: 2}
+  playerCamera: {fileID: 3280914580326757287}
   weaponHolder: {fileID: 4394227876815751589}
 --- !u!114 &3422467509229774557
 MonoBehaviour:

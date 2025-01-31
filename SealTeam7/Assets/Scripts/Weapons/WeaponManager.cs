@@ -1,165 +1,136 @@
 using Input;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using Weapons.Gun;
 
 namespace Weapons
 {
     public class WeaponManager : MonoBehaviour
     {
         [Header("Guns")]
-        public Gun.Gun primaryWeapon;
-        public Gun.Gun secondaryWeapon;
+        public GunData primaryWeapon;
+        public GunData secondaryWeapon;
         
         [Header("Melee Weapon")]
         public MeleeWeapon meleeWeapon;
         
         [Header("References")]
+        [SerializeField] private Camera playerCamera;
         [SerializeField] private Transform weaponHolder;
 
-        private Gun.Gun _currentGun;
-        private GameObject _currentGunInstance;
-        private bool _isAiming;
-        
-        private float _previousTriggerValue;
-        
-        private void Start()
+        private GunBehaviour _currentGun;
+        private GunBehaviour _primaryGunBehaviour;
+        private GunBehaviour _secondaryGunBehaviour;
+
+        private void Awake()
         {
+            InitializeWeapons();
             EquipWeapon(primaryWeapon);
         }
-
-        public void EquipWeapon(Gun.Gun gun)
+        
+        private void InitializeWeapons()
         {
-            if (gun == null)
-            {
-                Debug.LogWarning("Attempted to equip a null weapon. This should never happen.");
-                return;
-            }
-
-            if (gun == _currentGun)
-            {
-                return;
-            }
-
-            if (_currentGunInstance != null)
-            {
-                Destroy(_currentGunInstance);
-            }
-
-            // Instantiate the new weapon model
-            _currentGunInstance = Instantiate(gun.gunModel, weaponHolder);
-            _currentGunInstance.transform.localPosition = gun.spawnPosition;
-            _currentGunInstance.transform.localEulerAngles = gun.spawnRotation;
-
-            _currentGun = gun;
-            
-            GunInstance instance = _currentGunInstance.GetComponent<GunInstance>();
-            if (instance == null)
-            {
-                Debug.LogError("Weapon model prefab is missing WeaponInstance component!");
-                return;
-            }
-            gun.Initialize(instance);
-
-            _isAiming = false;
+            _primaryGunBehaviour = CreateGunBehaviour(primaryWeapon);
+            _secondaryGunBehaviour = CreateGunBehaviour(secondaryWeapon);
         }
 
+        private GunBehaviour CreateGunBehaviour(GunData data)
+        {
+            var instance = Instantiate(data.modelPrefab, weaponHolder);
+            instance.transform.localPosition = data.spawnPosition;
+            instance.transform.localEulerAngles = data.spawnRotation;
+            instance.gameObject.SetActive(false);
+
+            var gunBehaviour = instance.AddComponent<GunBehaviour>();
+            gunBehaviour.Initialize(data, playerCamera);
+            return gunBehaviour;
+        }
+
+        private void EquipWeapon(GunData gunData)
+        {
+            GunBehaviour newGun = GetGunBehaviour(gunData);
+            if (newGun == null || newGun == _currentGun) return;
+
+            if (_currentGun != null)
+            {
+                _currentGun.SetVisible(false);
+            }
+
+            _currentGun = newGun;
+            _currentGun.SetVisible(true);
+            // _currentGun.OnEquipped();
+        }
+
+        private GunBehaviour GetGunBehaviour(GunData gunData) =>
+            gunData == primaryWeapon ? _primaryGunBehaviour : _secondaryGunBehaviour;
 
         private void Update()
         {
-            switch (_currentGun.fireMode)
-            {
-                case FireMode.Automatic:
-                {
-                    if (InputController.GetInstance().GetShootInputHeld())
-                    {
-                        _currentGun.Attack();
-                    }
+            if (_currentGun == null) return;
             
-                    break;
-                }
-                case FireMode.SemiAutomatic:
-                {
-                    if (InputController.GetInstance().GetShootInputPressed())
-                    {
-                        _currentGun.Attack();
-                    }
-            
-                    break;
-                }
-            }
-            
-            // Aiming
-            if (InputController.GetInstance().GetAimInputHeld() && !_isAiming)
-            {
-                StartAiming();
-            } else if (!InputController.GetInstance().GetAimInputHeld() && _isAiming)
-            {
-                StopAiming();
-            }
-            
-            // Reloading
-            if (InputController.GetInstance().GetReloadInput())
-            {
-                _currentGun.TryReload();
-            }
-            
-            // Melee Attack
-            if (InputController.GetInstance().GetMeleeInput())
-            {
-                meleeWeapon.Attack();
-            }
-
-            // Scrolling to Swap Weapons
-            if (InputController.GetInstance().GetScrollSwapWeaponInput() != 0.0f)
-            {
-                SwapWeapon();
-            }
-            
-            // Swap Weapons
-            if (InputController.GetInstance().GetSwapWeaponInput())
-            {
-                SwapWeapon();
-            }
-            
-            // Equip Primary Weapon
-            if (InputController.GetInstance().GetEquipPrimaryInput())
-            {
-                EquipWeapon(primaryWeapon);
-            }
-            
-            // Equip Primary Secondary Weapon
-            if (InputController.GetInstance().GetEquipSecondaryInput())
-            {
-                EquipWeapon(secondaryWeapon);
-            }
-        }
-        
-        private void StartAiming() 
-        {
-            _isAiming = true;
-            Debug.Log("Started Aiming");
+            HandleShooting();
+            HandleAiming();
+            HandleReload();
+            HandleMelee();
+            HandleWeaponSwap();
+            HandleWeaponEquip();
         }
 
-        private void StopAiming()
+        private void HandleShooting()
         {
-            _isAiming = false;
-            Debug.Log("Stopped Aiming");
+            InputController inputController = InputController.GetInstance();
+
+            if (inputController.GetShootInputHeld() || inputController.GetShootInputPressed())
+            {
+                _currentGun.TryShoot();
+            }
+        }
+
+        private void HandleAiming()
+        {
+            InputController inputController = InputController.GetInstance();
+
+            // TODO: if (inputController.GetAimInputHeld()) return;
+        }
+
+        private void HandleReload()
+        {
+            InputController inputController = InputController.GetInstance();
+
+            if (inputController.GetReloadInput()) _currentGun.TryReload();
+        }
+
+        private void HandleMelee()
+        {
+            InputController inputController = InputController.GetInstance();
+
+            if (inputController.GetMeleeInput()) meleeWeapon.Attack();
         }
         
-        private void SwapWeapon ()
+        private void HandleWeaponSwap()
         {
-            EquipWeapon(_currentGun == primaryWeapon ? secondaryWeapon : primaryWeapon);
+            InputController inputController = InputController.GetInstance();
+
+            if (inputController.GetScrollSwapWeaponInput() != 0.0f || inputController.GetSwapWeaponInput())
+            {
+                EquipWeapon(_currentGun == _primaryGunBehaviour ? secondaryWeapon : primaryWeapon);
+            }
+        }
+
+        private void HandleWeaponEquip()
+        {
+            InputController inputController = InputController.GetInstance();
+            
+            if (inputController.GetEquipPrimaryInput()) EquipWeapon(primaryWeapon);
+            if (inputController.GetEquipSecondaryInput()) EquipWeapon(secondaryWeapon);
         }
         
         public bool IsPrimaryWeaponEquipped()
         {
-            return _currentGun == primaryWeapon;
+            return _currentGun == _primaryGunBehaviour;
         }
         
         public bool IsSecondaryWeaponEquipped()
         {
-            return _currentGun == secondaryWeapon;
+            return _currentGun == _secondaryGunBehaviour;
         }
     }
 }
