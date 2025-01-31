@@ -2,62 +2,116 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using UnityEngine.Serialization;
 
 using Unity.Multiplayer;
 
 namespace Map
 {
     [Serializable]
+    public struct LOD
+    {
+        public float maxViewDistance;
+        public ushort lod;
+    }
+    
+    [Serializable]
     public struct MapSettings {
         public ushort size;
         public ushort chunks;
         public ushort chunkSize;
-        public float heightScale;
+        public float maxHeight;
         public float lerpFactor;
-        public GameObject chunkPrefab;
+        public LOD[] lodLevels;
+        public float playerMoveThreshold;
     }
     
     public class MapGenerator : MonoBehaviour {
         [SerializeField] private MapSettings settings;
+        [SerializeField] private GameObject chunkPrefab;
         [SerializeField] private GameObject player;
-        private List<ChunkGenerator> _chunks;
+        private NoiseGenerator _noise;
+        private List<Chunk> _chunks;
+        private float _spacing;
+        private ushort _chunkRow;
+        private float _sqrPlayerMoveThreshold;
+        private Vector2 _playerPosition;
+        private Vector2 _playerPositionOld;
     
         private void Awake() 
         {
-            //base.OnStartClient();
             
             if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
 
                 return;
             }
-
-            var chunkRow = (int) math.sqrt(settings.chunks);
-            _chunks = new List<ChunkGenerator>(chunkRow);
             
-            var prefabScript = settings.chunkPrefab.GetComponent<ChunkGenerator>();
-            var spacing = ((float) settings.size / chunkRow / settings.chunkSize);
+            var prefabScript = chunkPrefab.GetComponent<ChunkGenerator>();
+
+            _sqrPlayerMoveThreshold = settings.playerMoveThreshold * settings.playerMoveThreshold;
+            _chunkRow = (ushort) math.sqrt(settings.chunks);
+            _chunks = new List<Chunk>(_chunkRow);
+
+            var spacing = (float) settings.size / _chunkRow / settings.chunkSize;
+            
+            _noise = GetComponent<NoiseGenerator>();
             
             ChunkSettings chunkSettings = new ChunkSettings
             {
-                size = (ushort) (settings.chunkSize + 2),
-                spacing = spacing,
-                heightScale = settings.heightScale,
+                size = settings.chunkSize,
+                spacing = _spacing,
+                maxHeight = settings.maxHeight,
                 lerpFactor = settings.lerpFactor,
-                hasPlayer = true
+                lod = settings.lodLevels[^1].lod
             };
 
-            prefabScript.SetSettings(chunkSettings);
+            _noise.StartNoise(settings.size, settings.chunkSize);
+            chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
             
-            for (float x = 0; x < settings.size; x += settings.chunkSize * spacing) {
-                for (float z = 0; z < settings.size; z += settings.chunkSize * spacing)
+            for (float x = 0; x < settings.size; x += settings.chunkSize * _spacing) {
+                for (float z = 0; z < settings.size; z += settings.chunkSize * _spacing)
                 {
-                    var chunk = Instantiate(settings.chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<ChunkGenerator>();
-                    chunkSettings.x = (ushort) (x / (settings.chunkSize * spacing));
-                    chunkSettings.z = (ushort) (z / (settings.chunkSize * spacing));
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x - 0.5f * settings.size - 0.5f * settings.chunkSize * _spacing, 0f, z - 0.5f * settings.size - 0.5f * settings.chunkSize * _spacing), Quaternion.identity, transform).GetComponent<Chunk>();
+                    chunkSettings.x = (ushort) (x / (settings.chunkSize * _spacing));
+                    chunkSettings.z = (ushort) (z / (settings.chunkSize * _spacing));
                     chunk.SetSettings(chunkSettings);
                     _chunks.Add(chunk);
                     chunk.CreateChunk();
                 }
+            }
+            
+            UpdateChunkLods();
+        }
+
+        private void UpdateChunkLods()
+        {
+            foreach (var chunk in _chunks)
+            {
+                var sqrDistanceToPlayer = chunk.SqrDistanceToPlayer(_playerPosition);
+                if (sqrDistanceToPlayer > settings.lodLevels[^1].maxViewDistance * settings.lodLevels[^1].maxViewDistance)
+                {
+                    chunk.SetVisible(false); continue;
+                }
+                
+                foreach (var lod in settings.lodLevels)
+                {
+                    if (sqrDistanceToPlayer <= lod.maxViewDistance * lod.maxViewDistance)
+                    {
+                        chunk.SetVisible(true);
+                        chunk.SetLod(lod.lod);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void Update()
+        {
+            _playerPosition = new Vector2(player.transform.position.x, player.transform.position.z);
+            if ((_playerPositionOld - _playerPosition).SqrMagnitude() > _sqrPlayerMoveThreshold)
+            {
+                _playerPositionOld = _playerPosition;
+                UpdateChunkLods();
             }
         }
 

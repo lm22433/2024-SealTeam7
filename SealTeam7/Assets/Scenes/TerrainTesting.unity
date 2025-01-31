@@ -286,12 +286,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 500
-    chunks: 25
-    chunkSize: 25
-    heightScale: 25
+    size: 2400
+    chunks: 400
+    chunkSize: 24
+    maxHeight: 25
     lerpFactor: 1
-    chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
+    lodLevels:
+    - maxViewDistance: 96
+      lod: 0
+    - maxViewDistance: 240
+      lod: 1
+    - maxViewDistance: 480
+      lod: 3
+    - maxViewDistance: 600
+      lod: 6
+    playerMoveThreshold: 20
+  chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   player: {fileID: 1937079306}
 --- !u!114 &1673330774
 MonoBehaviour:
@@ -305,8 +315,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7911bfb62cdd416ab3b08764346d59bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.156
-  noiseScale: 0.1
+  speed: 0.05
+  noiseScale: 0.01
 --- !u!1001 &1937079305
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -317,15 +327,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 172254823229477108, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 27.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 172254823229477108, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 60
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 172254823229477108, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10.09
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 172254823229477108, guid: e50841c90738b2c49922093ea34609ae, type: 3}
       propertyPath: m_LocalRotation.w
