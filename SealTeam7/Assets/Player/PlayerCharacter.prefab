@@ -531,9 +531,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f951789d30c6248b9304e82d2ee541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 0}
-  _networkObjectCache: {fileID: 0}
   cameraPosition: {fileID: 5279418975499219022}
 --- !u!114 &8116472272456324572
 MonoBehaviour:
