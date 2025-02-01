@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Threading;
+using Microsoft.Azure.Kinect.Sensor;
 
 public class TestingUtilities : MonoBehaviour
 {
+    // ReSharper disable Unity.PerformanceAnalysis
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Keypad1))
@@ -13,7 +15,7 @@ public class TestingUtilities : MonoBehaviour
             Thread.Sleep(1000);
             Debug.Log(PythonManager.GetSandboxObjects());
             Thread.Sleep(1000);
-            Debug.Log(PythonManager.GetSandboxObjects());
+            // PythonManager.SendColorImage(new Image(ImageFormat.ColorMJPG, 1280, 720));
             Thread.Sleep(1000);
             Debug.Log(PythonManager.GetSandboxObjects());
             Thread.Sleep(1000);

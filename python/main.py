@@ -11,7 +11,11 @@ from mediapipe.tasks.python.components.containers.detections import DetectionRes
 from mediapipe.tasks.python.vision import ObjectDetector, ObjectDetectorOptions, RunningMode
 
 
-model_path = 'model.tflite'
+MODEL_PATH = 'model.tflite'
+HOST = "127.0.0.1"
+PORT = 9455
+
+
 object_detection_result = None
 object_detection_done = threading.Event()
 
@@ -19,7 +23,6 @@ object_detection_done = threading.Event()
 def object_detector_callback(result, output_image, timestamp_ms):
     global object_detection_result
 
-    print(f'detection result: {result}')
     object_detection_result = result
     object_detection_done.set()
 
@@ -36,18 +39,18 @@ def inference_frame(object_detector, frame):
                         for detection in object_detection_result.detections]}
 
 
-def handle_client(conn):
+def detections_connection(conn):
     conn.setblocking(True)  # block until START control signal received
     object_detection_running = False
     video_capture = None
 
     options = ObjectDetectorOptions(
-        base_options=BaseOptions(model_asset_path=model_path),
+        base_options=BaseOptions(model_asset_path=MODEL_PATH),
         running_mode=RunningMode.LIVE_STREAM,
         max_results=5,
         result_callback=object_detector_callback)
 
-    with ObjectDetector.create_from_options(options) as object_detector:
+    with conn, ObjectDetector.create_from_options(options) as object_detector:
         while True:
             try:
                 # Check if any control signals in buffer
@@ -65,7 +68,7 @@ def handle_client(conn):
                         conn.setblocking(True)  # block until START control signal received again
                         video_capture.release()
                     elif message == "":  # Empty string means client disconnected
-                        print("Client disconnected, closing server.")
+                        print("Client disconnected, closing connection.")
                         break
                 except BlockingIOError:
                     pass  # No control signal in buffer - that's normal, continue
@@ -95,16 +98,44 @@ def handle_client(conn):
     cv2.destroyAllWindows()
 
 
-def start_server(host="127.0.0.1", port=9455):  # 127.0.0.1 is localhost
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-        server.bind((host, port))
-        server.listen(5)
-        print(f"Server listening on {host}:{port}")
+def color_image_connection(conn):
+    conn.setblocking(True)
 
-        conn, addr = server.accept()
-        print(f"Connection from {addr}")
-        with conn:
-            handle_client(conn)
+    with conn:
+        while True:
+            try:
+                print("Waiting for color image message...")
+                message = conn.recv(1024)
+                print(f"Message: {message}")
+                if message == b'':  # Empty string means client disconnected
+                    print("Client disconnected, closing connection.")
+                    break
+                else:
+                    pass  # TODO: process color image message
+
+            except KeyboardInterrupt:
+                print("Shutting down server.")
+                break
+
+            except Exception as error:
+                print(error)
+                print("Error, shutting down server.")
+                break
+
+
+def start_server():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+        server.bind((HOST, PORT))
+        server.listen(5)
+        print(f"Server listening on {HOST}:{PORT}")
+
+        det_conn, addr = server.accept()
+        print(f"Detections connection from {addr}")
+        threading.Thread(target=detections_connection, args=(det_conn,)).start()
+
+        color_im_conn, addr = server.accept()
+        print(f"Color image connection from {addr}")
+        color_image_connection(color_im_conn)
 
 
 start_server()
