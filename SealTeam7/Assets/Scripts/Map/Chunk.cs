@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+using Kinect;
 
 namespace Map
 {
@@ -16,19 +17,21 @@ namespace Map
         public ushort x;
         public ushort z;
         public ushort lod;
+        public bool isLocalhost;
     }
 
     public class Chunk : MonoBehaviour {
         
         [SerializeField] private ChunkSettings settings;
         private int _lodFactor;
-        private float[] _heightMap;
+        private half[] _heightMap;
         private int _vertexSideCount;
         private Mesh _mesh;
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
         private NoiseGenerator _noiseGenerator;
+        private KinectAPI _kinect;
         private Bounds _bounds;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
@@ -38,7 +41,7 @@ namespace Map
             settings.lod = lod;
             _lodFactor = lod == 0 ? 1 : lod * 2;
             _vertexSideCount = settings.size / _lodFactor + 1;
-            _heightMap = new float[_vertexSideCount * _vertexSideCount];
+            _heightMap = new half[_vertexSideCount * _vertexSideCount];
             _meshCollider.enabled = lod == 0;
             if (_mesh) UpdateMesh();
         }
@@ -49,9 +52,9 @@ namespace Map
             enabled = visible;
         }
 
-        public float SqrDistanceToPlayer(Vector2 playerPos)
+        public float SqrDistanceToPlayer(Vector3 playerPos)
         {
-            return _bounds.SqrDistance(new Vector3(playerPos.x, 0f, playerPos.y));
+            return _bounds.SqrDistance(playerPos);
         }
         
         private void Awake()
@@ -71,9 +74,15 @@ namespace Map
             _meshCollider.sharedMesh = _mesh;
             _meshCollider.enabled = false;
             
-            _heightMap = new float[_vertexSideCount * _vertexSideCount];
-            _noiseGenerator = GetComponentInParent<NoiseGenerator>();
-            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, settings.maxHeight, settings.size * settings.spacing));
+            _heightMap = new half[_vertexSideCount * _vertexSideCount];
+
+            if (settings.isLocalhost) {
+                _noiseGenerator = GetComponentInParent<NoiseGenerator>();
+            } else {
+                _kinect = FindAnyObjectByType<KinectAPI>();
+            }
+
+            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, 2f * settings.maxHeight, settings.size * settings.spacing));
         }
 
         private void Update()
@@ -81,11 +90,24 @@ namespace Map
             UpdateHeights();
         }
 
+        private void GetHeights() { 
+            if (settings.isLocalhost) {
+                _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.z, settings.x);
+            } else {
+                _kinect.RequestTexture(settings.lod, settings.z, settings.x);
+            }
+        }
+
+        public void SetHeights(half[] heights) {
+            _heightMap = heights;
+        }
+
         private void UpdateHeights()
         {
-            _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.z, settings.x);
-            var heights = new NativeArray<float>(_heightMap, Allocator.TempJob);
+            GetHeights();
+            
             var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
+            var heights = new NativeArray<float>(_heightMap, Allocator.TempJob);
             
             var heightUpdate = new HeightUpdate {
                 Vertices = vertices,
@@ -145,7 +167,7 @@ namespace Map
     public struct HeightUpdate : IJobParallelFor {
 
         public NativeArray<float3> Vertices;
-        public NativeArray<float> Heights;
+        public NativeArray<half> Heights;
         public float LerpFactor;
         public float Scale;
         
