@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>K4AdotNet</id>
+    <version>1.4.17</version>
+    <authors>bibigone,baSSiLL</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/bibigone/k4a.net/blob/master/README.md</projectUrl>
+    <iconUrl>https://github.com/bibigone/k4a.net/raw/master/K4AdotNet-64.png</iconUrl>
+    <description>Three-in-one .NET library to work with Azure Kinect depth sensors. It includes sensor API, recording and playback API, body tracking API. Compatible with .NET Standard 2.0 and .Net Framework 4.6.1 and later, .NET 6 and later. All required binaries from Azure Kinect Sensor SDK (win x64, x86) are included. Samples (WPF, .NET Core and Unity) can be found in the source repository.</description>
+    <releaseNotes>See https://github.com/bibigone/k4a.net/releases</releaseNotes>
+    <copyright>Copyright (c) 2019-2024</copyright>
+    <tags>Kinect Azure .NET K4A Depth Sensor Body Tracking BodyTracking SDK</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.1" />
+      <group targetFramework="net6.0" />
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="mscorlib" targetFramework=".NETFramework4.6.1" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.6.1" />
+      <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.6.1" />
+    </frameworkAssemblies>
+  </metadata>
+</package>
