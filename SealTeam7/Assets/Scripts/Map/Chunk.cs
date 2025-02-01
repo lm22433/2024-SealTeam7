@@ -107,7 +107,7 @@ namespace Map
             GetHeights();
             
             var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
-            var heights = new NativeArray<float>(_heightMap, Allocator.TempJob);
+            var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
             
             var heightUpdate = new HeightUpdate {
                 Vertices = vertices,

@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using FishNet.Object;
+using Player;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
@@ -6,14 +7,12 @@ using Weapons;
 
 namespace Enemies
 {
-    public abstract class Enemy : MonoBehaviour, IDamageable
+    public abstract class Enemy : NetworkBehaviour, IDamageable
     {
         [SerializeField] public Slider healthBar;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected float damage;
         [SerializeField] protected VisualEffect attackEffect;
-        protected GameObject PlayerObject;
-        protected IDamageable Player;
         private float _health;
 
         public virtual void Start()
@@ -21,8 +20,6 @@ namespace Enemies
             _health = maxHealth;
             healthBar.maxValue = maxHealth;
             healthBar.value = _health;
-            PlayerObject = GameObject.FindWithTag("Player");
-            Player = PlayerObject.GetComponent<PlayerManager>();
         }
 
         public void TakeDamage(float dmg)
@@ -41,11 +38,12 @@ namespace Enemies
             Destroy(gameObject);
         }
         
-        public abstract void Attack();
+        public abstract void Attack(Collider hit);
 
         public virtual void Update()
         {
-            healthBar.transform.LookAt(PlayerObject.transform.position);
+            //TODO: fix for multiple players
+            //healthBar.transform.LookAt(player.transform.position);
         }
     }
 }

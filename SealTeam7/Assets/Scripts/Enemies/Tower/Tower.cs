@@ -9,14 +9,14 @@ namespace Enemies.Tower
         [SerializeField] private float attackDelay;
         private float _timeSinceAttack;
         
-        public override void Attack()
+        public override void Attack(Collider hit)
         {
             if (_timeSinceAttack > attackDelay)
             {
+                //attackEffect.Play();
                 _timeSinceAttack = 0;
-                Player.TakeDamage(damage);
-                //attackEffect.shape.
-                attackEffect.Play();
+                var damageable = hit.GetComponent<IDamageable>();
+                damageable?.TakeDamage(damage);
             }
         }
         
@@ -26,20 +26,15 @@ namespace Enemies.Tower
 
             _timeSinceAttack += Time.deltaTime;
 
-            // Only needed if enemy is owned by server
-            /*
             Collider[] results = new Collider[12];
             Physics.OverlapSphereNonAlloc(transform.position, attackRange, results, LayerMask.GetMask("PlayerHolder"), QueryTriggerInteraction.Collide);
 
             foreach (Collider hit in results)
             {
-                Attack(hit);
-            }
-            */
-
-            if ((PlayerObject.transform.position - transform.position).sqrMagnitude < attackRange * attackRange)
-            {
-                Attack();   
+                if (hit)
+                {
+                    Attack(hit);                   
+                }
             }
         }
     }

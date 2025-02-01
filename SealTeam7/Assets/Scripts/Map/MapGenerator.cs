@@ -2,11 +2,11 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
-using UnityEngine.Serialization;
 
 using Unity.Multiplayer;
-using Unity.VisualScripting;
 using FishNet.Object;
+
+using Player.Movement;
 
 namespace Map
 {
@@ -119,7 +119,7 @@ namespace Map
                     UpdateChunkLods();
                 }
             } else {
-                var players = GameObject.FindObjectsByType<AdvancedMovement>(FindObjectsSortMode.None);
+                var players = FindObjectsByType<AdvancedMovement>(FindObjectsSortMode.None);
                 foreach (var p in players) {
                     if (p.gameObject.GetComponentInParent<NetworkObject>().IsOwner) {
                         player = p.gameObject;
@@ -129,7 +129,7 @@ namespace Map
         }
 
         public Chunk GetChunk(int x, int z) {
-            return _chunks[x * (int) math.sqrt(settings.chunks) + z];
+            return _chunks[x * _chunkRow + z];
         }
     }
 }
