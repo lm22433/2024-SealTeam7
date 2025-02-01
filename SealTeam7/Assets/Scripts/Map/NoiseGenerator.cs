@@ -28,7 +28,7 @@ namespace Map
             _time += Time.deltaTime;
             if (_running)
             {
-                UpdateNoise();
+                //UpdateNoise();
             }
         }
 
