@@ -85,6 +85,14 @@ public class AdvancedMovement : MonoBehaviour
     private RaycastHit frontWallCheck;
     private RaycastHit backWallCheck;
 
+    [Header("Mantling")]
+    [SerializeField] private float mantleCheckTotalAngle = 90;
+    [SerializeField] private float mantleCheckCount = 3;
+    [SerializeField] private Transform mantleCheckOrigin;
+    [SerializeField] private float mantleCooldown;
+    private bool readyToMantle;
+
+
     private bool readyToWallRun;
 
     [Header("Debugging")]
@@ -103,17 +111,23 @@ public class AdvancedMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
         readyToJump = true;
         doubleJumpReady = true;
         readyToWallRun = true;
+        readyToMantle = true;
+
         leftWallHit = false;
         rightWallHit = false;
         frontWallHit = false;
         backWallHit = false;
+
         slideTimer = 0;
         wallRunTimer = 0;
+
         moveSpeed = walkSpeed;
         startYScale = transform.localScale.y;
+
         curState = State.walking;
     }
 
@@ -398,6 +412,7 @@ public class AdvancedMovement : MonoBehaviour
     private void BoostJump()
     {
         exitingSlope = true;
+        readyToWallRun = true;
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         moveDir = orientation.forward*verInput + orientation.up + orientation.right * horInput;
         momentum = orientation.forward*verInput + orientation.right * horInput;
@@ -505,6 +520,13 @@ public class AdvancedMovement : MonoBehaviour
         }
         else if((leftWallHit || rightWallHit || backWallHit || frontWallHit) && !grounded) {
             rb.AddForce(Vector3.down *1f, ForceMode.Impulse);
+        }
+
+        if(frontWallHit) {
+            if(MantleCheck()) {
+                Mantle();
+                return;
+            }
         }
     }
 
@@ -678,11 +700,54 @@ public class AdvancedMovement : MonoBehaviour
         else {
             wallNormal = Vector3.forward;
         }
+
         momentum = wallNormal;
-
         moveDir = (wallNormal.normalized + transform.up);
-
-        //rb.AddForce(wallNormal.normalized *, ForceMode.Impulse);
         rb.AddForce(moveDir * jumpForce, ForceMode.Impulse);
+    }
+
+    private bool MantleCheck()
+    {
+        bool gap = true;
+        Vector3 checkDir;
+        Quaternion rotate = Quaternion.Euler(0, 0, mantleCheckTotalAngle / 2);
+        checkDir = rotate * orientation.forward;
+
+        gap = gap && !(Physics.Raycast(mantleCheckOrigin.position, checkDir, wallCheckDistance, whatIsWall));
+
+        for (int i = 0; i < mantleCheckCount; i++) {
+            rotate = Quaternion.Euler(0, 0, (mantleCheckTotalAngle / 2) - (i * mantleCheckTotalAngle / mantleCheckCount));
+            checkDir = rotate * orientation.forward;
+
+            gap = gap && !(Physics.Raycast(mantleCheckOrigin.position, checkDir, wallCheckDistance, whatIsWall));
+        }
+
+        gap = gap && (grounded || curState == State.wallRunning);
+
+        return gap;
+    }
+
+    private void Mantle()
+    {
+        if(readyToMantle) {
+            readyToMantle = false;
+            momentum = orientation.forward;
+
+            rb.linearVelocity = new Vector3(0,0,0);
+            rb.AddForce(Vector3.up * jumpForce * 2f, ForceMode.Impulse);
+
+            if(curState == State.wallRunning) {
+                StopWallRun();
+            }
+
+            curState = State.arial;
+
+            Invoke(nameof(ResetMantle), mantleCooldown);
+        }
+    }
+
+    private void ResetMantle()
+    {
+        readyToMantle = true;
     }
 }

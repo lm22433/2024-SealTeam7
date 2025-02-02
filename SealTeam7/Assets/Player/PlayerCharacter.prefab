@@ -547,6 +547,37 @@ MonoBehaviour:
   sensitivityX: 50
   sensitivityY: 50
   orientation: {fileID: 1256677882820726538}
+--- !u!1 &3714405507628411609
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1556073151899183067}
+  m_Layer: 0
+  m_Name: MantleCheckOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1556073151899183067
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3714405507628411609}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3915829004000205839}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3885262202398652849
 GameObject:
   m_ObjectHideFlags: 0
@@ -1015,6 +1046,7 @@ Transform:
   - {fileID: 6342002896101559149}
   - {fileID: 1256677882820726538}
   - {fileID: 5279418975499219022}
+  - {fileID: 1556073151899183067}
   - {fileID: 9095023509047750781}
   m_Father: {fileID: 172254823229477108}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1084,6 +1116,10 @@ MonoBehaviour:
   maxWallTime: 2
   wallCheckDistance: 1.1
   minJumpHeight: 1.4
+  mantleCheckTotalAngle: 90
+  mantleCheckCount: 3
+  mantleCheckOrigin: {fileID: 1556073151899183067}
+  mantleCooldown: 0.3
   curState: 0
   moveSpeed: 0
   wallRunTimer: 0
