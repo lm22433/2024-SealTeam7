@@ -15,7 +15,7 @@ public class TestingUtilities : MonoBehaviour
             Thread.Sleep(1000);
             Debug.Log(PythonManager.GetSandboxObjects());
             Thread.Sleep(1000);
-            // PythonManager.SendColorImage(new Image(ImageFormat.ColorMJPG, 1280, 720));
+            // PythonManager.SendColorImage(new Image(ImageFormat.ColorBGRA32, 1280, 720));
             Thread.Sleep(1000);
             Debug.Log(PythonManager.GetSandboxObjects());
             Thread.Sleep(1000);
