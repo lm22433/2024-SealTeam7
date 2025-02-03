@@ -15,10 +15,10 @@ namespace Kinect
     public class KinectAPI : NetworkBehaviour
     {
 
-        [Header("Depth Calibrations")] [SerializeField, Range(300f, 1000f)]
+        [Header("Depth Calibrations")] [SerializeField, Range(300f, 2000f)]
         private ushort minimumSandDepth;
 
-        [SerializeField, Range(600f, 1500f)] private ushort maximumSandDepth;
+        [SerializeField, Range(600f, 2000f)] private ushort maximumSandDepth;
 
         [Header("IR Calibrations")] [SerializeField, Range(0, 255f)]
         private int irThreshold;
@@ -37,10 +37,11 @@ namespace Kinect
         [SerializeField] private int dimensions;
         [SerializeField] private int chunkSize;
         private bool _running;
+        [SerializeField] private bool isKinectPresent = false;
 
         public override void OnStartServer()
         {
-            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.ClientAndServer) {
+            if (isKinectPresent) {
                 return;
             }
 
@@ -56,7 +57,7 @@ namespace Kinect
             {
                 ColorFormat = ImageFormat.ColorBGRA32,
                 ColorResolution = ColorResolution.R1080p,
-                DepthMode = DepthMode.NFOV_2x2Binned,
+                DepthMode = DepthMode.NFOV_Unbinned,
                 SynchronizedImagesOnly = true,
                 CameraFPS = FPS.FPS30
             });
@@ -103,7 +104,7 @@ namespace Kinect
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void RequestChunkTextureServerRpc(int clientId, ushort lod, int x, int z)
+        public void RequestChunkTextureServerRpc(int clientId, ushort lod, int x, int z)
         {
             half[] depths = GetChunkTexture(lod, x, z);
 

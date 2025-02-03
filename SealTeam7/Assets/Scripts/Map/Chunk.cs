@@ -101,6 +101,7 @@ namespace Map
         }
 
         public void SetHeights(half[] heights) {
+            Debug.Log("Heights recienved");
             _heightMap = heights;
         }
 
