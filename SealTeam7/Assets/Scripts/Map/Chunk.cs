@@ -42,9 +42,10 @@ namespace Map
             settings.lod = lod;
             _lodFactor = lod == 0 ? 1 : lod * 2;
             _vertexSideCount = settings.size / _lodFactor + 1;
-            _heightMap = new half[_vertexSideCount * _vertexSideCount];
+            //_heightMap = new half[_vertexSideCount * _vertexSideCount];
             _meshCollider.enabled = lod == 0;
             if (_mesh) UpdateMesh();
+            GetHeights();
         }
 
         public void SetVisible(bool visible)
@@ -67,6 +68,9 @@ namespace Map
             _mesh = new Mesh {name = "Generated Mesh"};
             _mesh.MarkDynamic();
             
+            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, 2f * settings.maxHeight, settings.size * settings.spacing));
+            _mesh.bounds = _bounds;
+            
             UpdateMesh();
             
             _meshRenderer = GetComponent<MeshRenderer>();
@@ -83,8 +87,6 @@ namespace Map
             } else {
                 _kinect = FindAnyObjectByType<KinectAPI>();
             }
-
-            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, 2f * settings.maxHeight, settings.size * settings.spacing));
         }
 
         private void Update()
@@ -92,16 +94,18 @@ namespace Map
             UpdateHeights();
         }
 
-        private void GetHeights() { 
+        private void GetHeights() {
             if (settings.isLocalhost) {
-                _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.z, settings.x);
+                _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.size, settings.z, settings.x);
             } else {
-                _kinect.RequestTexture(settings.lod, settings.z, settings.x);
+                _kinect.RequestTexture(settings.lod, settings.size, settings.z, settings.x);
             }
         }
 
-        public void SetHeights(half[] heights) {
-            Debug.Log("Heights recienved");
+        public void SetHeights(half[] heights)
+        {
+            if (heights.Length != _heightMap.Length) Debug.LogWarning("New heights are of incorrect size");
+            Debug.Log("Heights received");
             _heightMap = heights;
         }
 
@@ -121,7 +125,6 @@ namespace Map
             
             _mesh.SetVertices(_vertices);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateBounds();
 
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
             
@@ -157,7 +160,6 @@ namespace Map
             _mesh.SetVertices(_vertices);
             _mesh.SetTriangles(triangles.ToArray(), 0);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateBounds();
             //_mesh.RecalculateTangents();
             
             triangles.Dispose();

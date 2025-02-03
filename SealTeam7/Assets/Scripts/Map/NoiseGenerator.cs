@@ -9,16 +9,14 @@ namespace Map
         [SerializeField] private float noiseScale = 100f;
         private half[] _noise;
         private int _size;
-        private int _chunkSize;
         private bool _running;
         private float _time;
         
-        public void StartNoise(int size, int chunkSize)
+        public void StartNoise(int size)
         {
             _time = 0;
             _noise = new half[size * size];
             _size = size;
-            _chunkSize = chunkSize;
             _running = true;
             UpdateNoise();
         }
@@ -45,12 +43,12 @@ namespace Map
             }
         }
         
-        public void GetChunkNoise(ref half[] noise, int lod, int chunkX, int chunkZ)
+        public void GetChunkNoise(ref half[] noise, ushort lod, ushort chunkSize, int chunkX, int chunkZ)
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
-            var resolution = _chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * _chunkSize;
-            int xChunkOffset = chunkX * _chunkSize;
+            var resolution = chunkSize / lodFactor;
+            int zChunkOffset = chunkZ * chunkSize;
+            int xChunkOffset = chunkX * chunkSize;
             
             for (int z = 0; z < resolution + 1; z++)
             {

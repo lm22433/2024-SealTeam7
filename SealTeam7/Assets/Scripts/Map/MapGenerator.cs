@@ -40,13 +40,11 @@ namespace Map
         private Vector3 _playerPosition;
         private Vector3 _playerPositionOld;
         [SerializeField] private bool isLocalhost;
-        [SerializeField] private bool isKinectPresent = false;
     
         private void Awake() 
         {
             
-            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server && !isKinectPresent) {
-
+            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
                 return;
             }
 
@@ -59,7 +57,7 @@ namespace Map
             _noise = GetComponent<NoiseGenerator>();
 
             if (isLocalhost) {
-                _noise.StartNoise(settings.size, settings.chunkSize);
+                _noise.StartNoise(settings.size);
             }
    
             ChunkSettings chunkSettings = new ChunkSettings

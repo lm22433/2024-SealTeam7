@@ -152,12 +152,13 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
-  minimumSandDepth: 600
-  maximumSandDepth: 1200
+  minimumSandDepth: 300
+  maximumSandDepth: 2500
   irThreshold: 0
   similarityThreshold: 0.5
-  dimensions: 1000
-  chunkSize: 25
+  dimensions: 960
+  chunkSize: 24
+  isLocalHost: 0
 --- !u!4 &230521255
 Transform:
   m_ObjectHideFlags: 0
@@ -167,7 +168,7 @@ Transform:
   m_GameObject: {fileID: 230521252}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.44694, y: 80.88564, z: -35.511147}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -269,24 +270,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 1200
+    size: 960
     chunks: 100
     chunkSize: 24
     maxHeight: 20
     lerpFactor: 1
     lodLevels:
-    - maxViewDistance: 100
+    - maxViewDistance: 124.5
       lod: 0
-    - maxViewDistance: 200
+    - maxViewDistance: 375.7
       lod: 1
-    - maxViewDistance: 300
-      lod: 2
-    - maxViewDistance: 600
+    - maxViewDistance: 645.5
       lod: 3
-    playerMoveThreshold: 3
+    playerMoveThreshold: 12.37
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   player: {fileID: 0}
-  isLocalhost: 1
+  isLocalhost: 0
 --- !u!4 &304089665
 Transform:
   m_ObjectHideFlags: 0

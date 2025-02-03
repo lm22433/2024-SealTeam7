@@ -15,7 +15,7 @@ namespace Kinect
     public class KinectAPI : NetworkBehaviour
     {
 
-        [Header("Depth Calibrations")] [SerializeField, Range(300f, 2000f)]
+        [Header("Depth Calibrations")] [SerializeField, Range(300f, 1000f)]
         private ushort minimumSandDepth;
 
         [SerializeField, Range(600f, 2000f)] private ushort maximumSandDepth;
@@ -29,15 +29,15 @@ namespace Kinect
         //Internal Variables
         private Device _kinect;
         private Transformation _transformation;
+        private MapGenerator _mapGenerator;
 
         private int _colourWidth;
         private int _colourHeight;
 
         private half[] _depthMapArray;
         [SerializeField] private int dimensions;
-        [SerializeField] private int chunkSize;
+        [SerializeField] private bool isKinectPresent;
         private bool _running;
-        [SerializeField] private bool isKinectPresent = false;
 
         public override void OnStartServer()
         {
@@ -79,6 +79,7 @@ namespace Kinect
             if (args.ConnectionState == RemoteConnectionState.Started)
             {
                 GetComponent<NetworkObject>().GiveOwnership(conn);
+                _mapGenerator = FindFirstObjectByType<MapGenerator>();
             }
         }
 
@@ -99,14 +100,14 @@ namespace Kinect
             }
         }
 
-        public void RequestTexture(ushort lod, int z, int x) {
-            RequestChunkTextureServerRpc(Owner.ClientId, lod, x, z); 
+        public void RequestTexture(ushort lod, ushort chunkSize, int z, int x) {
+            RequestChunkTextureServerRpc(Owner.ClientId, lod, chunkSize, x, z); 
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void RequestChunkTextureServerRpc(int clientId, ushort lod, int x, int z)
+        private void RequestChunkTextureServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
         {
-            half[] depths = GetChunkTexture(lod, x, z);
+            half[] depths = GetChunkTexture(lod, chunkSize, x, z);
 
             // Send the depth data back to the requesting client
             NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
@@ -120,10 +121,10 @@ namespace Kinect
         [TargetRpc]
         private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
         {
-            FindFirstObjectByType<MapGenerator>().GetChunk(z, x).SetHeights(depths);
+            _mapGenerator.GetChunk(z, x).SetHeights(depths);
         }
         
-        public half[] GetChunkTexture(ushort lod, int chunkX, int chunkY)
+        public half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkY)
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             
