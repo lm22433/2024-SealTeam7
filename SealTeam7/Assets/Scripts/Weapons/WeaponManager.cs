@@ -13,8 +13,8 @@ namespace Weapons
         public MeleeWeapon meleeWeapon;
         
         [Header("References")]
-        [SerializeField] private Camera playerCamera;
         [SerializeField] private Transform weaponHolder;
+        private Camera _playerCamera;
 
         private GunBehaviour _currentGun;
         private GunBehaviour _primaryGunBehaviour;
@@ -22,6 +22,7 @@ namespace Weapons
 
         private void Awake()
         {
+            _playerCamera = Camera.main;
             InitializeWeapons();
             EquipWeapon(primaryWeapon);
         }
@@ -34,13 +35,13 @@ namespace Weapons
 
         private GunBehaviour CreateGunBehaviour(GunData data)
         {
-            var instance = Instantiate(data.modelPrefab, weaponHolder);
+            GameObject instance = Instantiate(data.modelPrefab, weaponHolder);
             instance.transform.localPosition = data.spawnPosition;
             instance.transform.localEulerAngles = data.spawnRotation;
             instance.gameObject.SetActive(false);
 
-            var gunBehaviour = instance.AddComponent<GunBehaviour>();
-            gunBehaviour.Initialize(data, playerCamera);
+            GunBehaviour gunBehaviour = instance.AddComponent<GunBehaviour>();
+            gunBehaviour.Initialize(data, _playerCamera);
             return gunBehaviour;
         }
 
@@ -56,11 +57,12 @@ namespace Weapons
 
             _currentGun = newGun;
             _currentGun.SetVisible(true);
-            // _currentGun.OnEquipped();
         }
 
         private GunBehaviour GetGunBehaviour(GunData gunData) =>
             gunData == primaryWeapon ? _primaryGunBehaviour : _secondaryGunBehaviour;
+
+        #region Player Input
 
         private void Update()
         {
@@ -110,9 +112,7 @@ namespace Weapons
             InputController inputController = InputController.GetInstance();
 
             if (inputController.GetScrollSwapWeaponInput() != 0.0f || inputController.GetSwapWeaponInput())
-            {
                 EquipWeapon(_currentGun == _primaryGunBehaviour ? secondaryWeapon : primaryWeapon);
-            }
         }
 
         private void HandleWeaponEquip()
@@ -122,6 +122,8 @@ namespace Weapons
             if (inputController.GetEquipPrimaryInput()) EquipWeapon(primaryWeapon);
             if (inputController.GetEquipSecondaryInput()) EquipWeapon(secondaryWeapon);
         }
+        
+        #endregion
         
         public bool IsPrimaryWeaponEquipped()
         {
