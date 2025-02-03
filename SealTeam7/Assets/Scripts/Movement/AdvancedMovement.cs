@@ -715,8 +715,8 @@ public class AdvancedMovement : MonoBehaviour
 
         gap = gap && !(Physics.Raycast(mantleCheckOrigin.position, checkDir, wallCheckDistance, whatIsWall));
 
-        for (int i = 0; i < mantleCheckCount; i++) {
-            rotate = Quaternion.Euler(0, 0, (mantleCheckTotalAngle / 2) - (i * mantleCheckTotalAngle / mantleCheckCount));
+        for (int i = 1; i < mantleCheckCount+1; i++) {
+            rotate = Quaternion.Euler(0, 0, (mantleCheckTotalAngle / 2) - (i * mantleCheckTotalAngle / (mantleCheckCount-1)));
             checkDir = rotate * orientation.forward;
 
             gap = gap && !(Physics.Raycast(mantleCheckOrigin.position, checkDir, wallCheckDistance, whatIsWall));
