@@ -1,13 +1,6 @@
 using Input;
 using UnityEngine;
 
-enum WallStates {
-    forward,
-    still,
-    slide,
-    drop
-}
-
 enum State {
     walking,
     sprinting,
