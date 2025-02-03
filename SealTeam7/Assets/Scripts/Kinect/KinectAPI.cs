@@ -29,7 +29,7 @@ namespace Kinect
         //Internal Variables
         private Device _kinect;
         private Transformation _transformation;
-        private MapGenerator _mapGenerator;
+        [SerializeField] private MapGenerator mapGenerator;
 
         private int _colourWidth;
         private int _colourHeight;
@@ -79,7 +79,6 @@ namespace Kinect
             if (args.ConnectionState == RemoteConnectionState.Started)
             {
                 GetComponent<NetworkObject>().GiveOwnership(conn);
-                _mapGenerator = FindFirstObjectByType<MapGenerator>();
             }
         }
 
@@ -105,7 +104,7 @@ namespace Kinect
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void RequestChunkTextureServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
+        public void RequestChunkTextureServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkTexture(lod, chunkSize, x, z);
 
@@ -121,7 +120,7 @@ namespace Kinect
         [TargetRpc]
         private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
         {
-            _mapGenerator.GetChunk(z, x).SetHeights(depths);
+            mapGenerator.GetChunk(z, x).SetHeights(depths);
         }
         
         public half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkY)

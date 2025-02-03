@@ -153,12 +153,12 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
   minimumSandDepth: 300
-  maximumSandDepth: 2500
+  maximumSandDepth: 2000
   irThreshold: 0
   similarityThreshold: 0.5
+  mapGenerator: {fileID: 304089664}
   dimensions: 960
-  chunkSize: 24
-  isLocalHost: 0
+  isKinectPresent: 0
 --- !u!4 &230521255
 Transform:
   m_ObjectHideFlags: 0
@@ -599,7 +599,7 @@ MonoBehaviour:
   _ipv6BindAddress: 
   _port: 7770
   _maximumClients: 12
-  _clientAddress: localhost
+  _clientAddress: 26.148.138.41
 --- !u!114 &688602658
 MonoBehaviour:
   m_ObjectHideFlags: 0
