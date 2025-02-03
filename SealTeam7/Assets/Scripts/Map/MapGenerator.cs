@@ -40,12 +40,11 @@ namespace Map
         private Vector3 _playerPosition;
         private Vector3 _playerPositionOld;
         [SerializeField] private bool isLocalhost;
-        [SerializeField] private bool isKinectPresent = false;
     
         private void Awake() 
         {
             
-            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server && !isKinectPresent) {
+            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
 
                 return;
             }
