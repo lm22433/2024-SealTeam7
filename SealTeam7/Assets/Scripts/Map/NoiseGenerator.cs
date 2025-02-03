@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Mathematics;
+using UnityEngine;
 
 namespace Map
 {
@@ -6,7 +7,7 @@ namespace Map
     {
         [SerializeField] private float speed = 1f;
         [SerializeField] private float noiseScale = 100f;
-        private float[] _noise;
+        private half[] _noise;
         private int _size;
         private int _chunkSize;
         private bool _running;
@@ -15,7 +16,7 @@ namespace Map
         public void StartNoise(int size, int chunkSize)
         {
             _time = 0;
-            _noise = new float[size * size];
+            _noise = new half[size * size];
             _size = size;
             _chunkSize = chunkSize;
             _running = true;
@@ -39,12 +40,12 @@ namespace Map
                 {
                     var perlinX = x * noiseScale + _time * speed;
                     var perlinY = y * noiseScale + _time * speed;
-                    _noise[y * _size + x] = Mathf.PerlinNoise(perlinX, perlinY);
+                    _noise[y * _size + x] = (half)Mathf.PerlinNoise(perlinX, perlinY);
                 }
             }
         }
         
-        public void GetChunkNoise(ref float[] noise, int lod, int chunkX, int chunkZ)
+        public void GetChunkNoise(ref half[] noise, int lod, int chunkX, int chunkZ)
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = _chunkSize / lodFactor;
