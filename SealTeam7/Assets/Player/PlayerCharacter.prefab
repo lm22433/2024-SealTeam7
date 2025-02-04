@@ -861,8 +861,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4394227876815751589}
-  - component: {fileID: 1652145623499674596}
   - component: {fileID: 3422467509229774557}
+  - component: {fileID: 4389911452410390138}
   m_Layer: 0
   m_Name: WeaponHolder
   m_TagString: Untagged
@@ -885,23 +885,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4237928469457620776}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1652145623499674596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7393633358596136717}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c2498eb054ac4780835ce79090f540c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  primaryWeapon: {fileID: 11400000, guid: 8f0afadaccffe434e9009ee4ccf6f596, type: 2}
-  secondaryWeapon: {fileID: 11400000, guid: 47c2aebf9d2dc427c9b03d1ab7b26cc9, type: 2}
-  meleeWeapon: {fileID: 11400000, guid: 8401cc4816f964473973601e1e5427fa, type: 2}
-  playerCamera: {fileID: 3280914580326757287}
-  weaponHolder: {fileID: 4394227876815751589}
 --- !u!114 &3422467509229774557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -916,6 +899,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smooth: 20
   swayMultiplier: 0.1
+--- !u!114 &4389911452410390138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7393633358596136717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eee740414db94bdba1e8b159417cd5cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 3288779974816780927}
+  _networkObjectCache: {fileID: 0}
+  primaryGunPrefab: {fileID: -7983498772361397692, guid: 106e7995a5db69145b9779e6f3a94ab2, type: 3}
+  secondaryGunPrefab: {fileID: -8564800486029198400, guid: 6a706ea73f7a7c34d93a69fbe7b97086, type: 3}
+  meleeWeaponPrefab: {fileID: 0}
+  weaponHolder: {fileID: 4394227876815751589}
 --- !u!1 &8194321815041351153
 GameObject:
   m_ObjectHideFlags: 0

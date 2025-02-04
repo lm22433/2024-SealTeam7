@@ -73,34 +73,19 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fed61e77d26314c9faef0f055d6bf45c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6601259749795202523}
+      addedObject: {fileID: 2232672581215298706}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fed61e77d26314c9faef0f055d6bf45c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2232672581215298706}
+      addedObject: {fileID: -7983498772361397692}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fed61e77d26314c9faef0f055d6bf45c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8745059364736344068}
   m_SourcePrefab: {fileID: 100100000, guid: fed61e77d26314c9faef0f055d6bf45c, type: 3}
 --- !u!1 &3773515458589958960 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: fed61e77d26314c9faef0f055d6bf45c, type: 3}
   m_PrefabInstance: {fileID: 4080069401573727841}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6601259749795202523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3773515458589958960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82638c117c4c4cfaa9fe9f711463d73d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  muzzleFlash: {fileID: 6161986668836556939}
-  muzzlePoint: {fileID: 0}
-  gunAudioSource: {fileID: 2232672581215298706}
-  gunShotSound: {fileID: 8300000, guid: 45e5a2d015897d34780787ab6e691387, type: 3}
-  reloadSound: {fileID: 8300000, guid: ace79a9e0d4a65547af6715539b6e0c0, type: 3}
-  emptyMagazineSound: {fileID: 0}
 --- !u!82 &2232672581215298706
 AudioSource:
   m_ObjectHideFlags: 0
@@ -198,6 +183,87 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-7983498772361397692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3773515458589958960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c52b0619377b45b687daf9e22a0d150b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 8745059364736344068}
+  _networkObjectCache: {fileID: 8745059364736344068}
+  gunName: Assault Rifle
+  gunDescription: 
+  spawnPosition: {x: 0.45, y: -0.25, z: 0.9}
+  spawnRotation: {x: 0, y: 0, z: 0}
+  fireMode: 1
+  damage: 32
+  range: 100
+  fireRate: 746
+  magazineSize: 40
+  maxAmmo: 120
+  reloadTime: 1.43
+  displaySprite: {fileID: 0}
+  spriteScale: {x: 0, y: 0}
+  spritePosition: {x: 0, y: 0, z: 0}
+--- !u!114 &8745059364736344068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3773515458589958960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours:
+  - {fileID: -7983498772361397692}
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  _initializedValusSet: 1
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 11
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 17139255813819414869
+  <SceneId>k__BackingField: 0
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: -0, y: -0, z: -0, w: 1}
+    Scale: {x: 8, y: 8, z: 8}
+    IsValid: 1
 --- !u!4 &4545795574724786570 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fed61e77d26314c9faef0f055d6bf45c, type: 3}
@@ -328,11 +394,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
---- !u!198 &6161986668836556939 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 198234346748616026, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
-  m_PrefabInstance: {fileID: 6288013733072047569}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6290618709426741701 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4300533007854612, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
