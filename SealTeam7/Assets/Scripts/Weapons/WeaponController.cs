@@ -27,10 +27,7 @@ namespace Weapons
         public override void OnStartClient()
         {
             base.OnStartClient();
-            if (IsOwner)
-            {
-                EquipWeapon(true);
-            }
+            if (IsOwner) EquipWeapon(true);
         }
         
         private void Update()
@@ -51,23 +48,22 @@ namespace Weapons
             InputController inputController = InputController.GetInstance();
 
             if (inputController.GetShootInputHeld() || inputController.GetShootInputPressed())
-            {
-                // _currentGun.TryShoot();
-            }
+                _equippedGun.Shoot();
         }
 
         private void HandleAiming()
         {
             InputController inputController = InputController.GetInstance();
 
-            // TODO: if (inputController.GetAimInputHeld()) return;
+            if (inputController.GetAimInputHeld()) _equippedGun.TryAim();
+            else _equippedGun.TryUnaim();
         }
 
         private void HandleReload()
         {
             InputController inputController = InputController.GetInstance();
 
-            // if (inputController.GetReloadInput()) _currentGun.TryReload();
+            if (inputController.GetReloadInput()) _equippedGun.TryReload();
         }
 
         private void HandleMelee()
@@ -141,17 +137,11 @@ namespace Weapons
         {
             if (usePrimary)
             {
-                if (_equippedGun != _primaryGun)
-                {
-                    SetActiveWeapon(_primaryGun, _secondaryGun);
-                }
+                if (_equippedGun != _primaryGun) SetActiveWeapon(_primaryGun, _secondaryGun);
             }
             else
             {
-                if (_equippedGun != _secondaryGun)
-                {
-                    SetActiveWeapon(_secondaryGun, _primaryGun);
-                }
+                if (_equippedGun != _secondaryGun) SetActiveWeapon(_secondaryGun, _primaryGun);
             }
             RpcUpdateActiveWeapon(usePrimary);
         }
@@ -159,15 +149,13 @@ namespace Weapons
         [Server]
         private void SetActiveWeapon(Gun newActive, Gun newInactive)
         {
-            if (newActive != null)
+            if (newActive)
             {
                 newActive.gameObject.SetActive(true);
                 _equippedGun = newActive;
             }
-            if (newInactive != null)
-            {
-                newInactive.gameObject.SetActive(false);
-            }
+            
+            if (newInactive) newInactive.gameObject.SetActive(false);
         }
 
         [ObserversRpc]
@@ -175,14 +163,14 @@ namespace Weapons
         {
             if (isPrimaryActive)
             {
-                if (_primaryGun != null) _primaryGun.gameObject.SetActive(true);
-                if (_secondaryGun != null) _secondaryGun.gameObject.SetActive(false);
+                if (_primaryGun) _primaryGun.gameObject.SetActive(true);
+                if (_secondaryGun) _secondaryGun.gameObject.SetActive(false);
                 _equippedGun = _primaryGun;
             }
             else
             {
-                if (_primaryGun != null) _primaryGun.gameObject.SetActive(false);
-                if (_secondaryGun != null) _secondaryGun.gameObject.SetActive(true);
+                if (_primaryGun) _primaryGun.gameObject.SetActive(false);
+                if (_secondaryGun) _secondaryGun.gameObject.SetActive(true);
                 _equippedGun = _secondaryGun;
             }
         }
