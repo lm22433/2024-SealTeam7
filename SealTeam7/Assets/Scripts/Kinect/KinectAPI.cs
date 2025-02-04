@@ -193,13 +193,14 @@ namespace Kinect
 
             // Create Depth Buffer
             Span<ushort> depthBuffer = capture.Depth.GetPixels<ushort>().Span;
+            Debug.Log(depthBuffer.Length);
             //Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
 
             int rangeX = _xOffsetEnd - _xOffsetStart;
             int rangeY = _yOffsetEnd - _yOffsetStart;
 
-            int samplingRateX = rangeX / _width;
-            int samplingRateY = rangeY / _height;
+            float samplingRateX = rangeX / _width;
+            float samplingRateY = rangeY / _height;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _height; y++)
@@ -212,11 +213,10 @@ namespace Kinect
                     int lowerY = (int)Mathf.Floor(y * samplingRateY + _xOffsetStart);
                     int upperY = (int)Mathf.Ceil(y * samplingRateY + _xOffsetStart);
 
-                    var lowerSample = depthBuffer[lowerY * rangeY + lowerX];
-                    var upperSample = depthBuffer[upperY * rangeY + upperX];
+                    ushort lowerSample = depthBuffer[lowerY * _width + lowerX];
+                    ushort upperSample = depthBuffer[upperY * _width + upperX];
 
-
-                    var depth = (half) ((lowerSample + upperSample) / 2);
+                    half depth = (half) ((half) (lowerSample + upperSample) / 2f);
 
                     //var ir = 0; //irBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
 
