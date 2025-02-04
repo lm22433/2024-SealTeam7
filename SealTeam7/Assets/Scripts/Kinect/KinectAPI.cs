@@ -103,7 +103,7 @@ namespace Kinect
         
         void OnApplicationQuit()
         {
-            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
+            if (_kinect != null) {
                 _running = false;
                 _kinect.StopCameras();
                 _kinect.Dispose();
@@ -134,17 +134,10 @@ namespace Kinect
             mapGenerator.GetChunk(x, z).SetHeights(depths);
         }
         
-        public half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkY)
+        public half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
         {
-            var lodFactor = lod == 0 ? 1 : lod * 2;
             
             //float similarity = 0;
-            half[] depths = new half[(chunkSize / lodFactor + 1) * (chunkSize / lodFactor + 1)];
-
-            var resolution = chunkSize / lodFactor;
-            
-            int yChunkOffset = chunkY * chunkSize;
-            int xChunkOffset = chunkX * chunkSize;
 
             /*
             //Similarity Check
@@ -164,15 +157,22 @@ namespace Kinect
             }
             */
             //Write changed texture
-            for (int y = 0; y < resolution; y++)
+            var lodFactor = lod == 0 ? 1 : lod * 2;
+            var resolution = chunkSize / lodFactor;
+            int zChunkOffset = chunkZ * chunkSize;
+            int xChunkOffset = chunkX * chunkSize;
+            
+            var depth = new half[(resolution + 1) * (resolution + 1)];
+            
+            for (int z = 0; z < resolution + 1; z++)
             {
-                for (int x = 0; x < resolution; x++)
+                for (int x = 0; x < resolution + 1; x++)
                 {
-                    depths[y * resolution + x] = _depthMapArray[(lodFactor * y + yChunkOffset) * _height + xChunkOffset + lodFactor * x];
+                    depth[z * (resolution + 1) + x] = _depthMapArray[(lodFactor * z + zChunkOffset) * _width + xChunkOffset + lodFactor * x];
                 }
             }
 
-            return depths;
+            return depth;
         }
 
         public async Task GetCaptureAsync()

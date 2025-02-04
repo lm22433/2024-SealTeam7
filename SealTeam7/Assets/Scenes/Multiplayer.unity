@@ -153,13 +153,19 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
-  minimumSandDepth: 300
-  maximumSandDepth: 2000
-  irThreshold: 0
+  minimumSandDepth: 850
+  maximumSandDepth: 1150
+  irThreshold: 255
   similarityThreshold: 0.5
   mapGenerator: {fileID: 304089664}
-  dimensions: 960
-  isKinectPresent: 0
+  _width: 514
+  _height: 514
+  _xOffsetStart: 63
+  _xOffsetEnd: 577
+  _yOffsetStart: 31
+  _yOffsetEnd: 545
+  isKinectPresent: 1
+  texture: {fileID: 0}
 --- !u!4 &230521255
 Transform:
   m_ObjectHideFlags: 0
@@ -220,7 +226,7 @@ MonoBehaviour:
   <PrefabId>k__BackingField: 65535
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 0
-  <SceneId>k__BackingField: 4269267966
+  <SceneId>k__BackingField: 2139094879
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 0}
@@ -276,21 +282,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 960
-    chunks: 100
-    chunkSize: 24
+    size: 512
+    chunks: 64
+    chunkSize: 32
     maxHeight: 20
     lerpFactor: 0.5
     lodLevels:
-    - maxViewDistance: 1112
+    - maxViewDistance: 2000
       lod: 0
-    - maxViewDistance: 375.7
-      lod: 1
-    - maxViewDistance: 645.5
-      lod: 3
     playerMoveThreshold: 12.37
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
-  isKinectPresent: 0
+  isKinectPresent: 1
 --- !u!4 &304089665
 Transform:
   m_ObjectHideFlags: 0
@@ -353,7 +355,7 @@ MonoBehaviour:
   <PrefabId>k__BackingField: 65535
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 0
-  <SceneId>k__BackingField: 2139085814
+  <SceneId>k__BackingField: 4286052350
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 0}
@@ -616,6 +618,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7443408887813606051, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 688602658}
+    - targetCorrespondingSourceObject: {fileID: 7443408887813606051, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 688602662}
   m_SourcePrefab: {fileID: 100100000, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
 --- !u!1 &688602651 stripped
 GameObject:
@@ -679,6 +684,24 @@ MonoBehaviour:
   _frameRate: 500
   _shareIds: 1
   _startOnHeadless: 0
+--- !u!114 &688602662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688602651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d0962ead4b02a34aae248fccce671ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WriteSceneObjectDetails: 1
+  ObserverRpcLinks: 1
+  TargetRpcLinks: 1
+  ReplicateRpcLinks: 1
+  ReconcileRpcLinks: 1
+  ServerRpcLinks: 1
 --- !u!1 &933319492
 GameObject:
   m_ObjectHideFlags: 0
