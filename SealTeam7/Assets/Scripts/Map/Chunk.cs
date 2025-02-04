@@ -39,6 +39,7 @@ namespace Map
         
         public void SetLod(ushort lod)
         {
+            if (settings.lod == lod) return;
             settings.lod = lod;
             _lodFactor = lod == 0 ? 1 : lod * 2;
             _vertexSideCount = settings.size / _lodFactor + 1;
