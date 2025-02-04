@@ -162,13 +162,13 @@ namespace Kinect
             int zChunkOffset = chunkZ * chunkSize;
             int xChunkOffset = chunkX * chunkSize;
             
-            var depth = new half[(resolution + 1) * (resolution + 1)];
+            var depth = new half[resolution * resolution];
             
-            for (int z = 0; z < resolution + 1; z++)
+            for (int z = 0; z < resolution; z++)
             {
-                for (int x = 0; x < resolution + 1; x++)
+                for (int x = 0; x < resolution; x++)
                 {
-                    depth[z * (resolution + 1) + x] = _depthMapArray[(lodFactor * z + zChunkOffset) * _width + xChunkOffset + lodFactor * x];
+                    depth[z * resolution + x] = _depthMapArray[(lodFactor * z + zChunkOffset) * _width + xChunkOffset + lodFactor * x];
                 }
             }
 

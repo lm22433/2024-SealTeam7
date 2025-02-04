@@ -42,7 +42,7 @@ namespace Map
             if (settings.lod == lod) return;
             settings.lod = lod;
             _lodFactor = lod == 0 ? 1 : lod * 2;
-            _vertexSideCount = settings.size / _lodFactor + 1;
+            _vertexSideCount = settings.size / _lodFactor;
             //TODO: adjust so that old height data is preserved over LOD switch
             _heightMap = new half[_vertexSideCount * _vertexSideCount];
             _meshCollider.enabled = lod == 0;
@@ -63,12 +63,12 @@ namespace Map
         private void Awake()
         {
             _lodFactor = 1;
-            _vertexSideCount = settings.size / _lodFactor + 1;
+            _vertexSideCount = settings.size / _lodFactor;
             
             _mesh = new Mesh {name = "Generated Mesh"};
             _mesh.MarkDynamic();
             
-            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, 2f * settings.maxHeight, settings.size * settings.spacing));
+            _bounds = new Bounds(transform.position, new Vector3((settings.size - 1) * settings.spacing, 2f * settings.maxHeight, (settings.size - 1) * settings.spacing));
             _mesh.bounds = _bounds;
             
             UpdateMesh();
@@ -112,7 +112,7 @@ namespace Map
         {
             GetHeights();
 
-            var vertices = new NativeArray<float3>(_oldVertices, Allocator.TempJob);
+            var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
             var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
             
             var heightUpdate = new HeightUpdate {
@@ -134,7 +134,7 @@ namespace Map
 
         private void UpdateMesh() {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var numberOfTriangles = (settings.size / _lodFactor) * (settings.size / _lodFactor) * 6;
+            var numberOfTriangles = (_vertexSideCount - 1) * (_vertexSideCount - 1) * 6;
             
             //TODO: adjust so that old height data is preserved over LOD switch
             var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
@@ -198,8 +198,8 @@ namespace Map
         
         public void Execute(int index)
         {
-            var x = (int) (index / VertexSideCount) * LODFactor - 0.5f * Size;
-            var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * Size;
+            var x = (int) (index / VertexSideCount) * LODFactor - 0.5f * (Size - 1);
+            var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * (Size - 1);
             Vertices[index] = new float3(x * Spacing, 0f, z * Spacing);
         }
     }
