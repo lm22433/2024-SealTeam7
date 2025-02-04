@@ -282,7 +282,7 @@ MonoBehaviour:
     maxHeight: 20
     lerpFactor: 0.5
     lodLevels:
-    - maxViewDistance: 124.5
+    - maxViewDistance: 1112
       lod: 0
     - maxViewDistance: 375.7
       lod: 1
