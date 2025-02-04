@@ -1,6 +1,5 @@
 using Input;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Weapons.Gun;
 
 namespace Weapons
@@ -67,72 +66,34 @@ namespace Weapons
 
         private void Update()
         {
+            InputController inputController = InputController.GetInstance();
             switch (_currentGun.fireMode)
             {
                 case FireMode.Automatic:
-                {
-                    if (InputController.GetInstance().GetShootInputHeld())
-                    {
-                        _currentGun.Attack();
-                    }
-            
+                    if (inputController.GetShootInputHeld()) _currentGun.Attack();
                     break;
-                }
                 case FireMode.SemiAutomatic:
-                {
-                    if (InputController.GetInstance().GetShootInputPressed())
-                    {
-                        _currentGun.Attack();
-                    }
-            
+                    if (inputController.GetShootInputPressed()) _currentGun.Attack();
                     break;
-                }
             }
             
             // Aiming
-            if (InputController.GetInstance().GetAimInputHeld() && !_isAiming)
-            {
-                StartAiming();
-            } else if (!InputController.GetInstance().GetAimInputHeld() && _isAiming)
-            {
-                StopAiming();
-            }
+            bool isAimingHeld = inputController.GetAimInputHeld();
+            if (isAimingHeld && !_isAiming) StartAiming();
+            else if (!isAimingHeld && _isAiming) StopAiming();
             
             // Reloading
-            if (InputController.GetInstance().GetReloadInput())
-            {
-                _currentGun.TryReload();
-            }
+            if (inputController.GetReloadInput()) _currentGun.TryReload();
             
             // Melee Attack
-            if (InputController.GetInstance().GetMeleeInput())
-            {
-                meleeWeapon.Attack();
-            }
+            if (inputController.GetMeleeInput()) meleeWeapon.Attack();
 
-            // Scrolling to Swap Weapons
-            if (InputController.GetInstance().GetScrollSwapWeaponInput() != 0.0f)
-            {
-                SwapWeapon();
-            }
+            // Swapping Weapons
+            if (inputController.GetSwapWeaponInput() || inputController.GetScrollSwapWeaponInput() != 0.0f) SwapWeapon();
             
-            // Swap Weapons
-            if (InputController.GetInstance().GetSwapWeaponInput())
-            {
-                SwapWeapon();
-            }
-            
-            // Equip Primary Weapon
-            if (InputController.GetInstance().GetEquipPrimaryInput())
-            {
-                EquipWeapon(primaryWeapon);
-            }
-            
-            // Equip Primary Secondary Weapon
-            if (InputController.GetInstance().GetEquipSecondaryInput())
-            {
-                EquipWeapon(secondaryWeapon);
-            }
+            // Equip Specific Weapons
+            if (inputController.GetEquipPrimaryInput()) EquipWeapon(primaryWeapon);
+            if (inputController.GetEquipSecondaryInput()) EquipWeapon(secondaryWeapon);
         }
         
         private void StartAiming() 
