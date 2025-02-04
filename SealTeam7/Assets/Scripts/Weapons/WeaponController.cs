@@ -99,23 +99,17 @@ namespace Weapons
             }
 
             GameObject primaryInstance = Instantiate(primaryGunPrefab.gameObject);
-            primaryInstance.transform.localPosition = primaryGunPrefab.spawnPosition;
-            primaryInstance.transform.localEulerAngles = primaryGunPrefab.spawnRotation;
-            
             NetworkObject primaryNetworkObject = primaryInstance.GetComponent <NetworkObject>();
             primaryNetworkObject.SetParent(weaponHolder);
+            primaryNetworkObject.transform.SetLocalPositionAndRotation(primaryGunPrefab.spawnPosition, Quaternion.identity);
             ServerManager.Spawn(primaryInstance, Owner);
-            
             _primaryGun = primaryInstance.GetComponent<Gun>();
 
             GameObject secondaryInstance = Instantiate(secondaryGunPrefab.gameObject);
-            secondaryInstance.transform.localPosition = secondaryGunPrefab.spawnPosition;
-            secondaryInstance.transform.localEulerAngles = secondaryGunPrefab.spawnRotation;
-
             NetworkObject secondaryNetworkObject = secondaryInstance.GetComponent <NetworkObject>();
             secondaryNetworkObject.SetParent(weaponHolder);
+            secondaryGunPrefab.transform.SetLocalPositionAndRotation(secondaryGunPrefab.spawnPosition, Quaternion.identity);
             ServerManager.Spawn(secondaryNetworkObject, Owner);
-            
             _secondaryGun = secondaryInstance.GetComponent<Gun>();
 
             _primaryGun.gameObject.SetActive(false);
