@@ -109,7 +109,7 @@ namespace Weapons
             NetworkObject secondaryNetworkObject = secondaryInstance.GetComponent <NetworkObject>();
             secondaryNetworkObject.SetParent(weaponHolder);
             secondaryGunPrefab.transform.SetLocalPositionAndRotation(secondaryGunPrefab.spawnPosition, Quaternion.identity);
-            ServerManager.Spawn(secondaryNetworkObject, Owner);
+            ServerManager.Spawn(secondaryInstance, Owner);
             _secondaryGun = secondaryInstance.GetComponent<Gun>();
 
             _primaryGun.gameObject.SetActive(false);
