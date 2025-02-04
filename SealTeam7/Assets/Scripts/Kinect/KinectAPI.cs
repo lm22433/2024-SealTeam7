@@ -15,7 +15,7 @@ namespace Kinect
     public class KinectAPI : NetworkBehaviour
     {
 
-        [Header("Depth Calibrations")] [SerializeField, Range(300f, 1000f)]
+        [Header("Depth Calibrations")] [SerializeField, Range(300f, 2000f)]
         private ushort minimumSandDepth;
 
         [SerializeField, Range(600f, 2000f)] private ushort maximumSandDepth;
@@ -35,8 +35,18 @@ namespace Kinect
         private int _colourHeight;
 
         private half[] _depthMapArray;
-        [SerializeField] private int dimensions;
+
+        [Header("Position Calibrations")]
+        [SerializeField] private int _width;
+        [SerializeField] private int _height;
+        [SerializeField, Range(0f, 640f)] private int _xOffsetStart;
+        [SerializeField, Range(0f, 640f)] private int _xOffsetEnd;
+        [SerializeField, Range(0f, 576f)] private int _yOffsetStart;
+        [SerializeField, Range(0f, 576f)] private int _yOffsetEnd;
+
         [SerializeField] private bool isKinectPresent;
+
+        [SerializeField] Texture2D texture;
         private bool _running;
 
         public override void OnStartServer()
@@ -67,8 +77,8 @@ namespace Kinect
             // Initialize the transformation engine
             _transformation = _kinect.GetCalibration().CreateTransformation();
 
-            _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
-            _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+            this._colourWidth = this._kinect.GetCalibration().DepthCameraCalibration.ResolutionWidth;
+            this._colourHeight = this._kinect.GetCalibration().DepthCameraCalibration.ResolutionHeight;
 
             StartKinect();
             ServerManager.OnRemoteConnectionState += OnClientConnected;
@@ -84,7 +94,8 @@ namespace Kinect
 
         private void StartKinect()
         {
-            _depthMapArray = new half[dimensions * dimensions];
+            _depthMapArray = new half[_width * _height];
+            texture = new Texture2D(_width, _height);
 
             _running = true;
             Task.Run(GetCaptureAsync);
@@ -107,10 +118,10 @@ namespace Kinect
         public void RequestChunkTextureServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkTexture(lod, chunkSize, x, z);
+            //Debug.Log("RPC recieved");
 
             // Send the depth data back to the requesting client
             NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
-
             if (targetConnection != null)
             {
                 SendChunkTextureTargetRpc(targetConnection, depths, x, z);
@@ -153,11 +164,11 @@ namespace Kinect
             }
             */
             //Write changed texture
-            for (int y = 0; y < resolution + 1; y++)
+            for (int y = 0; y < resolution; y++)
             {
-                for (int x = 0; x < resolution + 1; x++)
+                for (int x = 0; x < resolution; x++)
                 {
-                    depths[y * (resolution + 1) + x] = _depthMapArray[(lodFactor * y + yChunkOffset) * dimensions + xChunkOffset + lodFactor * x];
+                    depths[y * resolution + x] = _depthMapArray[(lodFactor * y + yChunkOffset) * _height + xChunkOffset + lodFactor * x];
                 }
             }
 
@@ -177,53 +188,67 @@ namespace Kinect
 
         private void GetDepthTextureFromKinect(Capture capture, Image transformedDepth)
         {
-            //using (Capture capture = kinect.GetCapture())
             // Transform the depth image to the colour camera perspective
-            _transformation.DepthImageToColorCamera(capture, transformedDepth);
+            //_transformation.DepthImageToColorCamera(capture, transformedDepth);
 
             // Create Depth Buffer
-            Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
-            Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
+            Span<ushort> depthBuffer = capture.Depth.GetPixels<ushort>().Span;
+            //Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
 
-            int imageXOffset = (_colourWidth - dimensions) / 2;
-            int imageYOffset = (_colourHeight - dimensions) / 2;
+            int rangeX = _xOffsetEnd - _xOffsetStart;
+            int rangeY = _yOffsetEnd - _yOffsetStart;
+
+            int samplingRateX = rangeX / _width;
+            int samplingRateY = rangeY / _height;
 
             // Create a new image with data from the depth and colour image
-            for (int y = 0; y < dimensions; y++)
+            for (int y = 0; y < _height; y++)
             {
-                for (int x = 0; x < dimensions; x++)
+                for (int x = 0; x < _width; x++)
                 {
-                    var depth = depthBuffer[(y + imageYOffset) * _colourWidth + imageXOffset + x];
-                    var ir = 0; //irBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
+
+                    int lowerX = (int)Mathf.Floor(x * samplingRateX + _xOffsetStart);
+                    int upperX = (int)Mathf.Ceil(x * samplingRateX + _xOffsetStart);
+                    int lowerY = (int)Mathf.Floor(y * samplingRateY + _xOffsetStart);
+                    int upperY = (int)Mathf.Ceil(y * samplingRateY + _xOffsetStart);
+
+                    var lowerSample = depthBuffer[lowerY * rangeY + lowerX];
+                    var upperSample = depthBuffer[upperY * rangeY + upperX];
+
+
+                    var depth = (half) ((lowerSample + upperSample) / 2);
+
+                    //var ir = 0; //irBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
 
                     // Calculate pixel values
                     half depthRange = (half)(maximumSandDepth - minimumSandDepth);
                     half pixelValue = (half)(maximumSandDepth - depth);
 
-                    if (ir < irThreshold)
+                    //if (ir < irThreshold)
+                    //{
+                    half val = (half) 0;
+                    if (depth == 0 || depth >= maximumSandDepth) // No depth image
                     {
-                        half val = (half) 0;
-                        if (depth == 0 || depth >= maximumSandDepth) // No depth image
-                        {
-                            val = (half) 0;
+                        val = (half) 0;
 
-                        }
-                        else if (depth < minimumSandDepth)
-                        {
-
-                            val = (half) 1;
-
-                        }
-                        else
-                        {
-                            val = (half) (pixelValue / depthRange);
-
-                        }
-
-                        _depthMapArray[y * dimensions + x] = val;
                     }
+                    else if (depth < minimumSandDepth)
+                    {
+
+                        val = (half) 1;
+
+                    }
+                    else
+                    {
+                        val = (half) (pixelValue / depthRange);
+
+                    }
+
+                    _depthMapArray[y * _height + x] = val;
+                    //}
                 }
             }
+
         }
     }
 }
