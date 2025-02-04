@@ -41,7 +41,7 @@ namespace Kinect
 
         public override void OnStartServer()
         {
-            if (isKinectPresent) {
+            if (!isKinectPresent) {
                 return;
             }
 
@@ -50,10 +50,10 @@ namespace Kinect
                 Debug.LogError("Minimum depth is greater than maximum depth");
             }
 
-            this._kinect = Device.Open();
+            _kinect = Device.Open();
 
             // Configure camera modes
-            this._kinect.StartCameras(new DeviceConfiguration
+            _kinect.StartCameras(new DeviceConfiguration
             {
                 ColorFormat = ImageFormat.ColorBGRA32,
                 ColorResolution = ColorResolution.R1080p,
@@ -62,13 +62,13 @@ namespace Kinect
                 CameraFPS = FPS.FPS30
             });
 
-            Debug.Log("AKDK Serial Number: " + this._kinect.SerialNum);
+            Debug.Log("AKDK Serial Number: " + _kinect.SerialNum);
 
             // Initialize the transformation engine
-            this._transformation = this._kinect.GetCalibration().CreateTransformation();
+            _transformation = _kinect.GetCalibration().CreateTransformation();
 
-            this._colourWidth = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
-            this._colourHeight = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+            _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
+            _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
 
             StartKinect();
             ServerManager.OnRemoteConnectionState += OnClientConnected;
@@ -99,7 +99,7 @@ namespace Kinect
             }
         }
 
-        public void RequestTexture(ushort lod, ushort chunkSize, int z, int x) {
+        public void RequestTexture(ushort lod, ushort chunkSize, int x, int z) {
             RequestChunkTextureServerRpc(Owner.ClientId, lod, chunkSize, x, z); 
         }
 
@@ -120,7 +120,7 @@ namespace Kinect
         [TargetRpc]
         private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
         {
-            mapGenerator.GetChunk(z, x).SetHeights(depths);
+            mapGenerator.GetChunk(x, z).SetHeights(depths);
         }
         
         public half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkY)
