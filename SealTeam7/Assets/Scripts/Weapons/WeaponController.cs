@@ -12,7 +12,7 @@ namespace Weapons
         public MeleeWeapon meleeWeaponPrefab;
         
         [Header("References")]
-        [SerializeField] private Transform weaponHolder;
+        [SerializeField] private NetworkObject weaponHolder;
 
         private Gun _equippedGun;
         private Gun _primaryGun;
@@ -104,6 +104,8 @@ namespace Weapons
                 Quaternion.Euler(primaryGunPrefab.spawnRotation)
             );
             
+            NetworkObject primaryNetworkObject = primaryInstance.GetComponent <NetworkObject>();
+            primaryNetworkObject.SetParent(weaponHolder);
             ServerManager.Spawn(primaryInstance, Owner);
             _primaryGun = primaryInstance.GetComponent<Gun>();
 
@@ -112,14 +114,11 @@ namespace Weapons
                 secondaryGunPrefab.spawnPosition,
                 Quaternion.Euler(secondaryGunPrefab.spawnRotation)
             );
-            ServerManager.Spawn(secondaryInstance, Owner);
-            _secondaryGun = secondaryInstance.GetComponent<Gun>();
 
-            if (weaponHolder != null)
-            {
-                _primaryGun.transform.SetParent(weaponHolder, false);
-                _secondaryGun.transform.SetParent(weaponHolder, false);
-            }
+            NetworkObject secondaryNetworkObject = secondaryInstance.GetComponent <NetworkObject>();
+            secondaryNetworkObject.SetParent(weaponHolder);
+            ServerManager.Spawn(secondaryNetworkObject, Owner);
+            _secondaryGun = secondaryInstance.GetComponent<Gun>();
 
             _primaryGun.gameObject.SetActive(false);
             _secondaryGun.gameObject.SetActive(false);
