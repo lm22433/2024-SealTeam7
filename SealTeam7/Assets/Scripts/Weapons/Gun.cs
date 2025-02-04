@@ -1,5 +1,7 @@
+using System.Collections;
 using FishNet.Connection;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using UnityEngine;
 
 namespace Weapons
@@ -45,10 +47,10 @@ namespace Weapons
         public Sprite displaySprite;
         public Vector2 spriteScale;
         public Vector3 spritePosition;
-        
-        private int _currentAmmo;
-        private int _totalAmmo;
-        private float _nextFireTime;
+
+        private readonly IntSyncVar _currentAmmo = new();
+        private readonly IntSyncVar _totalAmmo = new();
+        private readonly FloatSyncVar _nextFireTime = new();
 
         private bool _isShooting;
         private bool _isReloading;
@@ -57,60 +59,81 @@ namespace Weapons
         {
             base.OnStartServer();
 
-            _currentAmmo = magazineSize;
-            _totalAmmo = maxAmmo;
-        }
-
-        public void Shoot()
-        {
-            if (!IsOwner) return;
-            
-            if (CanShoot()) ServerShoot();
-            else if (_currentAmmo == 0 && !_isReloading) TargetPlayReloadSound(Owner);
+            _currentAmmo.Value = magazineSize;
+            _totalAmmo.Value = maxAmmo;
         }
         
         [ServerRpc(RequireOwnership = true)]
-        private void ServerShoot()
+        public void ServerShoot()
         {
-            ObserverShoot();
+            if (CanShoot())
+            {
+                _nextFireTime.Value = Time.time + 60.0f / fireRate;
+                _currentAmmo.Value--;
+                
+                ObserversPlayShootEffects();
+            
+                // TODO: Handle raycast.
+            }
+            else if (IsEmpty())
+            {
+                _nextFireTime.Value = Time.time + 60.0f / fireRate;
+                
+                TargetPlayEmptyMagazineSound(Owner);
+            }
         }
 
         [ObserversRpc]
-        private void ObserverShoot()
+        private void ObserversPlayShootEffects()
         {
             if (muzzleFlash) muzzleFlash.Play();
             if (gunShotSound && gunAudioSource) gunAudioSource.PlayOneShot(gunShotSound);
         }
 
         [TargetRpc]
-        private void TargetPlayReloadSound(NetworkConnection _)
+        private void TargetPlayEmptyMagazineSound(NetworkConnection _)
         {
             if (emptyMagazineSound && gunAudioSource) 
                 gunAudioSource.PlayOneShot(emptyMagazineSound);
         }
 
-        private bool CanShoot() => !_isReloading && _currentAmmo > 0 && Time.time >= _nextFireTime;
+        private bool CanShoot() => !_isReloading && _currentAmmo.Value > 0 && Time.time >= _nextFireTime.Value;
+        private bool IsEmpty() => !_isReloading && _currentAmmo.Value == 0 && Time.time >= _nextFireTime.Value; 
 
-        public void TryReload()
+        [ServerRpc(RequireOwnership = true)]
+        public void ServerReload()
         {
-            if (!IsOwner) return;
-            
-            Debug.Log("Reload");   
+            if (_isReloading || _currentAmmo.Value >= magazineSize || _totalAmmo.Value <= 0) return;
+
+            StartCoroutine(Reload());
         }
 
-        public void TryAim()
+        [Server]
+        private IEnumerator Reload()
         {
-            if (!IsOwner) return;
+            _isReloading = true;
+            TargetPlayReloadSound(Owner);
+            ObserversPlayReloadAnimation();
             
-            Debug.Log("Aim");
+            yield return new WaitForSeconds(reloadTime);
+            
+            int reloadAmount = Mathf.Min(magazineSize - _currentAmmo.Value, _totalAmmo.Value);
+            _currentAmmo.Value += reloadAmount;
+            _totalAmmo.Value -= reloadAmount;
+            
+            _isReloading = false;
         }
 
-        public void TryUnaim()
+        [TargetRpc]
+        private void TargetPlayReloadSound(NetworkConnection _)
         {
-            if (!IsOwner) return;
-            
-            Debug.Log("Unaim");
+            if (reloadSound&& gunAudioSource) gunAudioSource.PlayOneShot(reloadSound);
         }
-        
+
+        [ObserversRpc]
+        private void ObserversPlayReloadAnimation()
+        {
+            // TODO: Implement reload animation.
+        }
     }
 }

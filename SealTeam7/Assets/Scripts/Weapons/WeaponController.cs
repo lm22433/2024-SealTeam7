@@ -48,22 +48,22 @@ namespace Weapons
             InputController inputController = InputController.GetInstance();
 
             if (inputController.GetShootInputHeld() || inputController.GetShootInputPressed())
-                _equippedGun.Shoot();
+                _equippedGun.ServerShoot();
         }
 
         private void HandleAiming()
         {
             InputController inputController = InputController.GetInstance();
 
-            if (inputController.GetAimInputHeld()) _equippedGun.TryAim();
-            else _equippedGun.TryUnaim();
+            // if (inputController.GetAimInputHeld()) _equippedGun.TryAim();
+            // else _equippedGun.TryUnaim();
         }
 
         private void HandleReload()
         {
             InputController inputController = InputController.GetInstance();
 
-            if (inputController.GetReloadInput()) _equippedGun.TryReload();
+            if (inputController.GetReloadInput()) _equippedGun.ServerReload();
         }
 
         private void HandleMelee()
@@ -123,56 +123,55 @@ namespace Weapons
 
             _primaryGun.gameObject.SetActive(false);
             _secondaryGun.gameObject.SetActive(false);
+            
+            RpcSyncWeapons(_primaryGun, _secondaryGun);
         }
         
         private void EquipWeapon(bool usePrimary)
         {
             if (!IsOwner) return;
 
-            CmdEquipWeapon(usePrimary);
+            ServerEquipWeapon(usePrimary);
         }
 
         [ServerRpc(RequireOwnership = true)]
-        private void CmdEquipWeapon(bool usePrimary)
+        private void ServerEquipWeapon(bool usePrimary)
         {
             if (usePrimary)
             {
-                if (_equippedGun != _primaryGun) SetActiveWeapon(_primaryGun, _secondaryGun);
+                if (_equippedGun != _primaryGun)
+                {
+                    _primaryGun.gameObject.SetActive(true);
+                    _secondaryGun.gameObject.SetActive(false);
+                    _equippedGun = _primaryGun;
+                }
             }
             else
             {
-                if (_equippedGun != _secondaryGun) SetActiveWeapon(_secondaryGun, _primaryGun);
+                if (_equippedGun != _secondaryGun)
+                {
+                    _primaryGun.gameObject.SetActive(false);
+                    _secondaryGun.gameObject.SetActive(true);
+                    _equippedGun = _secondaryGun;
+                }
             }
             RpcUpdateActiveWeapon(usePrimary);
-        }
-
-        [Server]
-        private void SetActiveWeapon(Gun newActive, Gun newInactive)
-        {
-            if (newActive)
-            {
-                newActive.gameObject.SetActive(true);
-                _equippedGun = newActive;
-            }
-            
-            if (newInactive) newInactive.gameObject.SetActive(false);
         }
 
         [ObserversRpc]
         private void RpcUpdateActiveWeapon(bool isPrimaryActive)
         {
-            if (isPrimaryActive)
-            {
-                if (_primaryGun) _primaryGun.gameObject.SetActive(true);
-                if (_secondaryGun) _secondaryGun.gameObject.SetActive(false);
-                _equippedGun = _primaryGun;
-            }
-            else
-            {
-                if (_primaryGun) _primaryGun.gameObject.SetActive(false);
-                if (_secondaryGun) _secondaryGun.gameObject.SetActive(true);
-                _equippedGun = _secondaryGun;
-            }
+            if (_primaryGun) _primaryGun.gameObject.SetActive(isPrimaryActive);
+            if (_secondaryGun) _secondaryGun.gameObject.SetActive(!isPrimaryActive);
+            
+            _equippedGun = isPrimaryActive ? _primaryGun : _secondaryGun;
+        }
+
+        [ObserversRpc(BufferLast = true)]
+        private void RpcSyncWeapons(Gun primaryGun, Gun secondaryGun)
+        {
+            _primaryGun = primaryGun;
+            _secondaryGun = secondaryGun;
         }
 
     }
