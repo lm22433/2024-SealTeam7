@@ -99,16 +99,16 @@ namespace Weapons
             }
 
             GameObject primaryInstance = Instantiate(primaryGunPrefab.gameObject);
-            NetworkObject primaryNetworkObject = primaryInstance.GetComponent <NetworkObject>();
+            NetworkObject primaryNetworkObject = primaryInstance.GetComponent<NetworkObject>();
             primaryNetworkObject.SetParent(weaponHolder);
-            primaryNetworkObject.transform.SetLocalPositionAndRotation(primaryGunPrefab.spawnPosition, Quaternion.identity);
+            primaryNetworkObject.transform.SetLocalPositionAndRotation(primaryGunPrefab.spawnPosition, primaryGunPrefab.spawnRotation);
             ServerManager.Spawn(primaryInstance, Owner);
             _primaryGun = primaryInstance.GetComponent<Gun>();
 
             GameObject secondaryInstance = Instantiate(secondaryGunPrefab.gameObject);
-            NetworkObject secondaryNetworkObject = secondaryInstance.GetComponent <NetworkObject>();
+            NetworkObject secondaryNetworkObject = secondaryInstance.GetComponent<NetworkObject>();
             secondaryNetworkObject.SetParent(weaponHolder);
-            secondaryGunPrefab.transform.SetLocalPositionAndRotation(secondaryGunPrefab.spawnPosition, Quaternion.identity);
+            secondaryNetworkObject.transform.SetLocalPositionAndRotation(secondaryGunPrefab.spawnPosition, secondaryGunPrefab.spawnRotation);
             ServerManager.Spawn(secondaryInstance, Owner);
             _secondaryGun = secondaryInstance.GetComponent<Gun>();
 

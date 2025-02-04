@@ -21,7 +21,7 @@ namespace Weapons
 
         [Header("Model Settings")]
         public Vector3 spawnPosition;
-        public Vector3 spawnRotation;
+        public Quaternion spawnRotation;
         
         [Header("Gun Settings")]
         public FireMode fireMode;
