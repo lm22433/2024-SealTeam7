@@ -18,7 +18,7 @@ namespace Kinect
         [Header("Depth Calibrations")] [SerializeField, Range(300f, 1000f)]
         private ushort minimumSandDepth;
 
-        [SerializeField, Range(600f, 1500f)] private ushort maximumSandDepth;
+        [SerializeField, Range(600f, 2000f)] private ushort maximumSandDepth;
 
         [Header("IR Calibrations")] [SerializeField, Range(0, 255f)]
         private int irThreshold;
@@ -29,18 +29,19 @@ namespace Kinect
         //Internal Variables
         private Device _kinect;
         private Transformation _transformation;
+        [SerializeField] private MapGenerator mapGenerator;
 
         private int _colourWidth;
         private int _colourHeight;
 
         private half[] _depthMapArray;
         [SerializeField] private int dimensions;
-        [SerializeField] private int chunkSize;
+        [SerializeField] private bool isKinectPresent;
         private bool _running;
 
         public override void OnStartServer()
         {
-            if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.ClientAndServer) {
+            if (!isKinectPresent) {
                 return;
             }
 
@@ -49,25 +50,25 @@ namespace Kinect
                 Debug.LogError("Minimum depth is greater than maximum depth");
             }
 
-            this._kinect = Device.Open();
+            _kinect = Device.Open();
 
             // Configure camera modes
-            this._kinect.StartCameras(new DeviceConfiguration
+            _kinect.StartCameras(new DeviceConfiguration
             {
                 ColorFormat = ImageFormat.ColorBGRA32,
                 ColorResolution = ColorResolution.R1080p,
-                DepthMode = DepthMode.NFOV_2x2Binned,
+                DepthMode = DepthMode.NFOV_Unbinned,
                 SynchronizedImagesOnly = true,
                 CameraFPS = FPS.FPS30
             });
 
-            Debug.Log("AKDK Serial Number: " + this._kinect.SerialNum);
+            Debug.Log("AKDK Serial Number: " + _kinect.SerialNum);
 
             // Initialize the transformation engine
-            this._transformation = this._kinect.GetCalibration().CreateTransformation();
+            _transformation = _kinect.GetCalibration().CreateTransformation();
 
-            this._colourWidth = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
-            this._colourHeight = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+            _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
+            _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
 
             StartKinect();
             ServerManager.OnRemoteConnectionState += OnClientConnected;
@@ -98,14 +99,14 @@ namespace Kinect
             }
         }
 
-        public void RequestTexture(ushort lod, int z, int x) {
-            RequestChunkTextureServerRpc(Owner.ClientId, lod, x, z); 
+        public void RequestTexture(ushort lod, ushort chunkSize, int x, int z) {
+            RequestChunkTextureServerRpc(Owner.ClientId, lod, chunkSize, x, z); 
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void RequestChunkTextureServerRpc(int clientId, ushort lod, int x, int z)
+        public void RequestChunkTextureServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
         {
-            half[] depths = GetChunkTexture(lod, x, z);
+            half[] depths = GetChunkTexture(lod, chunkSize, x, z);
 
             // Send the depth data back to the requesting client
             NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
@@ -119,10 +120,10 @@ namespace Kinect
         [TargetRpc]
         private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
         {
-            FindFirstObjectByType<MapGenerator>().GetChunk(z, x).SetHeights(depths);
+            mapGenerator.GetChunk(x, z).SetHeights(depths);
         }
         
-        public half[] GetChunkTexture(ushort lod, int chunkX, int chunkY)
+        public half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkY)
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             

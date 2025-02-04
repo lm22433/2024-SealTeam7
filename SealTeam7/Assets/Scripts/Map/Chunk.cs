@@ -17,7 +17,7 @@ namespace Map
         public ushort x;
         public ushort z;
         public ushort lod;
-        public bool isLocalhost;
+        public bool isKinectPresent;
     }
 
     public class Chunk : MonoBehaviour {
@@ -41,6 +41,7 @@ namespace Map
             settings.lod = lod;
             _lodFactor = lod == 0 ? 1 : lod * 2;
             _vertexSideCount = settings.size / _lodFactor + 1;
+            //TODO: adjust so that old height data is preserved over LOD switch
             _heightMap = new half[_vertexSideCount * _vertexSideCount];
             _meshCollider.enabled = lod == 0;
             if (_mesh) UpdateMesh();
@@ -65,6 +66,9 @@ namespace Map
             _mesh = new Mesh {name = "Generated Mesh"};
             _mesh.MarkDynamic();
             
+            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, 2f * settings.maxHeight, settings.size * settings.spacing));
+            _mesh.bounds = _bounds;
+            
             UpdateMesh();
             
             _meshRenderer = GetComponent<MeshRenderer>();
@@ -76,13 +80,11 @@ namespace Map
             
             _heightMap = new half[_vertexSideCount * _vertexSideCount];
 
-            if (settings.isLocalhost) {
-                _noiseGenerator = GetComponentInParent<NoiseGenerator>();
+            if (!settings.isKinectPresent) {
+                _noiseGenerator = FindAnyObjectByType<NoiseGenerator>();
             } else {
                 _kinect = FindAnyObjectByType<KinectAPI>();
             }
-
-            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, 2f * settings.maxHeight, settings.size * settings.spacing));
         }
 
         private void Update()
@@ -90,16 +92,18 @@ namespace Map
             UpdateHeights();
         }
 
-        private void GetHeights() { 
-            if (settings.isLocalhost) {
-                _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.z, settings.x);
+        private void GetHeights() {
+            if (!settings.isKinectPresent) {
+                _noiseGenerator.RequestNoise(settings.lod, settings.size, settings.x, settings.z);
             } else {
-                _kinect.RequestTexture(settings.lod, settings.z, settings.x);
+                _kinect.RequestTexture(settings.lod, settings.size, settings.x, settings.z);
             }
         }
 
-        public void SetHeights(half[] heights) {
-            _heightMap = heights;
+        public void SetHeights(half[] heights)
+        {
+            if (heights.Length == _heightMap.Length) _heightMap = heights;
+            else Debug.Log($"{heights.Length} received, {_heightMap.Length} expected.\nLOD: {settings.lod}, LODFACTOR: {_lodFactor}, SIZE: {settings.size}, CHUNK: ({settings.x}, {settings.z})");
         }
 
         private void UpdateHeights()
@@ -119,18 +123,18 @@ namespace Map
             
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateBounds();
 
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
             
-            vertices.Dispose(heightUpdate);
-            heights.Dispose(heightUpdate);
+            vertices.Dispose();
+            heights.Dispose();
         }
 
         private void UpdateMesh() {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
             var numberOfTriangles = (settings.size / _lodFactor) * (settings.size / _lodFactor) * 6;
             
+            //TODO: adjust so that old height data is preserved over LOD switch
             var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
 
@@ -155,11 +159,10 @@ namespace Map
             _mesh.SetVertices(vertices);
             _mesh.SetTriangles(triangles.ToArray(), 0);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateBounds();
             //_mesh.RecalculateTangents();
-
-            vertices.Dispose(meshVertexUpdate);
-            triangles.Dispose(meshTriangleUpdate);
+            
+            vertices.Dispose();
+            triangles.Dispose();
         }
     }
 
