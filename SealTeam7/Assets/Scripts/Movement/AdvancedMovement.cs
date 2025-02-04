@@ -1,7 +1,8 @@
 using Input;
 using UnityEngine;
 
-enum State {
+enum State
+{
     walking,
     sprinting,
     crouching,
@@ -74,6 +75,10 @@ public class AdvancedMovement : MonoBehaviour
     [SerializeField] private State curState;
     [SerializeField] private float moveSpeed;
 
+    private readonly int movementInputAnimParam = Animator.StringToHash("MovementInput");
+    private Animator animator;
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
@@ -86,31 +91,37 @@ public class AdvancedMovement : MonoBehaviour
         moveSpeed = walkSpeed;
         startYScale = transform.localScale.y;
         curState = State.walking;
+        animator = GetComponentInChildren<Animator>();
     }
+
 
     // Update is called once per frame
     private void Update()
     {
         //check if grounded
         grounded = Physics.CheckSphere(groundCheck.position, groundDist, whatIsGround);
-        
+
         MoveInput();
         SpeedLimit();
 
-        if(grounded) {
+        if (grounded)
+        {
             rb.linearDamping = friction;
         }
-        else {
+        else
+        {
             rb.linearDamping = airRes;
         }
     }
 
     private void FixedUpdate()
     {
-        if(curState == State.sliding) {
+        if (curState == State.sliding)
+        {
             SlidingMovement();
         }
-        else {
+        else
+        {
             MovePlayer();
         }
     }
@@ -122,20 +133,25 @@ public class AdvancedMovement : MonoBehaviour
         horInput = moveInput.x;
         verInput = moveInput.y;
 
+
+
         //Jumping
-        if(InputController.GetInstance().GetJumpInput()) {
-            if(curState == State.crouching) {
+        if (InputController.GetInstance().GetJumpInput())
+        {
+            if (curState == State.crouching)
+            {
 
                 curState = State.walking;
 
                 transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
                 rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
-                rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse); 
+                rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
 
                 readyToJump = false;
                 Invoke(nameof(ResetJump), jumpCooldown);
             }
-            else if(curState == State.sliding && readyToJump) {
+            else if (curState == State.sliding && readyToJump)
+            {
 
                 curState = State.sprintAir;
 
@@ -146,21 +162,24 @@ public class AdvancedMovement : MonoBehaviour
 
                 Invoke(nameof(ResetJump), jumpCooldown);
             }
-            else if((curState == State.walking || curState == State.sprinting) && readyToJump) {
+            else if ((curState == State.walking || curState == State.sprinting) && readyToJump)
+            {
 
                 readyToJump = false;
                 Jump();
 
                 Invoke(nameof(ResetJump), jumpCooldown);
-                if(curState == State.walking) curState = State.arial;
+                if (curState == State.walking) curState = State.arial;
                 else curState = State.sprintAir;
             }
-            else if(doubleJumpReady) {
+            else if (doubleJumpReady)
+            {
 
                 doubleJumpReady = false;
                 BoostJump();
             }
-            else {
+            else
+            {
                 curState = State.arial;
 
                 transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
@@ -169,87 +188,110 @@ public class AdvancedMovement : MonoBehaviour
             }
         }
 
-        if(grounded) {
-            if(curState == State.arial) {
+        if (grounded)
+        {
+            if (curState == State.arial)
+            {
                 curState = State.walking;
             }
-            else if(curState == State.sprintAir) {
+            else if (curState == State.sprintAir)
+            {
                 curState = State.sprinting;
             }
-            else if(curState == State.airCrouch) {
+            else if (curState == State.airCrouch)
+            {
                 curState = State.crouching;
             }
         }
 
         //Sprinting
-        if(InputController.GetInstance().GetSprintInput()) {
-            if(curState == State.walking || curState == State.crouching) {
+        if (InputController.GetInstance().GetSprintInput())
+        {
+            if (curState == State.walking || curState == State.crouching)
+            {
                 curState = State.sprinting;
             }
-            if(curState == State.sliding) {
+            if (curState == State.sliding)
+            {
                 SlideToSprint();
             }
         }
-        if (verInput < 0 && curState == State.sprinting) {
+        if (verInput < 0 && curState == State.sprinting)
+        {
             curState = State.walking;
         }
-        else if(verInput == 0 && horInput == 0 && curState == State.sprinting) {
+        else if (verInput == 0 && horInput == 0 && curState == State.sprinting)
+        {
             curState = State.walking;
         }
-        else if(verInput == 0 && horInput == 0 && curState == State.sprintAir) {
+        else if (verInput == 0 && horInput == 0 && curState == State.sprintAir)
+        {
             curState = State.arial;
         }
 
         //Crouching
-        if(InputController.GetInstance().GetCrouchInput()) {
-            if(curState == State.walking) {
+        if (InputController.GetInstance().GetCrouchInput())
+        {
+            if (curState == State.walking)
+            {
                 transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
                 rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
                 curState = State.crouching;
             }
-            else if(curState == State.arial) {
+            else if (curState == State.arial)
+            {
                 transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-                curState = State.airCrouch; 
+                curState = State.airCrouch;
             }
-            else if(curState == State.sprintAir) {
+            else if (curState == State.sprintAir)
+            {
                 transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-                curState = State.airSlide;                 
+                curState = State.airSlide;
             }
-            else if(curState == State.crouching) {
+            else if (curState == State.crouching)
+            {
                 transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
                 rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
                 rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
                 curState = State.walking;
             }
-            else if(curState == State.airCrouch || curState == State.airSlide) {
+            else if (curState == State.airCrouch || curState == State.airSlide)
+            {
                 transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
                 curState = State.arial;
             }
         }
 
         //Sliding
-        if(InputController.GetInstance().GetCrouchInput()) {
-            if(verInput > 0 && curState == State.sprinting) {
+        if (InputController.GetInstance().GetCrouchInput())
+        {
+            if (verInput > 0 && curState == State.sprinting)
+            {
                 StartSlide();
             }
-            else if(curState == State.sliding) {
+            else if (curState == State.sliding)
+            {
                 StopSlide();
             }
         }
 
-        if(grounded && curState == State.airSlide) {
+        if (grounded && curState == State.airSlide)
+        {
             StartSlide();
         }
 
-        if(grounded) doubleJumpReady = true;
+        if (grounded) doubleJumpReady = true;
 
         //SpeedControl
         SpeedControl();
+
+        animator.SetFloat(movementInputAnimParam, new Vector2(horInput, verInput).magnitude);
     }
 
     private void SpeedControl()
     {
-        switch (curState) {
+        switch (curState)
+        {
             case State.walking:
                 moveSpeed = walkSpeed;
                 break;
@@ -282,16 +324,19 @@ public class AdvancedMovement : MonoBehaviour
 
     private void SpeedLimit()
     {
-        if(OnSlope() && !exitingSlope) {
+        if (OnSlope() && !exitingSlope)
+        {
             //limits the sloped velocity rather than the floor plane velocity
-            if(rb.linearVelocity.magnitude > moveSpeed) {
+            if (rb.linearVelocity.magnitude > moveSpeed)
+            {
                 rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
             }
         }
-        else {
+        else
+        {
             Vector3 vel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             // limit velocity if needed
-            if(vel.magnitude > moveSpeed)
+            if (vel.magnitude > moveSpeed)
             {
                 Vector3 newVel = vel.normalized * moveSpeed;
                 rb.linearVelocity = new Vector3(newVel.x, rb.linearVelocity.y, newVel.z);
@@ -306,23 +351,28 @@ public class AdvancedMovement : MonoBehaviour
         moveDir = orientation.forward * verInput + orientation.right * horInput;
         moveDir = moveDir.normalized;
 
-        if(grounded) {
+        if (grounded)
+        {
             momentum = moveDir;
         }
 
         //physically move player
-        if(OnSlope() && !exitingSlope) {
+        if (OnSlope() && !exitingSlope)
+        {
             rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 10.0f, ForceMode.Force);
 
             //stops bouncing up slopes
-            if(rb.linearVelocity.y > 0) {
+            if (rb.linearVelocity.y > 0)
+            {
                 rb.AddForce(Vector3.down * 20.0f, ForceMode.Force);
             }
         }
-        else if(grounded){
-            rb.AddForce(moveDir * moveSpeed * 10.0f, ForceMode.Force);   
+        else if (grounded)
+        {
+            rb.AddForce(moveDir * moveSpeed * 10.0f, ForceMode.Force);
         }
-        else {
+        else
+        {
             rb.AddForce((moveDir + momentum).normalized * moveSpeed * 10.0f * airMultiplier, ForceMode.Force);
         }
 
@@ -347,7 +397,7 @@ public class AdvancedMovement : MonoBehaviour
     {
         exitingSlope = true;
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-        moveDir = orientation.forward*verInput + orientation.up + orientation.right * horInput;
+        moveDir = orientation.forward * verInput + orientation.up + orientation.right * horInput;
         rb.AddForce(moveDir.normalized * boostForce, ForceMode.Impulse);
     }
 
@@ -358,7 +408,7 @@ public class AdvancedMovement : MonoBehaviour
         slideDir = momentum.normalized;
 
         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-        if(grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
+        if (grounded) rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
 
         slideTimer = maxSlideTime;
     }
@@ -368,7 +418,8 @@ public class AdvancedMovement : MonoBehaviour
         curState = State.crouching;
         slideTimer = 0;
 
-        if(OnSlope()) {
+        if (OnSlope())
+        {
             rb.AddForce(Vector3.up * 0.5f, ForceMode.Impulse);
         }
     }
@@ -382,30 +433,36 @@ public class AdvancedMovement : MonoBehaviour
         rb.AddForce(Vector3.forward * 0.01f, ForceMode.Impulse);
         rb.AddForce(Vector3.back * 0.01f, ForceMode.Impulse);
 
-        if(OnSlope()) {
+        if (OnSlope())
+        {
             rb.AddForce(Vector3.up * 0.5f, ForceMode.Impulse);
         }
     }
 
     private void SlidingMovement()
     {
-        if(OnSlope() && !exitingSlope) {            
+        if (OnSlope() && !exitingSlope)
+        {
             rb.AddForce(GetSlopeSlideDirection() * slideForce * 10.0f * (slideTimer / maxSlideTime), ForceMode.Force);
 
             //stops bouncing up slopes
-            if(rb.linearVelocity.y > 0) {
+            if (rb.linearVelocity.y > 0)
+            {
                 slideTimer -= Time.deltaTime;
                 //rb.AddForce(Vector3.down * 20.0f, ForceMode.Force);
             }
         }
-        else if(grounded) {
+        else if (grounded)
+        {
             slideTimer -= Time.deltaTime;
             rb.AddForce(slideDir * slideForce * 10f * (slideTimer / maxSlideTime), ForceMode.Force);
         }
-        if(slideTimer < 0) {
+        if (slideTimer < 0)
+        {
             StopSlide();
         }
-        if(!grounded) {
+        if (!grounded)
+        {
             curState = State.airSlide;
             readyToJump = false;
             Invoke(nameof(ResetJump), jumpCooldown);
@@ -414,7 +471,8 @@ public class AdvancedMovement : MonoBehaviour
 
     private bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.35f)) {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.35f))
+        {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
         }
