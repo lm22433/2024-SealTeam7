@@ -5,8 +5,7 @@ using Unity.Mathematics;
 
 using Unity.Multiplayer;
 using FishNet.Object;
-
-using Player.Movement;
+using Player;
 
 namespace Map
 {
@@ -104,7 +103,7 @@ namespace Map
 
         private void Update()
         {
-            if(_player) {
+            if (_player) {
                 _playerPosition = _player.transform.position;
                 if (Vector3.SqrMagnitude(_playerPositionOld - _playerPosition) > _sqrPlayerMoveThreshold)
                 {
@@ -112,7 +111,7 @@ namespace Map
                     UpdateChunkLods();
                 }
             } else {
-                var players = FindObjectsByType<AdvancedMovement>(FindObjectsSortMode.None);
+                var players = FindObjectsByType<PlayerManager>(FindObjectsSortMode.None);
                 foreach (var p in players) {
                     if (p.gameObject.GetComponentInParent<NetworkObject>().IsOwner) {
                         _player = p.gameObject;

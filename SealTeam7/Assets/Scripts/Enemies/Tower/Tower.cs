@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using Weapons;
 
 namespace Enemies.Tower
@@ -28,14 +29,9 @@ namespace Enemies.Tower
 
             Collider[] results = new Collider[12];
             Physics.OverlapSphereNonAlloc(transform.position, attackRange, results, LayerMask.GetMask("PlayerHolder"), QueryTriggerInteraction.Collide);
-
-            foreach (Collider hit in results)
-            {
-                if (hit)
-                {
-                    Attack(hit);                   
-                }
-            }
+            // sort by distance from tower
+            Collider closestPlayer = results.OrderBy(c => c ? (transform.position - c.transform.position).sqrMagnitude : float.MaxValue).First();
+            if (closestPlayer) Attack(closestPlayer);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Enemies
         [SerializeField] protected float damage;
         [SerializeField] protected VisualEffect attackEffect;
         private float _health;
+        private GameObject _player;
 
         public virtual void Start()
         {
@@ -42,8 +43,26 @@ namespace Enemies
 
         public virtual void Update()
         {
-            //TODO: fix for multiple players
-            //healthBar.transform.LookAt(player.transform.position);
+            if (!IsServerInitialized) return;
+            
+            if (_player)
+            {
+                healthBar.transform.LookAt(_player.transform.position);                
+            }
+            else
+            {
+                var players = FindObjectsByType<PlayerManager>(FindObjectsSortMode.None);
+                foreach (var p in players) {
+                    if (p.gameObject.GetComponentInParent<NetworkObject>().IsOwner) {
+                        _player = p.gameObject;
+                    }
+                }
+            }
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
         }
     }
 }
