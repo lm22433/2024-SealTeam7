@@ -14,12 +14,16 @@ MODEL_PATH = 'model.tflite'
 HOST = "127.0.0.1"
 PORT = 9455
 
-MOCK_KINECT = True
+MOCK_KINECT = False
 """Mock the Kinect camera using OpenCV to read from a webcam"""
 
+VISUALISE_DETECTIONS = True
+"""Display a window with the video and bounding boxes around detected objects"""
+
+stop_server = False
 object_detection_result = None
 object_detection_done = threading.Event()
-color_image = np.zeros((1280, 720, 4), dtype=np.uint8)  # 720p BGRA image
+color_image = np.zeros((720, 1280, 4), dtype=np.uint8)  # 720p BGRA image
 color_image_lock = threading.Lock()
 
 
@@ -31,13 +35,23 @@ def object_detector_callback(result, output_image, timestamp_ms):
 
 
 def inference_frame(object_detector, frame):
-    # not sure if image_format specifies the required format for data, or the format of new mp.Image. If it's the
-    # former, we should convert the frame to RGB before passing it to mp.Image
-    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB))
     timestamp_ms = int(time.time() * 1000)
     object_detector.detect_async(mp_image, timestamp_ms)
     object_detection_done.wait()  # block until object_detector_callback called
     object_detection_done.clear()
+    
+    if VISUALISE_DETECTIONS:
+        for detection in object_detection_result.detections:
+            bbox = detection.bounding_box
+            cv2.rectangle(frame, (int(bbox.origin_x), int(bbox.origin_y)), 
+                          (int(bbox.origin_x + bbox.width), int(bbox.origin_y + bbox.height)), (0, 255, 0), 2)
+            cv2.putText(frame, detection.categories[0].category_name, (int(bbox.origin_x), int(bbox.origin_y + 10)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 2)
+            
+        cv2.imshow("Object Detection", frame)
+        cv2.waitKey(1)
+    
     return {"objects": [{"type": detection.categories[0].category_name,
                          "x": detection.bounding_box.origin_x + detection.bounding_box.width / 2,
                          "y": detection.bounding_box.origin_y + detection.bounding_box.height / 2}
@@ -45,6 +59,8 @@ def inference_frame(object_detector, frame):
 
 
 def detections_connection(conn):
+    global stop_server
+    
     conn.setblocking(True)  # block until START control signal received
     object_detection_running = False
 
@@ -55,14 +71,14 @@ def detections_connection(conn):
         result_callback=object_detector_callback)
 
     with conn, ObjectDetector.create_from_options(options) as object_detector:
-        while True:
+        while not stop_detections_connection:
             try:
                 # Check if any control signals in buffer
                 if not object_detection_running:
-                    print("Waiting for control signal...")
+                    print("[detections_connection] Waiting for control signal...")
                 try:
                     message = conn.recv(1024).decode()
-                    print(f"Control signal received: {message}")
+                    print(f"[detections_connection] Control signal received: {message}")
                     if message == "START":
                         object_detection_running = True
                         conn.setblocking(False)  # no longer should block and wait for control signals
@@ -72,7 +88,7 @@ def detections_connection(conn):
                         conn.setblocking(True)  # block until START control signal received again
                         if MOCK_KINECT: video_capture.release()
                     elif message == "":  # Empty string means client disconnected
-                        print("Client disconnected, closing connection.")
+                        print("[detections_connection] Client disconnected, closing connection.")
                         break
                 except BlockingIOError:
                     pass  # No control signal in buffer - that's normal, continue
@@ -82,9 +98,10 @@ def detections_connection(conn):
                     if MOCK_KINECT:
                         success, frame = video_capture.read()
                         if not success:
-                            print("Failed to read frame from VideoCapture.")
+                            print("[detections_connection] Failed to read frame from VideoCapture.")
                             continue
                     else:
+                        # print("[detections_connection] Acquiring lock...")
                         color_image_lock.acquire()
                         frame = color_image.copy()
                         color_image_lock.release()
@@ -94,47 +111,60 @@ def detections_connection(conn):
                     conn.send(data_json.encode())
 
             except KeyboardInterrupt:
-                print("Shutting down server.")
+                print("[detections_connection] Shutting down server.")
                 break
 
             except Exception as error:
                 print(error)
-                print("Error, shutting down server.")
+                print("[detections_connection] Error, shutting down server.")
                 break
+                
+        stop_server = True  # if this thread is stopping, all threads should stop
 
     # clean up
-    if video_capture is not None and video_capture.isOpened():
+    if 'video_capture' in locals() and video_capture.isOpened():
         video_capture.release()
 
 
 def color_image_connection(conn):
+    global stop_server
+    
     conn.setblocking(True)
 
     with conn:
         while True:
             try:
-                print("Waiting for color image message...")
+                print("[color_image_connection] Waiting for color image message...")
                 message = conn.recv(3686400)  # 1280 * 720 * 4 bytes per pixel
-                print(f"Message: {message}")
+                print("[color_image_connection] Received color image message.")
                 if message == b'':  # Empty string means client disconnected
-                    print("Client disconnected, closing connection.")
+                    print("[color_image_connection] Client disconnected, closing connection.")
                     break
-                else:  # Decode message as image and store in color_image
+                elif len(message) == 3686400:  # Decode message as image and store in color_image
+                    image = np.frombuffer(message, dtype=np.uint8).reshape(color_image.shape)
+                    image = image[224:513, 413:820, :3]
+                    cv2.imwrite(f"{time.strftime("%Y-%m-%d_%H-%M-%S")}_{str(time.time())[11:14]}.png", image)
+                    # print("[color_image_connection] Acquiring lock...")
                     color_image_lock.acquire()
+                    # print("[color_image_connection] Copying image.")
                     np.copyto(color_image, np.frombuffer(message, dtype=np.uint8).reshape(color_image.shape))
                     color_image_lock.release()
+                else:
+                    print("[color_image_connection] Invalid message received, ignoring.")
 
             except KeyboardInterrupt:
-                print("Shutting down server.")
+                print("[color_image_connection] Shutting down server.")
                 break
 
             except Exception as error:
                 print(error)
-                print("Error, shutting down server.")
+                print("[color_image_connection] Error, shutting down server.")
                 break
+                
+        stop_server = True  # if this thread is stopping, all threads should stop
 
 
-def main():
+def main():    
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
         server.bind((HOST, PORT))
         server.listen(5)
@@ -142,11 +172,14 @@ def main():
 
         det_conn, addr = server.accept()
         print(f"Detections connection from {addr}")
-        threading.Thread(target=detections_connection, args=(det_conn,)).start()
+        det_thread = threading.Thread(target=detections_connection, args=(det_conn,))
+        det_thread.start()
 
         color_im_conn, addr = server.accept()
         print(f"Color image connection from {addr}")
         color_image_connection(color_im_conn)
+
+        det_thread.join()
 
     # exiting - clean up
     cv2.destroyAllWindows()

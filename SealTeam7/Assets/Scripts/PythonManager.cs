@@ -104,9 +104,10 @@ public static class PythonManager
             return;
         }
         
-        Debug.Log($"Image.Format: {colorImage.Format.ToString()}");
-        Debug.Log($"Memory.Length: {colorImage.Memory.ToArray().Length}");  // number of bytes, as Memory<byte>
-        // _colorImageStream.Write(colorImage.Memory.ToArray());
+        // Debug.Log($"Image.Format: {colorImage.Format.ToString()}");
+        // Debug.Log($"Memory.Length: {colorImage.Memory.ToArray().Length}");  // number of bytes, as Memory<byte>
+        
+        _colorImageStream.Write(colorImage.Memory.ToArray());
     }
     
     
