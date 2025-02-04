@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de1dfb58f7993e04e85e7ffbbad7af76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivityX: 2
-  sensitivityY: 2
+  sensitivityX: 60
+  sensitivityY: 60
   orientation: {fileID: 1256677882820726538}
 --- !u!114 &4396253774700772191
 MonoBehaviour:
@@ -1758,7 +1758,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 64
   m_CollisionDetection: 1
 --- !u!114 &140741005613019755
 MonoBehaviour:

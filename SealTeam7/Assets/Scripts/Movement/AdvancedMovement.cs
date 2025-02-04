@@ -447,7 +447,6 @@ public class AdvancedMovement : MonoBehaviour
             //stops bouncing up slopes
             if(_rb.linearVelocity.y > 0) {
                 _slideTimer -= Time.deltaTime;
-                //rb.AddForce(Vector3.down * 20.0f, ForceMode.Force);
             }
         }
         else if(_grounded) {
@@ -502,7 +501,7 @@ public class AdvancedMovement : MonoBehaviour
             }
         }
         else if((leftWallHit || rightWallHit || backWallHit || frontWallHit) && !_grounded) {
-            _rb.AddForce(Vector3.down *1f, ForceMode.Impulse);
+            _rb.AddForce(Vector3.down *1f, ForceMode.Force);
         }
 
         if(frontWallHit) {
