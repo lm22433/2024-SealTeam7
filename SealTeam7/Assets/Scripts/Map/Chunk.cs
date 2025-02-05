@@ -6,6 +6,9 @@ using Unity.Mathematics;
 using UnityEngine;
 using Kinect;
 
+using System.Threading.Tasks;
+using System.Collections;
+
 namespace Map
 {
     [Serializable]
@@ -17,15 +20,15 @@ namespace Map
         public ushort x;
         public ushort z;
         public ushort lod;
-        public bool isLocalhost;
+        public bool isKinectPresent;
     }
 
     public class Chunk : MonoBehaviour {
         
         [SerializeField] private ChunkSettings settings;
         private int _lodFactor;
-        private NativeArray<float3> _vertices;
         private half[] _heightMap;
+        private float3[] _oldVertices;
         private int _vertexSideCount;
         private Mesh _mesh;
         private MeshCollider _meshCollider;
@@ -34,14 +37,18 @@ namespace Map
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
         private Bounds _bounds;
+        private bool _running;
+        private bool _gettingHeights;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
         public void SetLod(ushort lod)
         {
+            if (settings.lod == lod) return;
             settings.lod = lod;
             _lodFactor = lod == 0 ? 1 : lod * 2;
-            _vertexSideCount = settings.size / _lodFactor + 1;
+            _vertexSideCount = settings.size / _lodFactor;
+            //TODO: adjust so that old height data is preserved over LOD switch
             _heightMap = new half[_vertexSideCount * _vertexSideCount];
             _meshCollider.enabled = lod == 0;
             if (_mesh) UpdateMesh();
@@ -49,6 +56,7 @@ namespace Map
 
         public void SetVisible(bool visible)
         {
+            _running = visible;
             _meshRenderer.enabled = visible;
             enabled = visible;
         }
@@ -61,11 +69,13 @@ namespace Map
         private void Awake()
         {
             _lodFactor = 1;
-            _vertexSideCount = settings.size / _lodFactor + 1;
-            _vertices = new NativeArray<float3>(_vertexSideCount * _vertexSideCount, Allocator.Persistent);
+            _vertexSideCount = settings.size / _lodFactor;
             
             _mesh = new Mesh {name = "Generated Mesh"};
             _mesh.MarkDynamic();
+            
+            _bounds = new Bounds(transform.position, new Vector3((settings.size - 1) * settings.spacing, 2f * settings.maxHeight, (settings.size - 1) * settings.spacing));
+            _mesh.bounds = _bounds;
             
             UpdateMesh();
             
@@ -78,66 +88,78 @@ namespace Map
             
             _heightMap = new half[_vertexSideCount * _vertexSideCount];
 
-            if (settings.isLocalhost) {
-                _noiseGenerator = GetComponentInParent<NoiseGenerator>();
+            if (!settings.isKinectPresent) {
+                _noiseGenerator = FindAnyObjectByType<NoiseGenerator>();
             } else {
                 _kinect = FindAnyObjectByType<KinectAPI>();
             }
-
-            _bounds = new Bounds(transform.position, new Vector3(settings.size * settings.spacing, 2f * settings.maxHeight, settings.size * settings.spacing));
         }
 
         private void Update()
         {
-            UpdateHeights();
+            if (_running && !_gettingHeights) StartCoroutine(GetHeightsCoroutine());
         }
 
-        private void GetHeights() { 
-            if (settings.isLocalhost) {
-                _noiseGenerator.GetChunkNoise(ref _heightMap, settings.lod, settings.z, settings.x);
+        private IEnumerator GetHeightsCoroutine() {
+            _gettingHeights = true;
+            while (_running)
+            {
+                yield return new WaitForSeconds(0.2f);
+                GetHeights();
+            }
+
+            _gettingHeights = false;
+        }
+
+        private void GetHeights() {
+            if (!settings.isKinectPresent) {
+                _noiseGenerator.RequestNoise(settings.lod, settings.size, settings.x, settings.z);
             } else {
-                _kinect.RequestTexture(settings.lod, settings.z, settings.x);
+                _kinect.RequestTexture(settings.lod, settings.size, settings.x, settings.z);
             }
         }
 
-        public void SetHeights(half[] heights) {
-            _heightMap = heights;
+        public void SetHeights(half[] heights)
+        {
+            if (heights.Length == _heightMap.Length) _heightMap = heights;
+            else Debug.Log($"{heights.Length} received, {_heightMap.Length} expected.\nLOD: {settings.lod}, LODFACTOR: {_lodFactor}, SIZE: {settings.size}, CHUNK: ({settings.x}, {settings.z})");
+            UpdateHeights();
         }
 
         private void UpdateHeights()
         {
-            GetHeights();
-
+            var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
             var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
             
             var heightUpdate = new HeightUpdate {
-                Vertices = _vertices,
+                Vertices = vertices,
                 Heights = heights,
                 Scale = settings.maxHeight,
                 LerpFactor = settings.lerpFactor
             }.Schedule(_vertexSideCount * _vertexSideCount, 1);
             heightUpdate.Complete();
             
-            _mesh.SetVertices(_vertices);
+            _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
             _mesh.RecalculateBounds();
 
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
             
+            vertices.Dispose();
             heights.Dispose();
         }
 
         private void UpdateMesh() {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var numberOfTriangles = (settings.size / _lodFactor) * (settings.size / _lodFactor) * 6;
-
-            _vertices.Dispose();
-            _vertices = new NativeArray<float3>(numberOfVertices, Allocator.Persistent);
+            var numberOfTriangles = (_vertexSideCount - 1) * (_vertexSideCount - 1) * 6;
+            
+            //TODO: adjust so that old height data is preserved over LOD switch
+            var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
 
             var meshVertexUpdate = new MeshVertexUpdate
             {
-                Vertices = _vertices,
+                Vertices = vertices,
                 VertexSideCount = _vertexSideCount,
                 Spacing = settings.spacing,
                 Size = settings.size,
@@ -153,12 +175,14 @@ namespace Map
             meshTriangleUpdate.Complete();
             
             _mesh.Clear();
-            _mesh.SetVertices(_vertices);
+            _mesh.SetVertices(vertices);
             _mesh.SetTriangles(triangles.ToArray(), 0);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateBounds();
             //_mesh.RecalculateTangents();
+
+            _oldVertices = vertices.ToArray();
             
+            vertices.Dispose();
             triangles.Dispose();
         }
     }
@@ -191,8 +215,8 @@ namespace Map
         
         public void Execute(int index)
         {
-            var x = (int) (index / VertexSideCount) * LODFactor - 0.5f * Size;
-            var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * Size;
+            var x = (int) (index / VertexSideCount) * LODFactor - 0.5f * (Size - 1);
+            var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * (Size - 1);
             Vertices[index] = new float3(x * Spacing, 0f, z * Spacing);
         }
     }

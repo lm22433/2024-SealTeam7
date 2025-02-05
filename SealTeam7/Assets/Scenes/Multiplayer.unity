@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 230521255}
   - component: {fileID: 230521254}
+  - component: {fileID: 230521257}
   - component: {fileID: 230521256}
   m_Layer: 0
   m_Name: kinect
@@ -152,12 +153,20 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
-  minimumSandDepth: 600
-  maximumSandDepth: 1200
-  irThreshold: 0
+  minimumSandDepth: 850
+  maximumSandDepth: 1150
+  irThreshold: 255
   similarityThreshold: 0.5
-  dimensions: 1000
-  chunkSize: 25
+  mapGenerator: {fileID: 304089664}
+  _width: 532
+  _height: 532
+  _xOffsetStart: 694
+  _xOffsetEnd: 1226
+  _yOffsetStart: 184
+  _yOffsetEnd: 716
+  isKinectPresent: 1
+  texture: {fileID: 0}
+  takeSnapshot: 0
 --- !u!4 &230521255
 Transform:
   m_ObjectHideFlags: 0
@@ -167,7 +176,7 @@ Transform:
   m_GameObject: {fileID: 230521252}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.44694, y: 80.88564, z: -35.511147}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -218,12 +227,31 @@ MonoBehaviour:
   <PrefabId>k__BackingField: 65535
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 0
-  <SceneId>k__BackingField: 4269267966
+  <SceneId>k__BackingField: 2139094879
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 0}
     Scale: {x: 0, y: 0, z: 0}
     IsValid: 0
+--- !u!114 &230521257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 230521252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7911bfb62cdd416ab3b08764346d59bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 230521256}
+  _networkObjectCache: {fileID: 0}
+  size: 960
+  speed: 0.1
+  noiseScale: 0.05
+  mapGenerator: {fileID: 304089664}
 --- !u!1 &304089662
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +262,6 @@ GameObject:
   m_Component:
   - component: {fileID: 304089665}
   - component: {fileID: 304089664}
-  - component: {fileID: 304089663}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -242,20 +269,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &304089663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304089662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7911bfb62cdd416ab3b08764346d59bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0.1
-  noiseScale: 0.05
 --- !u!114 &304089664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,24 +282,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 1200
-    chunks: 100
-    chunkSize: 24
-    maxHeight: 20
-    lerpFactor: 1
+    size: 512
+    chunks: 64
+    chunkSize: 64
+    maxHeight: 300
+    lerpFactor: 0.05
     lodLevels:
-    - maxViewDistance: 100
+    - maxViewDistance: 512
       lod: 0
-    - maxViewDistance: 200
+    - maxViewDistance: 256
       lod: 1
-    - maxViewDistance: 300
-      lod: 2
-    - maxViewDistance: 600
+    - maxViewDistance: 512
       lod: 3
-    playerMoveThreshold: 3
+    playerMoveThreshold: 12.37
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
-  player: {fileID: 0}
-  isLocalhost: 1
+  isKinectPresent: 1
 --- !u!4 &304089665
 Transform:
   m_ObjectHideFlags: 0
@@ -673,7 +683,7 @@ Transform:
   m_GameObject: {fileID: 933319492}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 18, z: 50}
+  m_LocalPosition: {x: 50, y: 218, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -916,7 +926,7 @@ Transform:
   m_GameObject: {fileID: 2015342024}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 24.93, z: 50}
+  m_LocalPosition: {x: 50, y: 224, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

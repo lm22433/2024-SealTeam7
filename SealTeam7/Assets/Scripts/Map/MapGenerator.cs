@@ -2,10 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
-using UnityEngine.Serialization;
-
 using Unity.Multiplayer;
-using Unity.VisualScripting;
 using FishNet.Object;
 
 namespace Map
@@ -31,7 +28,7 @@ namespace Map
     public class MapGenerator : MonoBehaviour {
         [SerializeField] private MapSettings settings;
         [SerializeField] private GameObject chunkPrefab;
-        [SerializeField] private GameObject player;
+        private GameObject _player;
         private NoiseGenerator _noise;
         private List<Chunk> _chunks;
         private float _spacing;
@@ -39,13 +36,12 @@ namespace Map
         private float _sqrPlayerMoveThreshold;
         private Vector3 _playerPosition;
         private Vector3 _playerPositionOld;
-        [SerializeField] private bool isLocalhost;
+        [SerializeField] private bool isKinectPresent;
     
         private void Awake() 
         {
             
             if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
-
                 return;
             }
 
@@ -54,12 +50,6 @@ namespace Map
             _chunks = new List<Chunk>(_chunkRow);
 
             _spacing = (float) settings.size / _chunkRow / settings.chunkSize;
-            
-            _noise = GetComponent<NoiseGenerator>();
-
-            if (isLocalhost) {
-                _noise.StartNoise(settings.size, settings.chunkSize);
-            }
    
             ChunkSettings chunkSettings = new ChunkSettings
             {
@@ -68,17 +58,17 @@ namespace Map
                 maxHeight = settings.maxHeight,
                 lerpFactor = settings.lerpFactor,
                 lod = settings.lodLevels[^1].lod,
-                isLocalhost = isLocalhost
+                isKinectPresent = isKinectPresent
             };
 
             chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
             
-            for (float x = 0; x < settings.size; x += settings.chunkSize * _spacing) {
-                for (float z = 0; z < settings.size; z += settings.chunkSize * _spacing)
+            for (float z = 0; z < settings.size - _chunkRow * _spacing; z += (settings.chunkSize - 1) * _spacing) {
+                for (float x = 0; x < settings.size - _chunkRow * _spacing; x += (settings.chunkSize - 1) * _spacing)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x - 0.5f * settings.size - 0.5f * settings.chunkSize * _spacing, 0f, z - 0.5f * settings.size - 0.5f * settings.chunkSize * _spacing), Quaternion.identity, transform).GetComponent<Chunk>();
-                    chunkSettings.x = (ushort) (x / (settings.chunkSize * _spacing));
-                    chunkSettings.z = (ushort) (z / (settings.chunkSize * _spacing));
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<Chunk>();
+                    chunkSettings.x = (ushort) (x / ((settings.chunkSize - 1) * _spacing));
+                    chunkSettings.z = (ushort) (z / ((settings.chunkSize - 1) * _spacing));
                     chunk.SetSettings(chunkSettings);
                     _chunks.Add(chunk);
                 }
@@ -111,25 +101,26 @@ namespace Map
 
         private void Update()
         {
-            if(player) {
-                _playerPosition = player.transform.position;
+            if(_player) {
+                _playerPosition = _player.transform.position;
                 if (Vector3.SqrMagnitude(_playerPositionOld - _playerPosition) > _sqrPlayerMoveThreshold)
                 {
                     _playerPositionOld = _playerPosition;
                     UpdateChunkLods();
                 }
             } else {
-                var players = GameObject.FindObjectsByType<AdvancedMovement>(FindObjectsSortMode.None);
+                var players = FindObjectsByType<AdvancedMovement>(FindObjectsSortMode.None);
                 foreach (var p in players) {
                     if (p.gameObject.GetComponentInParent<NetworkObject>().IsOwner) {
-                        player = p.gameObject;
+                        _player = p.gameObject;
                     }
                 }
             }
         }
 
         public Chunk GetChunk(int x, int z) {
-            return _chunks[x * (int) math.sqrt(settings.chunks) + z];
+            // idk why this has to be the other way around
+            return _chunks[x * _chunkRow + z];
         }
     }
 }
