@@ -158,14 +158,15 @@ MonoBehaviour:
   irThreshold: 255
   similarityThreshold: 0.5
   mapGenerator: {fileID: 304089664}
-  _width: 512
-  _height: 512
-  _xOffsetStart: 63
-  _xOffsetEnd: 575
-  _yOffsetStart: 31
-  _yOffsetEnd: 543
+  _width: 532
+  _height: 532
+  _xOffsetStart: 694
+  _xOffsetEnd: 1226
+  _yOffsetStart: 274
+  _yOffsetEnd: 806
   isKinectPresent: 1
   texture: {fileID: 0}
+  takeSnapshot: 0
 --- !u!4 &230521255
 Transform:
   m_ObjectHideFlags: 0
@@ -283,7 +284,7 @@ MonoBehaviour:
   settings:
     size: 512
     chunks: 64
-    chunkSize: 63
+    chunkSize: 64
     maxHeight: 20
     lerpFactor: 0.5
     lodLevels:

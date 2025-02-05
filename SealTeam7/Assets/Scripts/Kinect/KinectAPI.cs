@@ -39,10 +39,10 @@ namespace Kinect
         [Header("Position Calibrations")]
         [SerializeField] private int _width;
         [SerializeField] private int _height;
-        [SerializeField, Range(0f, 640f)] private int _xOffsetStart;
-        [SerializeField, Range(0f, 640f)] private int _xOffsetEnd;
-        [SerializeField, Range(0f, 576f)] private int _yOffsetStart;
-        [SerializeField, Range(0f, 576f)] private int _yOffsetEnd;
+        [SerializeField, Range(0f, 1920f)] private int _xOffsetStart;
+        [SerializeField, Range(0f, 1920f)] private int _xOffsetEnd;
+        [SerializeField, Range(0f, 1080f)] private int _yOffsetStart;
+        [SerializeField, Range(0f, 1080f)] private int _yOffsetEnd;
 
         [SerializeField] private bool isKinectPresent;
 
@@ -77,8 +77,8 @@ namespace Kinect
             // Initialize the transformation engine
             _transformation = _kinect.GetCalibration().CreateTransformation();
 
-            this._colourWidth = this._kinect.GetCalibration().DepthCameraCalibration.ResolutionWidth;
-            this._colourHeight = this._kinect.GetCalibration().DepthCameraCalibration.ResolutionHeight;
+            this._colourWidth = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
+            this._colourHeight = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
 
             StartKinect();
             ServerManager.OnRemoteConnectionState += OnClientConnected;
@@ -163,7 +163,6 @@ namespace Kinect
             int xChunkOffset = chunkX * chunkSize;
             
             var depth = new half[(resolution + 1) * (resolution + 1)];
-            
             for (int z = 0; z < resolution + 1; z++)
             {
                 for (int x = 0; x < resolution + 1; x++)
@@ -173,6 +172,22 @@ namespace Kinect
             }
 
             return depth;
+        }   
+
+        [SerializeField] bool takeSnapshot = false;
+        private void Update() {
+            if (takeSnapshot) {
+
+                Color32[] col = new Color32[_depthMapArray.Length];
+                for(int i = 0; i < _depthMapArray.Length; i++) {
+                    col[i] = new Color32(Convert.ToByte(_depthMapArray[i] * 255), 0, 0, Convert.ToByte(255));
+                }
+
+                texture.SetPixels32(col);
+                texture.Apply();
+
+                takeSnapshot = false;
+            }
         }
 
         public async Task GetCaptureAsync()
@@ -189,25 +204,25 @@ namespace Kinect
         private void GetDepthTextureFromKinect(Capture capture, Image transformedDepth)
         {
             // Transform the depth image to the colour camera perspective
-            //_transformation.DepthImageToColorCamera(capture, transformedDepth);
+            _transformation.DepthImageToColorCamera(capture, transformedDepth);
 
             // Create Depth Buffer
-            Span<ushort> depthBuffer = capture.Depth.GetPixels<ushort>().Span;
-            Debug.Log(depthBuffer.Length);
+            Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
             //Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
 
-            int rangeX = _xOffsetEnd - _xOffsetStart;
-            int rangeY = _yOffsetEnd - _yOffsetStart;
+            //int rangeX = _xOffsetEnd - _xOffsetStart;
+            //int rangeY = _yOffsetEnd - _yOffsetStart;
 
-            float samplingRateX = rangeX / _width;
-            float samplingRateY = rangeY / _height;
+            //float samplingRateX = rangeX / _width;
+            //float samplingRateY = rangeY / _height;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _height; y++)
             {
                 for (int x = 0; x < _width; x++)
                 {
-
+                    
+                    /*
                     int lowerX = (int)Mathf.Floor(x * samplingRateX + _xOffsetStart);
                     int upperX = (int)Mathf.Ceil(x * samplingRateX + _xOffsetStart);
                     int lowerY = (int)Mathf.Floor(y * samplingRateY + _xOffsetStart);
@@ -215,10 +230,11 @@ namespace Kinect
 
                     ushort lowerSample = depthBuffer[lowerY * _width + lowerX];
                     ushort upperSample = depthBuffer[upperY * _width + upperX];
-
                     half depth = (half) ((half) (lowerSample + upperSample) / 2f);
+                    */
 
-                    //var ir = 0; //irBuffer[(y + imageYOffset) * colourWidth + imageXOffset + x];
+                    var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + x];
+
 
                     // Calculate pixel values
                     half depthRange = (half)(maximumSandDepth - minimumSandDepth);
@@ -226,7 +242,7 @@ namespace Kinect
 
                     //if (ir < irThreshold)
                     //{
-                    half val = (half) 0;
+                    half val;
                     if (depth == 0 || depth >= maximumSandDepth) // No depth image
                     {
                         val = (half) 0;
@@ -244,7 +260,7 @@ namespace Kinect
 
                     }
 
-                    _depthMapArray[y * _height + x] = val;
+                    _depthMapArray[y * _width + x] = val;
                     //}
                 }
             }
