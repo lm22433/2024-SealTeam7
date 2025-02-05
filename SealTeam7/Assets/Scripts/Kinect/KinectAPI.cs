@@ -159,8 +159,8 @@ namespace Kinect
             //Write changed texture
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * chunkSize;
-            int xChunkOffset = chunkX * chunkSize;
+            int zChunkOffset = chunkZ * (chunkSize - 1);
+            int xChunkOffset = chunkX * (chunkSize - 1);
             
             var depth = new half[resolution * resolution];
             for (int z = 0; z < resolution; z++)

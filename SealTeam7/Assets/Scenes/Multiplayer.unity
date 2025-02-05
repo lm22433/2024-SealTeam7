@@ -162,8 +162,8 @@ MonoBehaviour:
   _height: 532
   _xOffsetStart: 694
   _xOffsetEnd: 1226
-  _yOffsetStart: 274
-  _yOffsetEnd: 806
+  _yOffsetStart: 184
+  _yOffsetEnd: 716
   isKinectPresent: 1
   texture: {fileID: 0}
   takeSnapshot: 0
@@ -285,11 +285,15 @@ MonoBehaviour:
     size: 512
     chunks: 64
     chunkSize: 64
-    maxHeight: 20
+    maxHeight: 300
     lerpFactor: 0.5
     lodLevels:
-    - maxViewDistance: 2000
+    - maxViewDistance: 512
       lod: 0
+    - maxViewDistance: 256
+      lod: 1
+    - maxViewDistance: 512
+      lod: 3
     playerMoveThreshold: 12.37
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   isKinectPresent: 1
@@ -679,7 +683,7 @@ Transform:
   m_GameObject: {fileID: 933319492}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 18, z: 50}
+  m_LocalPosition: {x: 50, y: 218, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -922,7 +926,7 @@ Transform:
   m_GameObject: {fileID: 2015342024}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 24.93, z: 50}
+  m_LocalPosition: {x: 50, y: 224, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -37,7 +37,8 @@ namespace Map
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
         private Bounds _bounds;
-        private bool _running = false;
+        private bool _running;
+        private bool _gettingHeights;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
@@ -55,6 +56,7 @@ namespace Map
 
         public void SetVisible(bool visible)
         {
+            _running = visible;
             _meshRenderer.enabled = visible;
             enabled = visible;
         }
@@ -91,20 +93,22 @@ namespace Map
             } else {
                 _kinect = FindAnyObjectByType<KinectAPI>();
             }
-
         }
 
         private void Update()
         {
-            StartCoroutine(GetHeightsCoroutine());
-
+            if (_running && !_gettingHeights) StartCoroutine(GetHeightsCoroutine());
         }
 
         private IEnumerator GetHeightsCoroutine() {
-            yield return new WaitForSeconds(0.2f);
+            _gettingHeights = true;
+            while (_running)
+            {
+                yield return new WaitForSeconds(0.2f);
+                GetHeights();
+            }
 
-            GetHeights();
-            GetHeightsCoroutine();
+            _gettingHeights = false;
         }
 
         private void GetHeights() {
