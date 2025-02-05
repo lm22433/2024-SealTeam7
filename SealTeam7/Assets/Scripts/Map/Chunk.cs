@@ -96,7 +96,12 @@ namespace Map
 
         private void Update()
         {
-            if (_running && !_gettingHeights) StartCoroutine(GetHeightsCoroutine());
+            if (_running && !_gettingHeights)
+            {
+                StartCoroutine(GetHeightsCoroutine());
+            }
+            
+            UpdateHeights();
         }
 
         private IEnumerator GetHeightsCoroutine() {
@@ -122,7 +127,6 @@ namespace Map
         {
             if (heights.Length == _heightMap.Length) _heightMap = heights;
             else Debug.Log($"{heights.Length} received, {_heightMap.Length} expected.\nLOD: {settings.lod}, LODFACTOR: {_lodFactor}, SIZE: {settings.size}, CHUNK: ({settings.x}, {settings.z})");
-            UpdateHeights();
         }
 
         private void UpdateHeights()
