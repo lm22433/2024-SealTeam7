@@ -15,10 +15,10 @@ public static class PythonManager
     private const int Port = 9455;
     private static readonly Encoding Encoding = Encoding.UTF8;
     
-    private static TcpClient _detectionsClient;
-    private static NetworkStream _detectionsStream;
-    private static TcpClient _colorImageClient;
-    private static NetworkStream _colorImageStream;
+    private static TcpClient _inferenceClient;
+    private static NetworkStream _inferenceStream;
+    private static TcpClient _imageClient;
+    private static NetworkStream _imageStream;
     private static Thread _receiveMessagesThread;
     private static bool _stopReceivingMessages = false;
     private static ConcurrentBag<SandboxObject> _sandboxObjects = new();
@@ -26,7 +26,7 @@ public static class PythonManager
     
     public static bool Connect()
     {
-        if (_detectionsClient != null)
+        if (IsConnected())
         {
             Debug.LogWarning("Already connected to the Python server.");
             return true;
@@ -35,19 +35,20 @@ public static class PythonManager
         Debug.Log("Connecting to the Python server...");
         try
         {
-            _detectionsClient = new TcpClient(Host, Port);
-            _detectionsStream = _detectionsClient.GetStream();
-            _colorImageClient = new TcpClient(Host, Port);
-            _colorImageStream = _colorImageClient.GetStream();
+            _inferenceClient = new TcpClient(Host, Port);
+            _inferenceStream = _inferenceClient.GetStream();
+            _imageClient = new TcpClient(Host, Port);
+            _imageStream = _imageClient.GetStream();
         } 
-        catch (SocketException)
+        catch (SocketException e)
         {
+            Debug.LogError(e);
             Debug.LogError("Error connecting to the Python server. Is it running?");
             return false;
         }
 
         _stopReceivingMessages = false;
-        _receiveMessagesThread = new Thread(ReceiveMessages);
+        _receiveMessagesThread = new Thread(ReceiveInferenceResults);
         _receiveMessagesThread.Start();
         Debug.Log("Connected.");
         return true;
@@ -56,49 +57,57 @@ public static class PythonManager
     
     public static bool Disconnect()
     {
-        if (_detectionsStream == null)
+        if (!IsConnected())
         {
-            Debug.LogWarning("Not connected to the Python server.");
+            Debug.LogWarning("Already disconnected from the Python server.");
             return true;
         }
         
         Debug.Log("Disconnecting from the Python server...");
         _stopReceivingMessages = true;
-        _detectionsStream.Close();
-        _detectionsClient.Close();
-        _colorImageStream.Close();
-        _colorImageClient.Close();
+        _inferenceStream.Close();
+        _inferenceClient.Close();
+        _imageStream.Close();
+        _imageClient.Close();
         _receiveMessagesThread.Join();
-        _detectionsStream = null;
-        _detectionsClient = null;
+        _inferenceStream = null;
+        _inferenceClient = null;
+        _imageStream = null;
+        _imageClient = null;
         Debug.Log("Disconnected.");
         return true;
     }
-    
-    
-    public static bool StartObjectDetection()
+
+
+    public static bool IsConnected()
     {
-        if (_detectionsStream == null)
+        return _inferenceClient != null;
+    }
+    
+    
+    public static bool StartInference()
+    {
+        if (!IsConnected())
         {
-            Debug.LogWarning("Cannot start object detection: Not connected to the Python server.");
+            Debug.LogWarning("Cannot start inference: Not connected to the Python server.");
             return false;
         }
         
-        _detectionsStream.Write(Encoding.GetBytes("START"));
+        _inferenceStream.Write(Encoding.GetBytes("START"));
         Debug.Log("Sent: START");
         return true;
     }
     
     
-    public static bool StopObjectDetection()
+    public static bool StopInference()
     {
-        if (_detectionsStream == null)
+        if (!IsConnected())
         {
-            Debug.LogWarning("Not connected to the Python server.");
+            Debug.LogWarning("Cannot stop inference: Not connected to the Python server.");
             return false;
         }
 
-        _detectionsStream.Write(Encoding.GetBytes("STOP"));
+        _inferenceStream.Write(Encoding.GetBytes("STOP"));
         Debug.Log("Sent: STOP");
         return true;
     }
@@ -112,27 +121,24 @@ public static class PythonManager
     
     public static void SendColorImage(Image colorImage)
     {
-        if (_colorImageStream == null)
+        if (!IsConnected())
         {
-            Debug.LogWarning("Not connected to the Python server.");
+            Debug.LogWarning("Cannot send color image: Not connected to the Python server.");
             return;
         }
         
-        Debug.Log($"Image.Format: {colorImage.Format.ToString()}");
-        Debug.Log($"[SendColorImage] Memory.Length: {colorImage.Memory.ToArray().Length}");  // number of bytes, as Memory<byte>
-        
-        _colorImageStream.Write(colorImage.Memory.ToArray());
+        _imageStream.Write(colorImage.Memory.ToArray());
     }
     
     
-    private static void ReceiveMessages()
+    private static void ReceiveInferenceResults()
     {
         try
         {
             var buffer = new byte[1024];
             int bytesRead;
             // Good practice to check if bytesRead > 0 in case the connection is closed
-            while ((bytesRead = _detectionsStream.Read(buffer, 0, buffer.Length)) > 0 && !_stopReceivingMessages)
+            while ((bytesRead = _inferenceStream.Read(buffer, 0, buffer.Length)) > 0 && !_stopReceivingMessages)
             {
                 var receivedData = Encoding.GetString(buffer, 0, bytesRead);
                 // Debug.Log($"Received: {receivedData}");
