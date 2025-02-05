@@ -13,6 +13,7 @@ namespace Weapons
         
         [Header("References")]
         [SerializeField] private NetworkObject weaponHolder;
+        private Camera _playerCamera;
 
         private Gun _equippedGun;
         private Gun _primaryGun;
@@ -28,6 +29,7 @@ namespace Weapons
         {
             base.OnStartClient();
             if (IsOwner) EquipWeapon(true);
+            _playerCamera = Camera.main;
         }
         
         private void Update()
@@ -51,11 +53,11 @@ namespace Weapons
             {
                 case FireMode.SemiAutomatic:
                     if (inputController.GetShootInputPressed())
-                        _equippedGun.ServerShoot();
+                        _equippedGun.ServerShoot(_playerCamera.transform.position, _playerCamera.transform.forward);
                     break;
                 case FireMode.Automatic:
                     if (inputController.GetShootInputHeld())
-                        _equippedGun.ServerShoot();
+                        _equippedGun.ServerShoot(_playerCamera.transform.position, _playerCamera.transform.forward);
                     break;
                 case FireMode.Burst:
                     if (inputController.GetShootInputPressed())
