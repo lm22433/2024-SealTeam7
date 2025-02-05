@@ -286,7 +286,7 @@ MonoBehaviour:
     chunks: 64
     chunkSize: 64
     maxHeight: 300
-    lerpFactor: 0.5
+    lerpFactor: 0.05
     lodLevels:
     - maxViewDistance: 512
       lod: 0
