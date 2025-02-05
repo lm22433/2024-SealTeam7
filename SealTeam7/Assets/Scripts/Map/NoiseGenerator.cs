@@ -94,8 +94,8 @@ namespace Map
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * chunkSize;
-            int xChunkOffset = chunkX * chunkSize;
+            int zChunkOffset = chunkZ * (chunkSize - 1);
+            int xChunkOffset = chunkX * (chunkSize - 1);
             
             var noise = new half[resolution * resolution];
             

@@ -63,10 +63,10 @@ namespace Map
 
             chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
             
-            for (float z = 0; z < settings.size - ; z += (settings.chunkSize - 1) * _spacing) {
-                for (float x = 0; x < settings.size; x += (settings.chunkSize - 1) * _spacing)
+            for (float z = 0; z < settings.size - _chunkRow * _spacing; z += (settings.chunkSize - 1) * _spacing) {
+                for (float x = 0; x < settings.size - _chunkRow * _spacing; x += (settings.chunkSize - 1) * _spacing)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x - 0.5f * settings.size - 0.5f * settings.chunkSize * _spacing, 0f, z - 0.5f * settings.size - 0.5f * settings.chunkSize * _spacing), Quaternion.identity, transform).GetComponent<Chunk>();
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<Chunk>();
                     chunkSettings.x = (ushort) (x / ((settings.chunkSize - 1) * _spacing));
                     chunkSettings.z = (ushort) (z / ((settings.chunkSize - 1) * _spacing));
                     chunk.SetSettings(chunkSettings);

@@ -248,7 +248,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
   size: 960
-  speed: 0.1
+  speed: 5.15
   noiseScale: 0.05
   mapGenerator: {fileID: 304089664}
 --- !u!1 &304089662
