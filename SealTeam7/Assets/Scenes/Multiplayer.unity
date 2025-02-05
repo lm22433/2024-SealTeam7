@@ -250,7 +250,7 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   size: 512
   speed: 0.1
-  noiseScale: 5
+  noiseScale: 0.05
   mapGenerator: {fileID: 304089664}
 --- !u!1 &304089662
 GameObject:
@@ -610,7 +610,7 @@ MonoBehaviour:
   _ipv6BindAddress: 
   _port: 7770
   _maximumClients: 12
-  _clientAddress: localhost
+  _clientAddress: 26.148.138.41
 --- !u!114 &688602658
 MonoBehaviour:
   m_ObjectHideFlags: 0
