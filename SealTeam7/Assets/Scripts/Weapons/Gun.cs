@@ -64,7 +64,7 @@ namespace Weapons
         }
         
         [ServerRpc(RequireOwnership = true)]
-        public void ServerShoot()
+        public void ServerShoot(Vector3 origin, Vector3 direction)
         {
             if (CanShoot())
             {
@@ -73,7 +73,11 @@ namespace Weapons
                 
                 ObserversPlayShootEffects();
             
-                // TODO: Handle raycast.
+                if (Physics.Raycast(origin, direction, out RaycastHit hit, range))
+                {
+                    if (hit.collider.TryGetComponent(out IDamageable target))
+                        target.TakeDamage(damage);
+                }
             }
             else if (IsEmpty())
             {
