@@ -99,22 +99,29 @@ namespace Map
             if (_running && !_gettingHeights)
             {
                 StartCoroutine(GetHeightsCoroutine());
+                Task.Run(UpdateHeightsTask);
             }
-            
-            UpdateHeights();
         }
 
         private IEnumerator GetHeightsCoroutine() {
-            _gettingHeights = true;
             while (_running)
             {
                 yield return new WaitForSeconds(0.2f);
                 GetHeights();
             }
-
-            _gettingHeights = false;
         }
 
+        private void UpdateHeightsTask()
+        {
+            _gettingHeights = true;
+            while (_running)
+            {
+                UpdateHeights();
+            }
+            
+            _gettingHeights = false;
+        }
+        
         private void GetHeights() {
             if (!settings.isKinectPresent) {
                 _noiseGenerator.RequestNoise(settings.lod, settings.size, settings.x, settings.z);
@@ -231,7 +238,8 @@ namespace Map
             UVs[index] = new float2(x / (Size - 1), z / (Size - 1));
         }
     }
-
+    
+    [BurstCompile]
     public struct MeshTriangleUpdate : IJobParallelFor
     {
         public NativeArray<int> Triangles;
