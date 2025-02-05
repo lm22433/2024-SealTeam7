@@ -1,11 +1,20 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Input
 {
+    public enum InputType
+    {
+        KeyboardMouse,
+        Xbox,
+        Unknown
+    }
+    
     public class InputController : MonoBehaviour
     {
         private static InputController _inputController;
         private PlayerInputActions _playerInputActions;
+        private PlayerInput _playerInput;
 
         private void Awake()
         {
@@ -19,12 +28,31 @@ namespace Input
 
             _playerInputActions = new PlayerInputActions();
             _playerInputActions.Enable();
+
+            _playerInput = GetComponent<PlayerInput>();
+        }
+        
+        private InputType GetInputType()
+        {
+            return _playerInput.currentControlScheme switch
+            {
+                "Keyboard and Mouse" => InputType.KeyboardMouse,
+                "Xbox Controller" => InputType.Xbox,
+                _ => InputType.Unknown
+            };
+        }
+        
+        public bool IsUsingController()
+        {
+            return GetInputType() == InputType.Xbox;
         }
         
         public static InputController GetInstance()
         {
             return _inputController;
         }
+        
+        // Common Input Methods
 
         public Vector2 GetMoveInput()
         {
