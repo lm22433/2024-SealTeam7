@@ -94,16 +94,16 @@ namespace Map
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * chunkSize;
-            int xChunkOffset = chunkX * chunkSize;
+            int zChunkOffset = chunkZ * (chunkSize - 1);
+            int xChunkOffset = chunkX * (chunkSize - 1);
             
-            var noise = new half[(resolution + 1) * (resolution + 1)];
+            var noise = new half[resolution * resolution];
             
-            for (int z = 0; z < resolution + 1; z++)
+            for (int z = 0; z < resolution; z++)
             {
-                for (int x = 0; x < resolution + 1; x++)
+                for (int x = 0; x < resolution; x++)
                 {
-                    noise[z * (resolution + 1) + x] = _noise[(lodFactor * z + zChunkOffset) * size + xChunkOffset + lodFactor * x];
+                    noise[z * resolution + x] = _noise[(lodFactor * z + zChunkOffset) * size + xChunkOffset + lodFactor * x];
                 }
             }
 
