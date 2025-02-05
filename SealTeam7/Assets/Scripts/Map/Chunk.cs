@@ -6,6 +6,9 @@ using Unity.Mathematics;
 using UnityEngine;
 using Kinect;
 
+using System.Threading.Tasks;
+using System.Collections;
+
 namespace Map
 {
     [Serializable]
@@ -34,6 +37,7 @@ namespace Map
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
         private Bounds _bounds;
+        private bool _running = false;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
@@ -87,11 +91,20 @@ namespace Map
             } else {
                 _kinect = FindAnyObjectByType<KinectAPI>();
             }
+
         }
 
         private void Update()
         {
-            UpdateHeights();
+            StartCoroutine(GetHeightsCoroutine());
+
+        }
+
+        private IEnumerator GetHeightsCoroutine() {
+            yield return new WaitForSeconds(0.2f);
+
+            GetHeights();
+            GetHeightsCoroutine();
         }
 
         private void GetHeights() {
@@ -106,12 +119,11 @@ namespace Map
         {
             if (heights.Length == _heightMap.Length) _heightMap = heights;
             else Debug.Log($"{heights.Length} received, {_heightMap.Length} expected.\nLOD: {settings.lod}, LODFACTOR: {_lodFactor}, SIZE: {settings.size}, CHUNK: ({settings.x}, {settings.z})");
+            UpdateHeights();
         }
 
         private void UpdateHeights()
         {
-            GetHeights();
-
             var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
             var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
             
