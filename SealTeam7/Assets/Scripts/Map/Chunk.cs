@@ -99,7 +99,6 @@ namespace Map
             if (_running && !_gettingHeights)
             {
                 StartCoroutine(GetHeightsCoroutine());
-                Task.Run(UpdateHeightsTask);
             }
         }
 
@@ -109,17 +108,8 @@ namespace Map
                 yield return new WaitForSeconds(0.2f);
                 GetHeights();
             }
-        }
-
-        private void UpdateHeightsTask()
-        {
-            _gettingHeights = true;
-            while (_running)
-            {
-                UpdateHeights();
-            }
             
-            _gettingHeights = false;
+            UpdateHeights();
         }
         
         private void GetHeights() {
