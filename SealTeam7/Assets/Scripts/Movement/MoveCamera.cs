@@ -14,6 +14,7 @@ public class MoveCamera : NetworkBehaviour
             var mainCam = FindFirstObjectByType<Camera>().gameObject.transform;
             mainCam.SetParent(transform);
             mainCam.position = transform.position;
+            mainCam.rotation = transform.rotation;
         }
     }
 
