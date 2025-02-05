@@ -164,7 +164,7 @@ MonoBehaviour:
   _xOffsetEnd: 1226
   _yOffsetStart: 184
   _yOffsetEnd: 716
-  isKinectPresent: 1
+  isKinectPresent: 0
   texture: {fileID: 0}
   takeSnapshot: 0
 --- !u!4 &230521255
@@ -285,7 +285,7 @@ MonoBehaviour:
     size: 512
     chunks: 64
     chunkSize: 64
-    maxHeight: 300
+    maxHeight: 20
     lerpFactor: 0.05
     lodLevels:
     - maxViewDistance: 512
@@ -296,7 +296,7 @@ MonoBehaviour:
       lod: 3
     playerMoveThreshold: 12.37
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
-  isKinectPresent: 1
+  isKinectPresent: 0
 --- !u!4 &304089665
 Transform:
   m_ObjectHideFlags: 0
