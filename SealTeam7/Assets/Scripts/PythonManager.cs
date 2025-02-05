@@ -12,7 +12,7 @@ using Logger = Microsoft.Azure.Kinect.Sensor.Logger;
 public static class PythonManager
 {
     private const string Host = "localhost";
-    private const int Port = 9455;
+    private const int Port = 65465;
     private static readonly Encoding Encoding = Encoding.UTF8;
     
     private static TcpClient _inferenceClient;

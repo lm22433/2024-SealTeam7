@@ -3,6 +3,7 @@ import socket
 import threading
 import time
 import traceback
+from typing import Optional
 
 import cv2
 import mediapipe as mp
@@ -14,18 +15,18 @@ from mediapipe.tasks.python.vision import *
 OBJECT_DETECTION_MODEL_PATH = 'object_detection_model.tflite'
 HAND_LANDMARKING_MODEL_PATH = 'hand_landmarking_model.task'
 HOST = "127.0.0.1"
-PORT = 9455
+PORT = 65465
 
-MOCK_KINECT = False
+MOCK_KINECT = True
 """Mock the Kinect camera using OpenCV to read from a webcam"""
 
 VISUALISE_INFERENCE_RESULTS = True
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
 stop_server = False
-object_detection_result = None
+object_detection_result: Optional[ObjectDetectorResult] = None
 object_detection_done = threading.Event()
-hand_landmarking_result = None
+hand_landmarking_result: Optional[HandLandmarkerResult] = None
 hand_landmarking_done = threading.Event()
 color_image = np.zeros((720, 1280, 4), dtype=np.uint8)  # 720p BGRA image
 color_image_lock = threading.Lock()
@@ -55,24 +56,19 @@ def inference_frame(object_detector, hand_landmarker, frame):
     object_detection_done.clear()
     hand_landmarking_done.clear()
     
-    if len(hand_landmarking_result.landmarks) >= 1:
-        print(f"[inference_frame] Hand landmark: {hand_landmarking_result.landmarks[0][0]}")
-        print(f"[inference_frame] Hand world landmark: {hand_landmarking_result.worldLandmarks[0][0]}")
-    
     if VISUALISE_INFERENCE_RESULTS:
-        print("[inference_frame] Visualising inference results.")
         for detection in object_detection_result.detections:
             bbox = detection.bounding_box
             cv2.rectangle(frame, (int(bbox.origin_x), int(bbox.origin_y)), 
                           (int(bbox.origin_x + bbox.width), int(bbox.origin_y + bbox.height)), (0, 255, 0), 1)
-            cv2.putText(frame, detection.categories[0].category_name, (int(bbox.origin_x), int(bbox.origin_y + 10)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 1)
-        for landmarks in hand_landmarking_result.worldLandmarks:  # for each hand
+            cv2.putText(frame, detection.categories[0].category_name, (int(bbox.origin_x), int(bbox.origin_y - 4)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (36,255,12), 1)
+        for landmarks in hand_landmarking_result.hand_landmarks:  # for each hand
             for connection in HandLandmarksConnections.HAND_CONNECTIONS:
-                cv2.line(frame, (int(landmarks[connection.start].x), int(landmarks[connection.start].y)),
-                            (int(landmarks[connection.end].x), int(landmarks[connection.end].y)), (0, 255, 0), 1)
+                cv2.line(frame, (int(landmarks[connection.start].x * frame.shape[1]), int(landmarks[connection.start].y * frame.shape[0])),
+                            (int(landmarks[connection.end].x * frame.shape[1]), int(landmarks[connection.end].y * frame.shape[0])), (0, 255, 0), 1)
             for landmark in landmarks:
-                cv2.circle(frame, (int(landmark.x), int(landmark.y)), 5, (0, 255, 0), -1)
+                cv2.circle(frame, (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])), 3, (0, 255, 0), -1)
         cv2.imshow("Inference visualisation", frame)
         cv2.waitKey(1)
     
@@ -101,18 +97,15 @@ def inference_connection(conn):
         min_hand_detection_confidence=0.5,
         min_hand_presence_confidence=0.5,
         min_tracking_confidence=0.5,
-        result_callback=object_detector_callback)
+        result_callback=hand_landmarker_callback)
 
     with conn, ObjectDetector.create_from_options(object_detector_options) as object_detector, \
             HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmarker:
         while not stop_server:
             try:
                 # Check if any control signals in buffer
-                if not inference_running:
-                    # print("[inference_connection] Waiting for control signal...")
-                    pass
                 try:
-                    print("[inference_connection] conn.recv()")
+                    # print("[inference_connection] conn.recv()")
                     message = conn.recv(1024).decode()
                     print(f"[inference_connection] Received message: {message}")
                     if message == "START":
@@ -129,12 +122,10 @@ def inference_connection(conn):
                 except BlockingIOError:
                     pass  # No control signal in buffer - that's normal, continue with object detection
                 except socket.timeout:
-                    # print("[inference_connection] Temp - timeout. stop_server:", stop_server)
                     pass  # Still waiting for control signal - OK
 
                 # Main logic - read frame from camera, run object detection, send result to client
                 if inference_running:
-                    print("[inference_connection] Running inference.")
                     if MOCK_KINECT:
                         success, frame = video_capture.read()
                         if not success:
@@ -177,7 +168,7 @@ def image_connection(conn):
         while not stop_server:
             try:
                 # handle receiving message
-                print("[image_connection] conn.recv()")
+                # print("[image_connection] conn.recv()")
                 message = conn.recv(3686500)  # 1280 * 720 * 4 bytes per pixel + some extra
                 print("[image_connection] Received message.")
                 if message == b'':  # Empty string means client disconnected
