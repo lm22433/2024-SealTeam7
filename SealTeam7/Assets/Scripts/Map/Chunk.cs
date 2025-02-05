@@ -28,7 +28,6 @@ namespace Map
         [SerializeField] private ChunkSettings settings;
         private int _lodFactor;
         private half[] _heightMap;
-        private float3[] _oldVertices;
         private int _vertexSideCount;
         private Mesh _mesh;
         private MeshCollider _meshCollider;
@@ -141,6 +140,7 @@ namespace Map
             
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
+            _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
 
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
@@ -151,39 +151,36 @@ namespace Map
 
         private void UpdateMesh() {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var numberOfTriangles = (_vertexSideCount - 1) * (_vertexSideCount - 1) * 6;
+            var numberOfTriangles = (settings.size / _lodFactor) * (settings.size / _lodFactor) * 6;
             
             //TODO: adjust so that old height data is preserved over LOD switch
             var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
-
-            var meshVertexUpdate = new MeshVertexUpdate
+            var uvs = new NativeArray<float2>(numberOfVertices, Allocator.TempJob);
+            
+            var meshUpdate = new MeshUpdate
             {
+                Triangles = triangles,
                 Vertices = vertices,
+                UVs = uvs,
                 VertexSideCount = _vertexSideCount,
                 Spacing = settings.spacing,
                 Size = settings.size,
                 LODFactor = _lodFactor
             }.Schedule(numberOfVertices, 1);
-
-            var meshTriangleUpdate = new MeshTriangleUpdate
-            {
-                Triangles = triangles,
-                VertexSideCount = _vertexSideCount
-            }.Schedule(numberOfTriangles, 1, meshVertexUpdate);
             
-            meshTriangleUpdate.Complete();
+            meshUpdate.Complete();
             
             _mesh.Clear();
             _mesh.SetVertices(vertices);
             _mesh.SetTriangles(triangles.ToArray(), 0);
+            _mesh.SetUVs(0, uvs);
             _mesh.RecalculateNormals();
-            //_mesh.RecalculateTangents();
-
-            _oldVertices = vertices.ToArray();
+            _mesh.RecalculateTangents();
             
             vertices.Dispose();
             triangles.Dispose();
+            uvs.Dispose();
         }
     }
 
@@ -203,11 +200,13 @@ namespace Map
             Vertices[index] = p;
         }
     }
-
+    
     [BurstCompile]
-    public struct MeshVertexUpdate : IJobParallelFor
+    public struct MeshUpdate : IJobParallelFor
     {
+        public NativeArray<int> Triangles;
         public NativeArray<float3> Vertices;
+        public NativeArray<float2> UVs;
         public int VertexSideCount;
         public float Spacing;
         public float LODFactor;
@@ -215,20 +214,12 @@ namespace Map
         
         public void Execute(int index)
         {
-            var x = (int) (index / VertexSideCount) * LODFactor - 0.5f * (Size - 1);
-            var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * (Size - 1);
+            //update vertices
+            var x = (int) (index / VertexSideCount) * LODFactor - 0.5f * Size;
+            var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * Size;
             Vertices[index] = new float3(x * Spacing, 0f, z * Spacing);
-        }
-    }
-    
-    [BurstCompile]
-    public struct MeshTriangleUpdate : IJobParallelFor
-    {
-        public NativeArray<int> Triangles;
-        public int VertexSideCount;
-        
-        public void Execute(int index)
-        {
+            
+            //update triangles
             var baseIndex = index / 6;
             baseIndex += baseIndex / (VertexSideCount - 1);
             Triangles[index] =
@@ -236,6 +227,9 @@ namespace Map
                 index % 6 - 4 == 0 || index % 6 - 2 == 0 ? baseIndex + VertexSideCount + 1 :
                 index % 6 - 1 == 0 ? baseIndex + 1 :
                 index % 6 - 5 == 0 ? baseIndex + VertexSideCount : -1;
+            
+            //update uvs
+            UVs[index] = new float2(x / Size, z / Size);
         }
     }
 }
