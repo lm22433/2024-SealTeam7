@@ -158,9 +158,8 @@ namespace Map
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
             var uvs = new NativeArray<float2>(numberOfVertices, Allocator.TempJob);
             
-            var meshUpdate = new MeshUpdate
+            var meshVertexUpdate = new MeshVertexUpdate
             {
-                Triangles = triangles,
                 Vertices = vertices,
                 UVs = uvs,
                 VertexSideCount = _vertexSideCount,
@@ -169,7 +168,13 @@ namespace Map
                 LODFactor = _lodFactor
             }.Schedule(numberOfVertices, 1);
             
-            meshUpdate.Complete();
+            var meshTriangleUpdate = new MeshTriangleUpdate
+            {
+                Triangles = triangles,
+                VertexSideCount = _vertexSideCount
+            }.Schedule(numberOfTriangles, 1, meshVertexUpdate);
+            
+            meshTriangleUpdate.Complete();
             
             _mesh.Clear();
             _mesh.SetVertices(vertices);
@@ -202,9 +207,8 @@ namespace Map
     }
     
     [BurstCompile]
-    public struct MeshUpdate : IJobParallelFor
+    public struct MeshVertexUpdate : IJobParallelFor
     {
-        public NativeArray<int> Triangles;
         public NativeArray<float3> Vertices;
         public NativeArray<float2> UVs;
         public int VertexSideCount;
@@ -219,6 +223,18 @@ namespace Map
             var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * Size;
             Vertices[index] = new float3(x * Spacing, 0f, z * Spacing);
             
+            //update uvs
+            UVs[index] = new float2(x / Size, z / Size);
+        }
+    }
+
+    public struct MeshTriangleUpdate : IJobParallelFor
+    {
+        public NativeArray<int> Triangles;
+        public int VertexSideCount;
+        
+        public void Execute(int index)
+        {
             //update triangles
             var baseIndex = index / 6;
             baseIndex += baseIndex / (VertexSideCount - 1);
@@ -227,9 +243,6 @@ namespace Map
                 index % 6 - 4 == 0 || index % 6 - 2 == 0 ? baseIndex + VertexSideCount + 1 :
                 index % 6 - 1 == 0 ? baseIndex + 1 :
                 index % 6 - 5 == 0 ? baseIndex + VertexSideCount : -1;
-            
-            //update uvs
-            UVs[index] = new float2(x / Size, z / Size);
         }
     }
 }
