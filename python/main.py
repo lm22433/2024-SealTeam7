@@ -62,6 +62,7 @@ def detections_connection(conn):
     global stop_server
     
     conn.setblocking(True)  # block until START control signal received
+    conn.settimeout(0.5)  # instead of blocking for ages, check every 0.5s, in case of KeyboardInterrupt
     object_detection_running = False
 
     options = ObjectDetectorOptions(
@@ -71,14 +72,15 @@ def detections_connection(conn):
         result_callback=object_detector_callback)
 
     with conn, ObjectDetector.create_from_options(options) as object_detector:
-        while not stop_detections_connection:
+        while not stop_server:
             try:
                 # Check if any control signals in buffer
                 if not object_detection_running:
-                    print("[detections_connection] Waiting for control signal...")
+                    # print("[detections_connection] Waiting for control signal...")
+                    pass
                 try:
                     message = conn.recv(1024).decode()
-                    print(f"[detections_connection] Control signal received: {message}")
+                    print(f"[detections_connection] Received message: {message}")
                     if message == "START":
                         object_detection_running = True
                         conn.setblocking(False)  # no longer should block and wait for control signals
@@ -91,7 +93,10 @@ def detections_connection(conn):
                         print("[detections_connection] Client disconnected, closing connection.")
                         break
                 except BlockingIOError:
-                    pass  # No control signal in buffer - that's normal, continue
+                    pass  # No control signal in buffer - that's normal, continue with object detection
+                except socket.timeout:
+                    # print("[detections_connection] Temp - timeout. stop_server:", stop_server)
+                    pass  # Still waiting for control signal - OK
 
                 # Main logic - read frame from camera, run object detection, send result to client
                 if object_detection_running:
@@ -130,27 +135,45 @@ def color_image_connection(conn):
     global stop_server
     
     conn.setblocking(True)
+    conn.settimeout(0.5)
+    cumulative_message = b''
 
     with conn:
-        while True:
+        while not stop_server:
             try:
-                print("[color_image_connection] Waiting for color image message...")
-                message = conn.recv(3686400)  # 1280 * 720 * 4 bytes per pixel
-                print("[color_image_connection] Received color image message.")
+                # handle receiving message
+                # print("[color_image_connection] Waiting for color image message...")
+                message = conn.recv(3686500)  # 1280 * 720 * 4 bytes per pixel + some extra
+                print("[color_image_connection] Received message.")
                 if message == b'':  # Empty string means client disconnected
                     print("[color_image_connection] Client disconnected, closing connection.")
                     break
-                elif len(message) == 3686400:  # Decode message as image and store in color_image
-                    image = np.frombuffer(message, dtype=np.uint8).reshape(color_image.shape)
-                    image = image[224:513, 413:820, :3]
+                elif len(message) == 3686400:
+                    cumulative_message = message
+                elif 1 <= len(message) < 3686400:
+                    cumulative_message += message
+                    print(f"[color_image_connection] Partial message received. "
+                          f"(length: {len(message)}, cumulative length: {len(cumulative_message)})")
+                else:
+                    print(f"[color_image_connection] Invalid message received, ignoring. (length: {len(message)})")
+
+                # Decode full message as image and store in color_image
+                if len(cumulative_message) == 3686400:
+                    #temp
+                    image = np.frombuffer(cumulative_message, dtype=np.uint8).reshape(color_image.shape)
+                    image = image[90:470, 370:870, :3]
                     cv2.imwrite(f"{time.strftime("%Y-%m-%d_%H-%M-%S")}_{str(time.time())[11:14]}.png", image)
+                    
                     # print("[color_image_connection] Acquiring lock...")
                     color_image_lock.acquire()
                     # print("[color_image_connection] Copying image.")
-                    np.copyto(color_image, np.frombuffer(message, dtype=np.uint8).reshape(color_image.shape))
+                    np.copyto(color_image, np.frombuffer(cumulative_message, dtype=np.uint8).reshape(color_image.shape))
                     color_image_lock.release()
-                else:
-                    print("[color_image_connection] Invalid message received, ignoring.")
+                    cumulative_message = b''
+                
+            except socket.timeout:
+                # print("[color_image_connection] Temp - timeout")
+                pass
 
             except KeyboardInterrupt:
                 print("[color_image_connection] Shutting down server.")
@@ -168,7 +191,7 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
         server.bind((HOST, PORT))
         server.listen(5)
-        print(f"Server listening on {HOST}:{PORT}")
+        print(f"Server listening on {HOST}:{PORT}...")
 
         det_conn, addr = server.accept()
         print(f"Detections connection from {addr}")
@@ -186,11 +209,3 @@ def main():
 
 
 main()
-
-# # debug why it stops with SIGSEGV
-# for thread in threading.enumerate():
-#     print(f"Thread name: {thread.name}, Is daemon: {thread.daemon}, Is alive: {thread.is_alive()}")
-# proc = psutil.Process()
-# print("Open files:", proc.open_files())
-# print("Child processes:", proc.children())
-# print("Threads:", proc.threads())

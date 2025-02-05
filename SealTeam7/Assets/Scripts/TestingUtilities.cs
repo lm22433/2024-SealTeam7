@@ -2,79 +2,98 @@
 using UnityEngine;
 using System.Threading;
 using Microsoft.Azure.Kinect.Sensor;
+using UnityEngine.Rendering.UI;
 
 public class TestingUtilities : MonoBehaviour
 {
-    private int _pythonTestIndex = 0;
+    private float _nextBeep = float.MaxValue;
+    private float _nextCapture = float.MaxValue;
     private Device _kinect;
-    
+    private AudioSource _audioSource;
+
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
+
     // ReSharper disable Unity.PerformanceAnalysis
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Keypad1))
         {
+            Debug.Log("Connecting to Python and starting Kinect cameras...");
             PythonManager.Connect();
             _kinect = Device.Open();
-            Thread.Sleep(1000);
             _kinect.StartCameras(new DeviceConfiguration {
                 ColorFormat = ImageFormat.ColorBGRA32,
                 ColorResolution = ColorResolution.R720p,
-                DepthMode = DepthMode.NFOV_2x2Binned,
+                DepthMode = DepthMode.NFOV_Unbinned,
                 SynchronizedImagesOnly = true,
                 CameraFPS = FPS.FPS30
             });
-            PythonManager.StartObjectDetection();
-            Thread.Sleep(100);
-            _pythonTestIndex = 1;
+            Debug.Log("Connected and started.");
+
+            _nextBeep = Time.realtimeSinceStartup + 5;
+            _nextCapture = Time.realtimeSinceStartup + 6;
         }
 
-        // test PythonManager
-        if (_pythonTestIndex is >= 1 and <= 2000)
+        if (Time.realtimeSinceStartup > _nextBeep)
         {
-            Debug.Log(ToString(PythonManager.GetSandboxObjects()));
-            Thread.Sleep(10);
-            // Debug.Log("[PythonManager] Getting capture...");
-            var capture = _kinect.GetCapture();
-            // Debug.Log("[PythonManager] Sending color image...");
-            Debug.Log("[TestingUtilities] capture shape: " + capture.Color.WidthPixels + "x" + capture.Color.HeightPixels);
-            PythonManager.SendColorImage(capture.Color);
-            Thread.Sleep(10);
-            _pythonTestIndex++;
+            _audioSource.Play();
+            _nextBeep = Time.realtimeSinceStartup + 6;
         }
-        else if (_pythonTestIndex > 2000)
+
+        if (Time.realtimeSinceStartup > _nextCapture)
         {
-            PythonManager.StopObjectDetection();
-            _kinect.StopCameras();
-            Thread.Sleep(1000);
-            _kinect.Dispose();
-            PythonManager.Disconnect();
-            _pythonTestIndex = 0;
+            _audioSource.Play();
+            
+            try
+            {
+                var capture = _kinect.GetCapture();
+                PythonManager.SendColorImage(capture.Color);
+            }
+            catch (AzureKinectException e)
+            {
+                Debug.LogWarning("Failed to get capture due to the following error:");
+                Debug.LogError(e);
+            }
+
+            _nextCapture = Time.realtimeSinceStartup + 6;
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad2))
         {
+            Debug.Log("Connecting to Python and starting Kinect cameras...");
             PythonManager.Connect();
             _kinect = Device.Open();
             _kinect.StartCameras(new DeviceConfiguration {
                 ColorFormat = ImageFormat.ColorBGRA32,
                 ColorResolution = ColorResolution.R720p,
-                DepthMode = DepthMode.NFOV_2x2Binned,
+                DepthMode = DepthMode.NFOV_Unbinned,
                 SynchronizedImagesOnly = true,
                 CameraFPS = FPS.FPS30
             });
+            Debug.Log("Connected and started.");
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad3))
         {
             var colorImage = _kinect.GetCapture().Color;
             PythonManager.SendColorImage(colorImage);
+            Debug.Log("Image capture taken.");
         }
         
         if (Input.GetKeyDown(KeyCode.Keypad4))
         {
+            Debug.Log("Disconnecting from Python and stopping Kinect cameras...");
+            _nextBeep = float.MaxValue;
+            _nextCapture = float.MaxValue;
             PythonManager.Disconnect();
             _kinect.StopCameras();
             _kinect.Dispose();
+            Debug.Log("Disconnected and stopped.");
         }
     }
 

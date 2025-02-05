@@ -7,6 +7,7 @@ using System.Threading;
 using Microsoft.Azure.Kinect.Sensor;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using Logger = Microsoft.Azure.Kinect.Sensor.Logger;
 
 public static class PythonManager
 {
@@ -23,32 +24,42 @@ public static class PythonManager
     private static ConcurrentBag<SandboxObject> _sandboxObjects = new();
     
     
-    public static void Connect()
+    public static bool Connect()
     {
         if (_detectionsClient != null)
         {
             Debug.LogWarning("Already connected to the Python server.");
-            return;
+            return true;
         }
         
         Debug.Log("Connecting to the Python server...");
-        _detectionsClient = new TcpClient(Host, Port);
-        _detectionsStream = _detectionsClient.GetStream();
-        _colorImageClient = new TcpClient(Host, Port);
-        _colorImageStream = _colorImageClient.GetStream();
+        try
+        {
+            _detectionsClient = new TcpClient(Host, Port);
+            _detectionsStream = _detectionsClient.GetStream();
+            _colorImageClient = new TcpClient(Host, Port);
+            _colorImageStream = _colorImageClient.GetStream();
+        } 
+        catch (SocketException)
+        {
+            Debug.LogError("Error connecting to the Python server. Is it running?");
+            return false;
+        }
+
         _stopReceivingMessages = false;
         _receiveMessagesThread = new Thread(ReceiveMessages);
         _receiveMessagesThread.Start();
         Debug.Log("Connected.");
+        return true;
     }
     
     
-    public static void Disconnect()
+    public static bool Disconnect()
     {
         if (_detectionsStream == null)
         {
             Debug.LogWarning("Not connected to the Python server.");
-            return;
+            return true;
         }
         
         Debug.Log("Disconnecting from the Python server...");
@@ -61,32 +72,35 @@ public static class PythonManager
         _detectionsStream = null;
         _detectionsClient = null;
         Debug.Log("Disconnected.");
+        return true;
     }
     
     
-    public static void StartObjectDetection()
+    public static bool StartObjectDetection()
     {
         if (_detectionsStream == null)
         {
-            Debug.LogWarning("Not connected to the Python server.");
-            return;
+            Debug.LogWarning("Cannot start object detection: Not connected to the Python server.");
+            return false;
         }
         
         _detectionsStream.Write(Encoding.GetBytes("START"));
         Debug.Log("Sent: START");
+        return true;
     }
     
     
-    public static void StopObjectDetection()
+    public static bool StopObjectDetection()
     {
         if (_detectionsStream == null)
         {
             Debug.LogWarning("Not connected to the Python server.");
-            return;
+            return false;
         }
 
         _detectionsStream.Write(Encoding.GetBytes("STOP"));
         Debug.Log("Sent: STOP");
+        return true;
     }
     
     
@@ -104,8 +118,8 @@ public static class PythonManager
             return;
         }
         
-        // Debug.Log($"Image.Format: {colorImage.Format.ToString()}");
-        // Debug.Log($"Memory.Length: {colorImage.Memory.ToArray().Length}");  // number of bytes, as Memory<byte>
+        Debug.Log($"Image.Format: {colorImage.Format.ToString()}");
+        Debug.Log($"[SendColorImage] Memory.Length: {colorImage.Memory.ToArray().Length}");  // number of bytes, as Memory<byte>
         
         _colorImageStream.Write(colorImage.Memory.ToArray());
     }
