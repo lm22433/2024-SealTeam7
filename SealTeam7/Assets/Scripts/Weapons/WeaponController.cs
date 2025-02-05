@@ -33,7 +33,7 @@ namespace Weapons
         private void Update()
         {
             if (!IsOwner) return;
-            if (_equippedGun == null) return;
+            if (!_equippedGun) return;
             
             HandleShooting();
             HandleAiming();
@@ -47,8 +47,21 @@ namespace Weapons
         {
             InputController inputController = InputController.GetInstance();
 
-            if (inputController.GetShootInputHeld() || inputController.GetShootInputPressed())
-                _equippedGun.ServerShoot();
+            switch (_equippedGun.fireMode)
+            {
+                case FireMode.SemiAutomatic:
+                    if (inputController.GetShootInputPressed())
+                        _equippedGun.ServerShoot();
+                    break;
+                case FireMode.Automatic:
+                    if (inputController.GetShootInputHeld())
+                        _equippedGun.ServerShoot();
+                    break;
+                case FireMode.Burst:
+                    if (inputController.GetShootInputPressed())
+                        _equippedGun.ServerBurstShoot();
+                    break;
+            }
         }
 
         private void HandleAiming()

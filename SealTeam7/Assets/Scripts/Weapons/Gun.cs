@@ -83,6 +83,12 @@ namespace Weapons
             }
         }
 
+        [ServerRpc(RequireOwnership = true)]
+        public void ServerBurstShoot()
+        {
+            
+        }
+
         [ObserversRpc]
         private void ObserversPlayShootEffects()
         {
