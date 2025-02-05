@@ -151,7 +151,7 @@ namespace Map
 
         private void UpdateMesh() {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var numberOfTriangles = (settings.size / _lodFactor) * (settings.size / _lodFactor) * 6;
+            var numberOfTriangles = (_vertexSideCount - 1) * (_vertexSideCount - 1) * 6;
             
             //TODO: adjust so that old height data is preserved over LOD switch
             var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
@@ -219,12 +219,12 @@ namespace Map
         public void Execute(int index)
         {
             //update vertices
-            var x = (int) (index / VertexSideCount) * LODFactor - 0.5f * Size;
-            var z = (int) (index % VertexSideCount) * LODFactor - 0.5f * Size;
-            Vertices[index] = new float3(x * Spacing, 0f, z * Spacing);
+            var x = (int) (index / VertexSideCount) * LODFactor * Spacing;
+            var z = (int) (index % VertexSideCount) * LODFactor * Spacing;
+            Vertices[index] = new float3(x, 0f, z);
             
             //update uvs
-            UVs[index] = new float2(x / Size, z / Size);
+            UVs[index] = new float2(x / (Size - 1), z / (Size - 1));
         }
     }
 
