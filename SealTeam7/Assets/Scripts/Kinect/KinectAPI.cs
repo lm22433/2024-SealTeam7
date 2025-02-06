@@ -117,6 +117,11 @@ namespace Kinect
             }
         }
 
+        public half GetHeight(int x, int z)
+        {
+            return _depthMapArray[z * dimensions + x];
+        }
+
         [TargetRpc]
         private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
         {

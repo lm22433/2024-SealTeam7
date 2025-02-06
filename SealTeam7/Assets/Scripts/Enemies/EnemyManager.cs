@@ -31,7 +31,7 @@ namespace Enemies
             foreach (EnemyInfo e in enemies)
             {
                 NetworkObject nob = _networkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
-                ServerManager.Spawn(nob);
+                ServerManager.Spawn(nob, Owner);
             }
         }
 
