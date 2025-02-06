@@ -722,17 +722,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
     size: 512
-    chunks: 256
+    chunkRow: 16
     chunkSize: 32
     maxHeight: 50
     lerpFactor: 0.05
     lodLevels:
-    - maxViewDistance: 512
+    - maxViewDistance: 100
       lod: 0
-    - maxViewDistance: 256
+    - maxViewDistance: 1000
       lod: 1
-    - maxViewDistance: 512
-      lod: 3
+    - maxViewDistance: 2500
+      lod: 2
     playerMoveThreshold: 12.37
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   isKinectPresent: 0

@@ -124,14 +124,14 @@ namespace Kinect
             NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
             if (targetConnection != null)
             {
-                SendChunkTextureTargetRpc(targetConnection, depths, x, z);
+                SendChunkTextureTargetRpc(targetConnection, depths, x, z, lod);
             }
         }
 
         [TargetRpc]
-        private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
+        private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
         {
-            mapGenerator.GetChunk(x, z).SetHeights(depths);
+            mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
         }
         
         public half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkZ)

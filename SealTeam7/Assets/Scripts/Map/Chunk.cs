@@ -39,18 +39,15 @@ namespace Map
         private bool _running;
         private bool _gettingHeights;
         private bool _newLod;
+        private ushort requestedLod;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
         public void SetLod(ushort lod)
         {
             if (settings.lod == lod) return;
-            settings.lod = lod;
-            _lodFactor = lod == 0 ? 1 : lod * 2;
-            _vertexSideCount = settings.size / _lodFactor;
-            //TODO: adjust so that old height data is preserved over LOD switch
-            _heightMap = new half[_vertexSideCount * _vertexSideCount];
-            _newLod = true;
+            requestedLod = lod;
+
         }
 
         public void SetVisible(bool visible)
@@ -66,6 +63,7 @@ namespace Map
         private void Awake()
         {
             _lodFactor = 1;
+            requestedLod = settings.lod;
             _vertexSideCount = settings.size / _lodFactor;
             
             _mesh = new Mesh {name = "Generated Mesh"};
@@ -97,12 +95,8 @@ namespace Map
             if (_running)
             {
                 if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
-                if (_newLod)
-                {
-                    _newLod = false;
-                    _meshCollider.enabled = settings.lod == 0;
-                    UpdateMesh();
-                }
+
+                _meshCollider.enabled = settings.lod == 0;
             }
 
             _meshRenderer.enabled = _running;
@@ -112,7 +106,7 @@ namespace Map
             _gettingHeights = true;
             while (_running)
             {
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.2f);
                 GetHeights();
             }
             _gettingHeights = false;
@@ -120,19 +114,27 @@ namespace Map
         
         private void GetHeights() {
             if (!settings.isKinectPresent) {
-                _noiseGenerator.RequestNoise(settings.lod, settings.size, settings.x, settings.z);
+                _noiseGenerator.RequestNoise(requestedLod, settings.size, settings.x, settings.z);
             } else {
-                _kinect.RequestTexture(settings.lod, settings.size, settings.x, settings.z);
+                _kinect.RequestTexture(requestedLod, settings.size, settings.x, settings.z);
             }
         }
 
-        public void SetHeights(half[] heights)
+        public void SetHeights(half[] heights, ushort lod)
         {
-            if (heights.Length == _heightMap.Length) {
+            if (settings.lod == lod) {
                 _heightMap = heights;
-                UpdateHeights();
             }
-            else Debug.Log($"{heights.Length} received, {_heightMap.Length} expected.\nLOD: {settings.lod}, LODFACTOR: {_lodFactor}, SIZE: {settings.size}, CHUNK: ({settings.x}, {settings.z})");
+            else {
+                settings.lod = lod;
+                _lodFactor = lod == 0 ? 1 : lod * 2;
+                _vertexSideCount = settings.size / _lodFactor;
+                _heightMap = new half[heights.Length];
+                _heightMap = heights;
+
+                UpdateMesh();
+
+            }
             UpdateHeights();
         }
 

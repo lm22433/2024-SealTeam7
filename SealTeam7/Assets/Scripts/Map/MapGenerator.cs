@@ -29,7 +29,7 @@ namespace Map
     public class MapGenerator : MonoBehaviour {
         [SerializeField] private MapSettings settings;
         [SerializeField] private GameObject chunkPrefab;
-        private GameObject _player;
+        [SerializeField] private GameObject _player;
         private NoiseGenerator _noise;
         private List<Chunk> _chunks;
         private float _spacing;

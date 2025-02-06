@@ -80,14 +80,14 @@ namespace Map
 
             //if (targetConnection != null)
             //{
-                SendChunkNoiseTargetRpc(targetConnection, depths, x, z);
+                SendChunkNoiseTargetRpc(targetConnection, depths, x, z, lod);
             //}
         }
 
         [TargetRpc]
-        private void SendChunkNoiseTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
+        private void SendChunkNoiseTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
         {
-            mapGenerator.GetChunk(x, z).SetHeights(depths);
+            mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
         }
         
         public half[] GetChunkNoise(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
