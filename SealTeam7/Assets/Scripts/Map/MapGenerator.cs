@@ -80,8 +80,7 @@ namespace Map
 
         private void UpdateChunkLods()
         {
-            Parallel.ForEach(_chunks, chunk =>
-            {
+            foreach(var chunk in _chunks) {
                 bool visible = false;
                 ushort lod = settings.lodLevels[^1].lod;
                 
@@ -99,7 +98,7 @@ namespace Map
 
                 chunk.SetLod(lod);
                 chunk.SetVisible(visible);
-            });
+            }
         }
 
         private void Update()

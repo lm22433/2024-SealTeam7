@@ -727,14 +727,11 @@ MonoBehaviour:
     maxHeight: 50
     lerpFactor: 0.05
     lodLevels:
-    - maxViewDistance: 100
+    - maxViewDistance: 2000
       lod: 0
-    - maxViewDistance: 1000
-      lod: 1
-    - maxViewDistance: 2500
-      lod: 2
-    playerMoveThreshold: 12.37
+    playerMoveThreshold: 2
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
+  _player: {fileID: 0}
   isKinectPresent: 0
 --- !u!4 &304089665
 Transform:

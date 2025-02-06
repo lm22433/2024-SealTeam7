@@ -71,6 +71,9 @@ namespace Map
             
             _bounds = new Bounds(transform.position, new Vector3((settings.size - 1) * settings.spacing, 2f * settings.maxHeight, (settings.size - 1) * settings.spacing));
             _mesh.bounds = _bounds;
+                        
+            _heightMap = new half[_vertexSideCount * _vertexSideCount];
+
             
             UpdateMesh();
             
@@ -80,8 +83,6 @@ namespace Map
             _meshFilter.sharedMesh = _mesh;
             _meshCollider.sharedMesh = _mesh;
             _meshCollider.enabled = false;
-            
-            _heightMap = new half[_vertexSideCount * _vertexSideCount];
 
             if (!settings.isKinectPresent) {
                 _noiseGenerator = FindAnyObjectByType<NoiseGenerator>();
@@ -170,9 +171,11 @@ namespace Map
             var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
             var uvs = new NativeArray<float2>(numberOfVertices, Allocator.TempJob);
+            var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
             
             var meshVertexUpdate = new MeshVertexUpdate
             {
+                Heights = heights,
                 Vertices = vertices,
                 UVs = uvs,
                 VertexSideCount = _vertexSideCount,
@@ -199,6 +202,7 @@ namespace Map
             vertices.Dispose();
             triangles.Dispose();
             uvs.Dispose();
+            heights.Dispose();
         }
     }
 
@@ -222,6 +226,7 @@ namespace Map
     [BurstCompile]
     public struct MeshVertexUpdate : IJobParallelFor
     {
+        public NativeArray<half> Heights;
         public NativeArray<float3> Vertices;
         public NativeArray<float2> UVs;
         public int VertexSideCount;
@@ -234,7 +239,7 @@ namespace Map
             //update vertices
             var x = (int) (index / VertexSideCount) * LODFactor * Spacing;
             var z = (int) (index % VertexSideCount) * LODFactor * Spacing;
-            Vertices[index] = new float3(x, 0f, z);
+            Vertices[index] = new float3(x, Heights[index], z);
             
             //update uvs
             UVs[index] = new float2(x / (Size - 1), z / (Size - 1));
