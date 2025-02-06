@@ -53,7 +53,8 @@ namespace Enemies
             var z = (int) transform.position.z;
             
             // sit on terrain
-            transform.SetPosition(false, new Vector3(transform.position.x, _kinect.GetHeight(x, z), transform.position.z));
+            //if (_kinect) transform.SetPosition(false, new Vector3(transform.position.x, _kinect.GetHeight(x, z), transform.position.z));
+            //else Debug.Log($"No Kinect, {Owner}");
             
             // look at player
             if (_player)

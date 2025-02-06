@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Player.Input
+namespace Input
 {
     public enum InputType
     {

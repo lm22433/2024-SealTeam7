@@ -1,8 +1,7 @@
-using Player.Input;
+using Input;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Player.Movement
+namespace Movement
 {
     public class CameraControl : MonoBehaviour
     {

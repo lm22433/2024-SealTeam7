@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Transporting;

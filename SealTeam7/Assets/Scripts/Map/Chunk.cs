@@ -6,7 +6,6 @@ using Unity.Mathematics;
 using UnityEngine;
 using Kinect;
 
-using System.Threading.Tasks;
 using System.Collections;
 
 namespace Map

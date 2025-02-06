@@ -1,8 +1,6 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Unity.Mathematics;
 
 using Unity.Multiplayer;
 using FishNet.Object;
@@ -42,6 +40,7 @@ namespace Map
     
         private void Awake() 
         {
+            var chunkParent = Instantiate(new GameObject("Chunks"), transform);
             
             if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
                 return;
@@ -67,7 +66,7 @@ namespace Map
             for (float z = 0; z < settings.size - settings.chunkRow * _spacing; z += (settings.chunkSize - 1) * _spacing) {
                 for (float x = 0; x < settings.size - settings.chunkRow * _spacing; x += (settings.chunkSize - 1) * _spacing)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<Chunk>();
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
                     chunkSettings.x = (ushort) (x / ((settings.chunkSize - 1) * _spacing));
                     chunkSettings.z = (ushort) (z / ((settings.chunkSize - 1) * _spacing));
                     chunk.SetSettings(chunkSettings);

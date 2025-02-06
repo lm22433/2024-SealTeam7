@@ -2,7 +2,6 @@
 using FishNet.Managing;
 using UnityEngine;
 using FishNet.Object;
-using Player.Movement;
 
 namespace Enemies
 {
@@ -31,13 +30,8 @@ namespace Enemies
             foreach (EnemyInfo e in enemies)
             {
                 NetworkObject nob = _networkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
-                ServerManager.Spawn(nob, Owner);
+                ServerManager.Spawn(nob);
             }
-        }
-
-        public override void OnStartClient()
-        {
-            base.OnStartClient();
         }
     }
 }

@@ -7,8 +7,6 @@ using FishNet.Connection;
 using Map;
 using FishNet.Transporting;
 using Unity.Mathematics;
-using Unity.Multiplayer;
-using UnityEngine.Serialization;
 
 namespace Kinect
 {
@@ -130,7 +128,7 @@ namespace Kinect
 
         public half GetHeight(int x, int z)
         {
-            return _depthMapArray[z * dimensions + x];
+            return _depthMapArray[z * _width + x];
         }
 
         [TargetRpc]
