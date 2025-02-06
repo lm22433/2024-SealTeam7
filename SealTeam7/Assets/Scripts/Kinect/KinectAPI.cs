@@ -126,9 +126,9 @@ namespace Kinect
             }
         }
 
-        public half GetHeight(int x, int z)
+        public half GetHeight(int xPos, int zPos)
         {
-            return _depthMapArray[z * _width + x];
+            return _depthMapArray[zPos * _width + xPos];
         }
 
         [TargetRpc]

@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using FishNet.Connection;
+using FishNet.Object;
+using Player;
 using UnityEngine;
-using Weapons;
 
 namespace Enemies.Tower
 {
@@ -12,30 +14,37 @@ namespace Enemies.Tower
         private float _timeSinceAttack;
         private Vector3 _target;
 
-        public override void Start()
+        public override void OnStartServer()
         {
-            base.Start();
-            _target = transform.position;
+            base.OnStartServer();
+            
+            // align target in tower's xz plane
+            _target = Vector3.ProjectOnPlane(transform.position, Vector3.up) + Vector3.up * transform.position.y;
         }
         
         public override void Attack(Collider hit)
         {
             if (_timeSinceAttack > attackDelay)
             {
-                _target = hit.transform.position;
+                _target = Vector3.ProjectOnPlane(hit.transform.position, Vector3.up) + Vector3.up * transform.position.y;
                 //attackEffect.Play();
                 _timeSinceAttack = 0;
-                var damageable = hit.GetComponent<IDamageable>();
-                damageable?.TakeDamage(damage);
+                var playerMgr = hit.GetComponent<PlayerManager>();
+                DealDamageRPC(playerMgr.Owner, playerMgr, damage);
             }
+        }
+
+        [TargetRpc]
+        public override void DealDamageRPC(NetworkConnection conn, PlayerManager playerMgr, float dmg)
+        {
+            playerMgr.TakeDamage(dmg);
         }
         
         public override void Update()
         {
             base.Update();
             
-            var lerpTarget = Vector3.Lerp(transform.position, _target, lookSpeed * Time.deltaTime);
-            transform.LookAt(lerpTarget);
+            transform.LookAt(Vector3.Lerp(transform.forward, _target, lookSpeed * Time.deltaTime));
             
             _timeSinceAttack += Time.deltaTime;
 

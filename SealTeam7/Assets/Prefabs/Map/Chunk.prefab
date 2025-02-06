@@ -48,13 +48,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 120
-    spacing: 2
-    heightScale: 20
-    lerpFactor: 1
+    size: 32
+    spacing: 0.9375
+    maxHeight: 50
+    lerpFactor: 0.1
     x: 0
     z: 0
-    lod: 0
+    lod: 2
+    isKinectPresent: 0
 --- !u!33 &5746010189181975162
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -86,7 +87,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 64a6f42d9ccf65c43a2d314ecbd1404a, type: 2}
+  - {fileID: 2100000, guid: f01c76a322ae43e4aa91887fa14a2fcf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

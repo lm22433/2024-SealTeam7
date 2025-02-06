@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using FishNet.Connection;
+using FishNet.Object;
 using GameKit.Dependencies.Utilities;
 using Kinect;
 using Player;
@@ -17,14 +18,28 @@ namespace Enemies
         [SerializeField] protected VisualEffect attackEffect;
         private KinectAPI _kinect;
         private float _health;
-        private GameObject _player;
+        [SerializeField] private GameObject _player;
 
-        public virtual void Start()
+        public override void OnStartServer()
         {
+            base.OnStartServer();
+            
             _kinect = FindFirstObjectByType<KinectAPI>();
             _health = maxHealth;
             healthBar.maxValue = maxHealth;
             healthBar.value = _health;
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            
+            var players = FindObjectsByType<PlayerManager>(FindObjectsSortMode.None);
+            foreach (var p in players) {
+                if (p.gameObject.GetComponentInParent<NetworkObject>().IsOwner) {
+                    _player = p.gameObject;
+                }
+            }
         }
 
         public void TakeDamage(float dmg)
@@ -45,36 +60,23 @@ namespace Enemies
         
         public abstract void Attack(Collider hit);
 
+        [TargetRpc]
+        public virtual void DealDamageRPC(NetworkConnection conn, PlayerManager playerManager, float dmg) {}
+
         public virtual void Update()
         {
-            if (!IsServerInitialized) return;
-
-            var x = (int) transform.position.x;
-            var z = (int) transform.position.z;
+            // turn health bar towards player
+            if (_player) healthBar.transform.LookAt(_player.transform.position);
             
-            // sit on terrain
-            //if (_kinect) transform.SetPosition(false, new Vector3(transform.position.x, _kinect.GetHeight(x, z), transform.position.z));
-            //else Debug.Log($"No Kinect, {Owner}");
+            // only run on server
+            if (IsServerInitialized)
+            {
+                var x = (int) transform.position.x;
+                var z = (int) transform.position.z;
             
-            // look at player
-            if (_player)
-            {
-                healthBar.transform.LookAt(_player.transform.position);
+                // sit on terrain
+                transform.SetPosition(false, new Vector3(transform.position.x, _kinect.GetHeight(x, z), transform.position.z));   
             }
-            else
-            {
-                var players = FindObjectsByType<PlayerManager>(FindObjectsSortMode.None);
-                foreach (var p in players) {
-                    if (p.gameObject.GetComponentInParent<NetworkObject>().IsOwner) {
-                        _player = p.gameObject;
-                    }
-                }
-            }
-        }
-
-        public override void OnStartClient()
-        {
-            base.OnStartClient();
         }
     }
 }

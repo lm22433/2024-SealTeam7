@@ -1,7 +1,9 @@
 ﻿using System;
+using FishNet.Connection;
 using FishNet.Managing;
 using UnityEngine;
 using FishNet.Object;
+using FishNet.Transporting;
 
 namespace Enemies
 {
@@ -21,16 +23,25 @@ namespace Enemies
         
         public override void OnStartServer()
         {
+            base.OnStartServer();
+            
             _networkManager = FindFirstObjectByType<NetworkManager>();
             SpawnEnemies();
         }
 
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+        }
+        
+        [Server]
         private void SpawnEnemies()
         {
             foreach (EnemyInfo e in enemies)
             {
                 NetworkObject nob = _networkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
-                ServerManager.Spawn(nob);
+                _networkManager.ServerManager.Spawn(nob);
+                _networkManager.SceneManager.AddOwnerToDefaultScene(nob);
             }
         }
     }

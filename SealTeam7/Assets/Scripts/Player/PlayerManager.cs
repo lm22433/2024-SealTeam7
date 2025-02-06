@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using FishNet.Object;
+using UnityEngine;
 using UnityEngine.UI;
 using Weapons;
 
 namespace Player
 {
-    public class PlayerManager : MonoBehaviour, IDamageable
+    public class PlayerManager : NetworkBehaviour, IDamageable
     {
         [SerializeField] private float maxHealth;
         [SerializeField] private Slider healthBar;

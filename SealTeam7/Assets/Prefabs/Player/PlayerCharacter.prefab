@@ -177,7 +177,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -25, y: 100}
+  m_AnchoredPosition: {x: -250, y: 100}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1556193334172318785
@@ -1216,6 +1216,7 @@ GameObject:
   - component: {fileID: 4118585272731255046}
   - component: {fileID: 6635833650118323867}
   - component: {fileID: 5807242661491380131}
+  - component: {fileID: 2944425505624579883}
   m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Untagged
@@ -1500,6 +1501,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 64
   m_CollisionDetection: 0
+--- !u!114 &2944425505624579883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3885262202398652849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5fc2feb5e74ce6b7bc5fe0341e258c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  healthBar: {fileID: 1556193334172318785}
 --- !u!1 &4958989189013300217
 GameObject:
   m_ObjectHideFlags: 0

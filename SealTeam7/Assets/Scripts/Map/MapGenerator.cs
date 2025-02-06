@@ -39,12 +39,12 @@ namespace Map
         [SerializeField] private bool isKinectPresent;
     
         private void Awake() 
-        {
-            var chunkParent = Instantiate(new GameObject("Chunks"), transform);
-            
+        {            
             if (MultiplayerRolesManager.ActiveMultiplayerRoleMask == MultiplayerRoleFlags.Server) {
                 return;
             }
+            
+            var chunkParent = Instantiate(new GameObject("Chunks"), transform);
 
             _sqrPlayerMoveThreshold = settings.playerMoveThreshold * settings.playerMoveThreshold;
             _chunks = new List<Chunk>(settings.chunkRow);
