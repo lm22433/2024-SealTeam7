@@ -248,9 +248,9 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
-  size: 512
-  speed: 0.01
-  noiseScale: 0.01
+  size: 480
+  speed: 0.05
+  noiseScale: 0.05
   mapGenerator: {fileID: 304089664}
 --- !u!1 &304089662
 GameObject:
@@ -282,18 +282,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    size: 512
-    chunks: 64
-    chunkSize: 64
+    size: 480
+    chunkRow: 10
+    chunkSize: 8
     maxHeight: 300
     lerpFactor: 0.2
     lodLevels:
-    - maxViewDistance: 512
+    - maxViewDistance: 240
       lod: 0
-    - maxViewDistance: 256
-      lod: 1
-    - maxViewDistance: 512
-      lod: 3
     playerMoveThreshold: 12.37
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   isKinectPresent: 0
