@@ -1,64 +1,113 @@
-﻿using Unity.Mathematics;
+﻿using System;
+using System.Threading.Tasks;
+using FishNet.Connection;
+using FishNet.Object;
+using FishNet.Transporting;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Map
 {
-    public class NoiseGenerator : MonoBehaviour
+    public class NoiseGenerator : NetworkBehaviour
     {
+        [SerializeField] private int size;
         [SerializeField] private float speed = 1f;
         [SerializeField] private float noiseScale = 100f;
         private half[] _noise;
-        private int _size;
-        private int _chunkSize;
         private bool _running;
         private float _time;
+        [SerializeField] private MapGenerator mapGenerator;
+
+        public override void OnStartServer()
+        {
+            StartNoise();
+            ServerManager.OnRemoteConnectionState += OnClientConnected;
+        }
+
+        private void OnClientConnected(NetworkConnection conn, RemoteConnectionStateArgs args)
+        {
+            if (args.ConnectionState == RemoteConnectionState.Started)
+            {
+                GetComponent<NetworkObject>().GiveOwnership(conn);
+            }
+        }
         
-        public void StartNoise(int size, int chunkSize)
+        public void StartNoise()
         {
             _time = 0;
             _noise = new half[size * size];
-            _size = size;
-            _chunkSize = chunkSize;
             _running = true;
-            UpdateNoise();
+            Task.Run(UpdateNoise);
+        }
+
+        private void OnApplicationQuit()
+        {
+            _running = false;
         }
 
         private void Update()
         {
             _time += Time.deltaTime;
-            if (_running)
-            {
-                //UpdateNoise();
-            }
         }
 
         private void UpdateNoise()
         {
-            for (int x = 0; x < _size; x++)
+            while (_running)
             {
-                for (int y = 0; y < _size; y++)
+                for (int y = 0; y < size; y++)
                 {
-                    var perlinX = x * noiseScale + _time * speed;
-                    var perlinY = y * noiseScale + _time * speed;
-                    _noise[y * _size + x] = (half)Mathf.PerlinNoise(perlinX, perlinY);
+                    for (int x = 0; x < size; x++)
+                    {
+                        var perlinX = x * noiseScale + _time * speed;
+                        var perlinY = y * noiseScale + _time * speed;
+                        _noise[y * size + x] = (half) Mathf.PerlinNoise(perlinX, perlinY);
+                    }
                 }
             }
         }
         
-        public void GetChunkNoise(ref half[] noise, int lod, int chunkX, int chunkZ)
+        public void RequestNoise(ushort lod, ushort chunkSize, int x, int z) {
+            RequestChunkNoiseServerRpc(Owner, lod, chunkSize, x, z); 
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void RequestChunkNoiseServerRpc(NetworkConnection targetConnection, ushort lod, ushort chunkSize, int x, int z)
+        {
+            half[] depths = GetChunkNoise(lod, chunkSize, x, z);
+
+            // Send the depth data back to the requesting client
+            //NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
+
+            //if (targetConnection != null)
+            //{
+                SendChunkNoiseTargetRpc(targetConnection, depths, x, z, lod);
+            //}
+        }
+
+        [TargetRpc]
+        private void SendChunkNoiseTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
+        {
+            mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
+        }
+        
+        public half[] GetChunkNoise(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
-            var resolution = _chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * _chunkSize;
-            int xChunkOffset = chunkX * _chunkSize;
+            var resolution = chunkSize / lodFactor;
+            int zChunkOffset = chunkZ * (chunkSize - 1);
+            int xChunkOffset = chunkX * (chunkSize - 1);
             
-            for (int z = 0; z < resolution + 1; z++)
+            var noise = new half[resolution * resolution];
+            
+            for (int z = 0; z < resolution; z++)
             {
-                for (int x = 0; x < resolution + 1; x++)
+                for (int x = 0; x < resolution; x++)
                 {
-                    noise[z * (resolution + 1) + x] = _noise[(lodFactor * z + zChunkOffset) * _size + xChunkOffset + lodFactor * x];
+                    noise[z * resolution + x] = _noise[(lodFactor * z + zChunkOffset) * size + xChunkOffset + lodFactor * x];
                 }
             }
+
+            return noise;
         }
     }
 }
