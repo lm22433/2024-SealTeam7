@@ -67,43 +67,43 @@ namespace Map
         }
         
         public void RequestNoise(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkNoiseServerRpc(Owner.ClientId, lod, chunkSize, x, z); 
+            RequestChunkNoiseServerRpc(Owner, lod, chunkSize, x, z); 
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void RequestChunkNoiseServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
+        public void RequestChunkNoiseServerRpc(NetworkConnection targetConnection, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkNoise(lod, chunkSize, x, z);
 
             // Send the depth data back to the requesting client
-            NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
+            //NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
 
-            if (targetConnection != null)
-            {
-                SendChunkNoiseTargetRpc(targetConnection, depths, x, z);
-            }
+            //if (targetConnection != null)
+            //{
+                SendChunkNoiseTargetRpc(targetConnection, depths, x, z, lod);
+            //}
         }
 
         [TargetRpc]
-        private void SendChunkNoiseTargetRpc(NetworkConnection conn, half[] depths, int x, int z)
+        private void SendChunkNoiseTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
         {
-            mapGenerator.GetChunk(x, z).SetHeights(depths);
+            mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
         }
         
         public half[] GetChunkNoise(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * chunkSize;
-            int xChunkOffset = chunkX * chunkSize;
+            int zChunkOffset = chunkZ * (chunkSize - 1);
+            int xChunkOffset = chunkX * (chunkSize - 1);
             
-            var noise = new half[(resolution + 1) * (resolution + 1)];
+            var noise = new half[resolution * resolution];
             
-            for (int z = 0; z < resolution + 1; z++)
+            for (int z = 0; z < resolution; z++)
             {
-                for (int x = 0; x < resolution + 1; x++)
+                for (int x = 0; x < resolution; x++)
                 {
-                    noise[z * (resolution + 1) + x] = _noise[(lodFactor * z + zChunkOffset) * size + xChunkOffset + lodFactor * x];
+                    noise[z * resolution + x] = _noise[(lodFactor * z + zChunkOffset) * size + xChunkOffset + lodFactor * x];
                 }
             }
 
