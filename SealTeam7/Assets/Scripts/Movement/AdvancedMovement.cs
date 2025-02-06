@@ -112,6 +112,7 @@ public class AdvancedMovement : MonoBehaviour
         {
             rb.linearDamping = airRes;
         }
+
     }
 
     private void FixedUpdate()
