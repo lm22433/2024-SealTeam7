@@ -1,11 +1,13 @@
 import argparse
 from PIL import Image, ImageOps
+from PIL.Image import Resampling
+
 
 def resize_and_pad(image_path, output_path, target_size=(256, 256), padding_color=(0, 0, 0)):
     # Open the original image
     with Image.open(image_path) as img:
         # Resize the image, maintaining aspect ratio
-        img.thumbnail(target_size)
+        img.thumbnail(target_size, Resampling.NEAREST)
 
         # Calculate padding to center the image
         delta_w = target_size[0] - img.width
