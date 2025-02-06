@@ -103,13 +103,13 @@ namespace Map
         }
 
         private IEnumerator GetHeightsCoroutine() {
+            _gettingHeights = true;
             while (_running)
             {
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
                 GetHeights();
             }
             
-            UpdateHeights();
         }
         
         private void GetHeights() {
@@ -122,7 +122,10 @@ namespace Map
 
         public void SetHeights(half[] heights)
         {
-            if (heights.Length == _heightMap.Length) _heightMap = heights;
+            if (heights.Length == _heightMap.Length) {
+                _heightMap = heights;
+                UpdateHeights();
+            }
             else Debug.Log($"{heights.Length} received, {_heightMap.Length} expected.\nLOD: {settings.lod}, LODFACTOR: {_lodFactor}, SIZE: {settings.size}, CHUNK: ({settings.x}, {settings.z})");
         }
 
@@ -141,7 +144,7 @@ namespace Map
             
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateTangents();
+            //_mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
 
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
