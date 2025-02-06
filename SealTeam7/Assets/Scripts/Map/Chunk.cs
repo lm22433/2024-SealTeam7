@@ -38,6 +38,7 @@ namespace Map
         private Bounds _bounds;
         private bool _running;
         private bool _gettingHeights;
+        private bool _newLod;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
@@ -49,15 +50,12 @@ namespace Map
             _vertexSideCount = settings.size / _lodFactor;
             //TODO: adjust so that old height data is preserved over LOD switch
             _heightMap = new half[_vertexSideCount * _vertexSideCount];
-            _meshCollider.enabled = lod == 0;
-            if (_mesh) UpdateMesh();
+            _newLod = true;
         }
 
         public void SetVisible(bool visible)
         {
             _running = visible;
-            _meshRenderer.enabled = visible;
-            enabled = visible;
         }
 
         public float SqrDistanceToPlayer(Vector3 playerPos)
@@ -96,20 +94,28 @@ namespace Map
 
         private void Update()
         {
-            if (_running && !_gettingHeights)
+            if (_running)
             {
-                StartCoroutine(GetHeightsCoroutine());
+                if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
+                if (_newLod)
+                {
+                    _newLod = false;
+                    _meshCollider.enabled = settings.lod == 0;
+                    UpdateMesh();
+                }
             }
+
+            _meshRenderer.enabled = _running;
         }
 
         private IEnumerator GetHeightsCoroutine() {
             _gettingHeights = true;
             while (_running)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.05f);
                 GetHeights();
             }
-            
+            _gettingHeights = false;
         }
         
         private void GetHeights() {
@@ -127,6 +133,7 @@ namespace Map
                 UpdateHeights();
             }
             else Debug.Log($"{heights.Length} received, {_heightMap.Length} expected.\nLOD: {settings.lod}, LODFACTOR: {_lodFactor}, SIZE: {settings.size}, CHUNK: ({settings.x}, {settings.z})");
+            UpdateHeights();
         }
 
         private void UpdateHeights()
@@ -146,7 +153,7 @@ namespace Map
             _mesh.RecalculateNormals();
             //_mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
-
+            
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
             
             vertices.Dispose();
