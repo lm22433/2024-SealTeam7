@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Drawing;
+// using System.Drawing.Imaging;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Microsoft.Azure.Kinect.Sensor;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using Color = UnityEngine.Color;
 using Logger = Microsoft.Azure.Kinect.Sensor.Logger;
 
 public static class PythonManager
@@ -165,4 +169,48 @@ public static class PythonManager
             Debug.Log("IOException (normal while closing the connection)");
         }
     }
+
+
+    // private static void ResizeAndPad(byte[] image, int originalWidth, int originalHeight)
+    // {
+    //     int targetWidth = 256;
+    //     int targetHeight = 256;
+    //
+    //     // Convert BGRA byte array to Bitmap
+    //     Bitmap bitmap = new Bitmap(originalWidth, originalHeight, PixelFormat.Format32bppArgb);
+    //     BitmapData bmpData = bitmap.LockBits(
+    //         new Rectangle(0, 0, originalWidth, originalHeight),
+    //         ImageLockMode.ReadWrite,
+    //         bitmap.PixelFormat);
+    //
+    //     Marshal.Copy(bgraBytes, 0, bmpData.Scan0, bgraBytes.Length);
+    //     bitmap.UnlockBits(bmpData);
+    //
+    //     // Step 2: Resize while maintaining aspect ratio
+    //     float scale = Math.Min((float)targetSize / originalWidth, (float)targetSize / originalHeight);
+    //     int newWidth = (int)(originalWidth * scale);
+    //     int newHeight = (int)(originalHeight * scale);
+    //
+    //     using (Graphics g = Graphics.FromImage(bitmap))
+    //     {
+    //         g.Clear(Color.Transparent);
+    //         g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+    //         int x = (targetSize - newWidth) / 2;
+    //         int y = (targetSize - newHeight) / 2;
+    //
+    //         g.DrawImage(bitmap, new Rectangle(x, y, newWidth, newHeight));
+    //     }
+    //
+    //     // Step 3: Copy the modified bitmap back to the original byte array
+    //     BitmapData finalData = bitmap.LockBits(
+    //         new Rectangle(0, 0, targetSize, targetSize),
+    //         ImageLockMode.ReadOnly,
+    //         PixelFormat.Format32bppArgb);
+    //
+    //     Marshal.Copy(finalData.Scan0, bgraBytes, 0, targetSize * targetSize * 4);
+    //     bitmap.UnlockBits(finalData);
+    //
+    //     // Cleanup
+    //     bitmap.Dispose();
+    // }
 }
