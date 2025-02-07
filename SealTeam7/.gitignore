@@ -76,5 +76,5 @@ crashlytics-build.properties
 .idea/
 *.blob
 
-/[Aa]ssets/ParallelSync
-../*_clone_[0-9]*/
+/[Aa]ssets/ParrelSync*
+/[Aa]ssets/Plugins/ParrelSync*
