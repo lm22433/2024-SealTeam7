@@ -33,8 +33,8 @@ namespace Map
         private List<Chunk> _chunks;
         private float _spacing;
         private float _sqrPlayerMoveThreshold;
-        private Vector3 _playerPosition;
-        private Vector3 _playerPositionOld;
+        private Vector3 _playerPosition = Vector3.zero;
+        private Vector3 _playerPositionOld = Vector3.zero;
         [SerializeField] private bool isKinectPresent;
     
         private void Awake() 
@@ -77,7 +77,7 @@ namespace Map
 
         private void UpdateChunkLods()
         {
-            foreach (var chunk in _chunks)
+            /*foreach (var chunk in _chunks)
             {
                 var sqrDistanceToPlayer = chunk.SqrDistanceToPlayer(_playerPosition);
                 if (sqrDistanceToPlayer > settings.lodLevels[^1].maxViewDistance * settings.lodLevels[^1].maxViewDistance)
@@ -94,9 +94,8 @@ namespace Map
                         break;
                     }
                 }
-            }
+            }*/
             
-            /*
             foreach(var chunk in _chunks) {
                 bool visible = false;
                 ushort lod = settings.lodLevels[^1].lod;
@@ -114,8 +113,8 @@ namespace Map
                 }
 
                 chunk.SetVisible(visible);
-                chunk.SetLod(lod);
-            }*/
+                if (visible) chunk.SetLod(lod);
+            }
         }
 
         private void Update()

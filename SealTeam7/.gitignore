@@ -74,4 +74,7 @@ crashlytics-build.properties
 
 .vscode/
 .idea/
-.blob
+*.blob
+
+/[Aa]ssets/ParallelSync
+../*_clone_[0-9]*/

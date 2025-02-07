@@ -1513,6 +1513,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c5fc2feb5e74ce6b7bc5fe0341e258c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 3288779974816780927}
+  _networkObjectCache: {fileID: 0}
   maxHealth: 100
   healthBar: {fileID: 1556193334172318785}
 --- !u!1 &4958989189013300217
@@ -1945,7 +1948,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7393633358596136717}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
   m_Name: 

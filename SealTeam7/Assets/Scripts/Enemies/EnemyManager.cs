@@ -27,6 +27,16 @@ namespace Enemies
             
             _networkManager = FindFirstObjectByType<NetworkManager>();
             SpawnEnemies();
+            
+            ServerManager.OnRemoteConnectionState += OnClientConnected;
+        }
+
+        private void OnClientConnected(NetworkConnection conn, RemoteConnectionStateArgs args)
+        {
+            if (args.ConnectionState == RemoteConnectionState.Started)
+            {
+                GetComponent<NetworkObject>().GiveOwnership(conn);
+            }
         }
 
         public override void OnStartClient()
@@ -41,7 +51,6 @@ namespace Enemies
             {
                 NetworkObject nob = _networkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
                 _networkManager.ServerManager.Spawn(nob);
-                _networkManager.SceneManager.AddOwnerToDefaultScene(nob);
             }
         }
     }
