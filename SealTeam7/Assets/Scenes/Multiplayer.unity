@@ -535,7 +535,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
   size: 512
-  speed: 0.01
+  speed: 0.2
   noiseScale: 0.01
   mapGenerator: {fileID: 304089664}
 --- !u!1001 &251898649
@@ -722,13 +722,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
     size: 512
-    chunkRow: 16
-    chunkSize: 32
+    chunkRow: 32
+    chunkSize: 16
     maxHeight: 50
     lerpFactor: 0.05
     lodLevels:
-    - maxViewDistance: 2000
+    - maxViewDistance: 100
       lod: 0
+    - maxViewDistance: 20
+      lod: 1
+    - maxViewDistance: 50
+      lod: 8
     playerMoveThreshold: 2
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   _player: {fileID: 0}
@@ -915,6 +919,7 @@ GameObject:
   - component: {fileID: 481311496}
   - component: {fileID: 481311495}
   - component: {fileID: 481311497}
+  - component: {fileID: 481311498}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -995,13 +1000,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481311494}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.49748853, y: -0.22185121, z: 0.13330163, w: 0.8279601}
+  m_LocalRotation: {x: 0.18485282, y: -0.25403532, z: 0.049531158, w: 0.94807285}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 62, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 22.066, y: -30, z: 0}
 --- !u!114 &481311497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1025,6 +1030,136 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &481311498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481311494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc4d76f733087744991913c9d19d5274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LensFlareData: {fileID: 11400000, guid: bd7eaf3bd49c39f4cb77bd809459aa72, type: 2}
+  version: 0
+  intensity: 1
+  maxAttenuationDistance: 100
+  maxAttenuationScale: 100
+  distanceAttenuationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  scaleByDistanceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  attenuationByLightShape: 1
+  radialScreenAttenuationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useOcclusion: 0
+  useBackgroundCloudOcclusion: 0
+  environmentOcclusion: 0
+  useWaterOcclusion: 0
+  occlusionRadius: 0.1
+  sampleCount: 32
+  occlusionOffset: 0.05
+  scale: 1
+  allowOffScreen: 0
+  volumetricCloudOcclusion: 0
+  occlusionRemapCurve:
+    <length>k__BackingField: 2
+    m_Loop: 0
+    m_ZeroValue: 1
+    m_Range: 1
+    m_Curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  lightOverride: {fileID: 0}
 --- !u!1001 &491333997
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1259,10 +1394,14 @@ PrefabInstance:
       objectReference: {fileID: 3288779974816780927, guid: e50841c90738b2c49922093ea34609ae, type: 3}
     - target: {fileID: 7443408887813606060, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: Spawns.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7443408887813606060, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: 'Spawns.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2015342025}
+    - target: {fileID: 7443408887813606060, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
+      propertyPath: 'Spawns.Array.data[1]'
       value: 
       objectReference: {fileID: 2015342025}
     m_RemovedComponents: []
@@ -4720,7 +4859,7 @@ GameObject:
   - component: {fileID: 1818266492}
   - component: {fileID: 1818266491}
   - component: {fileID: 1818266490}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

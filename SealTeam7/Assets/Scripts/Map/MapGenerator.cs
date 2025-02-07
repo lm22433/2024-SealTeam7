@@ -67,7 +67,7 @@ namespace Map
             for (float z = 0; z < settings.size - settings.chunkRow * _spacing; z += (settings.chunkSize - 1) * _spacing) {
                 for (float x = 0; x < settings.size - settings.chunkRow * _spacing; x += (settings.chunkSize - 1) * _spacing)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<Chunk>();
+                    var chunk = Instantiate(chunkPrefab, new Vector3(z, 0f, x), Quaternion.identity, transform).GetComponent<Chunk>();
                     chunkSettings.x = (ushort) (x / ((settings.chunkSize - 1) * _spacing));
                     chunkSettings.z = (ushort) (z / ((settings.chunkSize - 1) * _spacing));
                     chunk.SetSettings(chunkSettings);
@@ -88,14 +88,15 @@ namespace Map
 
                 foreach (var lodInfo in settings.lodLevels)
                 {
-                    if (sqrDistanceToPlayer <= lodInfo.maxViewDistance * lodInfo.maxViewDistance)
+
+                    if (sqrDistanceToPlayer <= lodInfo.maxViewDistance)
                     {
                         lod = lodInfo.lod;
                         visible = true;
                         break;
                     }
                 }
-
+                
                 chunk.SetLod(lod);
                 chunk.SetVisible(visible);
             }
@@ -105,6 +106,7 @@ namespace Map
         {
             if (_player) {
                 _playerPosition = _player.transform.position;
+
                 if (Vector3.SqrMagnitude(_playerPositionOld - _playerPosition) > _sqrPlayerMoveThreshold)
                 {
                     _playerPositionOld = _playerPosition;
@@ -122,7 +124,7 @@ namespace Map
 
         public Chunk GetChunk(int x, int z) {
             // idk why this has to be the other way around
-            return _chunks[x * settings.chunkRow + z];
+            return _chunks[z * settings.chunkRow + x];
         }
     }
 }
