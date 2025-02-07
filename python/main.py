@@ -17,7 +17,7 @@ HAND_LANDMARKING_MODEL_PATH = 'hand_landmarking_model.task'
 HOST = "127.0.0.1"
 PORT = 65465
 
-MOCK_KINECT = True
+MOCK_KINECT = False
 """Mock the Kinect camera using OpenCV to read from a webcam"""
 
 VISUALISE_INFERENCE_RESULTS = True
@@ -28,7 +28,7 @@ object_detection_result: Optional[ObjectDetectorResult] = None
 object_detection_done = threading.Event()
 hand_landmarking_result: Optional[HandLandmarkerResult] = None
 hand_landmarking_done = threading.Event()
-color_image = np.zeros((720, 1280, 4), dtype=np.uint8)  # 720p BGRA image
+color_image = np.zeros((256, 256, 4), dtype=np.uint8)  # 256x256 BGRA image
 color_image_lock = threading.Lock()
 
 
@@ -57,18 +57,27 @@ def inference_frame(object_detector, hand_landmarker, frame):
     hand_landmarking_done.clear()
     
     if VISUALISE_INFERENCE_RESULTS:
+        scale = 3
+        frame = cv2.resize(frame, (frame.shape[1] * scale, frame.shape[0] * scale))
         for detection in object_detection_result.detections:
             bbox = detection.bounding_box
-            cv2.rectangle(frame, (int(bbox.origin_x), int(bbox.origin_y)), 
-                          (int(bbox.origin_x + bbox.width), int(bbox.origin_y + bbox.height)), (0, 255, 0), 1)
-            cv2.putText(frame, detection.categories[0].category_name, (int(bbox.origin_x), int(bbox.origin_y - 4)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (36,255,12), 1)
+            x = int(bbox.origin_x * scale)
+            y = int(bbox.origin_y * scale)
+            w = int(bbox.width * scale)
+            h = int(bbox.height * scale)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 1)
+            cv2.putText(frame, detection.categories[0].category_name, (x, y-4),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
         for landmarks in hand_landmarking_result.hand_landmarks:  # for each hand
             for connection in HandLandmarksConnections.HAND_CONNECTIONS:
-                cv2.line(frame, (int(landmarks[connection.start].x * frame.shape[1]), int(landmarks[connection.start].y * frame.shape[0])),
-                            (int(landmarks[connection.end].x * frame.shape[1]), int(landmarks[connection.end].y * frame.shape[0])), (0, 255, 0), 1)
+                cv2.line(frame, (int(landmarks[connection.start].x * frame.shape[1] * scale), 
+                                 int(landmarks[connection.start].y * frame.shape[0] * scale)),
+                                (int(landmarks[connection.end].x * frame.shape[1] * scale), 
+                                 int(landmarks[connection.end].y * frame.shape[0] * scale)), 
+                                (0, 255, 0), 1)
             for landmark in landmarks:
-                cv2.circle(frame, (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])), 3, (0, 255, 0), -1)
+                cv2.circle(frame, (int(landmark.x * frame.shape[1] * scale), 
+                                   int(landmark.y * frame.shape[0]) * scale), 3, (0, 255, 0), -1)
         cv2.imshow("Inference visualisation", frame)
         cv2.waitKey(1)
     
@@ -169,14 +178,15 @@ def image_connection(conn):
             try:
                 # handle receiving message
                 # print("[image_connection] conn.recv()")
-                message = conn.recv(3686500)  # 1280 * 720 * 4 bytes per pixel + some extra
-                print("[image_connection] Received message.")
+                image_length = 256 * 256 * 4
+                message = conn.recv(image_length)
                 if message == b'':  # Empty string means client disconnected
                     print("[image_connection] Client disconnected, closing connection.")
                     break
-                elif len(message) == 3686400:
+                elif len(message) == image_length:
+                    print("[image_connection] Full message received.")
                     cumulative_message = message
-                elif 1 <= len(message) < 3686400:
+                elif 1 <= len(message) < image_length:
                     cumulative_message += message
                     print(f"[image_connection] Partial message received. "
                           f"(length: {len(message)}, cumulative length: {len(cumulative_message)})")
@@ -184,7 +194,7 @@ def image_connection(conn):
                     print(f"[image_connection] Invalid message received, ignoring. (length: {len(message)})")
 
                 # Decode full message as image and store in color_image
-                if len(cumulative_message) == 3686400:
+                if len(cumulative_message) == image_length:
                     #temp
                     # image = np.frombuffer(cumulative_message, dtype=np.uint8).reshape(color_image.shape)
                     # image = image[90:470, 370:870, :3]
@@ -215,14 +225,14 @@ def image_connection(conn):
 
 def main():    
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-        server.settimeout(0.5)
+        server.settimeout(5)
         server.bind((HOST, PORT))
         server.listen()
         print(f"Server listening on {HOST}:{PORT}...")
         
         while True:
             try:
-                print("server.accept()")
+                # print("server.accept()")
                 inf_conn, addr = server.accept()  # this will frequently raise a timeout exception and skip the below
                 print(f"Inference connection from {addr}")
                 det_thread = threading.Thread(target=inference_connection, args=(inf_conn,))

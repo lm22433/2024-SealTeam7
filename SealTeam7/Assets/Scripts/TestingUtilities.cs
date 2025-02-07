@@ -67,16 +67,16 @@ public class TestingUtilities : MonoBehaviour
         {
             Debug.Log("Connecting to Python and starting Kinect cameras...");
             PythonManager.Connect();
-            Thread.Sleep(4000);
+            Thread.Sleep(5000);
             PythonManager.StartInference();
-            // _kinect = Device.Open();
-            // _kinect.StartCameras(new DeviceConfiguration {
-                // ColorFormat = ImageFormat.ColorBGRA32,
-                // ColorResolution = ColorResolution.R720p,
-                // DepthMode = DepthMode.NFOV_Unbinned,
-                // SynchronizedImagesOnly = true,
-                // CameraFPS = FPS.FPS30
-            // });
+            _kinect = Device.Open();
+            _kinect.StartCameras(new DeviceConfiguration {
+                ColorFormat = ImageFormat.ColorBGRA32,
+                ColorResolution = ColorResolution.R720p,
+                DepthMode = DepthMode.NFOV_Unbinned,
+                SynchronizedImagesOnly = true,
+                CameraFPS = FPS.FPS30
+            });
             Debug.Log("Connected and started.");
         }
 
@@ -93,16 +93,16 @@ public class TestingUtilities : MonoBehaviour
             _nextBeep = float.MaxValue;
             _nextCapture = float.MaxValue;
             PythonManager.StopInference();
-            Thread.Sleep(4000);
+            Thread.Sleep(5000);
             PythonManager.Disconnect();
-            // _kinect.StopCameras();
-            // _kinect.Dispose();
+            _kinect.StopCameras();
+            _kinect.Dispose();
             Debug.Log("Disconnected and stopped.");
         }
 
         if (PythonManager.IsConnected())
         {
-            // PythonManager.SendColorImage(_kinect.GetCapture().Color);
+            PythonManager.SendColorImage(_kinect.GetCapture().Color);
         }
     }
 

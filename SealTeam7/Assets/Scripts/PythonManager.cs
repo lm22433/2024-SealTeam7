@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Drawing;
-// using System.Drawing.Imaging;
 using System.IO;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Microsoft.Azure.Kinect.Sensor;
 using Newtonsoft.Json.Linq;
+using Unity.Collections;
 using UnityEngine;
 using Color = UnityEngine.Color;
 using Logger = Microsoft.Azure.Kinect.Sensor.Logger;
@@ -131,7 +129,9 @@ public static class PythonManager
             return;
         }
         
-        _imageStream.Write(colorImage.Memory.ToArray());
+        var resizedImage = ResizeAndPad(colorImage.Memory.ToArray(), colorImage.WidthPixels, colorImage.HeightPixels);
+        Debug.Log(resizedImage.Length);
+        _imageStream.Write(resizedImage);  // 256x256 BGRA image
     }
     
     
@@ -171,46 +171,45 @@ public static class PythonManager
     }
 
 
-    // private static void ResizeAndPad(byte[] image, int originalWidth, int originalHeight)
-    // {
-    //     int targetWidth = 256;
-    //     int targetHeight = 256;
-    //
-    //     // Convert BGRA byte array to Bitmap
-    //     Bitmap bitmap = new Bitmap(originalWidth, originalHeight, PixelFormat.Format32bppArgb);
-    //     BitmapData bmpData = bitmap.LockBits(
-    //         new Rectangle(0, 0, originalWidth, originalHeight),
-    //         ImageLockMode.ReadWrite,
-    //         bitmap.PixelFormat);
-    //
-    //     Marshal.Copy(bgraBytes, 0, bmpData.Scan0, bgraBytes.Length);
-    //     bitmap.UnlockBits(bmpData);
-    //
-    //     // Step 2: Resize while maintaining aspect ratio
-    //     float scale = Math.Min((float)targetSize / originalWidth, (float)targetSize / originalHeight);
-    //     int newWidth = (int)(originalWidth * scale);
-    //     int newHeight = (int)(originalHeight * scale);
-    //
-    //     using (Graphics g = Graphics.FromImage(bitmap))
-    //     {
-    //         g.Clear(Color.Transparent);
-    //         g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-    //         int x = (targetSize - newWidth) / 2;
-    //         int y = (targetSize - newHeight) / 2;
-    //
-    //         g.DrawImage(bitmap, new Rectangle(x, y, newWidth, newHeight));
-    //     }
-    //
-    //     // Step 3: Copy the modified bitmap back to the original byte array
-    //     BitmapData finalData = bitmap.LockBits(
-    //         new Rectangle(0, 0, targetSize, targetSize),
-    //         ImageLockMode.ReadOnly,
-    //         PixelFormat.Format32bppArgb);
-    //
-    //     Marshal.Copy(finalData.Scan0, bgraBytes, 0, targetSize * targetSize * 4);
-    //     bitmap.UnlockBits(finalData);
-    //
-    //     // Cleanup
-    //     bitmap.Dispose();
-    // }
+    private static ReadOnlySpan<byte> ResizeAndPad(byte[] bgraBytes, int originalWidth, int originalHeight)
+    {
+        var targetSize = new[]{256, 256};
+        
+        // Convert BGRA to Texture2D
+        var texture2D = new Texture2D(originalWidth, originalHeight, TextureFormat.BGRA32, false);
+        texture2D.LoadRawTextureData(bgraBytes);
+        texture2D.Apply();  // upload to GPU
+
+        // Determine scaling factor while maintaining aspect ratio
+        var scale = Mathf.Min((float)targetSize[0] / originalWidth, (float)targetSize[1] / originalHeight);
+        var newWidth = Mathf.RoundToInt(originalWidth * scale);
+        var newHeight = Mathf.RoundToInt(originalHeight * scale);
+
+        // Resize the texture - need to use RenderTexture (GPU texture) as only it supports resizing
+        var renderTexture = RenderTexture.GetTemporary(newWidth, newHeight, 
+            0, RenderTextureFormat.BGRA32, RenderTextureReadWrite.Default);
+        RenderTexture.active = renderTexture;
+        Graphics.Blit(texture2D, renderTexture);  // this is what resizes the image
+
+        // Reinitialise the texture with the new size
+        texture2D.Reinitialize(targetSize[0], targetSize[1]);
+        var blackPixels = new Color[targetSize[0] * targetSize[1]];
+        for (var i = 0; i < blackPixels.Length; i++)
+        {
+            blackPixels[i] = Color.black;
+        }
+        texture2D.SetPixels(blackPixels);
+
+        // Draw the resized image in the centre
+        var offsetX = (targetSize[0] - newWidth) / 2;
+        var offsetY = (targetSize[1] - newHeight) / 2;
+        texture2D.ReadPixels(new Rect(0, 0, newWidth, newHeight), offsetX, offsetY);
+        RenderTexture.ReleaseTemporary(renderTexture);
+
+        Debug.Log(texture2D.width);
+        Debug.Log(texture2D.height);
+        Debug.Log(texture2D.format);
+
+        return texture2D.GetPixelData<byte>(0);
+    }
 }
