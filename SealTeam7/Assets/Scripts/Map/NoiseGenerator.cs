@@ -10,8 +10,9 @@ namespace Map
     public class NoiseGenerator : NetworkBehaviour
     {
         [SerializeField] private int size;
-        [SerializeField] private float speed = 1f;
-        [SerializeField] private float noiseScale = 100f;
+        [SerializeField] private float speed;
+        [SerializeField] private float noiseScale;
+        [SerializeField] private float maxHeight;
         private half[] _noise;
         private bool _running;
         private float _time;
@@ -59,7 +60,7 @@ namespace Map
                     {
                         var perlinX = x * noiseScale + _time * speed;
                         var perlinY = y * noiseScale + _time * speed;
-                        _noise[y * size + x] = (half) Mathf.PerlinNoise(perlinX, perlinY);
+                        _noise[y * size + x] = (half) (Mathf.PerlinNoise(perlinX, perlinY) * maxHeight);
                     }
                 }
             }
@@ -107,6 +108,11 @@ namespace Map
             }
 
             return noise;
+        }
+
+        public half GetHeight(int xPos, int zPos)
+        {
+            return _noise[zPos * size + xPos];
         }
     }
 }

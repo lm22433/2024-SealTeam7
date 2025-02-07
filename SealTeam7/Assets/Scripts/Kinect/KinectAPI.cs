@@ -7,6 +7,7 @@ using FishNet.Connection;
 using Map;
 using FishNet.Transporting;
 using Unity.Mathematics;
+using UnityEngine.Serialization;
 
 namespace Kinect
 {
@@ -36,13 +37,14 @@ namespace Kinect
 
         [Header("Position Calibrations")]
         [SerializeField] private int _width;
-        [SerializeField] private int _height;
+        [SerializeField] private int _length;
+        [SerializeField] private float _maxHeight;
         [SerializeField, Range(0f, 1920f)] private int _xOffsetStart;
         [SerializeField, Range(0f, 1920f)] private int _xOffsetEnd;
         [SerializeField, Range(0f, 1080f)] private int _yOffsetStart;
         [SerializeField, Range(0f, 1080f)] private int _yOffsetEnd;
 
-        [SerializeField] private bool isKinectPresent;
+        [SerializeField] public bool isKinectPresent;
 
         [SerializeField] Texture2D texture;
         private bool _running;
@@ -92,8 +94,8 @@ namespace Kinect
 
         private void StartKinect()
         {
-            _depthMapArray = new half[_width * _height];
-            texture = new Texture2D(_width, _height);
+            _depthMapArray = new half[_width * _length];
+            texture = new Texture2D(_width, _length);
 
             _running = true;
             Task.Run(GetCaptureAsync);
@@ -220,7 +222,7 @@ namespace Kinect
             //float samplingRateY = rangeY / _height;
 
             // Create a new image with data from the depth and colour image
-            for (int y = 0; y < _height; y++)
+            for (int y = 0; y < _length; y++)
             {
                 for (int x = 0; x < _width; x++)
                 {
@@ -263,7 +265,7 @@ namespace Kinect
 
                     }
 
-                    _depthMapArray[y * _width + x] = val;
+                    _depthMapArray[y * _width + x] = (half) (val * _maxHeight);
                     //}
                 }
             }

@@ -2,6 +2,7 @@
 using FishNet.Object;
 using GameKit.Dependencies.Utilities;
 using Kinect;
+using Map;
 using Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,14 +18,16 @@ namespace Enemies
         [SerializeField] protected float damage;
         [SerializeField] protected VisualEffect attackEffect;
         private KinectAPI _kinect;
+        private NoiseGenerator _noiseGenerator;
         private float _health;
-        [SerializeField] private GameObject _player;
+        private GameObject _player;
 
         public override void OnStartServer()
         {
             base.OnStartServer();
             
             _kinect = FindFirstObjectByType<KinectAPI>();
+            _noiseGenerator = FindFirstObjectByType<NoiseGenerator>();
             _health = maxHealth;
             healthBar.maxValue = maxHealth;
             healthBar.value = _health;
@@ -75,7 +78,10 @@ namespace Enemies
                 var z = (int) transform.position.z;
             
                 // sit on terrain
-                transform.SetPosition(false, new Vector3(transform.position.x, _kinect.GetHeight(x, z), transform.position.z));   
+                transform.SetPosition(false,
+                    _kinect.isKinectPresent
+                        ? new Vector3(transform.position.x, _kinect.GetHeight(x, z), transform.position.z)
+                        : new Vector3(transform.position.x, _noiseGenerator.GetHeight(x, z), transform.position.z));
             }
         }
     }

@@ -445,7 +445,8 @@ MonoBehaviour:
   similarityThreshold: 0.5
   mapGenerator: {fileID: 304089664}
   _width: 532
-  _height: 532
+  _length: 532
+  _maxHeight: 50
   _xOffsetStart: 694
   _xOffsetEnd: 1226
   _yOffsetStart: 184
@@ -534,9 +535,10 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
-  size: 480
-  speed: 0.01
+  size: 500
+  speed: 0.1
   noiseScale: 0.01
+  maxHeight: 50
   mapGenerator: {fileID: 304089664}
 --- !u!1001 &251898649
 PrefabInstance:
@@ -722,16 +724,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
     size: 480
-    chunkRow: 16
-    chunkSize: 32
-    maxHeight: 50
+    chunkRow: 12
+    chunkSize: 20
     lerpFactor: 0.1
     lodLevels:
-    - maxViewDistance: 700
+    - maxViewDistance: 100
       lod: 0
-    - maxViewDistance: 150
+    - maxViewDistance: 200
       lod: 1
-    - maxViewDistance: 250
+    - maxViewDistance: 450
       lod: 2
     playerMoveThreshold: 2
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}

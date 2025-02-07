@@ -9,7 +9,7 @@ using Player;
 namespace Map
 {
     [Serializable]
-    public struct LOD
+    public struct LODInfo
     {
         public float maxViewDistance;
         public ushort lod;
@@ -20,9 +20,8 @@ namespace Map
         public ushort size;
         public ushort chunkRow;
         public ushort chunkSize;
-        public float maxHeight;
         public float lerpFactor;
-        public LOD[] lodLevels;
+        public LODInfo[] lodLevels;
         public float playerMoveThreshold;
     }
     
@@ -55,7 +54,6 @@ namespace Map
             {
                 size = settings.chunkSize,
                 spacing = _spacing,
-                maxHeight = settings.maxHeight,
                 lerpFactor = settings.lerpFactor,
                 lod = settings.lodLevels[^1].lod,
                 isKinectPresent = isKinectPresent
@@ -66,7 +64,7 @@ namespace Map
             for (float z = 0; z < settings.size - settings.chunkRow * _spacing; z += (settings.chunkSize - 1) * _spacing) {
                 for (float x = 0; x < settings.size - settings.chunkRow * _spacing; x += (settings.chunkSize - 1) * _spacing)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
+                    var chunk = Instantiate(chunkPrefab, new Vector3(z, 0f, x), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
                     chunkSettings.x = (ushort) (x / ((settings.chunkSize - 1) * _spacing));
                     chunkSettings.z = (ushort) (z / ((settings.chunkSize - 1) * _spacing));
                     chunk.SetSettings(chunkSettings);
@@ -79,6 +77,26 @@ namespace Map
 
         private void UpdateChunkLods()
         {
+            foreach (var chunk in _chunks)
+            {
+                var sqrDistanceToPlayer = chunk.SqrDistanceToPlayer(_playerPosition);
+                if (sqrDistanceToPlayer > settings.lodLevels[^1].maxViewDistance * settings.lodLevels[^1].maxViewDistance)
+                {
+                    chunk.SetVisible(false); continue;
+                }
+                
+                foreach (var lod in settings.lodLevels)
+                {
+                    if (sqrDistanceToPlayer <= lod.maxViewDistance * lod.maxViewDistance)
+                    {
+                        chunk.SetVisible(true);
+                        chunk.SetLod(lod.lod);
+                        break;
+                    }
+                }
+            }
+            
+            /*
             foreach(var chunk in _chunks) {
                 bool visible = false;
                 ushort lod = settings.lodLevels[^1].lod;
@@ -97,7 +115,7 @@ namespace Map
 
                 chunk.SetVisible(visible);
                 chunk.SetLod(lod);
-            }
+            }*/
         }
 
         private void Update()
@@ -120,8 +138,7 @@ namespace Map
         }
 
         public Chunk GetChunk(int x, int z) {
-            // idk why this has to be the other way around
-            return _chunks[x * settings.chunkRow + z];
+            return _chunks[z * settings.chunkRow + x];
         }
     }
 }

@@ -14,7 +14,6 @@ namespace Map
     public struct ChunkSettings {
         public ushort size;
         public float spacing;
-        public float maxHeight;
         public float lerpFactor;
         public ushort x;
         public ushort z;
@@ -38,14 +37,14 @@ namespace Map
         private bool _running;
         private bool _gettingHeights;
         private bool _newLod;
-        private ushort requestedLod;
+        private ushort _requestedLod;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
         public void SetLod(ushort lod)
         {
             if (settings.lod == lod) return;
-            requestedLod = lod;
+            _requestedLod = lod;
         }
 
         public void SetVisible(bool visible)
@@ -55,23 +54,19 @@ namespace Map
 
         public float SqrDistanceToPlayer(Vector3 playerPos)
         {
-            return _bounds.SqrDistance(playerPos);
+            return _mesh.bounds.SqrDistance(playerPos);
         }
         
         private void Awake()
         {
             _lodFactor = 1;
-            requestedLod = settings.lod;
+            _requestedLod = settings.lod;
             _vertexSideCount = settings.size / _lodFactor;
             
             _mesh = new Mesh {name = "Generated Mesh"};
             _mesh.MarkDynamic();
-            
-            _bounds = new Bounds(transform.position, new Vector3((settings.size - 1) * settings.spacing, 2f * settings.maxHeight, (settings.size - 1) * settings.spacing));
-            _mesh.bounds = _bounds;
                         
             _heightMap = new half[_vertexSideCount * _vertexSideCount];
-
             
             UpdateMesh();
             
@@ -113,9 +108,9 @@ namespace Map
         
         private void GetHeights() {
             if (!settings.isKinectPresent) {
-                _noiseGenerator.RequestNoise(requestedLod, settings.size, settings.x, settings.z);
+                _noiseGenerator.RequestNoise(_requestedLod, settings.size, settings.x, settings.z);
             } else {
-                _kinect.RequestTexture(requestedLod, settings.size, settings.x, settings.z);
+                _kinect.RequestTexture(_requestedLod, settings.size, settings.x, settings.z);
             }
         }
 
@@ -144,7 +139,6 @@ namespace Map
             var heightUpdate = new HeightUpdate {
                 Vertices = vertices,
                 Heights = heights,
-                Scale = settings.maxHeight,
                 LerpFactor = settings.lerpFactor
             }.Schedule(_vertexSideCount * _vertexSideCount, 1);
             heightUpdate.Complete();
@@ -209,12 +203,11 @@ namespace Map
         public NativeArray<float3> Vertices;
         public NativeArray<half> Heights;
         public float LerpFactor;
-        public float Scale;
         
         public void Execute(int index) {
             var p = Vertices[index];
             var y = p.y;
-            y = Mathf.Lerp(y, Heights[index] * Scale, LerpFactor);
+            y = Mathf.Lerp(y, Heights[index], LerpFactor);
             p.y = y;
             Vertices[index] = p;
         }
