@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
@@ -8,6 +9,7 @@ using Microsoft.Azure.Kinect.Sensor;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using Color = UnityEngine.Color;
+using Debug = UnityEngine.Debug;
 
 public static class PythonManager
 {
@@ -126,10 +128,16 @@ public static class PythonManager
             Debug.LogWarning("Cannot send color image: Not connected to the Python server.");
             return;
         }
-        
+
+        var stopwatch = Stopwatch.StartNew();
         var resizedImage = ResizeAndPad(colorImage.Memory.ToArray(), colorImage.WidthPixels, colorImage.HeightPixels);
-        // Debug.Log(resizedImage.Length);
+        stopwatch.Stop();
+        Debug.Log($"\u250fPythonManager.ResizeAndPad: {stopwatch.ElapsedMilliseconds} ms");
+        
+        stopwatch.Restart();
         _imageStream.Write(resizedImage);  // 256x256 BGRA image
+        stopwatch.Stop();
+        Debug.Log($"\u2523ImageStream.Write: {stopwatch.ElapsedMilliseconds} ms");
     }
     
     
@@ -183,14 +191,20 @@ public static class PythonManager
         var crop = new[] { 356, 74, 571, 420 };  // x, y, width, height (in original image)
 
         // Convert BGRA to Texture2D
+        var stopwatch = Stopwatch.StartNew();
         var texture2D = new Texture2D(originalWidth, originalHeight, TextureFormat.BGRA32, false);
         texture2D.LoadRawTextureData(bgraBytes);
+        stopwatch.Stop();
+        Debug.Log($"   \u250fConvert BGRA to Texture2D: {stopwatch.ElapsedMilliseconds} ms");
 
         // Crop (probably won't be necessary in the final version as it should already be cropped)
+        stopwatch.Restart();
         var croppedPixels = texture2D.GetPixels(crop[0], crop[1], crop[2], crop[3]);
         texture2D.Reinitialize(crop[2], crop[3]);
         texture2D.SetPixels(croppedPixels);
         texture2D.Apply();
+        stopwatch.Stop();
+        Debug.Log($"   \u2523Crop: {stopwatch.ElapsedMilliseconds} ms");
 
         // Determine scaling factor while maintaining aspect ratio
         var scale = Mathf.Min((float)targetSize[0] / crop[2], (float)targetSize[1] / crop[3]);
@@ -198,12 +212,16 @@ public static class PythonManager
         var newHeight = Mathf.RoundToInt(crop[3] * scale);
 
         // Resize the texture - need to use RenderTexture (GPU texture) as only it supports resizing
+        stopwatch.Restart();
         var renderTexture = RenderTexture.GetTemporary(newWidth, newHeight, 
             0, RenderTextureFormat.BGRA32, RenderTextureReadWrite.Default);
         RenderTexture.active = renderTexture;
         Graphics.Blit(texture2D, renderTexture);  // this is what resizes the image
+        stopwatch.Stop();
+        Debug.Log($"   \u2523Resize with Blit: {stopwatch.ElapsedMilliseconds} ms");
 
         // Reinitialise the texture with the new size
+        stopwatch.Restart();
         texture2D.Reinitialize(targetSize[0], targetSize[1]);
         var blackPixels = new Color[targetSize[0] * targetSize[1]];
         for (var i = 0; i < blackPixels.Length; i++)
@@ -211,12 +229,17 @@ public static class PythonManager
             blackPixels[i] = Color.black;
         }
         texture2D.SetPixels(blackPixels);
+        stopwatch.Stop();
+        Debug.Log($"   \u2523Reinitialise with new size: {stopwatch.ElapsedMilliseconds} ms");
 
         // Draw the resized image in the centre
+        stopwatch.Restart();
         var offsetX = (targetSize[0] - newWidth) / 2;
         var offsetY = (targetSize[1] - newHeight) / 2;
         texture2D.ReadPixels(new Rect(0, 0, newWidth, newHeight), offsetX, offsetY);
         RenderTexture.ReleaseTemporary(renderTexture);
+        stopwatch.Stop();
+        Debug.Log($"   \u2523Draw in centre: {stopwatch.ElapsedMilliseconds} ms");
 
         // Debug.Log(texture2D.width);
         // Debug.Log(texture2D.height);

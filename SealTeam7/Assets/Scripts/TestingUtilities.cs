@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System.Threading;
+﻿using UnityEngine;
 using Microsoft.Azure.Kinect.Sensor;
-using UnityEngine.Rendering.UI;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 public class TestingUtilities : MonoBehaviour
 {
@@ -102,8 +101,20 @@ public class TestingUtilities : MonoBehaviour
 
         if (PythonManager.IsConnected())
         {
-            PythonManager.SendColorImage(_kinect.GetCapture().Color);
+            var stopwatch = Stopwatch.StartNew();
+            var colorImage = _kinect.GetCapture().Color;
+            stopwatch.Stop();
+            Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
+
+            stopwatch.Restart();
+            PythonManager.SendColorImage(colorImage);
+            stopwatch.Stop();
+            Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
+            
+            stopwatch.Restart();
             Debug.Log(ToString(PythonManager.GetSandboxObjects()));
+            stopwatch.Stop();
+            Debug.Log($"PythonManager.GetSandboxObjects: {stopwatch.ElapsedMilliseconds} ms");
         }
     }
 
