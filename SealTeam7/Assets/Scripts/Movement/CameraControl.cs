@@ -16,6 +16,8 @@ namespace Movement
         [SerializeField] private float controllerSensitivityY;
         
         private InputController _inputController;
+        private float _xRotation;
+        private float _yRotation;
 
         public override void OnStartClient()
         {
@@ -35,16 +37,26 @@ namespace Movement
             float sensitivityY = _inputController.IsUsingController() ? controllerSensitivityY : mouseSensitivityY;
             
             float x = lookInput.x * Time.deltaTime * sensitivityX;
-            float y = -lookInput.y * Time.deltaTime * sensitivityY;
+            float y = lookInput.y * Time.deltaTime * sensitivityY;
+            
+            
+            _yRotation += x;
+
+            _xRotation -= y;
+            _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
+
+            if (_yRotation > 360f) {
+                _yRotation -= 360f;
+            }
+
+            if (_yRotation < -360f) {
+                _yRotation += 360f;
+            }
 
             // rotate the player
-            transform.parent.Rotate(Vector3.up, x);
+            transform.parent.rotation = Quaternion.Euler(0f, _yRotation, 0f);
             // rotate the camera
-            transform.Rotate(Vector3.right, y);
-            
-            
-            // clamp
-            //transform.rotation = Quaternion.Euler(Mathf.Clamp(transform.rotation.eulerAngles.x, -90f, 90f), transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+            transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0f);
         }
     }
 }
