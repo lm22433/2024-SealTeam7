@@ -231,7 +231,9 @@ def image_connection(conn):
         stop_server = True  # if this thread is stopping, all threads should stop
 
 
-def main():    
+def main():
+    global stop_server
+    
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
         server.settimeout(5)
         server.bind((HOST, PORT))
@@ -252,6 +254,7 @@ def main():
                 
                 # at this point the client has disconnected -> join thread and then listen again
                 det_thread.join()
+                stop_server = False
                 print(f"Server listening on {HOST}:{PORT}...")
                 
             except socket.timeout:
