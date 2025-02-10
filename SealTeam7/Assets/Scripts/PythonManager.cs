@@ -130,7 +130,7 @@ public static class PythonManager
         }
         
         var resizedImage = ResizeAndPad(colorImage.Memory.ToArray(), colorImage.WidthPixels, colorImage.HeightPixels);
-        Debug.Log(resizedImage.Length);
+        // Debug.Log(resizedImage.Length);
         _imageStream.Write(resizedImage);  // 256x256 BGRA image
     }
     
@@ -206,9 +206,9 @@ public static class PythonManager
         texture2D.ReadPixels(new Rect(0, 0, newWidth, newHeight), offsetX, offsetY);
         RenderTexture.ReleaseTemporary(renderTexture);
 
-        Debug.Log(texture2D.width);
-        Debug.Log(texture2D.height);
-        Debug.Log(texture2D.format);
+        // Debug.Log(texture2D.width);
+        // Debug.Log(texture2D.height);
+        // Debug.Log(texture2D.format);
 
         return texture2D.GetPixelData<byte>(0);
     }

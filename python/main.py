@@ -58,7 +58,8 @@ def inference_frame(object_detector, hand_landmarker, frame):
     
     if VISUALISE_INFERENCE_RESULTS:
         scale = 3
-        frame = cv2.resize(frame, (frame.shape[1] * scale, frame.shape[0] * scale))
+        frame = cv2.resize(frame, (frame.shape[1] * scale, frame.shape[0] * scale), 
+                           interpolation=cv2.INTER_NEAREST)
         for detection in object_detection_result.detections:
             bbox = detection.bounding_box
             x = int(bbox.origin_x * scale)
