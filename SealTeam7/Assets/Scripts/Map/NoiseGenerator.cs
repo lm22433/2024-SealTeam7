@@ -20,18 +20,6 @@ namespace Map
         [SerializeField] private MapGenerator mapGenerator;
         private KinectAPI _kinect;
 
-        public override void OnStartServer()
-        {
-            base.OnStartServer();
-            SceneManager.OnClientLoadedStartScenes += OnClientConnect;
-        }
-
-        private void OnClientConnect(NetworkConnection conn, bool asServer)
-        {
-            GiveOwnership(conn);
-        }
-
-
         private void Start()
         {
             _kinect = FindFirstObjectByType<KinectAPI>();

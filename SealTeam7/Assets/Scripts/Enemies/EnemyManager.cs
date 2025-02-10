@@ -24,36 +24,16 @@ namespace Enemies
         private NetworkManager _networkManager;
         private GameObject _player;
 
-        public override void OnStartServer()
-        {
-            base.OnStartServer();
-
-            _networkManager = InstanceFinder.NetworkManager;
-            Debug.Log($"Awaiting client connection");
-            SceneManager.OnClientLoadedStartScenes += OnClientConnect;
-        }
-
-        private void OnClientConnect(NetworkConnection conn, bool asServer)
-        {
-            Debug.Log($"Conn {conn.ClientId} requesting ownership.");
-            GiveOwnership(conn);
-        }
-
         private void Start()
         {
             Debug.Log($"Is Server: {IsServerInitialized}, Is Client: {IsClientInitialized}");
             if (IsServerInitialized)
             {
-                InvokeRepeating(nameof(SpawnEnemies), 5f, 5f);
+                _networkManager = InstanceFinder.NetworkManager;
+                SpawnEnemies();
             }
         }
         
-        [ObserversRpc]
-        private void DebugClientSpawn()
-        {
-            Debug.Log("Client received spawn update.");
-        }
-
         private void SpawnEnemies()
         {
             foreach (EnemyInfo e in enemies)
@@ -61,8 +41,6 @@ namespace Enemies
                 NetworkObject nob = _networkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
                 ServerManager.Spawn(nob);
             }
-            
-            DebugClientSpawn();
         }
     }
 }

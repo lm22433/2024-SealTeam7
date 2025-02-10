@@ -49,18 +49,6 @@ namespace Kinect
         [SerializeField] Texture2D texture;
         private bool _running;
 
-        public override void OnStartServer()
-        {
-            base.OnStartServer();
-            
-            SceneManager.OnClientLoadedStartScenes += OnClientConnect;
-        }
-
-        private void OnClientConnect(NetworkConnection conn, bool asServer)
-        {
-            GiveOwnership(conn);
-        }
-
         public void Start()
         {
             if (!IsServerInitialized || !isKinectPresent) return;
