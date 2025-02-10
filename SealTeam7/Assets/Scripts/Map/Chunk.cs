@@ -7,6 +7,7 @@ using UnityEngine;
 using Kinect;
 
 using System.Collections;
+using FishNet.Object;
 
 namespace Map
 {
@@ -38,8 +39,8 @@ namespace Map
         private bool _running;
         private bool _gettingHeights;
         private bool _newLod = true;
-        [SerializeField] private ushort _requestedLod;
-        
+        private ushort _requestedLod;
+        private Vector3 _playerPos;
         public void SetSettings(ChunkSettings s) { settings = s; }
         
         public void SetLod(ushort lod)
@@ -53,11 +54,11 @@ namespace Map
             _running = visible;
         }
 
-        Vector3 playerPos;
+        
 
         public float SqrDistanceToPlayer(Vector3 playerPos)
         {
-            this.playerPos = playerPos;
+            _playerPos = playerPos;
             return Vector3.Distance(new Vector3(playerPos.x, playerPos.y, playerPos.z), new Vector3(transform.position.x + (settings.size / 2), settings.size / 2, transform.position.z + + (settings.size / 2))) / settings.size;
         }
         
@@ -82,11 +83,10 @@ namespace Map
             _meshCollider.enabled = false;
 
             if (!settings.isKinectPresent) {
-                _noiseGenerator = FindAnyObjectByType<NoiseGenerator>();
+                _noiseGenerator = FindFirstObjectByType<NoiseGenerator>(FindObjectsInactive.Include);
             } else {
-                _kinect = FindAnyObjectByType<KinectAPI>();
+                _kinect = FindFirstObjectByType<KinectAPI>(FindObjectsInactive.Include);
             }
-
         }   
 
         private void Update()
@@ -95,7 +95,7 @@ namespace Map
             {
                 if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
 
-                _meshCollider.enabled = SqrDistanceToPlayer(playerPos) <= settings.colliderDst;
+                _meshCollider.enabled = SqrDistanceToPlayer(_playerPos) <= settings.colliderDst;
             }
 
             _meshRenderer.enabled = _running;
@@ -130,7 +130,6 @@ namespace Map
                 _lodFactor = lod == 0 ? 1 : lod * 2;
                 _vertexSideCount = settings.size / _lodFactor;
                 _heightMap = new half[_vertexSideCount * _vertexSideCount];
-                Debug.Log($"{heights.Length}, LOD: {lod}");
                 _heightMap = heights;
                 UpdateMesh();
             }
@@ -171,13 +170,13 @@ namespace Map
             var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
             var uvs = new NativeArray<float2>(numberOfVertices, Allocator.TempJob);
-            var Heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
+            var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
             
             var meshVertexUpdate = new MeshVertexUpdate
             {
                 Vertices = vertices,
                 UVs = uvs,
-                heights = Heights,
+                Heights = heights,
                 VertexSideCount = _vertexSideCount,
                 Spacing = settings.spacing,
                 Size = settings.size,
@@ -202,7 +201,7 @@ namespace Map
             vertices.Dispose();
             triangles.Dispose();
             uvs.Dispose();
-            Heights.Dispose();
+            heights.Dispose();
         }
     }
 
@@ -227,8 +226,7 @@ namespace Map
     {
         public NativeArray<float3> Vertices;
         public NativeArray<float2> UVs;
-        public NativeArray<half> heights;
-        public float scale;
+        public NativeArray<half> Heights;
         public int VertexSideCount;
         public float Spacing;
         public float LODFactor;
@@ -239,7 +237,7 @@ namespace Map
             //update vertices
             var x = index / VertexSideCount * LODFactor * Spacing;
             var z = index % VertexSideCount * LODFactor * Spacing;
-            Vertices[index] = new float3(x, heights[index] * scale, z);
+            Vertices[index] = new float3(x, Heights[index], z);
             
             //update uvs
             UVs[index] = new float2(x / (Size - 1), z / (Size - 1));

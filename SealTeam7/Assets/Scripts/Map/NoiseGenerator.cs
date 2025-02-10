@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Transporting;
@@ -67,7 +68,7 @@ namespace Map
         }
         
         public void RequestNoise(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkNoiseServerRpc(ClientManager.Connection, lod, chunkSize, x, z); 
+            RequestChunkNoiseServerRpc(InstanceFinder.ClientManager.Connection, lod, chunkSize, x, z);
         }
 
         [ServerRpc(RequireOwnership = false)]

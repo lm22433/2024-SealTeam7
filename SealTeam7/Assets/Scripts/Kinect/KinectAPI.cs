@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
+using FishNet;
 using Microsoft.Azure.Kinect.Sensor;
 using FishNet.Object;
 using FishNet.Connection;
@@ -100,7 +101,7 @@ namespace Kinect
         }
 
         public void RequestTexture(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkTextureServerRpc(ClientManager.Connection, lod, chunkSize, x, z); 
+            RequestChunkTextureServerRpc(InstanceFinder.ClientManager.Connection, lod, chunkSize, x, z); 
         }
 
         [ServerRpc(RequireOwnership = false)]
