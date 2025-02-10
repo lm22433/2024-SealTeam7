@@ -29,7 +29,7 @@ namespace Enemies.Tower
                 _target = Vector3.ProjectOnPlane(hit.transform.position, Vector3.up) + Vector3.up * transform.position.y;
                 //attackEffect.Play();
                 _timeSinceAttack = 0;
-                var playerMgr = hit.GetComponent<PlayerManager>();
+                var playerMgr = hit.GetComponentInParent<PlayerManager>();
                 DealDamageRPC(playerMgr.Owner, playerMgr, damage);
             }
         }
@@ -49,7 +49,7 @@ namespace Enemies.Tower
             _timeSinceAttack += Time.deltaTime;
 
             Collider[] results = new Collider[12];
-            Physics.OverlapSphereNonAlloc(transform.position, attackRange, results, LayerMask.GetMask("PlayerHolder"), QueryTriggerInteraction.Collide);
+            Physics.OverlapSphereNonAlloc(transform.position, attackRange, results, LayerMask.GetMask("Player"), QueryTriggerInteraction.Collide);
             // sort by distance from tower
             Collider closestPlayer = results.OrderBy(c => c ? (transform.position - c.transform.position).sqrMagnitude : float.MaxValue).First();
             if (closestPlayer) Attack(closestPlayer);

@@ -245,9 +245,9 @@ MonoBehaviour:
   _defaultDespawnType: 0
   _initializedValusSet: 1
   NetworkObserver: {fileID: 0}
-  _enablePrediction: 0
+  _enablePrediction: 1
   _predictionType: 0
-  _graphicalObject: {fileID: 0}
+  _graphicalObject: {fileID: 1551505408707016499}
   _detachGraphicalObject: 0
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}

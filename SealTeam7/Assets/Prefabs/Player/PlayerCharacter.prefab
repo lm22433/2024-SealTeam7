@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4237928469457620776}
   - component: {fileID: 671139919754127677}
   - component: {fileID: 4396253774700772191}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CameraHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f951789d30c6248b9304e82d2ee541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 3288779974816780927}
   _networkObjectCache: {fileID: 3288779974816780927}
 --- !u!1 &850842185410966768
@@ -151,7 +151,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6540637833350457095}
   - component: {fileID: 1556193334172318785}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 404894689387158568}
   - component: {fileID: 5465077097183918332}
   - component: {fileID: 5900154726444524862}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Primary Weapon Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -318,7 +318,7 @@ GameObject:
   - component: {fileID: 5172810950375888144}
   - component: {fileID: 4021904673930832748}
   - component: {fileID: 2232665746001200276}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -452,7 +452,7 @@ GameObject:
   - component: {fileID: 3047235059508771003}
   - component: {fileID: 8240683184110199620}
   - component: {fileID: 171492311704044686}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -572,7 +572,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9095023509047750781}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -605,7 +605,7 @@ GameObject:
   - component: {fileID: 1081634629729514384}
   - component: {fileID: 4588667870678530956}
   - component: {fileID: 4788805788273897427}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Key
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -818,7 +818,7 @@ GameObject:
   - component: {fileID: 5220403003789472063}
   - component: {fileID: 1338003756418509952}
   - component: {fileID: 981329594165605268}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Secondary Weapon Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -894,7 +894,7 @@ GameObject:
   - component: {fileID: 1773124874446209587}
   - component: {fileID: 8067111710987906660}
   - component: {fileID: 6572516420630774419}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Secondary Weapon Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -967,7 +967,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 172849691920264318}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1005,7 +1005,7 @@ GameObject:
   - component: {fileID: 3154358455544001765}
   - component: {fileID: 3771107483461795412}
   - component: {fileID: 3933278308214276579}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Key
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1139,7 +1139,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8543615316298387573}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Secondary Weapon HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1177,7 +1177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1556073151899183067}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MantleCheckOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1215,7 +1215,7 @@ GameObject:
   - component: {fileID: 5807242661491380131}
   - component: {fileID: 2944425505624579883}
   - component: {fileID: 9115456754643880928}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1314,8 +1314,9 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
-  - {fileID: 0}
   - {fileID: 4118585272731255046}
+  - {fileID: 6635833650118323867}
+  - {fileID: 2944425505624579883}
   - {fileID: 4396253774700772191}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects:
@@ -1334,8 +1335,8 @@ MonoBehaviour:
   _predictionType: 1
   _graphicalObject: {fileID: 6342002896101559149}
   _detachGraphicalObject: 0
-  _enableStateForwarding: 1
-  _networkTransform: {fileID: 0}
+  _enableStateForwarding: 0
+  _networkTransform: {fileID: 4118585272731255046}
   _ownerInterpolation: 1
   _ownerSmoothedProperties: 255
   _adaptiveInterpolation: 3
@@ -1343,7 +1344,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 11
+  <PrefabId>k__BackingField: 3
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 7260789877181098819
   <SceneId>k__BackingField: 0
@@ -1364,7 +1365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 1
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 3288779974816780927}
   _networkObjectCache: {fileID: 3288779974816780927}
   _componentConfiguration: 0
@@ -1407,9 +1408,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb06730bf6939fc44a85e07065ae6699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 3288779974816780927}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 3288779974816780927}
   friction: 3
   walkSpeed: 4
   sprintSpeed: 8
@@ -1487,9 +1488,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c5fc2feb5e74ce6b7bc5fe0341e258c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 3288779974816780927}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 3288779974816780927}
   maxHealth: 100
   healthBar: {fileID: 1556193334172318785}
 --- !u!114 &9115456754643880928
@@ -1513,7 +1514,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5210677066371176031}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Primary Weapon HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1615,7 +1616,7 @@ GameObject:
   - component: {fileID: 1118686275020616568}
   - component: {fileID: 2193498142282145856}
   - component: {fileID: 8067673767994106553}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1763,7 +1764,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1256677882820726538}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1796,7 +1797,7 @@ GameObject:
   - component: {fileID: 6899142033506646069}
   - component: {fileID: 3203838872800130372}
   - component: {fileID: 4623950605093763635}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1872,7 +1873,7 @@ GameObject:
   - component: {fileID: 3422467509229774557}
   - component: {fileID: 4389911452410390138}
   - component: {fileID: 8828637351067352660}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: WeaponHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1990,7 +1991,7 @@ GameObject:
   - component: {fileID: 4300233957452262110}
   - component: {fileID: 8273009488976315288}
   - component: {fileID: 1307353011428895587}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Primary Weapon Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2066,7 +2067,7 @@ GameObject:
   - component: {fileID: 351405811739287980}
   - component: {fileID: 5460414952067973541}
   - component: {fileID: 8022187067371168741}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Secondary Weapon Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2141,7 +2142,7 @@ GameObject:
   - component: {fileID: 6998236745898966959}
   - component: {fileID: 7900092171549161363}
   - component: {fileID: 3340444677967638303}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Primary Weapon Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}

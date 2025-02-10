@@ -67,15 +67,15 @@ namespace Map
         }
         
         public void RequestNoise(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkNoiseServerRpc(Owner, lod, chunkSize, x, z); 
+            RequestChunkNoiseServerRpc(ClientManager.Connection, lod, chunkSize, x, z); 
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void RequestChunkNoiseServerRpc(NetworkConnection targetConnection, ushort lod, ushort chunkSize, int x, int z)
+        public void RequestChunkNoiseServerRpc(NetworkConnection conn, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkNoise(lod, chunkSize, x, z);
             
-            SendChunkNoiseTargetRpc(targetConnection, depths, x, z, lod);
+            SendChunkNoiseTargetRpc(conn, depths, x, z, lod);
         }
 
         [TargetRpc]

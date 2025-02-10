@@ -1,5 +1,6 @@
 ﻿using FishNet.Connection;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using GameKit.Dependencies.Utilities;
 using Kinect;
 using Map;
@@ -19,8 +20,9 @@ namespace Enemies
         [SerializeField] protected VisualEffect attackEffect;
         private KinectAPI _kinect;
         private NoiseGenerator _noiseGenerator;
-        private float _health;
         private GameObject _player;
+
+        private readonly SyncVar<float> _health = new SyncVar<float>();
 
         public override void OnStartServer()
         {
@@ -28,14 +30,16 @@ namespace Enemies
             
             _kinect = FindFirstObjectByType<KinectAPI>();
             _noiseGenerator = FindFirstObjectByType<NoiseGenerator>();
-            _health = maxHealth;
+            _health.Value = maxHealth;
             healthBar.maxValue = maxHealth;
-            healthBar.value = _health;
+            healthBar.value = _health.Value;
         }
 
         public override void OnStartClient()
         {
             base.OnStartClient();
+            
+            Debug.Log($"Looking for player");
             
             var players = FindObjectsByType<PlayerManager>(FindObjectsSortMode.None);
             foreach (var p in players) {
@@ -43,14 +47,15 @@ namespace Enemies
                     _player = p.gameObject;
                 }
             }
+            
+            Debug.Log($"Found {players.Length} players, owner is {_player.gameObject.GetComponentInParent<NetworkObject>().OwnerId}");
         }
-
+        
         public void TakeDamage(float dmg)
         {
-            _health -= dmg;
-            healthBar.value = _health;
-
-            if (_health <= 0)
+            _health.Value -= dmg;
+            
+            if (_health.Value <= 0)
             {
                 Die();
             }
@@ -64,25 +69,29 @@ namespace Enemies
         public abstract void Attack(Collider hit);
 
         [TargetRpc]
-        public virtual void DealDamageRPC(NetworkConnection conn, PlayerManager playerManager, float dmg) {}
+        public virtual void DealDamageRPC(NetworkConnection conn, PlayerManager playerMgr, float dmg) {}
 
         public virtual void Update()
         {
-            // turn health bar towards player
-            if (_player) healthBar.transform.LookAt(_player.transform.position);
+            // run on client only
+            if (!IsServerInitialized)
+            {
+                // turn health bar towards player
+                if (_player) healthBar.transform.LookAt(_player.transform.position);
+                healthBar.value = _health.Value;
+                return;
+            }
             
             // only run on server
-            if (IsServerInitialized)
-            {
-                var x = (int) transform.position.x;
-                var z = (int) transform.position.z;
             
-                // sit on terrain
-                transform.SetPosition(false,
-                    _kinect.isKinectPresent
-                        ? new Vector3(transform.position.x, _kinect.GetHeight(x, z), transform.position.z)
-                        : new Vector3(transform.position.x, _noiseGenerator.GetHeight(x, z), transform.position.z));
-            }
+            var x = (int) transform.position.x;
+            var z = (int) transform.position.z;
+        
+            // sit on terrain
+            transform.SetPosition(false,
+                _kinect.isKinectPresent
+                    ? new Vector3(transform.position.x, _kinect.GetHeight(x, z) + 0.5f * transform.lossyScale.y, transform.position.z)
+                    : new Vector3(transform.position.x, _noiseGenerator.GetHeight(x, z), transform.position.z));
         }
     }
 }

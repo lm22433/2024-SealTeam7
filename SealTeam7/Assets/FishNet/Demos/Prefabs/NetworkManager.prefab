@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7443408887813606060}
   - component: {fileID: 9091182631984252867}
   - component: {fileID: 7548082806296346092}
-  - component: {fileID: 608837200233101735}
   - component: {fileID: 6677968489935144721}
   m_Layer: 0
   m_Name: NetworkManager
@@ -51,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c95dfde7d73b54dbbdc23155d35d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _refreshDefaultPrefabs: 0
+  _refreshDefaultPrefabs: 1
   _runInBackground: 1
   _dontDestroyOnLoad: 1
   _objectPool: {fileID: 0}
@@ -135,24 +134,6 @@ MonoBehaviour:
   _frameRate: 500
   _shareIds: 1
   _startOnHeadless: 0
---- !u!114 &608837200233101735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7443408887813606051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d0962ead4b02a34aae248fccce671ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WriteSceneObjectDetails: 1
-  ObserverRpcLinks: 1
-  TargetRpcLinks: 1
-  ReplicateRpcLinks: 1
-  ReconcileRpcLinks: 1
-  ServerRpcLinks: 1
 --- !u!114 &6677968489935144721
 MonoBehaviour:
   m_ObjectHideFlags: 0

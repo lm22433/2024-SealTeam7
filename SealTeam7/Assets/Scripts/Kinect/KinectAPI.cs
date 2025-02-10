@@ -100,21 +100,15 @@ namespace Kinect
         }
 
         public void RequestTexture(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkTextureServerRpc(Owner.ClientId, lod, chunkSize, x, z); 
+            RequestChunkTextureServerRpc(ClientManager.Connection, lod, chunkSize, x, z); 
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void RequestChunkTextureServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
+        private void RequestChunkTextureServerRpc(NetworkConnection conn, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkTexture(lod, chunkSize, x, z);
-            //Debug.Log("RPC recieved");
 
-            // Send the depth data back to the requesting client
-            NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
-            if (targetConnection != null)
-            {
-                SendChunkTextureTargetRpc(targetConnection, depths, x, z, lod);
-            }
+            SendChunkTextureTargetRpc(conn, depths, x, z, lod);
         }
 
         public half GetHeight(int xPos, int zPos)
