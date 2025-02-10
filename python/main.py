@@ -153,7 +153,10 @@ def inference_connection(conn):
 
                     data = inference_frame(object_detector, hand_landmarker, frame)
                     data_json = json.dumps(data)
-                    conn.send(data_json.encode())
+                    try:
+                        conn.send(data_json.encode())
+                    except BlockingIOError:
+                        print("[inference_connection] Failed to send data, buffer full.")
 
             except KeyboardInterrupt:
                 print("[inference_connection] Closing connection.")
