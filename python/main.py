@@ -170,6 +170,7 @@ def inference_connection(conn):
         stop_server = True  # if this thread is stopping, all threads should stop
 
     # clean up
+    cv2.destroyAllWindows()
     if 'video_capture' in locals() and video_capture.isOpened():
         video_capture.release()
 
@@ -192,14 +193,15 @@ def image_connection(conn):
                     print("[image_connection] Client disconnected, closing connection.")
                     break
                 elif len(message) == image_length:
-                    print("[image_connection] Full message received.")
+                    # print("[image_connection] Full message received.")
                     cumulative_message = message
                 elif 1 <= len(message) < image_length:
                     cumulative_message += message
-                    print(f"[image_connection] Partial message received. "
-                          f"(length: {len(message)}, cumulative length: {len(cumulative_message)})")
+                    # print(f"[image_connection] Partial message received. "
+                    #       f"(length: {len(message)}, cumulative length: {len(cumulative_message)})")
                 else:
                     print(f"[image_connection] Invalid message received, ignoring. (length: {len(message)})")
+                    continue
 
                 # Decode full message as image and store in color_image
                 if len(cumulative_message) == image_length:
@@ -245,15 +247,15 @@ def main():
                 # print("server.accept()")
                 inf_conn, addr = server.accept()  # this will frequently raise a timeout exception and skip the below
                 print(f"Inference connection from {addr}")
-                det_thread = threading.Thread(target=inference_connection, args=(inf_conn,))
-                det_thread.start()
+                inf_thread = threading.Thread(target=inference_connection, args=(inf_conn,))
+                inf_thread.start()
         
                 im_conn, addr = server.accept()
                 print(f"Image connection from {addr}")
                 image_connection(im_conn)
                 
                 # at this point the client has disconnected -> join thread and then listen again
-                det_thread.join()
+                inf_thread.join()
                 stop_server = False
                 print(f"Server listening on {HOST}:{PORT}...")
                 
@@ -266,9 +268,6 @@ def main():
                 print(traceback.format_exc(), end="")
                 print("Error, shutting down server.")
                 break
-
-    # exiting - clean up
-    cv2.destroyAllWindows()
 
 
 main()

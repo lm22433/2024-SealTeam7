@@ -6,10 +6,8 @@ using System.Text;
 using System.Threading;
 using Microsoft.Azure.Kinect.Sensor;
 using Newtonsoft.Json.Linq;
-using Unity.Collections;
 using UnityEngine;
 using Color = UnityEngine.Color;
-using Logger = Microsoft.Azure.Kinect.Sensor.Logger;
 
 public static class PythonManager
 {

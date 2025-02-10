@@ -67,7 +67,7 @@ public class TestingUtilities : MonoBehaviour
         {
             Debug.Log("Connecting to Python and starting Kinect cameras...");
             PythonManager.Connect();
-            Thread.Sleep(5000);
+            // Thread.Sleep(5000);
             PythonManager.StartInference();
             _kinect = Device.Open();
             _kinect.StartCameras(new DeviceConfiguration {
@@ -93,7 +93,7 @@ public class TestingUtilities : MonoBehaviour
             _nextBeep = float.MaxValue;
             _nextCapture = float.MaxValue;
             PythonManager.StopInference();
-            Thread.Sleep(5000);
+            // Thread.Sleep(5000);
             PythonManager.Disconnect();
             _kinect.StopCameras();
             _kinect.Dispose();
