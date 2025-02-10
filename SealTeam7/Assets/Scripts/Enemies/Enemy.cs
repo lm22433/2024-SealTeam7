@@ -1,4 +1,6 @@
-﻿using FishNet.Connection;
+﻿using System;
+using System.Linq;
+using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using GameKit.Dependencies.Utilities;
@@ -7,7 +9,6 @@ using Map;
 using Player;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.VFX;
 using Weapons;
 
 namespace Enemies
@@ -17,12 +18,15 @@ namespace Enemies
         [SerializeField] protected Slider healthBar;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected float damage;
-        [SerializeField] protected VisualEffect attackEffect;
+        [SerializeField] protected float attackRange;
+        [SerializeField] protected float attackDelay;
+        
         private KinectAPI _kinect;
         private NoiseGenerator _noiseGenerator;
         private GameObject _player;
-
-        private readonly SyncVar<float> _health = new SyncVar<float>();
+        private float _timeSinceAttack;
+        private Collider[] _hitResults;
+        private readonly SyncVar<float> _health = new();
 
         public override void OnStartServer()
         {
@@ -33,22 +37,19 @@ namespace Enemies
             _health.Value = maxHealth;
             healthBar.maxValue = maxHealth;
             healthBar.value = _health.Value;
+            _hitResults = new Collider[12];
         }
 
         public override void OnStartClient()
         {
             base.OnStartClient();
-            
-            Debug.Log($"Looking for player");
-            
+
             var players = FindObjectsByType<PlayerManager>(FindObjectsSortMode.None);
             foreach (var p in players) {
                 if (p.gameObject.GetComponentInParent<NetworkObject>().IsOwner) {
                     _player = p.gameObject;
                 }
             }
-            
-            Debug.Log($"Found {players.Length} players, owner is {_player.gameObject.GetComponentInParent<NetworkObject>().OwnerId}");
         }
         
         public void TakeDamage(float dmg)
@@ -60,30 +61,41 @@ namespace Enemies
                 Die();
             }
         }
-        
-        public virtual void Die()
+
+        protected virtual void Die()
         {
             Destroy(gameObject);
         }
-        
-        public abstract void Attack(Collider hit);
+
+        protected abstract void Attack(Collider hit);
 
         [TargetRpc]
-        public virtual void DealDamageRPC(NetworkConnection conn, PlayerManager playerMgr, float dmg) {}
-
-        public virtual void Update()
+        protected virtual void DealDamageRpc(NetworkConnection conn, PlayerManager playerMgr, float dmg)
         {
-            // run on client only
+            playerMgr.TakeDamage(damage);
+        }
+
+        private void Update()
+        {
             if (!IsServerInitialized)
             {
-                // turn health bar towards player
-                if (_player) healthBar.transform.LookAt(_player.transform.position);
-                healthBar.value = _health.Value;
-                return;
+                ClientUpdate();
             }
-            
-            // only run on server
-            
+            else
+            {
+                ServerUpdate();
+            }
+        }
+
+        protected virtual void ClientUpdate()
+        {
+            // turn health bar towards player
+            if (_player) healthBar.transform.LookAt(_player.transform.position);
+            healthBar.value = _health.Value;
+        }
+
+        protected virtual void ServerUpdate()
+        {
             var x = (int) transform.position.x;
             var z = (int) transform.position.z;
         
@@ -91,7 +103,19 @@ namespace Enemies
             transform.SetPosition(false,
                 _kinect.isKinectPresent
                     ? new Vector3(transform.position.x, _kinect.GetHeight(x, z) + 0.5f * transform.lossyScale.y, transform.position.z)
-                    : new Vector3(transform.position.x, _noiseGenerator.GetHeight(x, z), transform.position.z));
+                    : new Vector3(transform.position.x, _noiseGenerator.GetHeight(x, z) + 0.5f * transform.lossyScale.y, transform.position.z));
+            
+            _timeSinceAttack += Time.deltaTime;
+            
+            Array.Clear(_hitResults, 0, _hitResults.Length);
+            Physics.OverlapSphereNonAlloc(transform.position, attackRange, _hitResults, LayerMask.GetMask("Player"), QueryTriggerInteraction.Collide);
+            // sort by distance from enemy
+            Collider closestPlayer = _hitResults.OrderBy(c => c ? (transform.position - c.transform.position).sqrMagnitude : float.MaxValue).First();
+            if (closestPlayer && _timeSinceAttack > attackDelay)
+            {
+                _timeSinceAttack = 0;
+                Attack(closestPlayer);
+            }
         }
     }
 }

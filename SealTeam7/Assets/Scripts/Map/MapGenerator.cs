@@ -30,8 +30,7 @@ namespace Map
     public class MapGenerator : MonoBehaviour {
         [SerializeField] private MapSettings settings;
         [SerializeField] private GameObject chunkPrefab;
-        [SerializeField] private GameObject _player;
-        [SerializeField] private bool _isKinectPresent;
+        private GameObject _player;
     
         private NoiseGenerator _noise;
         private List<Chunk> _chunks;
@@ -61,7 +60,7 @@ namespace Map
                 spacing = _spacing,
                 lerpFactor = settings.lerpFactor,
                 lod = settings.lodLevels[^1].lod,
-                isKinectPresent = _isKinectPresent,
+                isKinectPresent = kinect.isKinectPresent,
                 colliderDst = settings.colliderDst
             };
 
