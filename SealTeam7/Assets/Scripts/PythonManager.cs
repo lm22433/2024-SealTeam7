@@ -173,22 +173,28 @@ public static class PythonManager
 
     private static ReadOnlySpan<byte> ResizeAndPad(byte[] bgraBytes, int originalWidth, int originalHeight)
     {
-        var targetSize = new[]{256, 256};
-        
+        var targetSize = new[] { 256, 256 };  // final width, height to give to model
+        var crop = new[] { 356, 74, 571, 420 };  // x, y, width, height (in original image)
+
         // Convert BGRA to Texture2D
         var texture2D = new Texture2D(originalWidth, originalHeight, TextureFormat.BGRA32, false);
         texture2D.LoadRawTextureData(bgraBytes);
-        texture2D.Apply();  // upload to GPU
+
+        // Crop (probably won't be necessary in the final version as it should already be cropped)
+        var croppedPixels = texture2D.GetPixels(crop[0], crop[1], crop[2], crop[3]);
+        texture2D.Reinitialize(crop[2], crop[3]);
+        texture2D.SetPixels(croppedPixels);
 
         // Determine scaling factor while maintaining aspect ratio
-        var scale = Mathf.Min((float)targetSize[0] / originalWidth, (float)targetSize[1] / originalHeight);
-        var newWidth = Mathf.RoundToInt(originalWidth * scale);
-        var newHeight = Mathf.RoundToInt(originalHeight * scale);
+        var scale = Mathf.Min((float)targetSize[0] / crop[2], (float)targetSize[1] / crop[3]);
+        var newWidth = Mathf.RoundToInt(crop[2] * scale);
+        var newHeight = Mathf.RoundToInt(crop[3] * scale);
 
         // Resize the texture - need to use RenderTexture (GPU texture) as only it supports resizing
         var renderTexture = RenderTexture.GetTemporary(newWidth, newHeight, 
             0, RenderTextureFormat.BGRA32, RenderTextureReadWrite.Default);
         RenderTexture.active = renderTexture;
+        // texture2D.Apply() is called automatically inside Blit
         Graphics.Blit(texture2D, renderTexture);  // this is what resizes the image
 
         // Reinitialise the texture with the new size
