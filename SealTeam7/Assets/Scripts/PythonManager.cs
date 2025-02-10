@@ -7,8 +7,6 @@ using System.Text;
 using System.Threading;
 using Microsoft.Azure.Kinect.Sensor;
 using Newtonsoft.Json.Linq;
-using UnityEngine;
-using Color = UnityEngine.Color;
 using Debug = UnityEngine.Debug;
 
 public static class PythonManager
@@ -185,66 +183,68 @@ public static class PythonManager
     }
 
 
-    private static ReadOnlySpan<byte> ResizeAndPad(byte[] bgraBytes, int originalWidth, int originalHeight)
+    private static byte[] ResizeAndPad(byte[] src, int srcWidth, int srcHeight)
     {
-        var targetSize = new[] { 256, 256 };  // final width, height to give to model
-        var crop = new[] { 356, 74, 571, 420 };  // x, y, width, height (in original image)
+        const int dstSize = 256;  // Output image is dstSize x dstSize pixels
+        const int cropX = 356;
+        const int cropY = 74;
+        const int cropWidth = 571;
+        const int cropHeight = 420;
+        
+        // Allocate output buffer: 256x256 pixels, 4 bytes per pixel
+        var dst = new byte[dstSize * dstSize * 4];
 
-        // Convert BGRA to Texture2D
-        var stopwatch = Stopwatch.StartNew();
-        var texture2D = new Texture2D(originalWidth, originalHeight, TextureFormat.BGRA32, false);
-        texture2D.LoadRawTextureData(bgraBytes);
-        stopwatch.Stop();
-        Debug.Log($"   \u250fConvert BGRA to Texture2D: {stopwatch.ElapsedMilliseconds} ms");
-
-        // Crop (probably won't be necessary in the final version as it should already be cropped)
-        stopwatch.Restart();
-        var croppedPixels = texture2D.GetPixels(crop[0], crop[1], crop[2], crop[3]);
-        texture2D.Reinitialize(crop[2], crop[3]);
-        texture2D.SetPixels(croppedPixels);
-        texture2D.Apply();
-        stopwatch.Stop();
-        Debug.Log($"   \u2523Crop: {stopwatch.ElapsedMilliseconds} ms");
-
-        // Determine scaling factor while maintaining aspect ratio
-        var scale = Mathf.Min((float)targetSize[0] / crop[2], (float)targetSize[1] / crop[3]);
-        var newWidth = Mathf.RoundToInt(crop[2] * scale);
-        var newHeight = Mathf.RoundToInt(crop[3] * scale);
-
-        // Resize the texture - need to use RenderTexture (GPU texture) as only it supports resizing
-        stopwatch.Restart();
-        var renderTexture = RenderTexture.GetTemporary(newWidth, newHeight, 
-            0, RenderTextureFormat.BGRA32, RenderTextureReadWrite.Default);
-        RenderTexture.active = renderTexture;
-        Graphics.Blit(texture2D, renderTexture);  // this is what resizes the image
-        stopwatch.Stop();
-        Debug.Log($"   \u2523Resize with Blit: {stopwatch.ElapsedMilliseconds} ms");
-
-        // Reinitialise the texture with the new size
-        stopwatch.Restart();
-        texture2D.Reinitialize(targetSize[0], targetSize[1]);
-        var blackPixels = new Color[targetSize[0] * targetSize[1]];
-        for (var i = 0; i < blackPixels.Length; i++)
+        // Fill the output image with black (B=0, G=0, R=0) and opaque alpha (255)
+        for (var i = 0; i < dst.Length; i += 4)
         {
-            blackPixels[i] = Color.black;
+            dst[i]     = 0;   // Blue
+            dst[i + 1] = 0;   // Green
+            dst[i + 2] = 0;   // Red
+            dst[i + 3] = 255; // Alpha
         }
-        texture2D.SetPixels(blackPixels);
-        stopwatch.Stop();
-        Debug.Log($"   \u2523Reinitialise with new size: {stopwatch.ElapsedMilliseconds} ms");
 
-        // Draw the resized image in the centre
-        stopwatch.Restart();
-        var offsetX = (targetSize[0] - newWidth) / 2;
-        var offsetY = (targetSize[1] - newHeight) / 2;
-        texture2D.ReadPixels(new Rect(0, 0, newWidth, newHeight), offsetX, offsetY);
-        RenderTexture.ReleaseTemporary(renderTexture);
-        stopwatch.Stop();
-        Debug.Log($"   \u2523Draw in centre: {stopwatch.ElapsedMilliseconds} ms");
+        // Calculate scale factor: fit the crop into dstSize while maintaining aspect ratio
+        const float scaleX = (float)dstSize / cropWidth;
+        const float scaleY = (float)dstSize / cropHeight;
+        var scale = Math.Min(scaleX, scaleY);
 
-        // Debug.Log(texture2D.width);
-        // Debug.Log(texture2D.height);
-        // Debug.Log(texture2D.format);
+        // Determine scaled image size (might be less than 256 in one dimension)
+        var scaledWidth  = (int)(cropWidth * scale);
+        var scaledHeight = (int)(cropHeight * scale);
 
-        return texture2D.GetPixelData<byte>(0);
+        // Compute offsets so the scaled image is centered in the 256x256 output
+        var offsetX = (dstSize - scaledWidth) / 2;
+        var offsetY = (dstSize - scaledHeight) / 2;
+
+        // Loop over each pixel in the scaled image region
+        for (var y = 0; y < scaledHeight; y++)
+        {
+            var dstY = y + offsetY;
+            for (var x = 0; x < scaledWidth; x++)
+            {
+                var dstX = x + offsetX;
+                // Find the corresponding source pixel using nearest neighbor.
+                // (x/scale, y/scale) gives the relative position in the crop region.
+                var srcRelX = (int)(x / scale);
+                var srcRelY = (int)(y / scale);
+                var srcXCoord = cropX + srcRelX;
+                var srcYCoord = cropY + srcRelY;
+
+                // (Optional) Bounds check in case the crop rectangle is at the edge.
+                if (srcXCoord < 0 || srcXCoord >= srcWidth || srcYCoord < 0 || srcYCoord >= srcHeight)
+                    continue;
+
+                // Compute indices into the BGRA byte arrays.
+                var srcIndex = (srcYCoord * srcWidth + srcXCoord) * 4;
+                var dstIndex = (dstY * dstSize + dstX) * 4;
+
+                dst[dstIndex]     = src[srcIndex];     // Blue
+                dst[dstIndex + 1] = src[srcIndex + 1]; // Green
+                dst[dstIndex + 2] = src[srcIndex + 2]; // Red
+                dst[dstIndex + 3] = src[srcIndex + 3]; // Alpha
+            }
+        }
+
+        return dst;
     }
 }
