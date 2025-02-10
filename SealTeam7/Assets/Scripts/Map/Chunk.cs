@@ -20,6 +20,7 @@ namespace Map
         public ushort x;
         public ushort z;
         public ushort lod;
+        public ushort colliderDst;
         public bool isKinectPresent;
     }
 
@@ -101,7 +102,7 @@ namespace Map
             {
                 if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
 
-                _meshCollider.enabled = SqrDistanceToPlayer(playerPos) <= 4;
+                _meshCollider.enabled = SqrDistanceToPlayer(playerPos) <= settings.colliderDst;
             }
 
             _meshRenderer.enabled = _running;
@@ -111,7 +112,7 @@ namespace Map
             _gettingHeights = true;
             while (_running)
             {
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(0.1f);
                 GetHeights();
             }
             _gettingHeights = false;
@@ -136,6 +137,7 @@ namespace Map
                 _lodFactor = lod == 0 ? 1 : lod * 2;
                 _vertexSideCount = settings.size / _lodFactor;
                 _heightMap = new half[_vertexSideCount * _vertexSideCount];
+                Debug.Log($"{heights.Length}, LOD: {lod}");
                 _heightMap = heights;
 
                 UpdateMesh();
@@ -148,12 +150,12 @@ namespace Map
         {
             var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
             var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
-            
+
             var heightUpdate = new HeightUpdate {
                 Vertices = vertices,
                 Heights = heights,
                 Scale = settings.maxHeight,
-                LerpFactor = _newLod ? 1 : settings.lerpFactor
+                LerpFactor = _newLod ? 1f : settings.lerpFactor
             }.Schedule(_vertexSideCount * _vertexSideCount, 1);
             heightUpdate.Complete();
             
@@ -178,11 +180,13 @@ namespace Map
             var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
             var uvs = new NativeArray<float2>(numberOfVertices, Allocator.TempJob);
+            var Heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
             
             var meshVertexUpdate = new MeshVertexUpdate
             {
                 Vertices = vertices,
                 UVs = uvs,
+                heights = Heights,
                 VertexSideCount = _vertexSideCount,
                 Spacing = settings.spacing,
                 Size = settings.size,
@@ -207,6 +211,7 @@ namespace Map
             vertices.Dispose();
             triangles.Dispose();
             uvs.Dispose();
+            Heights.Dispose();
         }
     }
 
@@ -232,6 +237,8 @@ namespace Map
     {
         public NativeArray<float3> Vertices;
         public NativeArray<float2> UVs;
+        public NativeArray<half> heights;
+        public float scale;
         public int VertexSideCount;
         public float Spacing;
         public float LODFactor;
@@ -242,7 +249,7 @@ namespace Map
             //update vertices
             var x = index / VertexSideCount * LODFactor * Spacing;
             var z = index % VertexSideCount * LODFactor * Spacing;
-            Vertices[index] = new float3(x, 0.0f, z);
+            Vertices[index] = new float3(x, heights[index] * scale, z);
             
             //update uvs
             UVs[index] = new float2(x / (Size - 1), z / (Size - 1));

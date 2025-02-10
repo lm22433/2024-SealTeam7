@@ -535,7 +535,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 230521256}
   _networkObjectCache: {fileID: 0}
   size: 512
-  speed: 0.2
+  speed: 0.1
   noiseScale: 0.01
   mapGenerator: {fileID: 304089664}
 --- !u!1001 &251898649
@@ -722,18 +722,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
     size: 512
-    chunkRow: 32
-    chunkSize: 16
+    chunkRow: 16
+    chunkSize: 32
     maxHeight: 50
     lerpFactor: 0.05
     lodLevels:
-    - maxViewDistance: 100
+    - maxViewDistance: 50
       lod: 0
-    - maxViewDistance: 20
+    - maxViewDistance: 50
       lod: 1
     - maxViewDistance: 50
-      lod: 8
+      lod: 2
     playerMoveThreshold: 2
+    colliderDst: 3
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   _player: {fileID: 0}
   isKinectPresent: 0
@@ -2379,7 +2380,7 @@ Transform:
   m_GameObject: {fileID: 933319492}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 260, y: 50, z: 260}
+  m_LocalPosition: {x: 260, y: 120, z: 260}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5785,7 +5786,7 @@ Transform:
   m_GameObject: {fileID: 2015342024}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 260, y: 51, z: 260}
+  m_LocalPosition: {x: 260, y: 122, z: 260}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

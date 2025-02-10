@@ -24,12 +24,14 @@ namespace Map
         public float lerpFactor;
         public LOD[] lodLevels;
         public float playerMoveThreshold;
+        public ushort colliderDst;
     }
     
     public class MapGenerator : MonoBehaviour {
         [SerializeField] private MapSettings settings;
         [SerializeField] private GameObject chunkPrefab;
         [SerializeField] private GameObject _player;
+    
         private NoiseGenerator _noise;
         private List<Chunk> _chunks;
         private float _spacing;
@@ -59,7 +61,8 @@ namespace Map
                 maxHeight = settings.maxHeight,
                 lerpFactor = settings.lerpFactor,
                 lod = settings.lodLevels[^1].lod,
-                isKinectPresent = isKinectPresent
+                isKinectPresent = isKinectPresent,
+                colliderDst = settings.colliderDst
             };
 
             chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
