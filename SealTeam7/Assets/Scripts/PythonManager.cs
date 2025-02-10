@@ -153,12 +153,20 @@ public static class PythonManager
                     var objName = obj["type"]!.ToString();
                     var x = obj["x"]!.ToObject<float>();
                     var y = obj["y"]!.ToObject<float>();
-                    SandboxObject sandboxObject = objName switch
+                    SandboxObject sandboxObject;
+                    switch (objName)
                     {
-                        "Bunker" => new SandboxObject.Bunker(x, y),
-                        "Spawner" => new SandboxObject.Spawner(x, y),
-                        _ => throw new Exception($"Unknown object type: {objName}")
-                    };
+                        case "Bunker":
+                            sandboxObject = new SandboxObject.Bunker(x, y);
+                            break;
+                        case "Spawner":
+                            sandboxObject = new SandboxObject.Spawner(x, y);
+                            break;
+                        default:
+                            // Sometimes the model outputs "background" for some reason
+                            continue; // Just ignore and move onto the next object
+                    }
+
                     // Debug.Log(sandboxObject);
                     _sandboxObjects.Add(sandboxObject);
                 }

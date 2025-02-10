@@ -196,7 +196,7 @@ def image_connection(conn):
 
                 # Decode full message as image and store in color_image
                 if len(cumulative_message) == image_length:
-                    #temp
+                    # Save image onto disk - temp
                     # image = np.frombuffer(cumulative_message, dtype=np.uint8).reshape(color_image.shape)
                     # image = image[90:470, 370:870, :3]
                     # cv2.imwrite(f"{time.strftime("%Y-%m-%d_%H-%M-%S")}_{str(time.time())[11:14]}.png", image)
