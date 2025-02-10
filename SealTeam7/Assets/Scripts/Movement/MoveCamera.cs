@@ -5,23 +5,15 @@ namespace Movement
 {
     public class MoveCamera : NetworkBehaviour
     {
-    
-        [SerializeField] private Transform cameraPosition;
-    
         public override void OnStartClient()
         {
-            if (IsOwner) {
-                var mainCam = FindFirstObjectByType<Camera>().gameObject.transform;
-                mainCam.SetParent(transform);
-                mainCam.position = transform.position;
-                mainCam.rotation = transform.rotation;
+            if (IsOwner)
+            {
+                var mainCam = Camera.main;
+                mainCam.transform.position = transform.position;
+                mainCam.transform.rotation = transform.rotation;
+                mainCam.transform.SetParent(transform);
             }
-        }
-    
-        // Update is called once per frame
-        private void Update()
-        {
-            transform.position = cameraPosition.position;
         }
     }
 }

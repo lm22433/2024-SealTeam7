@@ -2,6 +2,7 @@
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Transporting;
+using Kinect;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -17,22 +18,30 @@ namespace Map
         private bool _running;
         private float _time;
         [SerializeField] private MapGenerator mapGenerator;
+        private KinectAPI _kinect;
 
         public override void OnStartServer()
         {
-            StartNoise();
-            ServerManager.OnRemoteConnectionState += OnClientConnected;
+            base.OnStartServer();
+            SceneManager.OnClientLoadedStartScenes += OnClientConnect;
         }
 
-        private void OnClientConnected(NetworkConnection conn, RemoteConnectionStateArgs args)
+        private void OnClientConnect(NetworkConnection conn, bool asServer)
         {
-            if (args.ConnectionState == RemoteConnectionState.Started)
-            {
-                GetComponent<NetworkObject>().GiveOwnership(conn);
-            }
+            GiveOwnership(conn);
         }
-        
-        public void StartNoise()
+
+
+        private void Start()
+        {
+            _kinect = FindFirstObjectByType<KinectAPI>();
+
+            if (!IsServerInitialized || _kinect.isKinectPresent) return;
+
+            StartNoise();
+        }
+
+        private void StartNoise()
         {
             _time = 0;
             _noise = new half[size * size];
@@ -47,7 +56,10 @@ namespace Map
 
         private void Update()
         {
-            _time += Time.deltaTime;
+            if (!_kinect.isKinectPresent)
+            {
+                _time += Time.deltaTime;
+            }
         }
 
         private void UpdateNoise()
@@ -74,14 +86,8 @@ namespace Map
         public void RequestChunkNoiseServerRpc(NetworkConnection targetConnection, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkNoise(lod, chunkSize, x, z);
-
-            // Send the depth data back to the requesting client
-            //NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
-
-            //if (targetConnection != null)
-            //{
-                SendChunkNoiseTargetRpc(targetConnection, depths, x, z, lod);
-            //}
+            
+            SendChunkNoiseTargetRpc(targetConnection, depths, x, z, lod);
         }
 
         [TargetRpc]
@@ -90,7 +96,7 @@ namespace Map
             mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
         }
         
-        public half[] GetChunkNoise(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
+        private half[] GetChunkNoise(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = chunkSize / lodFactor;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using Unity.Multiplayer;
 using FishNet.Object;
+using Kinect;
 using Player;
 
 namespace Map
@@ -35,7 +36,6 @@ namespace Map
         private float _sqrPlayerMoveThreshold;
         private Vector3 _playerPosition = Vector3.zero;
         private Vector3 _playerPositionOld = Vector3.zero;
-        [SerializeField] private bool isKinectPresent;
     
         private void Awake() 
         {            
@@ -43,7 +43,9 @@ namespace Map
                 return;
             }
             
-            var chunkParent = Instantiate(new GameObject("Chunks"), transform);
+            var kinect = FindFirstObjectByType<KinectAPI>();
+            
+            var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
             _sqrPlayerMoveThreshold = settings.playerMoveThreshold * settings.playerMoveThreshold;
             _chunks = new List<Chunk>(settings.chunkRow);
@@ -56,7 +58,7 @@ namespace Map
                 spacing = _spacing,
                 lerpFactor = settings.lerpFactor,
                 lod = settings.lodLevels[^1].lod,
-                isKinectPresent = isKinectPresent
+                isKinectPresent = kinect.isKinectPresent
             };
 
             chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);

@@ -1,3 +1,4 @@
+using FishNet.Object;
 using Input;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace Movement
         Debug
     }
     
-    public class AdvancedMovement : MonoBehaviour
+    public class AdvancedMovement : NetworkBehaviour
     {
     
         [Header("Movement")]
@@ -97,7 +98,14 @@ namespace Movement
         [SerializeField] private bool rightWallHit;
         [SerializeField] private bool frontWallHit;
         [SerializeField] private bool backWallHit;
-    
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+
+            if (!IsOwner) enabled = false;
+        }
+
         private void Start()
         {
             _rb = GetComponent<Rigidbody>();

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
+using FishNet;
 using FishNet.Connection;
 using FishNet.Managing;
 using UnityEngine;
 using FishNet.Object;
 using FishNet.Transporting;
+using UnityEngine.SceneManagement;
 
 namespace Enemies
 {
@@ -20,38 +23,46 @@ namespace Enemies
         [SerializeField] private EnemyInfo[] enemies;
         private NetworkManager _networkManager;
         private GameObject _player;
-        
+
         public override void OnStartServer()
         {
             base.OnStartServer();
-            
-            _networkManager = FindFirstObjectByType<NetworkManager>();
-            SpawnEnemies();
-            
-            ServerManager.OnRemoteConnectionState += OnClientConnected;
+
+            _networkManager = InstanceFinder.NetworkManager;
+            Debug.Log($"Awaiting client connection");
+            SceneManager.OnClientLoadedStartScenes += OnClientConnect;
         }
 
-        private void OnClientConnected(NetworkConnection conn, RemoteConnectionStateArgs args)
+        private void OnClientConnect(NetworkConnection conn, bool asServer)
         {
-            if (args.ConnectionState == RemoteConnectionState.Started)
+            Debug.Log($"Conn {conn.ClientId} requesting ownership.");
+            GiveOwnership(conn);
+        }
+
+        private void Start()
+        {
+            Debug.Log($"Is Server: {IsServerInitialized}, Is Client: {IsClientInitialized}");
+            if (IsServerInitialized)
             {
-                GetComponent<NetworkObject>().GiveOwnership(conn);
+                InvokeRepeating(nameof(SpawnEnemies), 5f, 5f);
             }
         }
-
-        public override void OnStartClient()
-        {
-            base.OnStartClient();
-        }
         
-        [Server]
+        [ObserversRpc]
+        private void DebugClientSpawn()
+        {
+            Debug.Log("Client received spawn update.");
+        }
+
         private void SpawnEnemies()
         {
             foreach (EnemyInfo e in enemies)
             {
                 NetworkObject nob = _networkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
-                _networkManager.ServerManager.Spawn(nob);
+                ServerManager.Spawn(nob);
             }
+            
+            DebugClientSpawn();
         }
     }
 }

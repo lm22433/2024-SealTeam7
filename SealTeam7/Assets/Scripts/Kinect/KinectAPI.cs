@@ -51,9 +51,19 @@ namespace Kinect
 
         public override void OnStartServer()
         {
-            if (!isKinectPresent) {
-                return;
-            }
+            base.OnStartServer();
+            
+            SceneManager.OnClientLoadedStartScenes += OnClientConnect;
+        }
+
+        private void OnClientConnect(NetworkConnection conn, bool asServer)
+        {
+            GiveOwnership(conn);
+        }
+
+        public void Start()
+        {
+            if (!IsServerInitialized || !isKinectPresent) return;
 
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -81,15 +91,6 @@ namespace Kinect
             this._colourHeight = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
 
             StartKinect();
-            ServerManager.OnRemoteConnectionState += OnClientConnected;
-        }
-
-        private void OnClientConnected(NetworkConnection conn, RemoteConnectionStateArgs args)
-        {
-            if (args.ConnectionState == RemoteConnectionState.Started)
-            {
-                GetComponent<NetworkObject>().GiveOwnership(conn);
-            }
         }
 
         private void StartKinect()
@@ -101,7 +102,7 @@ namespace Kinect
             Task.Run(GetCaptureAsync);
         }
         
-        void OnApplicationQuit()
+        private void OnApplicationQuit()
         {
             if (_kinect != null) {
                 _running = false;
@@ -115,7 +116,7 @@ namespace Kinect
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void RequestChunkTextureServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
+        private void RequestChunkTextureServerRpc(int clientId, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkTexture(lod, chunkSize, x, z);
             //Debug.Log("RPC recieved");
@@ -139,7 +140,7 @@ namespace Kinect
             mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
         }
         
-        public half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
+        private half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
         {
             
             //float similarity = 0;
@@ -195,7 +196,7 @@ namespace Kinect
             }
         }
 
-        public async Task GetCaptureAsync()
+        private async Task GetCaptureAsync()
         {
             while (_running)
             {
