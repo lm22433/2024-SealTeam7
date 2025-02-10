@@ -192,6 +192,7 @@ public static class PythonManager
         var croppedPixels = texture2D.GetPixels(crop[0], crop[1], crop[2], crop[3]);
         texture2D.Reinitialize(crop[2], crop[3]);
         texture2D.SetPixels(croppedPixels);
+        texture2D.Apply();
 
         // Determine scaling factor while maintaining aspect ratio
         var scale = Mathf.Min((float)targetSize[0] / crop[2], (float)targetSize[1] / crop[3]);
@@ -202,7 +203,6 @@ public static class PythonManager
         var renderTexture = RenderTexture.GetTemporary(newWidth, newHeight, 
             0, RenderTextureFormat.BGRA32, RenderTextureReadWrite.Default);
         RenderTexture.active = renderTexture;
-        // texture2D.Apply() is called automatically inside Blit
         Graphics.Blit(texture2D, renderTexture);  // this is what resizes the image
 
         // Reinitialise the texture with the new size

@@ -103,11 +103,12 @@ public class TestingUtilities : MonoBehaviour
         if (PythonManager.IsConnected())
         {
             PythonManager.SendColorImage(_kinect.GetCapture().Color);
+            Debug.Log(ToString(PythonManager.GetSandboxObjects()));
         }
     }
 
 
-    public static string ToString<T>(IEnumerable<T> array)
+    public static string ToString<T>(T[] array)
     {
         return $"[{string.Join(", ", array)}]";
     }
