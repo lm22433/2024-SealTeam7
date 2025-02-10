@@ -66,6 +66,7 @@ namespace Movement
     
         private Vector3 _moveDir;
         private Rigidbody _rb;
+        private InputController _inputController;
     
         private bool _readyToJump;
         private bool _doubleJumpReady;
@@ -108,6 +109,7 @@ namespace Movement
 
         private void Start()
         {
+            _inputController = GetComponent<InputController>();
             _rb = GetComponent<Rigidbody>();
             _rb.freezeRotation = true;
     
@@ -157,12 +159,12 @@ namespace Movement
         private void MoveInput()
         {
             //Movement Inputs
-            Vector2 moveInput = InputController.GetInstance().GetMoveInput();
+            Vector2 moveInput = _inputController.GetMoveInput();
             _horInput = moveInput.x;
             _verInput = moveInput.y;
     
             //Jumping
-            if(InputController.GetInstance().GetJumpInput()) {
+            if(_inputController.GetJumpInput()) {
                 if(curState == State.Crouching) {
     
                     curState = State.Walking;
@@ -220,7 +222,7 @@ namespace Movement
             }
     
             //Sprinting
-            if(InputController.GetInstance().GetSprintInput()) {
+            if(_inputController.GetSprintInput()) {
                 if(curState == State.Walking) {
                     curState = State.Sprinting;
                 }
@@ -245,7 +247,7 @@ namespace Movement
             }
     
             //Crouching
-            if(InputController.GetInstance().GetCrouchInput()) {
+            if(_inputController.GetCrouchInput()) {
                 if(curState == State.Walking) {
                     transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
                     _rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
@@ -272,7 +274,7 @@ namespace Movement
             }
     
             //Sliding
-            if(InputController.GetInstance().GetCrouchInput()) {
+            if(_inputController.GetCrouchInput()) {
                 if(_verInput > 0 && curState == State.Sprinting) {
                     StartSlide();
                 }
@@ -371,7 +373,7 @@ namespace Movement
     
             //physically move player
             if(OnSlope() && !_exitingSlope) {
-                _rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 10.0f, ForceMode.Force);
+                _rb.AddForce(GetSlopeMoveDirection() * (moveSpeed * 10.0f), ForceMode.Force);
     
                 //stops bouncing up slopes
                 if(_rb.linearVelocity.y > 0) {
@@ -379,10 +381,10 @@ namespace Movement
                 }
             }
             else if(_grounded){
-                _rb.AddForce(_moveDir * moveSpeed * 10.0f, ForceMode.Force);   
+                _rb.AddForce(_moveDir * (moveSpeed * 10.0f), ForceMode.Force);   
             }
             else {
-                _rb.AddForce((_moveDir + _momentum).normalized * moveSpeed * 10.0f * airMultiplier, ForceMode.Force);
+                _rb.AddForce((_moveDir + _momentum).normalized * (moveSpeed * 10.0f * airMultiplier), ForceMode.Force);
             }
     
             //bit jank but turn off gravity when on slope
@@ -452,7 +454,7 @@ namespace Movement
         private void SlidingMovement()
         {
             if(OnSlope() && !_exitingSlope) {            
-                _rb.AddForce(GetSlopeSlideDirection() * slideForce * 10.0f * (_slideTimer / maxSlideTime), ForceMode.Force);
+                _rb.AddForce(GetSlopeSlideDirection() * (slideForce * 10.0f * (_slideTimer / maxSlideTime)), ForceMode.Force);
     
                 //stops bouncing up slopes
                 if(_rb.linearVelocity.y > 0) {
@@ -461,7 +463,7 @@ namespace Movement
             }
             else if(_grounded) {
                 _slideTimer -= Time.deltaTime;
-                _rb.AddForce(_slideDir * slideForce * 10f * (_slideTimer / maxSlideTime), ForceMode.Force);
+                _rb.AddForce(_slideDir * (slideForce * 10f * (_slideTimer / maxSlideTime)), ForceMode.Force);
             }
             if(_slideTimer < 0) {
                 StopSlide();
@@ -573,7 +575,7 @@ namespace Movement
                 wallNormal = _leftWallCheck.normal;
                 if(_verInput > 0) {
                     Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                    _rb.AddForce(wallForward * moveSpeed * 10f, ForceMode.Force);
+                    _rb.AddForce(wallForward * (moveSpeed * 10f), ForceMode.Force);
                     wallRunTimer -= Time.deltaTime;
                 }
                 else if(_verInput < 0 || _horInput < 0) {
@@ -592,7 +594,7 @@ namespace Movement
                 wallNormal = _rightWallCheck.normal;
                 if(_verInput > 0) {
                     Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                    _rb.AddForce(-wallForward * moveSpeed * 10f, ForceMode.Force);
+                    _rb.AddForce(-wallForward * (moveSpeed * 10f), ForceMode.Force);
                     wallRunTimer -= Time.deltaTime;
                 }
                 else if(_verInput < 0 || _horInput > 0) {
@@ -612,16 +614,16 @@ namespace Movement
                 if(_verInput > 0) {
                     wallRunTimer -= Time.deltaTime * 1.5f;
                     _rb.linearVelocity = new Vector3(0f,0f,0f);
-                    _rb.AddForce(Vector3.up * moveSpeed * 20f, ForceMode.Force);
+                    _rb.AddForce(Vector3.up * (moveSpeed * 20f), ForceMode.Force);
                 }
                 else if(_horInput > 0) {
                     Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                    _rb.AddForce(wallForward * moveSpeed * 10f, ForceMode.Force);
+                    _rb.AddForce(wallForward * (moveSpeed * 10f), ForceMode.Force);
                     wallRunTimer -= Time.deltaTime;
                 }
                 else if(_horInput < 0) {
                     Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                    _rb.AddForce(-wallForward * moveSpeed * 10f, ForceMode.Force);
+                    _rb.AddForce(-wallForward * (moveSpeed * 10f), ForceMode.Force);
                     wallRunTimer -= Time.deltaTime;
                 }
                 else if(_verInput < 0 && _horInput == 0) {
@@ -636,12 +638,12 @@ namespace Movement
                 wallNormal = _backWallCheck.normal;
                 if(_horInput < 0) {
                     Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                    _rb.AddForce(wallForward * moveSpeed * 10f, ForceMode.Force);
+                    _rb.AddForce(wallForward * (moveSpeed * 10f), ForceMode.Force);
                     wallRunTimer -= Time.deltaTime;
                 }
                 else if(_horInput > 0) {
                     Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-                    _rb.AddForce(-wallForward * moveSpeed * 10f, ForceMode.Force);
+                    _rb.AddForce(-wallForward * (moveSpeed * 10f), ForceMode.Force);
                     wallRunTimer -= Time.deltaTime;
                 }
                 else if(_verInput < 0) {
@@ -726,7 +728,7 @@ namespace Movement
                 _momentum = orientation.forward;
     
                 _rb.linearVelocity = new Vector3(0,0,0);
-                _rb.AddForce(Vector3.up * jumpForce * 2f, ForceMode.Impulse);
+                _rb.AddForce(Vector3.up * (jumpForce * 2f), ForceMode.Impulse);
     
                 if(curState == State.WallRunning) {
                     StopWallRun();

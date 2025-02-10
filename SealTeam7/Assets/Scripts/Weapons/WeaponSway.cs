@@ -1,3 +1,4 @@
+using System;
 using Input;
 using UnityEngine;
 
@@ -9,9 +10,16 @@ namespace Weapons
         [SerializeField] private float smooth;
         [SerializeField] private float swayMultiplier;
 
+        private InputController _inputController;
+
+        private void Start()
+        {
+            _inputController = GetComponentInParent<InputController>();
+        }
+
         private void Update()
         {
-            Vector2 lookInput = InputController.GetInstance().GetLookInput();
+            Vector2 lookInput = _inputController.GetLookInput();
             float x = lookInput.x * swayMultiplier;
             float y = lookInput.y * swayMultiplier;
 

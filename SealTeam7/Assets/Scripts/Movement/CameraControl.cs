@@ -18,20 +18,23 @@ namespace Movement
         
         private float _xRotation;
         private float _yRotation;
+        
+        private InputController _inputController;
 
         private void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            _inputController = GetComponentInParent<InputController>();
         }
 
         private void Update()
         {
             // Look Input
-            Vector2 lookInput = InputController.GetInstance().GetLookInput();
+            Vector2 lookInput = _inputController.GetLookInput();
             
-            float sensitivityX = InputController.GetInstance().IsUsingController() ? controllerSensitivityX : mouseSensitivityX;
-            float sensitivityY = InputController.GetInstance().IsUsingController() ? controllerSensitivityY : mouseSensitivityY;
+            float sensitivityX = _inputController.IsUsingController() ? controllerSensitivityX : mouseSensitivityX;
+            float sensitivityY = _inputController.IsUsingController() ? controllerSensitivityY : mouseSensitivityY;
             
             float x = lookInput.x * Time.deltaTime * sensitivityX;
             float y = lookInput.y * Time.deltaTime * sensitivityY;
