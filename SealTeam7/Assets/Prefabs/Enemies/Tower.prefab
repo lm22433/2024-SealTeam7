@@ -295,7 +295,7 @@ MonoBehaviour:
   _clientAuthoritative: 1
   _sendToOwner: 1
   _interval: 1
-  _synchronizePosition: 1
+  _synchronizePosition: 0
   _positionSnapping:
     X: 0
     Y: 0

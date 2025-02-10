@@ -38,7 +38,7 @@ namespace Map
         private bool _running;
         private bool _gettingHeights;
         private bool _newLod = true;
-        [SerializeField] private ushort requestedLod;
+        [SerializeField] private ushort _requestedLod;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
@@ -58,7 +58,7 @@ namespace Map
         public float SqrDistanceToPlayer(Vector3 playerPos)
         {
             this.playerPos = playerPos;
-            return Vector3.Distance(new Vector3(playerPos.x, playerPos.y, playerPos.z), new Vector3(transform.position.x + (settings.size / 2), settings.maxHeight / 2, transform.position.z + + (settings.size / 2))) / settings.size;
+            return Vector3.Distance(new Vector3(playerPos.x, playerPos.y, playerPos.z), new Vector3(transform.position.x + (settings.size / 2), settings.size / 2, transform.position.z + + (settings.size / 2))) / settings.size;
         }
         
         private void Awake()
@@ -146,7 +146,6 @@ namespace Map
             var heightUpdate = new HeightUpdate {
                 Vertices = vertices,
                 Heights = heights,
-                Scale = settings.maxHeight,
                 LerpFactor = _newLod ? 1f : settings.lerpFactor
             }.Schedule(_vertexSideCount * _vertexSideCount, 1);
             heightUpdate.Complete();

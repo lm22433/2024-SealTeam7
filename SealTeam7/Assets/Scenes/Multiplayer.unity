@@ -730,12 +730,15 @@ MonoBehaviour:
     lodLevels:
     - maxViewDistance: 100
       lod: 0
-    - maxViewDistance: 200
+    - maxViewDistance: 100
       lod: 1
-    - maxViewDistance: 450
+    - maxViewDistance: 100
       lod: 2
     playerMoveThreshold: 2
+    colliderDst: 2
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
+  _player: {fileID: 0}
+  _isKinectPresent: 0
 --- !u!4 &304089665
 Transform:
   m_ObjectHideFlags: 0

@@ -42,10 +42,9 @@ namespace Movement
             // rotate the camera
             transform.Rotate(Vector3.right, y);
             
-            Debug.Log(transform.rotation);
             
             // clamp
-            transform.rotation = Quaternion.Euler(Mathf.Clamp(transform.rotation.eulerAngles.x, -90f, 90f), transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+            //transform.rotation = Quaternion.Euler(Mathf.Clamp(transform.rotation.eulerAngles.x, -90f, 90f), transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         }
     }
 }

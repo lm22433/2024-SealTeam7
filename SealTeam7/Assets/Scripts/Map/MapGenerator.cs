@@ -31,6 +31,7 @@ namespace Map
         [SerializeField] private MapSettings settings;
         [SerializeField] private GameObject chunkPrefab;
         [SerializeField] private GameObject _player;
+        [SerializeField] private bool _isKinectPresent;
     
         private NoiseGenerator _noise;
         private List<Chunk> _chunks;
@@ -60,7 +61,7 @@ namespace Map
                 spacing = _spacing,
                 lerpFactor = settings.lerpFactor,
                 lod = settings.lodLevels[^1].lod,
-                isKinectPresent = isKinectPresent,
+                isKinectPresent = _isKinectPresent,
                 colliderDst = settings.colliderDst
             };
 

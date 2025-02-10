@@ -47,6 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de1dfb58f7993e04e85e7ffbbad7af76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 3288779974816780927}
+  _networkObjectCache: {fileID: 0}
   mouseSensitivityX: 10
   mouseSensitivityY: 10
   controllerSensitivityX: 200
@@ -82,7 +85,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 3288779974816780927}
   _networkObjectCache: {fileID: 0}
   _componentConfiguration: 0
-  _synchronizeParent: 0
+  _synchronizeParent: 1
   _packing:
     Position: 1
     Rotation: 1
@@ -94,7 +97,7 @@ MonoBehaviour:
   _clientAuthoritative: 1
   _sendToOwner: 1
   _interval: 1
-  _synchronizePosition: 1
+  _synchronizePosition: 0
   _positionSnapping:
     X: 0
     Y: 0
@@ -104,7 +107,7 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
-  _synchronizeScale: 1
+  _synchronizeScale: 0
   _scaleSnapping:
     X: 0
     Y: 0
@@ -456,9 +459,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1.810863
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.09456849, z: 0}
 --- !u!136 &2232665746001200276
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -479,9 +482,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.6
-  m_Height: 1.9
+  m_Height: 1.763886
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.06805706, z: 0}
 --- !u!1 &1260143567230795334
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,6 +609,56 @@ MonoBehaviour:
   secondaryWeaponIcon: {fileID: 351405811739287980}
   unselectedWeaponIcon: {fileID: 21300000, guid: 03a751cd008c04d0fb8232b2091e0251, type: 3}
   selectedWeaponIcon: {fileID: 21300000, guid: ab4e17cbe1c0f48d3a21613baed67acb, type: 3}
+--- !u!1 &1260992330423056907
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3530348826770551985}
+  - component: {fileID: 1770517583582526046}
+  m_Layer: 9
+  m_Name: SandRiderPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3530348826770551985
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260992330423056907}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 172254823229477108}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1770517583582526046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260992330423056907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a97baebb5b57b84292c1d89249a2d09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  riderSpeed: 0.005
+  gravityPoint: 11.5
+  surfacePoint: 10.5
 --- !u!1 &1425133222024309691
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,7 +684,7 @@ Transform:
   m_GameObject: {fileID: 1425133222024309691}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.75, z: 0}
+  m_LocalPosition: {x: 0, y: -1.451, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1283,6 +1336,7 @@ Transform:
   - {fileID: 1556073151899183067}
   - {fileID: 9095023509047750781}
   - {fileID: 2128142863088665931}
+  - {fileID: 3530348826770551985}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4768233901726040111
