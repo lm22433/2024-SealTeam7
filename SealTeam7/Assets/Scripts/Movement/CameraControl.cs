@@ -1,9 +1,10 @@
+using FishNet.Object;
 using Input;
 using UnityEngine;
 
 namespace Movement
 {
-    public class CameraControl : MonoBehaviour
+    public class CameraControl : NetworkBehaviour
     {
 
         [Header("Mouse Sensitivity")]
@@ -14,14 +15,9 @@ namespace Movement
         [SerializeField] private float controllerSensitivityX;
         [SerializeField] private float controllerSensitivityY;
         
-        [SerializeField] private Transform orientation;
-        
-        private float _xRotation;
-        private float _yRotation;
-        
         private InputController _inputController;
 
-        private void Start()
+        public override void OnStartClient()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -30,6 +26,8 @@ namespace Movement
 
         private void Update()
         {
+            if (!IsOwner) return;
+            
             // Look Input
             Vector2 lookInput = _inputController.GetLookInput();
             
@@ -37,24 +35,17 @@ namespace Movement
             float sensitivityY = _inputController.IsUsingController() ? controllerSensitivityY : mouseSensitivityY;
             
             float x = lookInput.x * Time.deltaTime * sensitivityX;
-            float y = lookInput.y * Time.deltaTime * sensitivityY;
+            float y = -lookInput.y * Time.deltaTime * sensitivityY;
 
-            _yRotation += x;
-
-            _xRotation -= y;
-            _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
-
-            if (_yRotation > 360f) {
-                _yRotation -= 360f;
-            }
-
-            if (_yRotation < -360f) {
-                _yRotation += 360f;
-            }
-
-            //rotate the camera
-            transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
-            orientation.rotation = Quaternion.Euler(0, _yRotation, 0);
+            // rotate the player
+            transform.parent.Rotate(Vector3.up, x);
+            // rotate the camera
+            transform.Rotate(Vector3.right, y);
+            
+            Debug.Log(transform.rotation);
+            
+            // clamp
+            transform.rotation = Quaternion.Euler(Mathf.Clamp(transform.rotation.eulerAngles.x, -90f, 90f), transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         }
     }
 }

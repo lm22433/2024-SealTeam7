@@ -1,6 +1,7 @@
 using FishNet.Object;
 using Input;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Movement
 {
@@ -52,9 +53,6 @@ namespace Movement
         [SerializeField] private float slideForce;
         private float _slideTimer;
         private Vector3 _slideDir;
-    
-        [Header("Aiming")]
-        [SerializeField] private Transform orientation;
     
         [Header("Slope Handling")]
         [SerializeField] private float maxSlopeAngle;
@@ -364,7 +362,7 @@ namespace Movement
         {
     
             //Calculate movement Direction
-            _moveDir = orientation.forward * _verInput + orientation.right * _horInput;
+            _moveDir = transform.forward * _verInput + transform.right * _horInput;
             _moveDir = _moveDir.normalized;
     
             if(_grounded) {
@@ -409,8 +407,8 @@ namespace Movement
             _exitingSlope = true;
             _readyToWallRun = true;
             _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
-            _moveDir = orientation.forward*_verInput + orientation.up + orientation.right * _horInput;
-            _momentum = orientation.forward*_verInput + orientation.right * _horInput;
+            _moveDir = transform.forward*_verInput + transform.up + transform.right * _horInput;
+            _momentum = transform.forward*_verInput + transform.right * _horInput;
             _rb.AddForce(_moveDir.normalized * boostForce, ForceMode.Impulse);
         }
     
@@ -497,10 +495,10 @@ namespace Movement
         private void CheckForWall()
         {
     
-            leftWallHit = Physics.Raycast(transform.position, -orientation.right, out _leftWallCheck, wallCheckDistance, whatIsWall);
-            rightWallHit = Physics.Raycast(transform.position, orientation.right, out _rightWallCheck, wallCheckDistance, whatIsWall);
-            backWallHit = Physics.Raycast(transform.position, -orientation.forward, out _backWallCheck, wallCheckDistance, whatIsWall);
-            frontWallHit = Physics.Raycast(transform.position, orientation.forward, out _frontWallCheck, wallCheckDistance, whatIsWall);
+            leftWallHit = Physics.Raycast(transform.position, -transform.right, out _leftWallCheck, wallCheckDistance, whatIsWall);
+            rightWallHit = Physics.Raycast(transform.position, transform.right, out _rightWallCheck, wallCheckDistance, whatIsWall);
+            backWallHit = Physics.Raycast(transform.position, -transform.forward, out _backWallCheck, wallCheckDistance, whatIsWall);
+            frontWallHit = Physics.Raycast(transform.position, transform.forward, out _frontWallCheck, wallCheckDistance, whatIsWall);
     
             if(curState == State.WallRunning) {
                 if(!leftWallHit && !rightWallHit && !backWallHit && !frontWallHit) {
@@ -548,16 +546,16 @@ namespace Movement
     
             Vector3 wallNormal;
             if(leftWallHit) {
-                wallNormal = orientation.right;
+                wallNormal = transform.right;
             }
             else if(rightWallHit){
-                wallNormal = -orientation.right;
+                wallNormal = -transform.right;
             }
             else if(frontWallHit){
-                wallNormal = -orientation.forward;
+                wallNormal = -transform.forward;
             }
             else if(backWallHit){
-                wallNormal = orientation.forward;
+                wallNormal = transform.forward;
             }
             else {
                 wallNormal = Vector3.forward;
@@ -680,16 +678,16 @@ namespace Movement
     
             Vector3 wallNormal;
             if(leftWallHit) {
-                wallNormal = orientation.right;
+                wallNormal = transform.right;
             }
             else if(rightWallHit){
-                wallNormal = -orientation.right;
+                wallNormal = -transform.right;
             }
             else if(frontWallHit){
-                wallNormal = -orientation.forward;
+                wallNormal = -transform.forward;
             }
             else if(backWallHit){
-                wallNormal = orientation.forward;
+                wallNormal = transform.forward;
             }
             else {
                 wallNormal = Vector3.forward;
@@ -705,13 +703,13 @@ namespace Movement
             bool gap = true;
             Vector3 checkDir;
             Quaternion rotate = Quaternion.Euler(0, 0, mantleCheckTotalAngle / 2);
-            checkDir = rotate * orientation.forward;
+            checkDir = rotate * transform.forward;
     
             gap = gap && !(Physics.Raycast(mantleCheckOrigin.position, checkDir, wallCheckDistance, whatIsWall));
     
             for (int i = 1; i < mantleCheckCount+1; i++) {
                 rotate = Quaternion.Euler(0, 0, (mantleCheckTotalAngle / 2) - (i * mantleCheckTotalAngle / (mantleCheckCount-1)));
-                checkDir = rotate * orientation.forward;
+                checkDir = rotate * transform.forward;
     
                 gap = gap && !(Physics.Raycast(mantleCheckOrigin.position, checkDir, wallCheckDistance, whatIsWall));
             }
@@ -725,7 +723,7 @@ namespace Movement
         {
             if(_readyToMantle) {
                 _readyToMantle = false;
-                _momentum = orientation.forward;
+                _momentum = transform.forward;
     
                 _rb.linearVelocity = new Vector3(0,0,0);
                 _rb.AddForce(Vector3.up * (jumpForce * 2f), ForceMode.Impulse);
