@@ -75,14 +75,14 @@ def inference_frame(object_detector, hand_landmarker, frame):
                         cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
         for landmarks in hand_landmarking_result.hand_landmarks:  # for each hand
             for connection in HandLandmarksConnections.HAND_CONNECTIONS:
-                cv2.line(frame, (int(landmarks[connection.start].x * frame.shape[1] * scale), 
-                                 int(landmarks[connection.start].y * frame.shape[0] * scale)),
-                                (int(landmarks[connection.end].x * frame.shape[1] * scale), 
-                                 int(landmarks[connection.end].y * frame.shape[0] * scale)), 
+                cv2.line(frame, (int(landmarks[connection.start].x * frame.shape[1]), 
+                                 int(landmarks[connection.start].y * frame.shape[0])),
+                                (int(landmarks[connection.end].x * frame.shape[1]), 
+                                 int(landmarks[connection.end].y * frame.shape[0])), 
                                 (0, 255, 0), 1)
             for landmark in landmarks:
-                cv2.circle(frame, (int(landmark.x * frame.shape[1] * scale), 
-                                   int(landmark.y * frame.shape[0]) * scale), 3, (0, 255, 0), -1)
+                cv2.circle(frame, (int(landmark.x * frame.shape[1]), 
+                                   int(landmark.y * frame.shape[0])), 3, (0, 255, 0), -1)
         cv2.imshow("Inference visualisation", frame)
         cv2.waitKey(1)
     
