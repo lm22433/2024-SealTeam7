@@ -24,12 +24,14 @@ namespace Map
         public float lerpFactor;
         public LODInfo[] lodLevels;
         public float playerMoveThreshold;
+        public ushort colliderDst;
     }
     
     public class MapGenerator : MonoBehaviour {
         [SerializeField] private MapSettings settings;
         [SerializeField] private GameObject chunkPrefab;
-        private GameObject _player;
+        [SerializeField] private GameObject _player;
+    
         private NoiseGenerator _noise;
         private List<Chunk> _chunks;
         private float _spacing;
@@ -58,7 +60,8 @@ namespace Map
                 spacing = _spacing,
                 lerpFactor = settings.lerpFactor,
                 lod = settings.lodLevels[^1].lod,
-                isKinectPresent = kinect.isKinectPresent
+                isKinectPresent = isKinectPresent,
+                colliderDst = settings.colliderDst
             };
 
             chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
@@ -106,14 +109,15 @@ namespace Map
 
                 foreach (var lodInfo in settings.lodLevels)
                 {
-                    if (sqrDistanceToPlayer <= lodInfo.maxViewDistance * lodInfo.maxViewDistance)
+
+                    if (sqrDistanceToPlayer <= lodInfo.maxViewDistance)
                     {
                         lod = lodInfo.lod;
                         visible = true;
                         break;
                     }
                 }
-
+                
                 chunk.SetVisible(visible);
                 if (visible) chunk.SetLod(lod);
             }
@@ -123,6 +127,7 @@ namespace Map
         {
             if (_player) {
                 _playerPosition = _player.transform.position;
+
                 if (Vector3.SqrMagnitude(_playerPositionOld - _playerPosition) > _sqrPlayerMoveThreshold)
                 {
                     _playerPositionOld = _playerPosition;
@@ -139,6 +144,7 @@ namespace Map
         }
 
         public Chunk GetChunk(int x, int z) {
+
             return _chunks[z * settings.chunkRow + x];
         }
     }

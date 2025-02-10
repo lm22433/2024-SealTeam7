@@ -18,12 +18,13 @@ namespace Map
         public ushort x;
         public ushort z;
         public ushort lod;
+        public ushort colliderDst;
         public bool isKinectPresent;
     }
 
     public class Chunk : MonoBehaviour {
         
-        [SerializeField] private ChunkSettings settings;
+        [SerializeField] public ChunkSettings settings;
         private int _lodFactor;
         private half[] _heightMap;
         private int _vertexSideCount;
@@ -36,8 +37,8 @@ namespace Map
         private Bounds _bounds;
         private bool _running;
         private bool _gettingHeights;
-        private bool _newLod;
-        private ushort _requestedLod;
+        private bool _newLod = true;
+        [SerializeField] private ushort requestedLod;
         
         public void SetSettings(ChunkSettings s) { settings = s; }
         
@@ -52,9 +53,12 @@ namespace Map
             _running = visible;
         }
 
+        Vector3 playerPos;
+
         public float SqrDistanceToPlayer(Vector3 playerPos)
         {
-            return _mesh.bounds.SqrDistance(playerPos);
+            this.playerPos = playerPos;
+            return Vector3.Distance(new Vector3(playerPos.x, playerPos.y, playerPos.z), new Vector3(transform.position.x + (settings.size / 2), settings.maxHeight / 2, transform.position.z + + (settings.size / 2))) / settings.size;
         }
         
         private void Awake()
@@ -82,7 +86,8 @@ namespace Map
             } else {
                 _kinect = FindAnyObjectByType<KinectAPI>();
             }
-        }
+
+        }   
 
         private void Update()
         {
@@ -90,7 +95,7 @@ namespace Map
             {
                 if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
 
-                _meshCollider.enabled = settings.lod == 0;
+                _meshCollider.enabled = SqrDistanceToPlayer(playerPos) <= settings.colliderDst;
             }
 
             _meshRenderer.enabled = _running;
@@ -100,7 +105,7 @@ namespace Map
             _gettingHeights = true;
             while (_running)
             {
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
                 GetHeights();
             }
             _gettingHeights = false;
@@ -120,10 +125,12 @@ namespace Map
                 _heightMap = heights;
             }
             else {
+                _newLod = true;
                 settings.lod = lod;
                 _lodFactor = lod == 0 ? 1 : lod * 2;
                 _vertexSideCount = settings.size / _lodFactor;
-                _heightMap = new half[heights.Length];
+                _heightMap = new half[_vertexSideCount * _vertexSideCount];
+                Debug.Log($"{heights.Length}, LOD: {lod}");
                 _heightMap = heights;
                 UpdateMesh();
             }
@@ -135,14 +142,17 @@ namespace Map
         {
             var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
             var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
-            
+
             var heightUpdate = new HeightUpdate {
                 Vertices = vertices,
                 Heights = heights,
-                LerpFactor = settings.lerpFactor
+                Scale = settings.maxHeight,
+                LerpFactor = _newLod ? 1f : settings.lerpFactor
             }.Schedule(_vertexSideCount * _vertexSideCount, 1);
             heightUpdate.Complete();
             
+            _newLod = false;
+
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
             _mesh.RecalculateTangents();
@@ -162,13 +172,13 @@ namespace Map
             var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
             var uvs = new NativeArray<float2>(numberOfVertices, Allocator.TempJob);
-            var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
+            var Heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
             
             var meshVertexUpdate = new MeshVertexUpdate
             {
-                Heights = heights,
                 Vertices = vertices,
                 UVs = uvs,
+                heights = Heights,
                 VertexSideCount = _vertexSideCount,
                 Spacing = settings.spacing,
                 Size = settings.size,
@@ -193,7 +203,7 @@ namespace Map
             vertices.Dispose();
             triangles.Dispose();
             uvs.Dispose();
-            heights.Dispose();
+            Heights.Dispose();
         }
     }
 
@@ -216,9 +226,10 @@ namespace Map
     [BurstCompile]
     public struct MeshVertexUpdate : IJobParallelFor
     {
-        public NativeArray<half> Heights;
         public NativeArray<float3> Vertices;
         public NativeArray<float2> UVs;
+        public NativeArray<half> heights;
+        public float scale;
         public int VertexSideCount;
         public float Spacing;
         public float LODFactor;
@@ -227,9 +238,9 @@ namespace Map
         public void Execute(int index)
         {
             //update vertices
-            var x = (int) (index / VertexSideCount) * LODFactor * Spacing;
-            var z = (int) (index % VertexSideCount) * LODFactor * Spacing;
-            Vertices[index] = new float3(x, Heights[index], z);
+            var x = index / VertexSideCount * LODFactor * Spacing;
+            var z = index % VertexSideCount * LODFactor * Spacing;
+            Vertices[index] = new float3(x, heights[index] * scale, z);
             
             //update uvs
             UVs[index] = new float2(x / (Size - 1), z / (Size - 1));
