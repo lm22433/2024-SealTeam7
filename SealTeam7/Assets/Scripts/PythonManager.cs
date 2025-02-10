@@ -15,6 +15,19 @@ public static class PythonManager
     private const int Port = 65465;
     private static readonly Encoding Encoding = Encoding.UTF8;
     
+    private const int PythonImageWidth = 256;
+    private const int PythonImageHeight = 256;
+    private const int ImageCropX = 356;
+    private const int ImageCropY = 74;
+    private const int ImageCropWidth = 571;
+    private const int ImageCropHeight = 420;
+    private static readonly float ImageScale = 
+        Math.Min((float)PythonImageWidth / ImageCropWidth, (float)PythonImageHeight / ImageCropHeight);
+    private static readonly int ImageScaledWidth  = (int)(ImageCropWidth * ImageScale);
+    private static readonly int ImageScaledHeight = (int)(ImageCropHeight * ImageScale);
+    private static readonly int ImageOffsetX = (PythonImageWidth - ImageScaledWidth) / 2;
+    private static readonly int ImageOffsetY = (PythonImageHeight - ImageScaledHeight) / 2;
+    
     private static TcpClient _inferenceClient;
     private static NetworkStream _inferenceStream;
     private static TcpClient _imageClient;
@@ -157,6 +170,11 @@ public static class PythonManager
                     var objName = obj["type"]!.ToString();
                     var x = obj["x"]!.ToObject<float>();
                     var y = obj["y"]!.ToObject<float>();
+                    
+                    // Convert from cropped 256x256 image coordinates to 1280x720 image coordinates
+                    x = (x - ImageOffsetX) / ImageScale + ImageCropX;
+                    y = (y - ImageOffsetY) / ImageScale + ImageCropY;
+                    
                     SandboxObject sandboxObject;
                     switch (objName)
                     {
@@ -185,14 +203,8 @@ public static class PythonManager
 
     private static byte[] ResizeAndPad(byte[] src, int srcWidth, int srcHeight)
     {
-        const int dstSize = 256;  // Output image is dstSize x dstSize pixels
-        const int cropX = 356;
-        const int cropY = 74;
-        const int cropWidth = 571;
-        const int cropHeight = 420;
-        
         // Allocate output buffer: 256x256 pixels, 4 bytes per pixel
-        var dst = new byte[dstSize * dstSize * 4];
+        var dst = new byte[PythonImageWidth * PythonImageHeight * 4];
 
         // Fill the output image with black (B=0, G=0, R=0) and opaque alpha (255)
         for (var i = 0; i < dst.Length; i += 4)
@@ -203,32 +215,19 @@ public static class PythonManager
             dst[i + 3] = 255; // Alpha
         }
 
-        // Calculate scale factor: fit the crop into dstSize while maintaining aspect ratio
-        const float scaleX = (float)dstSize / cropWidth;
-        const float scaleY = (float)dstSize / cropHeight;
-        var scale = Math.Min(scaleX, scaleY);
-
-        // Determine scaled image size (might be less than 256 in one dimension)
-        var scaledWidth  = (int)(cropWidth * scale);
-        var scaledHeight = (int)(cropHeight * scale);
-
-        // Compute offsets so the scaled image is centered in the 256x256 output
-        var offsetX = (dstSize - scaledWidth) / 2;
-        var offsetY = (dstSize - scaledHeight) / 2;
-
         // Loop over each pixel in the scaled image region
-        for (var y = 0; y < scaledHeight; y++)
+        for (var y = 0; y < ImageScaledHeight; y++)
         {
-            var dstY = y + offsetY;
-            for (var x = 0; x < scaledWidth; x++)
+            var dstY = y + ImageOffsetY;
+            for (var x = 0; x < ImageScaledWidth; x++)
             {
-                var dstX = x + offsetX;
+                var dstX = x + ImageOffsetX;
                 // Find the corresponding source pixel using nearest neighbor.
                 // (x/scale, y/scale) gives the relative position in the crop region.
-                var srcRelX = (int)(x / scale);
-                var srcRelY = (int)(y / scale);
-                var srcXCoord = cropX + srcRelX;
-                var srcYCoord = cropY + srcRelY;
+                var srcRelX = (int)(x / ImageScale);
+                var srcRelY = (int)(y / ImageScale);
+                var srcXCoord = ImageCropX + srcRelX;
+                var srcYCoord = ImageCropY + srcRelY;
 
                 // (Optional) Bounds check in case the crop rectangle is at the edge.
                 if (srcXCoord < 0 || srcXCoord >= srcWidth || srcYCoord < 0 || srcYCoord >= srcHeight)
@@ -236,7 +235,7 @@ public static class PythonManager
 
                 // Compute indices into the BGRA byte arrays.
                 var srcIndex = (srcYCoord * srcWidth + srcXCoord) * 4;
-                var dstIndex = (dstY * dstSize + dstX) * 4;
+                var dstIndex = (dstY * PythonImageWidth + dstX) * 4;
 
                 dst[dstIndex]     = src[srcIndex];     // Blue
                 dst[dstIndex + 1] = src[srcIndex + 1]; // Green
