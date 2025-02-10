@@ -21,24 +21,19 @@ namespace Enemies
     public class EnemyManager : NetworkBehaviour
     {
         [SerializeField] private EnemyInfo[] enemies;
-        private NetworkManager _networkManager;
         private GameObject _player;
 
-        private void Start()
+        public override void OnStartServer()
         {
-            Debug.Log($"Is Server: {IsServerInitialized}, Is Client: {IsClientInitialized}");
-            if (IsServerInitialized)
-            {
-                _networkManager = InstanceFinder.NetworkManager;
-                SpawnEnemies();
-            }
+            base.OnStartServer();
+            SpawnEnemies();
         }
         
         private void SpawnEnemies()
         {
             foreach (EnemyInfo e in enemies)
             {
-                NetworkObject nob = _networkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
+                NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
                 ServerManager.Spawn(nob);
             }
         }

@@ -210,8 +210,10 @@ MonoBehaviour:
   damage: 10
   attackRange: 1.5
   attackDelay: 1.5
-  focusRange: 50
+  aggroRange: 50
   moveSpeed: 5
+  idleMoveDistance: 10
+  idleTargetChangeDelay: 3
 --- !u!114 &8063448163397160352
 MonoBehaviour:
   m_ObjectHideFlags: 0

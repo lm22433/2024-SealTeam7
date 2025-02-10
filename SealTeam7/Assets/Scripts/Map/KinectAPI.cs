@@ -10,7 +10,7 @@ using FishNet.Transporting;
 using Unity.Mathematics;
 using UnityEngine.Serialization;
 
-namespace Kinect
+namespace Map
 {
     public class KinectAPI : NetworkBehaviour
     {

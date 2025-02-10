@@ -769,6 +769,14 @@ PrefabInstance:
       value: 4269791958
       objectReference: {fileID: 0}
     - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: speed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: noiseScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: mapGenerator
       value: 
       objectReference: {fileID: 1725509231618877355}

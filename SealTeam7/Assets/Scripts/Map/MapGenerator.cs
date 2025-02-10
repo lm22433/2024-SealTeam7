@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 using Unity.Multiplayer;
 using FishNet.Object;
-using Kinect;
 using Player;
 
 namespace Map

@@ -3,8 +3,6 @@ using System.Linq;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using GameKit.Dependencies.Utilities;
-using Kinect;
 using Map;
 using Player;
 using UnityEngine;
@@ -13,16 +11,14 @@ using Weapons;
 
 namespace Enemies
 {
-    public abstract class Enemy : NetworkBehaviour, IDamageable
+    public abstract class Enemy : SandRider, IDamageable
     {
         [SerializeField] protected Slider healthBar;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected float damage;
         [SerializeField] protected float attackRange;
         [SerializeField] protected float attackDelay;
-        
-        private KinectAPI _kinect;
-        private NoiseGenerator _noiseGenerator;
+
         private GameObject _player;
         private float _timeSinceAttack;
         private Collider[] _hitResults;
@@ -32,8 +28,6 @@ namespace Enemies
         {
             base.OnStartServer();
             
-            _kinect = FindFirstObjectByType<KinectAPI>();
-            _noiseGenerator = FindFirstObjectByType<NoiseGenerator>();
             _health.Value = maxHealth;
             healthBar.maxValue = maxHealth;
             healthBar.value = _health.Value;
@@ -75,35 +69,16 @@ namespace Enemies
             playerMgr.TakeDamage(damage);
         }
 
-        private void Update()
-        {
-            if (!IsServerInitialized)
-            {
-                ClientUpdate();
-            }
-            else
-            {
-                ServerUpdate();
-            }
-        }
-
-        protected virtual void ClientUpdate()
+        protected override void ClientUpdate()
         {
             // turn health bar towards player
             if (_player) healthBar.transform.LookAt(_player.transform.position);
             healthBar.value = _health.Value;
         }
 
-        protected virtual void ServerUpdate()
+        protected override void ServerUpdate()
         {
-            var x = (int) transform.position.x;
-            var z = (int) transform.position.z;
-        
-            // sit on terrain
-            transform.SetPosition(false,
-                _kinect.isKinectPresent
-                    ? new Vector3(transform.position.x, _kinect.GetHeight(x, z) + 0.5f * transform.lossyScale.y, transform.position.z)
-                    : new Vector3(transform.position.x, _noiseGenerator.GetHeight(x, z) + 0.5f * transform.lossyScale.y, transform.position.z));
+            base.ServerUpdate();
             
             _timeSinceAttack += Time.deltaTime;
             

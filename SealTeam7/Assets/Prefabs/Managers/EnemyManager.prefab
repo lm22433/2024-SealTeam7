@@ -52,7 +52,7 @@ MonoBehaviour:
   - enemyPrefab: {fileID: 1751679817429754991, guid: 1e9031980c0706147b90c2bfe1f91de1, type: 3}
     position: {x: 240, y: 50, z: 240}
     rotation: {x: 0, y: 0, z: 0, w: 0}
-  - enemyPrefab: {fileID: 1751679817429754991, guid: 6925415dc67ece44eac25371bc2c0351, type: 3}
+  - enemyPrefab: {fileID: 2396644324036035506, guid: 0b57edb63162f7c46803f18a6576a619, type: 3}
     position: {x: 200, y: 50, z: 200}
     rotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &8164702890525660548

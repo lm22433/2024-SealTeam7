@@ -2,8 +2,6 @@
 using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
-using FishNet.Transporting;
-using Kinect;
 using Unity.Mathematics;
 using UnityEngine;
 
