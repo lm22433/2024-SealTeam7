@@ -56,11 +56,15 @@ def inference_frame(object_detector, hand_landmarker, frame):
     object_detection_done.clear()
     hand_landmarking_done.clear()
     
+    # filter out object detections that are obviously wrong
+    detections = list(filter(lambda d: d.bounding_box.width < 25 and d.bounding_box.height < 25, 
+                        object_detection_result.detections))
+    
     if VISUALISE_INFERENCE_RESULTS:
         scale = 3
         frame = cv2.resize(frame, (frame.shape[1] * scale, frame.shape[0] * scale), 
                            interpolation=cv2.INTER_NEAREST)
-        for detection in object_detection_result.detections:
+        for detection in detections:
             bbox = detection.bounding_box
             x = int(bbox.origin_x * scale)
             y = int(bbox.origin_y * scale)
@@ -85,7 +89,7 @@ def inference_frame(object_detector, hand_landmarker, frame):
     return {"objects": [{"type": detection.categories[0].category_name,
                          "x": detection.bounding_box.origin_x + detection.bounding_box.width / 2,
                          "y": detection.bounding_box.origin_y + detection.bounding_box.height / 2}
-                        for detection in object_detection_result.detections]}
+                        for detection in detections]}
 
 
 def inference_connection(conn):
