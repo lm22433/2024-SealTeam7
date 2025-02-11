@@ -6061,7 +6061,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.lodLevels.Array.data[2].maxViewDistance
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2570984315928328487, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: m_LocalScale.x

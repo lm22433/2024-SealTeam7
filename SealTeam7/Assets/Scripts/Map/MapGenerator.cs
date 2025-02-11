@@ -65,12 +65,12 @@ namespace Map
 
             chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
             
-            for (float z = 0; z < settings.size - settings.chunkRow * _spacing; z += (settings.chunkSize - 1) * _spacing) {
-                for (float x = 0; x < settings.size - settings.chunkRow * _spacing; x += (settings.chunkSize - 1) * _spacing)
+            for (float z = 0; z < settings.size; z += settings.chunkSize * _spacing) {
+                for (float x = 0; x < settings.size; x += settings.chunkSize * _spacing)
                 {
                     var chunk = Instantiate(chunkPrefab, new Vector3(z, 0f, x), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
-                    chunkSettings.x = (ushort) (x / ((settings.chunkSize - 1) * _spacing));
-                    chunkSettings.z = (ushort) (z / ((settings.chunkSize - 1) * _spacing));
+                    chunkSettings.x = (ushort) (x / (settings.chunkSize * _spacing));
+                    chunkSettings.z = (ushort) (z / (settings.chunkSize * _spacing));
                     chunk.SetSettings(chunkSettings);
                     _chunks.Add(chunk);
                 }
@@ -104,7 +104,7 @@ namespace Map
                 bool visible = false;
                 ushort lod = settings.lodLevels[^1].lod;
                 
-                var sqrDistanceToPlayer = chunk.SqrDistanceToPlayer(_playerPosition);
+                var sqrDistanceToPlayer = chunk.DistanceInChunks(_playerPosition);
 
                 foreach (var lodInfo in settings.lodLevels)
                 {

@@ -2,6 +2,7 @@
 using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
+using FishNet.Transporting;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -66,19 +67,19 @@ namespace Map
         }
         
         public void RequestNoise(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkNoiseServerRpc(InstanceFinder.ClientManager.Connection, lod, chunkSize, x, z);
+            RequestChunkNoiseServerRpc(InstanceFinder.ClientManager.Connection, Channel.Unreliable, lod, chunkSize, x, z);
         }
 
         [ServerRpc(RequireOwnership = false, DataLength = 1024)]
-        public void RequestChunkNoiseServerRpc(NetworkConnection conn, ushort lod, ushort chunkSize, int x, int z)
+        public void RequestChunkNoiseServerRpc(NetworkConnection conn, Channel channel, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkNoise(lod, chunkSize, x, z);
             
-            SendChunkNoiseTargetRpc(conn, depths, x, z, lod);
+            SendChunkNoiseTargetRpc(conn, Channel.Unreliable, depths, x, z, lod);
         }
 
         [TargetRpc (DataLength = 1024)]
-        private void SendChunkNoiseTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
+        private void SendChunkNoiseTargetRpc(NetworkConnection conn, Channel channel, half[] depths, int x, int z, ushort lod)
         {
             mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
         }
@@ -87,16 +88,16 @@ namespace Map
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * (chunkSize - 1);
-            int xChunkOffset = chunkX * (chunkSize - 1);
+            int zChunkOffset = chunkZ * chunkSize;
+            int xChunkOffset = chunkX * chunkSize;
             
-            var noise = new half[resolution * resolution];
+            var noise = new half[(resolution + 1) * (resolution + 1)];
             
-            for (int z = 0; z < resolution; z++)
+            for (int z = 0; z < resolution + 1; z++)
             {
-                for (int x = 0; x < resolution; x++)
+                for (int x = 0; x < resolution + 1; x++)
                 {
-                    noise[z * resolution + x] = _noise[(lodFactor * z + zChunkOffset) * size + xChunkOffset + lodFactor * x];
+                    noise[z * (resolution + 1) + x] = _noise[(lodFactor * z + zChunkOffset) * size + xChunkOffset + lodFactor * x];
                 }
             }
 

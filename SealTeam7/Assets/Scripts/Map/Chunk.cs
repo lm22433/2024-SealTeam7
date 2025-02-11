@@ -7,6 +7,8 @@ using UnityEngine;
 
 using System.Collections;
 using FishNet.Object;
+using FishNet.Transporting;
+using UnityEditor.MPE;
 
 namespace Map
 {
@@ -53,11 +55,11 @@ namespace Map
             _running = visible;
         }
 
-        
 
-        public float SqrDistanceToPlayer(Vector3 playerPos)
+        public float DistanceInChunks(Vector3 playerPos)
         {
             _playerPos = playerPos;
+            //return Mathf.Sqrt(_mesh.bounds.SqrDistance(playerPos)) / settings.size;
             return Vector3.Distance(new Vector3(playerPos.x, 0, playerPos.z), new Vector3(transform.position.x + (settings.size / 2), 0, transform.position.z + (settings.size / 2))) / settings.size;
         }
         
@@ -65,7 +67,7 @@ namespace Map
         {
             _lodFactor = 1;
             _requestedLod = settings.lod;
-            _vertexSideCount = settings.size / _lodFactor;
+            _vertexSideCount = settings.size / _lodFactor + 1;
             
             _mesh = new Mesh {name = "Generated Mesh"};
             _mesh.MarkDynamic();
@@ -97,7 +99,7 @@ namespace Map
                     StartCoroutine(GetHeightsCoroutine());
                 }
 
-                _meshCollider.enabled = SqrDistanceToPlayer(_playerPos) <= settings.colliderDst;
+                _meshCollider.enabled = DistanceInChunks(_playerPos) <= settings.colliderDst;
             }
 
             _meshRenderer.enabled = _running;
@@ -138,7 +140,7 @@ namespace Map
                 _newLod = true;
                 settings.lod = lod;
                 _lodFactor = lod == 0 ? 1 : lod * 2;
-                _vertexSideCount = settings.size / _lodFactor;
+                _vertexSideCount = settings.size / _lodFactor + 1;
                 _heightMap = new half[_vertexSideCount * _vertexSideCount];
                 _heightMap = heights;
                 UpdateMesh();

@@ -10,6 +10,7 @@ using FishNet.Transporting;
 using Unity.Mathematics;
 using UnityEngine.Serialization;
 using Python;
+using UnityEditor.MPE;
 
 namespace Map
 {
@@ -161,15 +162,15 @@ namespace Map
             //Write changed texture
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * (chunkSize - 1);
-            int xChunkOffset = chunkX * (chunkSize - 1);
+            int zChunkOffset = chunkZ * chunkSize;
+            int xChunkOffset = chunkX * chunkSize;
             
-            var depth = new half[resolution * resolution];
-            for (int z = 0; z < resolution; z++)
+            var depth = new half[(resolution + 1) * (resolution + 1)];
+            for (int z = 0; z < resolution + 1; z++)
             {
-                for (int x = 0; x < resolution; x++)
+                for (int x = 0; x < resolution + 1; x++)
                 {
-                    depth[z * resolution + x] = _depthMapArray[(lodFactor * z + zChunkOffset) * _width + xChunkOffset + lodFactor * x];
+                    depth[z * (resolution + 1) + x] = _depthMapArray[(lodFactor * z + zChunkOffset) * _width + xChunkOffset + lodFactor * x];
                 }
             }
 
