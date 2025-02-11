@@ -141,9 +141,14 @@ public static class PythonManager
         }
 
         var stopwatch = Stopwatch.StartNew();
-        var resizedImage = ResizeAndPad(colorImage.Memory.Span, colorImage.WidthPixels, colorImage.HeightPixels);
+        var span = colorImage.Memory.Span;
         stopwatch.Stop();
-        Debug.Log($"\u250fPythonManager.ResizeAndPad: {stopwatch.ElapsedMilliseconds} ms");
+        Debug.Log($"\u250fMemory.Span: {stopwatch.ElapsedMilliseconds} ms");
+        
+        stopwatch.Restart();
+        var resizedImage = ResizeAndPad(span, colorImage.WidthPixels, colorImage.HeightPixels);
+        stopwatch.Stop();
+        Debug.Log($"\u2523PythonManager.ResizeAndPad: {stopwatch.ElapsedMilliseconds} ms");
         
         stopwatch.Restart();
         _imageStream.Write(resizedImage);  // 256x256 BGRA image

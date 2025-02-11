@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using Microsoft.Azure.Kinect.Sensor;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 using Debug = UnityEngine.Debug;
 
 public class TestingUtilities : MonoBehaviour
@@ -102,14 +104,37 @@ public class TestingUtilities : MonoBehaviour
         if (PythonManager.IsConnected())
         {
             var stopwatch = Stopwatch.StartNew();
-            var colorImage = _kinect.GetCapture().Color;
-            stopwatch.Stop();
-            Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
+            try
+            {
+                var capture = _kinect.GetCapture();
+                stopwatch.Stop();
+                Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
 
-            stopwatch.Restart();
-            PythonManager.SendColorImage(colorImage);
-            stopwatch.Stop();
-            Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
+                stopwatch.Restart();
+                PythonManager.SendColorImage(capture.Color);
+                stopwatch.Stop();
+                Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
+            
+                capture.Dispose();
+            }
+            catch (AzureKinectException e)
+            {
+                Debug.LogError("Failed to get capture due to the following error:");
+                Debug.LogError(e);
+                Debug.LogError("Log messages:");
+                Debug.LogError(ToString<LogMessage>(e.LogMessages));
+                
+                _kinect.StopCameras();
+                _kinect.Dispose();
+                _kinect = Device.Open();
+                _kinect.StartCameras(new DeviceConfiguration {
+                    ColorFormat = ImageFormat.ColorBGRA32,
+                    ColorResolution = ColorResolution.R720p,
+                    DepthMode = DepthMode.NFOV_Unbinned,
+                    SynchronizedImagesOnly = true,
+                    CameraFPS = FPS.FPS30
+                });
+            }
             
             stopwatch.Restart();
             Debug.Log(ToString(PythonManager.GetSandboxObjects()));
@@ -122,5 +147,10 @@ public class TestingUtilities : MonoBehaviour
     public static string ToString<T>(T[] array)
     {
         return $"[{string.Join(", ", array)}]";
+    }
+    
+    public static string ToString<T>(ICollection<T> collection)
+    {
+        return $"[{string.Join(", ", (string[])collection.Select(x => x.ToString()))}]";
     }
 }
