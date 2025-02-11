@@ -1,3 +1,4 @@
+using FishNet.Object;
 using Input;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ enum State
     Debug
 }
 
-public class AdvancedMovement : MonoBehaviour
+public class AdvancedMovement : NetworkBehaviour
 {
     [Header("Movement")]
     //private float moveSpeed;
@@ -102,7 +103,12 @@ public class AdvancedMovement : MonoBehaviour
     
     private Camera _mainCamera;
 
-
+    public override void OnStartClient() {
+        base.OnStartClient();
+        if (!base.IsOwner) {
+            this.enabled = false;
+        }
+    }
 
     private void Start()
     {
@@ -136,6 +142,7 @@ public class AdvancedMovement : MonoBehaviour
 
     private void Update()
     {
+
         UpdateAnimatorParameters();
         UpdateOrientation();
 
