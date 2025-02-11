@@ -18,9 +18,9 @@ public static class PythonManager
     private const int PythonImageWidth = 256;
     private const int PythonImageHeight = 256;
     private const int ImageCropX = 356;
-    private const int ImageCropY = 74;
-    private const int ImageCropWidth = 571;
-    private const int ImageCropHeight = 420;
+    private const int ImageCropY = 130;
+    private const int ImageCropWidth = 575;
+    private const int ImageCropHeight = 440;
     private static readonly float ImageScale = 
         Math.Min((float)PythonImageWidth / ImageCropWidth, (float)PythonImageHeight / ImageCropHeight);
     private static readonly int ImageScaledWidth  = (int)(ImageCropWidth * ImageScale);
@@ -141,7 +141,7 @@ public static class PythonManager
         }
 
         var stopwatch = Stopwatch.StartNew();
-        var resizedImage = ResizeAndPad(colorImage.Memory.ToArray(), colorImage.WidthPixels, colorImage.HeightPixels);
+        var resizedImage = ResizeAndPad(colorImage.Memory.Span, colorImage.WidthPixels, colorImage.HeightPixels);
         stopwatch.Stop();
         Debug.Log($"\u250fPythonManager.ResizeAndPad: {stopwatch.ElapsedMilliseconds} ms");
         
@@ -158,7 +158,7 @@ public static class PythonManager
         {
             var buffer = new byte[1024];
             int bytesRead;
-            // Good practice to check if bytesRead > 0 in case the connection is closed
+            // When the connection is closed, a message of length 0 will be sent so this loop will break
             while ((bytesRead = _inferenceStream.Read(buffer, 0, buffer.Length)) > 0 && !_stopReceivingMessages)
             {
                 var receivedData = Encoding.GetString(buffer, 0, bytesRead);
@@ -201,7 +201,7 @@ public static class PythonManager
     }
 
 
-    private static byte[] ResizeAndPad(byte[] src, int srcWidth, int srcHeight)
+    private static byte[] ResizeAndPad(Span<byte> src, int srcWidth, int srcHeight)
     {
         // Allocate output buffer: 256x256 pixels, 4 bytes per pixel
         var dst = new byte[PythonImageWidth * PythonImageHeight * 4];

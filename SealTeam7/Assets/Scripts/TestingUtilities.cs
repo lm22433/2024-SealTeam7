@@ -18,7 +18,7 @@ public class TestingUtilities : MonoBehaviour
 
 
     // ReSharper disable Unity.PerformanceAnalysis
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Keypad1))
         {
