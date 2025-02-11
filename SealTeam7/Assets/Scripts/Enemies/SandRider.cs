@@ -20,11 +20,12 @@ namespace Enemies
 
         private void Update()
         {
-            if (!IsServerInitialized)
+            if (!IsServerInitialized || IsHostInitialized)
             {
                 ClientUpdate();
             }
-            else
+            
+            if (IsServerInitialized || IsHostInitialized)
             {
                 ServerUpdate();
             }

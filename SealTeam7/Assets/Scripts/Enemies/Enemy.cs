@@ -66,7 +66,7 @@ namespace Enemies
         [TargetRpc]
         protected virtual void DealDamageRpc(NetworkConnection conn, PlayerManager playerMgr, float dmg)
         {
-            playerMgr.TakeDamage(damage);
+            playerMgr.TakeDamage(dmg);
         }
 
         protected override void ClientUpdate()
@@ -83,7 +83,7 @@ namespace Enemies
             _timeSinceAttack += Time.deltaTime;
             
             Array.Clear(_hitResults, 0, _hitResults.Length);
-            Physics.OverlapSphereNonAlloc(transform.position, attackRange, _hitResults, LayerMask.GetMask("Player"), QueryTriggerInteraction.Collide);
+            Physics.OverlapSphereNonAlloc(transform.position, attackRange, _hitResults, LayerMask.GetMask("Player"));
             // sort by distance from enemy
             Collider closestPlayer = _hitResults.OrderBy(c => c ? (transform.position - c.transform.position).sqrMagnitude : float.MaxValue).First();
             if (closestPlayer && _timeSinceAttack > attackDelay)
