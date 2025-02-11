@@ -17,7 +17,7 @@ HAND_LANDMARKING_MODEL_PATH = 'hand_landmarking_model.task'
 HOST = "127.0.0.1"
 PORT = 65465
 
-MOCK_KINECT = False
+MOCK_KINECT = True
 """Mock the Kinect camera using OpenCV to read from a webcam"""
 
 VISUALISE_INFERENCE_RESULTS = True
@@ -159,6 +159,9 @@ def inference_connection(conn):
                         conn.send(data_json.encode())
                     except BlockingIOError:
                         print("[inference_connection] Failed to send data, buffer full.")
+                    except ConnectionResetError:
+                        print("[inference_connection] Client disconnected, closing connection.")
+                        break
 
             except KeyboardInterrupt:
                 print("[inference_connection] Closing connection.")
