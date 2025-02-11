@@ -96,6 +96,7 @@ public class AdvancedMovement : MonoBehaviour
     [SerializeField] private bool rightWallHit;
     [SerializeField] private bool frontWallHit;
     [SerializeField] private bool backWallHit;
+    private InputController _inputController;
     
     private Animator animator;
     
@@ -105,6 +106,7 @@ public class AdvancedMovement : MonoBehaviour
 
     private void Start()
     {
+        _inputController = GetComponent<InputController>();
         animator = GetComponentInChildren<Animator>();  
 
         _rb = GetComponent<Rigidbody>();
@@ -192,14 +194,14 @@ public class AdvancedMovement : MonoBehaviour
     private void MoveInput()
     {
         //Movement Inputs
-        Vector2 moveInput = InputController.GetInstance().GetMoveInput();
+        Vector2 moveInput = _inputController.GetMoveInput();
         _horInput = moveInput.x;
         _verInput = moveInput.y;
         
         
         
         //Jumping
-        if (InputController.GetInstance().GetJumpInput())
+        if (_inputController.GetJumpInput())
         {
             if (curState == State.Crouching)
             {
@@ -267,7 +269,7 @@ public class AdvancedMovement : MonoBehaviour
         }
 
         //Sprinting
-        if (InputController.GetInstance().GetSprintInput())
+        if (_inputController.GetSprintInput())
         {
             if (curState == State.Walking)
             {
@@ -299,7 +301,7 @@ public class AdvancedMovement : MonoBehaviour
         }
 
         //Crouching
-        if (InputController.GetInstance().GetCrouchInput())
+        if (_inputController.GetCrouchInput())
         {
             if (curState == State.Walking)
             {
@@ -332,7 +334,7 @@ public class AdvancedMovement : MonoBehaviour
         }
 
         //Sliding
-        if (InputController.GetInstance().GetCrouchInput())
+        if (_inputController.GetCrouchInput())
         {
             if (_verInput > 0 && curState == State.Sprinting)
             {
