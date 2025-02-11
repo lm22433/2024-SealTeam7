@@ -210,13 +210,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481311494}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.49748853, y: -0.22185121, z: 0.13330163, w: 0.8279601}
+  m_LocalRotation: {x: 0.19794534, y: -0.16576034, z: 0.1987731, w: 0.9454261}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 62, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 26.116, y: -15.155, z: 20.212}
 --- !u!114 &481311497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -736,6 +736,26 @@ PrefabInstance:
       propertyPath: mapGenerator
       value: 
       objectReference: {fileID: 1725509231618877355}
+    - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: isKinectPresent
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: similarityThreshold
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: _similarityThresholdMax
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: _similarityThresholdMin
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: _similarityThresholdAdjustor
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4004694715346132192, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

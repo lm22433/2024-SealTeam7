@@ -23,8 +23,12 @@ namespace Map
         [Header("IR Calibrations")] [SerializeField, Range(0, 255f)]
         private int irThreshold;
 
-        [Header("Similarity Threshold")] [SerializeField, Range(0.5f, 1f)]
-        private float similarityThreshold;
+        [Header("Similarity Threshold")] [SerializeField, Range(0f, 10f)]
+        private float _similarityThresholdMin;
+        [SerializeField, Range(0f, 500f)]
+        private float _similarityThresholdMax;
+        [SerializeField, Range(0f, 1f)]
+        private float _similarityThresholdAdjustor;
 
         //Internal Variables
         private Device _kinect;
@@ -197,30 +201,12 @@ namespace Map
 
             // Create Depth Buffer
             Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
-            //Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
-
-            //int rangeX = _xOffsetEnd - _xOffsetStart;
-            //int rangeY = _yOffsetEnd - _yOffsetStart;
-
-            //float samplingRateX = rangeX / _width;
-            //float samplingRateY = rangeY / _height;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _length; y++)
             {
                 for (int x = 0; x < _width; x++)
                 {
-                    
-                    /*
-                    int lowerX = (int)Mathf.Floor(x * samplingRateX + _xOffsetStart);
-                    int upperX = (int)Mathf.Ceil(x * samplingRateX + _xOffsetStart);
-                    int lowerY = (int)Mathf.Floor(y * samplingRateY + _xOffsetStart);
-                    int upperY = (int)Mathf.Ceil(y * samplingRateY + _xOffsetStart);
-
-                    ushort lowerSample = depthBuffer[lowerY * _width + lowerX];
-                    ushort upperSample = depthBuffer[upperY * _width + upperX];
-                    half depth = (half) ((half) (lowerSample + upperSample) / 2f);
-                    */
 
                     var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + x];
 
@@ -229,8 +215,6 @@ namespace Map
                     half depthRange = (half)(maximumSandDepth - minimumSandDepth);
                     half pixelValue = (half)(maximumSandDepth - depth);
 
-                    //if (ir < irThreshold)
-                    //{
                     half val;
                     if (depth == 0 || depth >= maximumSandDepth) // No depth image
                     {
@@ -249,8 +233,17 @@ namespace Map
 
                     }
 
-                    _depthMapArray[y * _width + x] = (half) (val * _maxHeight);
-                    //}
+                    var adj_val = (half) (val * _maxHeight);
+                    var prev_val = _depthMapArray[y * _width + x];
+                    if (adj_val < prev_val - _similarityThresholdMin ||
+                        adj_val > prev_val + _similarityThresholdMin) {
+
+                            if (adj_val < prev_val + _similarityThresholdMax && adj_val > prev_val - _similarityThresholdMax) {
+                                _depthMapArray[y * _width + x] = adj_val;
+                            } else {
+                                _depthMapArray[y * _width + x] = (half) Mathf.Lerp(prev_val, adj_val, _similarityThresholdAdjustor);
+                            }
+                    }
                 }
             }
 
