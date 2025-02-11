@@ -18,7 +18,6 @@ enum State
 
 public class AdvancedMovement : MonoBehaviour
 {
-
     [Header("Movement")]
     //private float moveSpeed;
     [SerializeField] private float friction;
@@ -44,6 +43,7 @@ public class AdvancedMovement : MonoBehaviour
     [Header("Crouching")]
     [SerializeField] private float crouchYScale;
     private float _startYScale;
+    
 
     [Header("Sliding")]
     [SerializeField] private float maxSlideTime;
@@ -96,9 +96,17 @@ public class AdvancedMovement : MonoBehaviour
     [SerializeField] private bool rightWallHit;
     [SerializeField] private bool frontWallHit;
     [SerializeField] private bool backWallHit;
+    
+    private Animator animator;
+    
+    private Camera _mainCamera;
+
+
 
     private void Start()
     {
+        animator = GetComponentInChildren<Animator>();  
+
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
 
@@ -119,19 +127,52 @@ public class AdvancedMovement : MonoBehaviour
         _startYScale = transform.localScale.y;
 
         curState = State.Walking;
+        
+        _mainCamera = Camera.main;
+        
     }
 
     private void Update()
     {
-        //check if grounded
+        UpdateAnimatorParameters();
+        UpdateOrientation();
+
+
         _grounded = Physics.CheckSphere(groundCheck.position, groundDist, whatIsGround);
 
         MoveInput();
         SpeedLimit();
 
         _rb.linearDamping = _grounded ? friction : airRes;
+        
+        
     }
+    
+    private void UpdateAnimatorParameters()
+    {
+        float smoothTime = 0.1f;
+        float smoothHzInput = Mathf.Lerp(animator.GetFloat("hzInput"), _horInput, smoothTime);
+        float smoothVInput = Mathf.Lerp(animator.GetFloat("vInput"), _verInput, smoothTime);
 
+        animator.SetFloat("hzInput", smoothHzInput);
+        animator.SetFloat("vInput", smoothVInput);
+
+        animator.SetBool("Walking", curState == State.Walking);
+        animator.SetBool("Crouching", curState == State.Crouching);
+        animator.SetBool("Rifle Run", curState == State.Sprinting);
+    }
+    
+    
+    private void UpdateOrientation()
+    {
+        Vector3 cameraForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+        if (cameraForward != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
+    }
+    
     private void FixedUpdate()
     {
         if (curState == State.Sliding)
@@ -154,9 +195,9 @@ public class AdvancedMovement : MonoBehaviour
         Vector2 moveInput = InputController.GetInstance().GetMoveInput();
         _horInput = moveInput.x;
         _verInput = moveInput.y;
-
-
-
+        
+        
+        
         //Jumping
         if (InputController.GetInstance().GetJumpInput())
         {
@@ -174,7 +215,6 @@ public class AdvancedMovement : MonoBehaviour
             }
             else if (curState == State.Sliding && _readyToJump)
             {
-
                 curState = State.SprintAir;
 
                 _readyToJump = false;
@@ -263,7 +303,7 @@ public class AdvancedMovement : MonoBehaviour
         {
             if (curState == State.Walking)
             {
-                transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+                // transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
                 _rb.AddForce(Vector3.down * 3f, ForceMode.Impulse);
                 curState = State.Crouching;
             }
@@ -327,8 +367,6 @@ public class AdvancedMovement : MonoBehaviour
 
         //SpeedControl
         SpeedControl();
-
-        animator.SetFloat(movementInputAnimParam, new Vector2(horInput, verInput).magnitude);
     }
 
     private void SpeedControl()
@@ -392,11 +430,10 @@ public class AdvancedMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-
         //Calculate movement Direction
         _moveDir = orientation.forward * _verInput + orientation.right * _horInput;
         _moveDir = _moveDir.normalized;
-
+        
         if (_grounded)
         {
             _momentum = _moveDir;
