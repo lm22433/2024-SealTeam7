@@ -58,7 +58,7 @@ namespace Map
         public float SqrDistanceToPlayer(Vector3 playerPos)
         {
             _playerPos = playerPos;
-            return Vector3.Distance(new Vector3(playerPos.x, playerPos.y, playerPos.z), new Vector3(transform.position.x + (settings.size / 2), settings.size / 2, transform.position.z + + (settings.size / 2))) / settings.size;
+            return Vector3.Distance(new Vector3(playerPos.x, 0, playerPos.z), new Vector3(transform.position.x + (settings.size / 2), 0, transform.position.z + (settings.size / 2))) / settings.size;
         }
         
         private void Awake()

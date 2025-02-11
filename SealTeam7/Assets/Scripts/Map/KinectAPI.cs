@@ -173,7 +173,7 @@ namespace Map
 
                 Color32[] col = new Color32[_depthMapArray.Length];
                 for(int i = 0; i < _depthMapArray.Length; i++) {
-                    col[i] = new Color32(Convert.ToByte(_depthMapArray[i] * 255), 0, 0, Convert.ToByte(255));
+                    col[i] = new Color32(Convert.ToByte(_depthMapArray[i] / _maxHeight * 255), 0, 0, Convert.ToByte(255));
                 }
 
                 texture.SetPixels32(col);
@@ -243,6 +243,8 @@ namespace Map
                             } else {
                                 _depthMapArray[y * _width + x] = (half) Mathf.Lerp(prev_val, adj_val, _similarityThresholdAdjustor);
                             }
+                    } else {
+                        _depthMapArray[y * _width + x] = (half) Mathf.Lerp(prev_val, adj_val, _similarityThresholdAdjustor);
                     }
                 }
             }
