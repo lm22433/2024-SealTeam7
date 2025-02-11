@@ -9,6 +9,7 @@ using Map;
 using FishNet.Transporting;
 using Unity.Mathematics;
 using UnityEngine.Serialization;
+using Python;
 
 namespace Map
 {
@@ -50,9 +51,11 @@ namespace Map
         [SerializeField, Range(0f, 1080f)] private int _yOffsetEnd;
 
         [SerializeField] public bool isKinectPresent;
+        [SerializeField] public bool isObjectDetection;
 
         [SerializeField] Texture2D texture;
         private bool _running;
+        private SandboxObject[] sandBoxObjects;
 
         public void Start()
         {
@@ -104,6 +107,7 @@ namespace Map
             }
         }
 
+        /* Chunk Request RPC */
         public void RequestTexture(ushort lod, ushort chunkSize, int x, int z) {
             RequestChunkTextureServerRpc(InstanceFinder.ClientManager.Connection, lod, chunkSize, x, z); 
         }
@@ -126,7 +130,12 @@ namespace Map
         {
             mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
         }
-        
+
+        /* Sandbox objects get request */
+        public SandboxObject[] RequestSandboxObjects() {
+            return sandBoxObjects;
+        }
+
         private half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
         {
             
@@ -185,11 +194,23 @@ namespace Map
 
         private async Task GetCaptureAsync()
         {
+            if (isObjectDetection) {
+                if (!PythonManager.Connect()) {
+                    Debug.LogError("Object detection script initialise failed!");
+                    return;
+                }
+            }
+
             while (_running)
             {
                 using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
                 using Capture capture = await Task.Run(() => _kinect.GetCapture());
                 GetDepthTextureFromKinect(capture, transformedDepth);
+                
+                if (isObjectDetection) {
+                    PythonManager.SendColorImage(capture.Color);
+                    sandBoxObjects = PythonManager.GetSandboxObjects();
+                }
             }
             
         }

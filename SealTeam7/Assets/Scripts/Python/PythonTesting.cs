@@ -7,6 +7,7 @@ using Debug = UnityEngine.Debug;
 
 namespace Python
 {
+    /*
     public class PythonTesting : MonoBehaviour
     {
         private float _nextBeep = float.MaxValue;
@@ -159,4 +160,5 @@ namespace Python
             return $"[{string.Join(", ", (string[])collection.Select(x => x.ToString()))}]";
         }
     }
+    */
 }
