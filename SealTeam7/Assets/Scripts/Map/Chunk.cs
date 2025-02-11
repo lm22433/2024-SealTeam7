@@ -92,7 +92,10 @@ namespace Map
         {
             if (_running)
             {
-                if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
+                if (!_gettingHeights) {
+                    StartCoroutine(UpdateHeightCoroutine());
+                    StartCoroutine(GetHeightsCoroutine());
+                }
 
                 _meshCollider.enabled = SqrDistanceToPlayer(_playerPos) <= settings.colliderDst;
             }
@@ -101,15 +104,23 @@ namespace Map
         }
 
         private IEnumerator GetHeightsCoroutine() {
-            _gettingHeights = true;
+           _gettingHeights = true;
             while (_running)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.25f);
                 GetHeights();
             }
             _gettingHeights = false;
-        }
+        } 
         
+        private IEnumerator UpdateHeightCoroutine() {
+            while (_running)
+            {
+                yield return new WaitForSeconds(0.1f);
+                UpdateHeights();
+            }
+        } 
+
         private void GetHeights() {
             if (!settings.isKinectPresent) {
                 _noiseGenerator.RequestNoise(_requestedLod, settings.size, settings.x, settings.z);
@@ -132,8 +143,7 @@ namespace Map
                 _heightMap = heights;
                 UpdateMesh();
             }
-            
-            UpdateHeights();
+        
         }
 
         private void UpdateHeights()

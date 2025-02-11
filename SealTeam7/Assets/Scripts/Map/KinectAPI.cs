@@ -235,17 +235,20 @@ namespace Map
 
                     var adj_val = (half) (val * _maxHeight);
                     var prev_val = _depthMapArray[y * _width + x];
-                    if (adj_val < prev_val - _similarityThresholdMin ||
-                        adj_val > prev_val + _similarityThresholdMin) {
 
-                            if (adj_val < prev_val + _similarityThresholdMax && adj_val > prev_val - _similarityThresholdMax) {
+                    if (adj_val != 0) {
+                        if (adj_val < prev_val - _similarityThresholdMin ||
+                            adj_val > prev_val + _similarityThresholdMin) {
                                 _depthMapArray[y * _width + x] = adj_val;
-                            } else {
-                                _depthMapArray[y * _width + x] = (half) Mathf.Lerp(prev_val, adj_val, _similarityThresholdAdjustor);
-                            }
-                    } else {
-                        _depthMapArray[y * _width + x] = (half) Mathf.Lerp(prev_val, adj_val, _similarityThresholdAdjustor);
+                        }
+
+                        if (adj_val < prev_val + _similarityThresholdMax && adj_val > prev_val - _similarityThresholdMax) {
+                            _depthMapArray[y * _width + x] = adj_val;
+                        } else {
+                            _depthMapArray[y * _width + x] = (half) Mathf.Lerp(prev_val, adj_val, _similarityThresholdAdjustor);
+                        }
                     }
+
                 }
             }
 

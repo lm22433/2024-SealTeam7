@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 491726dbfa157a04e96ec0c3c2fe33f3, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 8fa881c2b33440b488753a73333b050d, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -6045,7 +6045,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.lerpFactor
-      value: 0.01
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.colliderDst
@@ -41436,6 +41436,22 @@ PrefabInstance:
       propertyPath: 'Spawns.Array.data[0]'
       value: 
       objectReference: {fileID: 461117793}
+    - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
+      propertyPath: _enableIpv6
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
+      propertyPath: _clientAddress
+      value: 169.254.188.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
+      propertyPath: _ipv4BindAddress
+      value: 169.254.188.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
+      propertyPath: _ipv6BindAddress
+      value: fe80::f95f:eb2d:8732:5b7b%12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 4393252310584637057, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
@@ -41488,7 +41504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: isKinectPresent
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _networkObjectCache
@@ -41500,7 +41516,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdMax
-      value: 500
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdMin
@@ -41508,7 +41524,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdAdjustor
-      value: 0.4
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4004694715346132192, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -41557,6 +41573,10 @@ PrefabInstance:
     - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: size
       value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: speed
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: maxHeight
