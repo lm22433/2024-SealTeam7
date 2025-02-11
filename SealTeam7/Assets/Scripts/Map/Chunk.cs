@@ -4,10 +4,9 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
-using Kinect;
 
-using System.Threading.Tasks;
 using System.Collections;
+using FishNet.Object;
 
 namespace Map
 {
@@ -15,17 +14,17 @@ namespace Map
     public struct ChunkSettings {
         public ushort size;
         public float spacing;
-        public float maxHeight;
         public float lerpFactor;
         public ushort x;
         public ushort z;
         public ushort lod;
+        public ushort colliderDst;
         public bool isKinectPresent;
     }
 
     public class Chunk : MonoBehaviour {
         
-        [SerializeField] private ChunkSettings settings;
+        [SerializeField] public ChunkSettings settings;
         private int _lodFactor;
         private half[] _heightMap;
         private int _vertexSideCount;
@@ -38,16 +37,15 @@ namespace Map
         private Bounds _bounds;
         private bool _running;
         private bool _gettingHeights;
-        private bool _newLod;
-        private ushort requestedLod;
-        
+        private bool _newLod = true;
+        private ushort _requestedLod;
+        private Vector3 _playerPos;
         public void SetSettings(ChunkSettings s) { settings = s; }
         
         public void SetLod(ushort lod)
         {
             if (settings.lod == lod) return;
-            requestedLod = lod;
-
+            _requestedLod = lod;
         }
 
         public void SetVisible(bool visible)
@@ -55,25 +53,24 @@ namespace Map
             _running = visible;
         }
 
+        
+
         public float SqrDistanceToPlayer(Vector3 playerPos)
         {
-            return _bounds.SqrDistance(playerPos);
+            _playerPos = playerPos;
+            return Vector3.Distance(new Vector3(playerPos.x, 0, playerPos.z), new Vector3(transform.position.x + (settings.size / 2), 0, transform.position.z + (settings.size / 2))) / settings.size;
         }
         
         private void Awake()
         {
             _lodFactor = 1;
-            requestedLod = settings.lod;
+            _requestedLod = settings.lod;
             _vertexSideCount = settings.size / _lodFactor;
             
             _mesh = new Mesh {name = "Generated Mesh"};
             _mesh.MarkDynamic();
-            
-            _bounds = new Bounds(transform.position, new Vector3((settings.size - 1) * settings.spacing, 2f * settings.maxHeight, (settings.size - 1) * settings.spacing));
-            _mesh.bounds = _bounds;
                         
             _heightMap = new half[_vertexSideCount * _vertexSideCount];
-
             
             UpdateMesh();
             
@@ -85,39 +82,50 @@ namespace Map
             _meshCollider.enabled = false;
 
             if (!settings.isKinectPresent) {
-                _noiseGenerator = FindAnyObjectByType<NoiseGenerator>();
+                _noiseGenerator = FindFirstObjectByType<NoiseGenerator>(FindObjectsInactive.Include);
             } else {
-                _kinect = FindAnyObjectByType<KinectAPI>();
+                _kinect = FindFirstObjectByType<KinectAPI>(FindObjectsInactive.Include);
             }
-        }
+        }   
 
         private void Update()
         {
             if (_running)
             {
-                if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
+                if (!_gettingHeights) {
+                    StartCoroutine(UpdateHeightCoroutine());
+                    StartCoroutine(GetHeightsCoroutine());
+                }
 
-                _meshCollider.enabled = settings.lod == 0;
+                _meshCollider.enabled = SqrDistanceToPlayer(_playerPos) <= settings.colliderDst;
             }
 
             _meshRenderer.enabled = _running;
         }
 
         private IEnumerator GetHeightsCoroutine() {
-            _gettingHeights = true;
+           _gettingHeights = true;
             while (_running)
             {
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.25f);
                 GetHeights();
             }
             _gettingHeights = false;
-        }
+        } 
         
+        private IEnumerator UpdateHeightCoroutine() {
+            while (_running)
+            {
+                yield return new WaitForSeconds(0.1f);
+                UpdateHeights();
+            }
+        } 
+
         private void GetHeights() {
             if (!settings.isKinectPresent) {
-                _noiseGenerator.RequestNoise(requestedLod, settings.size, settings.x, settings.z);
+                _noiseGenerator.RequestNoise(_requestedLod, settings.size, settings.x, settings.z);
             } else {
-                _kinect.RequestTexture(requestedLod, settings.size, settings.x, settings.z);
+                _kinect.RequestTexture(_requestedLod, settings.size, settings.x, settings.z);
             }
         }
 
@@ -127,34 +135,34 @@ namespace Map
                 _heightMap = heights;
             }
             else {
+                _newLod = true;
                 settings.lod = lod;
                 _lodFactor = lod == 0 ? 1 : lod * 2;
                 _vertexSideCount = settings.size / _lodFactor;
-                _heightMap = new half[heights.Length];
+                _heightMap = new half[_vertexSideCount * _vertexSideCount];
                 _heightMap = heights;
-
                 UpdateMesh();
-
             }
-            UpdateHeights();
+        
         }
 
         private void UpdateHeights()
         {
             var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
             var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
-            
+
             var heightUpdate = new HeightUpdate {
                 Vertices = vertices,
                 Heights = heights,
-                Scale = settings.maxHeight,
-                LerpFactor = settings.lerpFactor
+                LerpFactor = _newLod ? 1f : settings.lerpFactor
             }.Schedule(_vertexSideCount * _vertexSideCount, 1);
             heightUpdate.Complete();
             
+            _newLod = false;
+
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
-            //_mesh.RecalculateTangents();
+            _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
             
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
@@ -175,9 +183,9 @@ namespace Map
             
             var meshVertexUpdate = new MeshVertexUpdate
             {
-                Heights = heights,
                 Vertices = vertices,
                 UVs = uvs,
+                Heights = heights,
                 VertexSideCount = _vertexSideCount,
                 Spacing = settings.spacing,
                 Size = settings.size,
@@ -212,12 +220,11 @@ namespace Map
         public NativeArray<float3> Vertices;
         public NativeArray<half> Heights;
         public float LerpFactor;
-        public float Scale;
         
         public void Execute(int index) {
             var p = Vertices[index];
             var y = p.y;
-            y = Mathf.Lerp(y, Heights[index] * Scale, LerpFactor);
+            y = Mathf.Lerp(y, Heights[index], LerpFactor);
             p.y = y;
             Vertices[index] = p;
         }
@@ -226,9 +233,9 @@ namespace Map
     [BurstCompile]
     public struct MeshVertexUpdate : IJobParallelFor
     {
-        public NativeArray<half> Heights;
         public NativeArray<float3> Vertices;
         public NativeArray<float2> UVs;
+        public NativeArray<half> Heights;
         public int VertexSideCount;
         public float Spacing;
         public float LODFactor;
@@ -237,8 +244,8 @@ namespace Map
         public void Execute(int index)
         {
             //update vertices
-            var x = (int) (index / VertexSideCount) * LODFactor * Spacing;
-            var z = (int) (index % VertexSideCount) * LODFactor * Spacing;
+            var x = index / VertexSideCount * LODFactor * Spacing;
+            var z = index % VertexSideCount * LODFactor * Spacing;
             Vertices[index] = new float3(x, Heights[index], z);
             
             //update uvs

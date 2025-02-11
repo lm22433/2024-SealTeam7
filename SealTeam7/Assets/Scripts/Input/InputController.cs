@@ -12,20 +12,11 @@ namespace Input
     
     public class InputController : MonoBehaviour
     {
-        private static InputController _inputController;
         private PlayerInputActions _playerInputActions;
         private PlayerInput _playerInput;
 
         private void Awake()
         {
-            if (_inputController != null && _inputController != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            _inputController = this;
-            DontDestroyOnLoad(gameObject);
-
             _playerInputActions = new PlayerInputActions();
             _playerInputActions.Enable();
 
@@ -45,11 +36,6 @@ namespace Input
         public bool IsUsingController()
         {
             return GetInputType() == InputType.Xbox;
-        }
-        
-        public static InputController GetInstance()
-        {
-            return _inputController;
         }
         
         // Common Input Methods

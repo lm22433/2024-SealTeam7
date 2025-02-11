@@ -1,10 +1,10 @@
+using FishNet.Object;
 using Input;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Movement
 {
-    public class CameraControl : MonoBehaviour
+    public class CameraControl : NetworkBehaviour
     {
 
         [Header("Mouse Sensitivity")]
@@ -15,28 +15,31 @@ namespace Movement
         [SerializeField] private float controllerSensitivityX;
         [SerializeField] private float controllerSensitivityY;
         
-        [SerializeField] private Transform orientation;
-        
+        private InputController _inputController;
         private float _xRotation;
         private float _yRotation;
 
-        private void Start()
+        public override void OnStartClient()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            _inputController = GetComponentInParent<InputController>();
         }
 
         private void Update()
         {
-            // Look Input
-            Vector2 lookInput = InputController.GetInstance().GetLookInput();
+            if (!IsOwner) return;
             
-            float sensitivityX = InputController.GetInstance().IsUsingController() ? controllerSensitivityX : mouseSensitivityX;
-            float sensitivityY = InputController.GetInstance().IsUsingController() ? controllerSensitivityY : mouseSensitivityY;
+            // Look Input
+            Vector2 lookInput = _inputController.GetLookInput();
+            
+            float sensitivityX = _inputController.IsUsingController() ? controllerSensitivityX : mouseSensitivityX;
+            float sensitivityY = _inputController.IsUsingController() ? controllerSensitivityY : mouseSensitivityY;
             
             float x = lookInput.x * Time.deltaTime * sensitivityX;
             float y = lookInput.y * Time.deltaTime * sensitivityY;
-
+            
+            
             _yRotation += x;
 
             _xRotation -= y;
@@ -50,9 +53,10 @@ namespace Movement
                 _yRotation += 360f;
             }
 
-            //rotate the camera
-            transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
-            orientation.rotation = Quaternion.Euler(0, _yRotation, 0);
+            // rotate the player
+            transform.parent.rotation = Quaternion.Euler(0f, _yRotation, 0f);
+            // rotate the camera
+            transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0f);
         }
     }
 }

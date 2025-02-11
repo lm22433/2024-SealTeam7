@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
-using FishNet.Transporting;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -11,28 +10,25 @@ namespace Map
     public class NoiseGenerator : NetworkBehaviour
     {
         [SerializeField] private int size;
-        [SerializeField] private float speed = 1f;
-        [SerializeField] private float noiseScale = 100f;
+        [SerializeField] private float speed;
+        [SerializeField] private float noiseScale;
+        [SerializeField] private float maxHeight;
         private half[] _noise;
         private bool _running;
         private float _time;
         [SerializeField] private MapGenerator mapGenerator;
+        private KinectAPI _kinect;
 
-        public override void OnStartServer()
+        private void Start()
         {
+            _kinect = FindFirstObjectByType<KinectAPI>();
+
+            if (!IsServerInitialized || _kinect.isKinectPresent) return;
+
             StartNoise();
-            ServerManager.OnRemoteConnectionState += OnClientConnected;
         }
 
-        private void OnClientConnected(NetworkConnection conn, RemoteConnectionStateArgs args)
-        {
-            if (args.ConnectionState == RemoteConnectionState.Started)
-            {
-                GetComponent<NetworkObject>().GiveOwnership(conn);
-            }
-        }
-        
-        public void StartNoise()
+        private void StartNoise()
         {
             _time = 0;
             _noise = new half[size * size];
@@ -47,7 +43,10 @@ namespace Map
 
         private void Update()
         {
-            _time += Time.deltaTime;
+            if (!_kinect.isKinectPresent)
+            {
+                _time += Time.deltaTime;
+            }
         }
 
         private void UpdateNoise()
@@ -60,37 +59,31 @@ namespace Map
                     {
                         var perlinX = x * noiseScale + _time * speed;
                         var perlinY = y * noiseScale + _time * speed;
-                        _noise[y * size + x] = (half) Mathf.PerlinNoise(perlinX, perlinY);
+                        _noise[y * size + x] = (half) (Mathf.PerlinNoise(perlinX, perlinY) * maxHeight);
                     }
                 }
             }
         }
         
         public void RequestNoise(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkNoiseServerRpc(Owner, lod, chunkSize, x, z); 
+            RequestChunkNoiseServerRpc(InstanceFinder.ClientManager.Connection, lod, chunkSize, x, z);
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void RequestChunkNoiseServerRpc(NetworkConnection targetConnection, ushort lod, ushort chunkSize, int x, int z)
+        [ServerRpc(RequireOwnership = false, DataLength = 1024)]
+        public void RequestChunkNoiseServerRpc(NetworkConnection conn, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkNoise(lod, chunkSize, x, z);
-
-            // Send the depth data back to the requesting client
-            //NetworkConnection targetConnection = NetworkManager.ServerManager.Clients[clientId];
-
-            //if (targetConnection != null)
-            //{
-                SendChunkNoiseTargetRpc(targetConnection, depths, x, z, lod);
-            //}
+            
+            SendChunkNoiseTargetRpc(conn, depths, x, z, lod);
         }
 
-        [TargetRpc]
+        [TargetRpc (DataLength = 1024)]
         private void SendChunkNoiseTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
         {
             mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
         }
         
-        public half[] GetChunkNoise(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
+        private half[] GetChunkNoise(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
         {
             var lodFactor = lod == 0 ? 1 : lod * 2;
             var resolution = chunkSize / lodFactor;
@@ -108,6 +101,11 @@ namespace Map
             }
 
             return noise;
+        }
+
+        public half GetHeight(int xPos, int zPos)
+        {
+            return _noise[zPos * size + xPos];
         }
     }
 }

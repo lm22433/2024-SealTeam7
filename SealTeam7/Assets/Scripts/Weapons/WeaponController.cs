@@ -14,6 +14,7 @@ namespace Weapons
         [Header("References")]
         [SerializeField] private NetworkObject weaponHolder;
         private Camera _playerCamera;
+        private InputController _inputController;
 
         private Gun _equippedGun;
         private Gun _primaryGun;
@@ -30,6 +31,7 @@ namespace Weapons
             base.OnStartClient();
             if (IsOwner) EquipWeapon(true);
             _playerCamera = Camera.main;
+            _inputController = GetComponentInParent<InputController>();
         }
         
         private void Update()
@@ -47,20 +49,18 @@ namespace Weapons
 
         private void HandleShooting()
         {
-            InputController inputController = InputController.GetInstance();
-
             switch (_equippedGun.fireMode)
             {
                 case FireMode.SemiAutomatic:
-                    if (inputController.GetShootInputPressed())
+                    if (_inputController.GetShootInputPressed())
                         _equippedGun.ServerShoot(_playerCamera.transform.position, _playerCamera.transform.forward);
                     break;
                 case FireMode.Automatic:
-                    if (inputController.GetShootInputHeld())
+                    if (_inputController.GetShootInputHeld())
                         _equippedGun.ServerShoot(_playerCamera.transform.position, _playerCamera.transform.forward);
                     break;
                 case FireMode.Burst:
-                    if (inputController.GetShootInputPressed())
+                    if (_inputController.GetShootInputPressed())
                         _equippedGun.ServerBurstShoot();
                     break;
             }
@@ -68,40 +68,30 @@ namespace Weapons
 
         private void HandleAiming()
         {
-            InputController inputController = InputController.GetInstance();
-
-            // if (inputController.GetAimInputHeld()) _equippedGun.TryAim();
+            // if (_inputController.GetAimInputHeld()) _equippedGun.TryAim();
             // else _equippedGun.TryUnaim();
         }
 
         private void HandleReload()
         {
-            InputController inputController = InputController.GetInstance();
-
-            if (inputController.GetReloadInput()) _equippedGun.ServerReload();
+            if (_inputController.GetReloadInput()) _equippedGun.ServerReload();
         }
 
         private void HandleMelee()
         {
-            InputController inputController = InputController.GetInstance();
-
-            // if (inputController.GetMeleeInput()) meleeWeapon.Attack();
+            // if (_inputController.GetMeleeInput()) meleeWeapon.Attack();
         }
         
         private void HandleWeaponSwap()
         {
-            InputController inputController = InputController.GetInstance();
-
-            if (inputController.GetScrollSwapWeaponInput() != 0.0f || inputController.GetSwapWeaponInput())
+            if (_inputController.GetScrollSwapWeaponInput() != 0.0f || _inputController.GetSwapWeaponInput())
                 EquipWeapon(_equippedGun == _secondaryGun);
         }
 
         private void HandleWeaponEquip()
         {
-            InputController inputController = InputController.GetInstance();
-            
-            if (inputController.GetEquipPrimaryInput()) EquipWeapon(true);
-            if (inputController.GetEquipSecondaryInput()) EquipWeapon(false);
+            if (_inputController.GetEquipPrimaryInput()) EquipWeapon(true);
+            if (_inputController.GetEquipSecondaryInput()) EquipWeapon(false);
         }
 
         [Server]
