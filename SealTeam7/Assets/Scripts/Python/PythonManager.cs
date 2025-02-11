@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Microsoft.Azure.Kinect.Sensor;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Debug = UnityEngine.Debug;
 
@@ -172,34 +173,42 @@ namespace Python
                 {
                     var receivedData = Encoding.GetString(buffer, 0, bytesRead);
                     // Debug.Log($"Received: {receivedData}");
-                    var objects = JObject.Parse(receivedData)["objects"];
-                    _sandboxObjects.Clear();
-                    foreach (var obj in objects!)
+
+                    try
                     {
-                        var objName = obj["type"]!.ToString();
-                        var x = obj["x"]!.ToObject<float>();
-                        var y = obj["y"]!.ToObject<float>();
-
-                        // Convert from cropped 256x256 image coordinates to 1280x720 image coordinates
-                        x = (x - ImageOffsetX) / ImageScale + ImageCropX;
-                        y = (y - ImageOffsetY) / ImageScale + ImageCropY;
-
-                        SandboxObject sandboxObject;
-                        switch (objName)
+                        var objects = JObject.Parse(receivedData)["objects"];
+                        _sandboxObjects.Clear();
+                        foreach (var obj in objects!)
                         {
-                            case "Bunker":
-                                sandboxObject = new SandboxObject.Bunker(x, y);
-                                break;
-                            case "Spawner":
-                                sandboxObject = new SandboxObject.Spawner(x, y);
-                                break;
-                            default:
-                                // Sometimes the model outputs "background" for some reason
-                                continue; // Just ignore and move onto the next object
-                        }
+                            var objName = obj["type"]!.ToString();
+                            var x = obj["x"]!.ToObject<float>();
+                            var y = obj["y"]!.ToObject<float>();
 
-                        // Debug.Log(sandboxObject);
-                        _sandboxObjects.Add(sandboxObject);
+                            // Convert from cropped 256x256 image coordinates to 1280x720 image coordinates
+                            x = (x - ImageOffsetX) / ImageScale + ImageCropX;
+                            y = (y - ImageOffsetY) / ImageScale + ImageCropY;
+
+                            SandboxObject sandboxObject;
+                            switch (objName)
+                            {
+                                case "Bunker":
+                                    sandboxObject = new SandboxObject.Bunker(x, y);
+                                    break;
+                                case "Spawner":
+                                    sandboxObject = new SandboxObject.Spawner(x, y);
+                                    break;
+                                default:
+                                    // Sometimes the model outputs "background" for some reason
+                                    continue; // Just ignore and move onto the next object
+                            }
+
+                            // Debug.Log(sandboxObject);
+                            _sandboxObjects.Add(sandboxObject);
+                        }
+                    }
+                    catch (JsonReaderException)
+                    {
+                        Debug.LogError("Failed to parse JSON. (This happens from time to time and is ok to ignore.)");
                     }
                 }
             }
