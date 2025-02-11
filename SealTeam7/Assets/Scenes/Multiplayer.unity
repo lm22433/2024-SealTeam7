@@ -524,6 +524,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
+      propertyPath: settings.size
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
+      propertyPath: settings.chunkRow
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
+      propertyPath: settings.chunkSize
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 6107364198926005335, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: m_Name
       value: Map
