@@ -656,8 +656,8 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 1024
-  riderSpeed: 0.05
-  startPoint: 20
+  riderSpeed: 0.1
+  startPoint: 300
   rangeGap: 0.75
   deadGap: 0.25
 --- !u!1 &1425133222024309691

@@ -16193,7 +16193,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &664947768
 AudioListener:
   m_ObjectHideFlags: 0
@@ -41442,7 +41442,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: _clientAddress
-      value: 169.254.188.42
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: _ipv4BindAddress
@@ -41476,7 +41476,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _maxHeight
-      value: 300
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _xOffsetEnd
@@ -41504,7 +41504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: isKinectPresent
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _networkObjectCache
@@ -41516,15 +41516,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdMax
-      value: 100
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdMin
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdAdjustor
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4004694715346132192, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: m_LocalPosition.x
