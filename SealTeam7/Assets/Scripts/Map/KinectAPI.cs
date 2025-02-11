@@ -108,7 +108,7 @@ namespace Map
             RequestChunkTextureServerRpc(InstanceFinder.ClientManager.Connection, lod, chunkSize, x, z); 
         }
 
-        [ServerRpc(RequireOwnership = false)]
+        [ServerRpc(RequireOwnership = false, DataLength = 1024)]
         private void RequestChunkTextureServerRpc(NetworkConnection conn, ushort lod, ushort chunkSize, int x, int z)
         {
             half[] depths = GetChunkTexture(lod, chunkSize, x, z);
@@ -121,7 +121,7 @@ namespace Map
             return _depthMapArray[zPos * _width + xPos];
         }
 
-        [TargetRpc]
+        [TargetRpc(DataLength = 1024)]
         private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
         {
             mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
