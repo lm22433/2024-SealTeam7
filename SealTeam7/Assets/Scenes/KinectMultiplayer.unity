@@ -41504,7 +41504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: isKinectPresent
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _networkObjectCache
@@ -41516,11 +41516,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdMax
-      value: 500
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdMin
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdAdjustor
