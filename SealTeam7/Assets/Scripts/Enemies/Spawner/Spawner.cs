@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Enemies.Spawner
 {
-    public class Spawner : SandRider
+    public class Spawner : Enemy
     {
         [SerializeField] private GameObject enemyPrefab;
         
@@ -15,7 +15,7 @@ namespace Enemies.Spawner
             InvokeRepeating(nameof(SpawnEnemy), 2f, 5f);
         }
 
-        protected override void ClientUpdate() {}
+        protected override void Attack(Collider hit) {}
 
         private void SpawnEnemy()
         {

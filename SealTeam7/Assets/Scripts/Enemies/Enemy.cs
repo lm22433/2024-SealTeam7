@@ -71,6 +71,8 @@ namespace Enemies
 
         protected override void ClientUpdate()
         {
+            //base.ClientUpdate();
+            
             // turn health bar towards player
             if (_player) healthBar.transform.LookAt(_player.transform.position);
             healthBar.value = _health.Value;

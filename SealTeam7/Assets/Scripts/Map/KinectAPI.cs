@@ -106,6 +106,9 @@ namespace Map
                 _kinect.StopCameras();
                 _kinect.Dispose();
             }
+
+            PythonManager.StopInference();
+            PythonManager.Disconnect();
         }
 
         /* Chunk Request RPC */
@@ -200,6 +203,8 @@ namespace Map
                     Debug.LogError("Object detection script initialise failed!");
                     return;
                 }
+                
+                PythonManager.StartInference();
             }
 
             while (_running)

@@ -463,6 +463,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3968960687263755526, guid: 94ea696fa9610424580b020eb23cb56e, type: 3}
+      propertyPath: enemies.Array.data[0].position.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3968960687263755526, guid: 94ea696fa9610424580b020eb23cb56e, type: 3}
+      propertyPath: enemies.Array.data[1].position.y
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4663553922956983051, guid: 94ea696fa9610424580b020eb23cb56e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -524,18 +532,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
-      propertyPath: settings.size
-      value: 512
-      objectReference: {fileID: 0}
-    - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
-      propertyPath: settings.chunkRow
-      value: 32
-      objectReference: {fileID: 0}
-    - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
-      propertyPath: settings.chunkSize
-      value: 16
-      objectReference: {fileID: 0}
     - target: {fileID: 6107364198926005335, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: m_Name
       value: Map
@@ -738,7 +734,7 @@ PrefabInstance:
       objectReference: {fileID: 1725509231618877355}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: isKinectPresent
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: similarityThreshold
@@ -799,14 +795,6 @@ PrefabInstance:
     - target: {fileID: 4728866070381216046, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: <SceneId>k__BackingField
       value: 4269791958
-      objectReference: {fileID: 0}
-    - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
-      propertyPath: speed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
-      propertyPath: noiseScale
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7053000638856149622, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: mapGenerator
