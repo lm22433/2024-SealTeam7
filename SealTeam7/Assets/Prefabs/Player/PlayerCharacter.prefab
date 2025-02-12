@@ -1457,14 +1457,14 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 3288779974816780927}
   _networkObjectCache: {fileID: 0}
   friction: 3
-  walkSpeed: 16
+  walkSpeed: 20
   sprintSpeed: 24
   crouchSpeed: 2.5
   jumpForce: 50
   jumpCooldown: 0.15
   airMultiplier: 0.75
   airRes: 1.5
-  boostForce: 7
+  boostForce: 30
   groundCheck: {fileID: 9095023509047750781}
   groundDist: 0.6
   whatIsGround:
