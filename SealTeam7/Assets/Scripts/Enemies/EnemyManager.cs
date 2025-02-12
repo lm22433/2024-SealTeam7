@@ -4,6 +4,7 @@ using UnityEngine;
 using FishNet.Object;
 using Map;
 using Python;
+using Random = UnityEngine.Random;
 
 namespace Enemies
 {
@@ -18,26 +19,38 @@ namespace Enemies
         {
             base.OnStartServer();
             _kinect = FindFirstObjectByType<KinectAPI>();
-            Invoke(nameof(SpawnEnemies), 15f);
+            if (_kinect.isObjectDetection) Invoke(nameof(SpawnEnemies), 15f);
+            else SpawnEnemies();
         }
         
         private void SpawnEnemies()
         {
-            _sandboxObjects = _kinect.RequestSandboxObjects();
-            
-            foreach (SandboxObject obj in _sandboxObjects)
+            if (_kinect.isObjectDetection)
             {
-                var prefab = obj switch
+                _sandboxObjects = _kinect.RequestSandboxObjects();
+            
+                foreach (SandboxObject obj in _sandboxObjects)
                 {
-                    SandboxObject.Bunker => enemies[0],
-                    SandboxObject.Spawner => enemies[1],
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-                var pos = new Vector3(obj.GetX() / 1920f * 512f * 8f, 300, obj.GetY() / 1080f * 512f * 8f);
-                var rot = Quaternion.identity;
+                    var prefab = obj switch
+                    {
+                        SandboxObject.Bunker => enemies[0],
+                        SandboxObject.Spawner => enemies[1],
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+                    var pos = new Vector3(obj.GetX() / 1920f * 512f * 8f, 300, obj.GetY() / 1080f * 512f * 8f);
+                    var rot = Quaternion.identity;
                 
-                NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(prefab, pos, rot, true);
-                ServerManager.Spawn(nob);
+                    NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(prefab, pos, rot, true);
+                    ServerManager.Spawn(nob);
+                }
+            }
+            else
+            {
+                foreach (GameObject enemy in enemies)
+                {
+                    NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(enemy, new Vector3(2000f + Random.Range(0, 400f), 200f, 2000f + Random.Range(0, 400f)), Quaternion.identity, true);
+                    ServerManager.Spawn(nob);
+                }
             }
         }
     }

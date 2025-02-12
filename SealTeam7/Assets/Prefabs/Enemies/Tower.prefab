@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 869511597898815384}
   - component: {fileID: 1448857424155693795}
   - component: {fileID: 2695824826894419655}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 6673445667224611427}
   - component: {fileID: 2219078868332284798}
   - component: {fileID: 79002606634063809}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 8063448163397160352}
   - component: {fileID: 4011380672439983619}
   - component: {fileID: 6535751230976391164}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,6 +241,7 @@ MonoBehaviour:
   riderSpeed: 10
   lowPoint: -5
   highPoint: 50
+  groundDeadZone: 1
   sandRiderMask:
     serializedVersion: 2
     m_Bits: 1024
@@ -455,7 +456,7 @@ GameObject:
   - component: {fileID: 6161890077978005267}
   - component: {fileID: 2358039151297735579}
   - component: {fileID: 1562255284747772374}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -532,7 +533,7 @@ GameObject:
   - component: {fileID: 43056960820897684}
   - component: {fileID: 8593072050091752472}
   - component: {fileID: 8667774725735504768}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -683,7 +684,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8697781947245626870}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}

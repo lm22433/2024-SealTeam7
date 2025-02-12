@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2179562515817961349}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 1740730207242113425}
   - component: {fileID: 2980683709424853820}
   - component: {fileID: 397712837384095739}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,6 +88,18 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 8886591516997784953}
   _networkObjectCache: {fileID: 0}
+  riderSpeed: 0.1
+  lowPoint: -1.3
+  highPoint: 50
+  groundDeadZone: 1
+  sandRiderMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  healthBar: {fileID: 5246514622489523862}
+  maxHealth: 0
+  damage: 0
+  attackRange: 0
+  attackDelay: 0
   enemyPrefab: {fileID: 1751679817429754991, guid: 6925415dc67ece44eac25371bc2c0351, type: 3}
 --- !u!114 &8886591516997784953
 MonoBehaviour:
@@ -226,7 +238,7 @@ GameObject:
   - component: {fileID: 2399004861377665502}
   - component: {fileID: 138798228333455237}
   - component: {fileID: 2389489532848314051}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,7 +313,7 @@ GameObject:
   - component: {fileID: 2317143376891458592}
   - component: {fileID: 882097713767097969}
   - component: {fileID: 1666457188924532107}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,7 +390,7 @@ GameObject:
   - component: {fileID: 6107594713159230334}
   - component: {fileID: 1152812508979891825}
   - component: {fileID: 4221494610097874372}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
