@@ -48,7 +48,7 @@ namespace Enemies
             {
                 foreach (GameObject enemy in enemies)
                 {
-                    NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(enemy, new Vector3(2000f + Random.Range(0, 400f), 200f, 2000f + Random.Range(0, 400f)), Quaternion.identity, true);
+                    NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(enemy, new Vector3(2000f + Random.Range(0, 400f), 100f, 2000f + Random.Range(0, 400f)), Quaternion.identity, true);
                     ServerManager.Spawn(nob);
                 }
             }

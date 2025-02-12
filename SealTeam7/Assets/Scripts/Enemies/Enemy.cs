@@ -11,7 +11,7 @@ using Weapons;
 
 namespace Enemies
 {
-    public abstract class Enemy : SandRider, IDamageable
+    public abstract class Enemy : NetworkBehaviour, IDamageable
     {
         [SerializeField] protected Slider healthBar;
         [SerializeField] protected float maxHealth;
@@ -68,20 +68,28 @@ namespace Enemies
         {
             playerMgr.TakeDamage(dmg);
         }
-
-        protected override void ClientUpdate()
+        
+        public virtual void Update()
         {
-            base.ClientUpdate();
-            
+            if (!IsServerInitialized || IsHostInitialized)
+            {
+                ClientUpdate();
+            }
+            if (IsServerInitialized || IsHostInitialized)
+            {
+                ServerUpdate();
+            }
+        }
+
+        protected virtual void ClientUpdate()
+        {
             // turn health bar towards player
             if (_player) healthBar.transform.LookAt(_player.transform.position);
             healthBar.value = _health.Value;
         }
 
-        protected override void ServerUpdate()
+        protected virtual void ServerUpdate()
         {
-            base.ServerUpdate();
-            
             _timeSinceAttack += Time.deltaTime;
             
             Array.Clear(_hitResults, 0, _hitResults.Length);
