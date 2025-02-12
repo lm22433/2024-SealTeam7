@@ -53,16 +53,16 @@ namespace Weapons
             {
                 case FireMode.SemiAutomatic:
                     if (_inputController.GetShootInputPressed())
-                        _equippedGun.ServerShoot(_playerCamera.transform.position, _playerCamera.transform.forward);
+                        _equippedGun.Shoot(_playerCamera.transform.position, _playerCamera.transform.forward);
                     break;
                 case FireMode.Automatic:
                     if (_inputController.GetShootInputHeld())
-                        _equippedGun.ServerShoot(_playerCamera.transform.position, _playerCamera.transform.forward);
+                        _equippedGun.Shoot(_playerCamera.transform.position, _playerCamera.transform.forward);
                     break;
-                case FireMode.Burst:
-                    if (_inputController.GetShootInputPressed())
-                        _equippedGun.ServerBurstShoot();
-                    break;
+                // case FireMode.Burst:
+                //     if (_inputController.GetShootInputPressed())
+                //         _equippedGun.ServerBurstShoot();
+                //     break;
             }
         }
 
@@ -74,7 +74,7 @@ namespace Weapons
 
         private void HandleReload()
         {
-            if (_inputController.GetReloadInput()) _equippedGun.ServerReload();
+            if (_inputController.GetReloadInput()) _equippedGun.TryReload();
         }
 
         private void HandleMelee()
