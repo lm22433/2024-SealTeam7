@@ -192,10 +192,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1551505408707016499}
+  - component: {fileID: 3193384075777477330}
   - component: {fileID: 5560034783651537600}
   - component: {fileID: 7075149597350487499}
   - component: {fileID: 8881626575857163370}
-  - component: {fileID: 3193384075777477330}
   - component: {fileID: 8063448163397160352}
   - component: {fileID: 4011380672439983619}
   - component: {fileID: 6535751230976391164}
@@ -223,6 +223,33 @@ Transform:
   - {fileID: 3790110093009705745}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3193384075777477330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751679817429754991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdf40716051e41da8c71d8d627fa4f84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 8063448163397160352}
+  _networkObjectCache: {fileID: 8063448163397160352}
+  riderSpeed: 10
+  lowPoint: -5
+  highPoint: 50
+  sandRiderMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  healthBar: {fileID: 8792885710231045271}
+  maxHealth: 1000
+  damage: 10
+  attackRange: 30
+  attackDelay: 1.5
+  lookSpeed: 3
 --- !u!33 &5560034783651537600
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -298,27 +325,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &3193384075777477330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1751679817429754991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdf40716051e41da8c71d8d627fa4f84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 8063448163397160352}
-  _networkObjectCache: {fileID: 8063448163397160352}
-  healthBar: {fileID: 8792885710231045271}
-  maxHealth: 1000
-  damage: 10
-  attackRange: 30
-  attackDelay: 1.5
-  lookSpeed: 3
 --- !u!114 &8063448163397160352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,25 +337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <IsNested>k__BackingField: 0
-  <ComponentIndex>k__BackingField: 0
-  <PredictedSpawn>k__BackingField: {fileID: 0}
-  <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours:
-  - {fileID: 3193384075777477330}
-  - {fileID: 4011380672439983619}
-  - {fileID: 6535751230976391164}
-  InitializedParentNetworkBehaviour: {fileID: 0}
-  InitializedNestedNetworkObjects: []
-  RuntimeParentNetworkBehaviour: {fileID: 0}
-  RuntimeChildNetworkBehaviours: []
-  _isNetworked: 1
-  _isSpawnable: 1
-  _isGlobal: 0
-  _initializeOrder: 0
-  _preventDespawnOnDisconnect: 0
-  _defaultDespawnType: 0
-  _initializedValusSet: 1
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -373,6 +360,25 @@ MonoBehaviour:
     Rotation: {x: 0, y: 0, z: 0, w: 1}
     Scale: {x: 4, y: 4, z: 4}
     IsValid: 1
+  <IsNested>k__BackingField: 0
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours:
+  - {fileID: 3193384075777477330}
+  - {fileID: 4011380672439983619}
+  - {fileID: 6535751230976391164}
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  _initializedValusSet: 1
 --- !u!114 &4011380672439983619
 MonoBehaviour:
   m_ObjectHideFlags: 0

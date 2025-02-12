@@ -1,48 +1,58 @@
 ﻿using FishNet.Object;
-using GameKit.Dependencies.Utilities;
 using UnityEngine;
-using Map;
 
 namespace Enemies
 {
     public abstract class SandRider : NetworkBehaviour
     {
-        private KinectAPI _kinect;
-        private NoiseGenerator _noiseGenerator;
-        
-        public override void OnStartServer()
-        {
-            base.OnStartServer();
+        [SerializeField] private float riderSpeed = 0.1f;
+        [SerializeField] private float lowPoint = -1.3f;
+        [SerializeField] private float highPoint = 50f;
+        [SerializeField] private float groundDeadZone = 1f;
+        [SerializeField] private LayerMask sandRiderMask;
 
-            _kinect = FindFirstObjectByType<KinectAPI>();
-            _noiseGenerator = FindFirstObjectByType<NoiseGenerator>();
+        private Vector3 _velocity;
+        private bool _hasRb;
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            Rigidbody rb;
+            _hasRb = TryGetComponent<Rigidbody>(out rb);
         }
 
-        private void Update()
+        public virtual void Update()
         {
             if (!IsServerInitialized || IsHostInitialized)
             {
                 ClientUpdate();
             }
-            
             if (IsServerInitialized || IsHostInitialized)
             {
                 ServerUpdate();
             }
         }
-        
-        protected abstract void ClientUpdate();
 
-        protected virtual void ServerUpdate()
+        protected virtual void ClientUpdate()
         {
-            var x = (int) transform.position.x;
-            var z = (int) transform.position.z;
-        
-            // sit on terrain
-            transform.SetPosition(false,
-                _kinect.isKinectPresent
-                    ? new Vector3(transform.position.x, _kinect.GetHeight(x, z) + transform.lossyScale.y, transform.position.z)
-                    : new Vector3(transform.position.x, _noiseGenerator.GetHeight(x, z) + transform.lossyScale.y, transform.position.z));
+            RaycastHit hit;
+            // Does the ray intersect any objects excluding the player layer
+            if (Physics.Raycast(transform.position + Vector3.up * highPoint, Vector3.down, out hit, highPoint - lowPoint, sandRiderMask))
+            { 
+                Debug.DrawRay(transform.position + Vector3.up * highPoint, Vector3.down * hit.distance, Color.yellow);
+
+                _velocity += Vector3.Lerp(Vector3.zero, Vector3.up * (highPoint - lowPoint - hit.distance),
+                    (highPoint - lowPoint - hit.distance / (highPoint - lowPoint)) * riderSpeed * Time.deltaTime);
+                
+            } else {
+                Debug.DrawRay(transform.position + Vector3.up * highPoint, Vector3.down * (highPoint - lowPoint), Color.green);
+                if (!_hasRb) _velocity += Physics.gravity * Time.deltaTime;
+            }
+            
+            // apply vertical translation
+            transform.Translate(_velocity);
         }
+
+        protected virtual void ServerUpdate() {}
     }
 }
