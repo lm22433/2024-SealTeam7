@@ -44,7 +44,6 @@ namespace Movement
             } else {
                 Debug.DrawRay(transform.position + new Vector3(0, startPoint, 0), Vector3.down * (startPoint + rangeGap / 2), Color.green); 
             }
-
         }
     }
 }

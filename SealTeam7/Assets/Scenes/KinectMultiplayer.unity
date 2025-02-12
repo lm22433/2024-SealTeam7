@@ -41598,11 +41598,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: _clientAddress
-      value: localhost
+      value: 127.0.0.1
       objectReference: {fileID: 0}
     - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: _ipv4BindAddress
-      value: 
+      value: 127.0.0.1
       objectReference: {fileID: 0}
     - target: {fileID: 9091182631984252867, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: _ipv6BindAddress
@@ -41660,7 +41660,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: isKinectPresent
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: maximumSandDepth
