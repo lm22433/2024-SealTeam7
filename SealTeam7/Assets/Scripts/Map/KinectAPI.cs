@@ -10,7 +10,6 @@ using FishNet.Transporting;
 using Unity.Mathematics;
 using UnityEngine.Serialization;
 using Python;
-using UnityEditor.MPE;
 
 namespace Map
 {

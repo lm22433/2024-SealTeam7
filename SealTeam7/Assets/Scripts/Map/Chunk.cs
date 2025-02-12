@@ -8,7 +8,6 @@ using UnityEngine;
 using System.Collections;
 using FishNet.Object;
 using FishNet.Transporting;
-using UnityEditor.MPE;
 
 namespace Map
 {

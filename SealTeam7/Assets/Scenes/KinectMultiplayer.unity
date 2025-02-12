@@ -6045,7 +6045,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.lerpFactor
-      value: 1
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.colliderDst
@@ -6053,7 +6053,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.lodLevels.Array.data[0].maxViewDistance
-      value: 50
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.lodLevels.Array.data[1].maxViewDistance
@@ -41632,7 +41632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _maxHeight
-      value: 400
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _xOffsetEnd
@@ -41663,6 +41663,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: maximumSandDepth
+      value: 1175
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: minimumSandDepth
+      value: 900
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
+      propertyPath: isObjectDetection
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _networkObjectCache
       value: 
       objectReference: {fileID: 1711618778}
@@ -41676,11 +41688,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdMin
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdAdjustor
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4004694715346132192, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: m_LocalPosition.x
