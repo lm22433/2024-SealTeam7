@@ -12,11 +12,11 @@ namespace Map
         private readonly float _noiseScale;
         private readonly float _heightScale;
         
-        private byte[] _heightMap;
+        private float[] _heightMap;
         private bool _running;
         private float _time;
 
-        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref byte[] heightMap)
+        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref float[] heightMap)
         {
             _size = size;
             _speed = speed;
@@ -34,9 +34,9 @@ namespace Map
             _running = false;
         }
         
-        public void UpdateTime()
+        public void AdvanceTime(float deltaTime)
         {
-            _time += Time.deltaTime;
+            _time += deltaTime;
         }
 
         private void UpdateNoise()
@@ -49,7 +49,7 @@ namespace Map
                     {
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
-                        _heightMap[y * _size + x] = (byte) (_heightScale * Mathf.PerlinNoise(perlinX, perlinY));
+                        _heightMap[y * (_size + 1) + x] = _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
                     }
                 }
             }

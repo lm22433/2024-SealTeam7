@@ -15,9 +15,9 @@ namespace Map
     public class KinectAPI
     {
         //Internal Variables
-        private Device _kinect;
-        private Transformation _transformation;
-        private byte[] _heightMap;
+        private readonly Device _kinect;
+        private readonly Transformation _transformation;
+        private float[] _heightMap;
         
         private readonly float _heightScale;
         private readonly int _minimumSandDepth;
@@ -33,7 +33,7 @@ namespace Map
 
         private bool _running;
 
-        public KinectAPI(float heightScale, int minimumSandDepth, int maximumSandDepth, int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref byte[] heightMap)
+        public KinectAPI(float heightScale, int minimumSandDepth, int maximumSandDepth, int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap)
         {
             _heightScale = heightScale;
             _minimumSandDepth = minimumSandDepth;
@@ -71,7 +71,7 @@ namespace Map
             _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
             _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
 
-            _heightMap = new byte[(width + 1) * (height + 1)];
+            _heightMap = new float[(width + 1) * (height + 1)];
 
             _running = true;
             Task.Run(GetCaptureAsync);
@@ -100,7 +100,7 @@ namespace Map
             _transformation.DepthImageToColorCamera(capture, transformedDepth);
 
             // Create Depth Buffer
-            Span<byte> depthBuffer = transformedDepth.GetPixels<byte>().Span;
+            Span<float> depthBuffer = transformedDepth.GetPixels<float>().Span;
             //Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
 
             //int rangeX = _xOffsetEnd - _xOffsetStart;
@@ -110,9 +110,9 @@ namespace Map
             //float samplingRateY = rangeY / _height;
 
             // Create a new image with data from the depth and colour image
-            for (int y = 0; y < _height; y++)
+            for (int y = 0; y < _height + 1; y++)
             {
-                for (int x = 0; x < _width; x++)
+                for (int x = 0; x < _width + 1; x++)
                 {
                     
                     /*
@@ -130,12 +130,12 @@ namespace Map
 
 
                     // Calculate pixel values
-                    var depthRange = (byte)(_maximumSandDepth - _minimumSandDepth);
-                    var pixelValue = (byte)(_maximumSandDepth - depth);
+                    var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
+                    var pixelValue = (_maximumSandDepth - depth);
 
                     //if (ir < irThreshold)
                     //{
-                    byte val;
+                    float val;
                     if (depth == 0 || depth >= _maximumSandDepth) // No depth image
                     {
                         val = 0;
@@ -146,10 +146,10 @@ namespace Map
                     }
                     else
                     {
-                        val = (byte) (_heightScale * pixelValue / depthRange);
+                        val = _heightScale * pixelValue / depthRange;
                     }
 
-                    _heightMap[y * _width + x] = val;
+                    _heightMap[y * (_width + 1) + x] = val;
                     //}
                 }
             }

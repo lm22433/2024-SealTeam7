@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseSpeed: 0.1
-  noiseScale: 0.01
+  noiseScale: 0.1
   width: 0
   height: 0
   xOffsetStart: 0
@@ -313,9 +313,9 @@ MonoBehaviour:
   irThreshold: 0
   similarityThreshold: 0.5
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
-  size: 16
-  chunkRow: 4
-  chunkSize: 4
+  size: 480
+  chunkRow: 20
+  chunkSize: 24
   heightScale: 50
   lerpFactor: 1
   lodInfos:

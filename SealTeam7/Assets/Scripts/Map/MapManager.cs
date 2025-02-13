@@ -53,7 +53,7 @@ namespace Map
         
         private NoiseGenerator _noise;
         private KinectAPI _kinect;
-        private byte[] _heightMap;
+        private float[] _heightMap;
         private List<Chunk> _chunks;
         private float _spacing;
         
@@ -61,7 +61,7 @@ namespace Map
         {
             _spacing = (float) size / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
-            _heightMap = new byte[(size + 1) * (size + 1)];
+            _heightMap = new float[(size + 1) * (size + 1)];
             
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
@@ -70,9 +70,7 @@ namespace Map
                 Size = chunkSize,
                 Spacing = _spacing,
                 LerpFactor = lerpFactor,
-                IsKinectPresent = isKinectPresent,
-                LOD = lodInfos[^1].lod,
-                Manager = this
+                LOD = lodInfos[^1].lod
             };
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap);
@@ -116,7 +114,7 @@ namespace Map
 
         private void Update()
         {
-            _noise.UpdateTime();
+            _noise.AdvanceTime(Time.deltaTime);
         }
     }
 }
