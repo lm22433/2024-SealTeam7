@@ -6049,15 +6049,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.colliderDst
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.lodLevels.Array.data[0].maxViewDistance
-      value: 70
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.lodLevels.Array.data[1].maxViewDistance
-      value: 150
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 1207114573146572940, guid: 88da12636867c2042ae194e1371c3ada, type: 3}
       propertyPath: settings.lodLevels.Array.data[2].maxViewDistance
@@ -41764,7 +41764,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _maxHeight
-      value: 600
+      value: 800
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _xOffsetEnd
@@ -41796,11 +41796,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: maximumSandDepth
-      value: 1175
+      value: 1090
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: minimumSandDepth
-      value: 900
+      value: 950
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: isObjectDetection
@@ -41820,7 +41820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdMin
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1339698634150387149, guid: cf5ccd2f9f682884ab6f3fd8c0442be2, type: 3}
       propertyPath: _similarityThresholdAdjustor
