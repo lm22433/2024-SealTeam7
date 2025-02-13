@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,20 +9,13 @@ using FishNet.Object;
 namespace Map
 {
     [Serializable]
-    public struct LOD
-    {
-        public float maxViewDistance;
-        public ushort lod;
-    }
-    
-    [Serializable]
     public struct MapSettings {
         public ushort size;
         public ushort chunkRow;
         public ushort chunkSize;
         public float maxHeight;
         public float lerpFactor;
-        public LOD[] lodLevels;
+        public LODInfo[] lodLevels;
         public float playerMoveThreshold;
     }
     
@@ -54,12 +47,12 @@ namespace Map
    
             ChunkSettings chunkSettings = new ChunkSettings
             {
-                size = settings.chunkSize,
-                spacing = _spacing,
-                maxHeight = settings.maxHeight,
-                lerpFactor = settings.lerpFactor,
-                lod = settings.lodLevels[^1].lod,
-                isKinectPresent = isKinectPresent
+                Size = settings.chunkSize,
+                Spacing = _spacing,
+                MaxHeight = settings.maxHeight,
+                LerpFactor = settings.lerpFactor,
+                LOD = settings.lodLevels[^1].lod,
+                IsKinectPresent = isKinectPresent
             };
 
             chunkPrefab.GetComponent<Chunk>().SetSettings(chunkSettings);
@@ -68,8 +61,8 @@ namespace Map
                 for (float x = 0; x < settings.size - settings.chunkRow * _spacing; x += (settings.chunkSize - 1) * _spacing)
                 {
                     var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, transform).GetComponent<Chunk>();
-                    chunkSettings.x = (ushort) (x / ((settings.chunkSize - 1) * _spacing));
-                    chunkSettings.z = (ushort) (z / ((settings.chunkSize - 1) * _spacing));
+                    chunkSettings.X = (ushort) (x / ((settings.chunkSize - 1) * _spacing));
+                    chunkSettings.Z = (ushort) (z / ((settings.chunkSize - 1) * _spacing));
                     chunk.SetSettings(chunkSettings);
                     _chunks.Add(chunk);
                 }
@@ -125,4 +118,4 @@ namespace Map
             return _chunks[x * settings.chunkRow + z];
         }
     }
-}
+}*/
