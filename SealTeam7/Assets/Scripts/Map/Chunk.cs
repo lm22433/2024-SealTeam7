@@ -5,9 +5,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
-using System.Threading.Tasks;
-using System.Collections;
-
 namespace Map
 {
     [Serializable]

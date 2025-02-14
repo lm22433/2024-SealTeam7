@@ -59,6 +59,8 @@ namespace Map
         
         private void Awake()
         {
+            texture = new Texture2D(size + 1, size + 1, TextureFormat.RGBA32, false);
+            
             _spacing = (float) size / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
             _heightMap = new float[(size + 1) * (size + 1)];
@@ -111,9 +113,33 @@ namespace Map
                 chunk.SetVisible(visible);
             }
         }
+        
+        [SerializeField] private bool takeSnapshot;
+        [SerializeField] private Texture2D texture;
+        private void Update() {
+            if (takeSnapshot) {
 
-        private void Update()
-        {
+                Color32[] col = new Color32[_heightMap.Length];
+                for(int i = 0; i < _heightMap.Length; i++) {
+                    try
+                    {
+                        col[i] = new Color32(Convert.ToByte(Mathf.Min(255, _heightMap[i] / heightScale * 255)), 0, 0, Convert.ToByte(255));   
+                    }
+                    catch (OverflowException e)
+                    {
+                        Debug.LogWarning(e.Message);
+                        col[i] = new Color32();
+                    }
+                }
+
+                texture.SetPixels32(col);
+                texture.Apply();
+                Debug.Log(_heightMap.Length);
+                Debug.Log("Applied Texture");
+
+                takeSnapshot = false;
+            }
+            
             _noise.AdvanceTime(Time.deltaTime);
         }
     }

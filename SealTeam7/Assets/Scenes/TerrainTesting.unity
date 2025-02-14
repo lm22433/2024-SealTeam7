@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseSpeed: 0.1
-  noiseScale: 0.1
+  noiseScale: 0.01
   width: 0
   height: 0
   xOffsetStart: 0
@@ -322,6 +322,8 @@ MonoBehaviour:
   - maxChunkDistance: 4
     lod: 0
   isKinectPresent: 0
+  takeSnapshot: 0
+  texture: {fileID: 0}
 --- !u!1 &1013185061
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,13 +2,6 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.Kinect.Sensor;
-using FishNet.Object;
-using FishNet.Connection;
-using Map;
-using FishNet.Transporting;
-using Unity.Mathematics;
-using Unity.Multiplayer;
-using UnityEngine.Serialization;
 
 namespace Map
 {
