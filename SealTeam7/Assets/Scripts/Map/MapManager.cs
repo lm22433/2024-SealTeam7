@@ -54,7 +54,7 @@ namespace Map
         
         private NoiseGenerator _noise;
         private KinectAPI _kinect;
-        private NativeArray<float> _heightMap;
+        private float[] _heightMap;
         private List<Chunk> _chunks;
         private float _spacing;
         
@@ -64,7 +64,7 @@ namespace Map
             
             _spacing = (float) size / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
-            _heightMap = new NativeArray<float>((size + 1) * (size + 1), Allocator.Persistent);
+            _heightMap = new float[(size + 1) * (size + 1)];
             
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
@@ -90,11 +90,6 @@ namespace Map
                     _chunks.Add(chunk);
                 }
             }
-        }
-
-        ~MapManager()
-        {
-            _heightMap.Dispose();
         }
         
         [SerializeField] private bool takeSnapshot;
