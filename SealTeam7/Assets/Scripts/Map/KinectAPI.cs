@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.Kinect.Sensor;
+using Unity.Collections;
 
 namespace Map
 {
@@ -10,7 +11,7 @@ namespace Map
         //Internal Variables
         private readonly Device _kinect;
         private readonly Transformation _transformation;
-        private float[] _heightMap;
+        private NativeArray<float> _heightMap;
         
         private readonly float _heightScale;
         private readonly int _minimumSandDepth;
@@ -26,7 +27,7 @@ namespace Map
 
         private bool _running;
 
-        public KinectAPI(float heightScale, int minimumSandDepth, int maximumSandDepth, int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap)
+        public KinectAPI(float heightScale, int minimumSandDepth, int maximumSandDepth, int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref NativeArray<float> heightMap)
         {
             _heightScale = heightScale;
             _minimumSandDepth = minimumSandDepth;
@@ -63,8 +64,6 @@ namespace Map
 
             _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
             _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
-
-            _heightMap = new float[(width + 1) * (height + 1)];
 
             _running = true;
             Task.Run(GetCaptureAsync);

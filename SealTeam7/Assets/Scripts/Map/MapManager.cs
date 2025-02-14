@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Map
@@ -53,7 +54,7 @@ namespace Map
         
         private NoiseGenerator _noise;
         private KinectAPI _kinect;
-        private float[] _heightMap;
+        private NativeArray<float> _heightMap;
         private List<Chunk> _chunks;
         private float _spacing;
         
@@ -63,13 +64,14 @@ namespace Map
             
             _spacing = (float) size / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
-            _heightMap = new float[(size + 1) * (size + 1)];
+            _heightMap = new NativeArray<float>((size + 1) * (size + 1), Allocator.Persistent);
             
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
             ChunkSettings chunkSettings = new ChunkSettings
             {
                 Size = chunkSize,
+                MapSize = size,
                 Spacing = _spacing,
                 LerpFactor = lerpFactor,
                 LOD = lodInfos[^1].lod
@@ -89,29 +91,10 @@ namespace Map
                 }
             }
         }
-        
-        
-        private void UpdateChunkLods()
+
+        ~MapManager()
         {
-            foreach(var chunk in _chunks) {
-                bool visible = false;
-                int lod = lodInfos[^1].lod;
-                
-                var chunkDistanceToCamera = chunk.ChunkDistance(Vector3.zero);
-
-                foreach (var lodInfo in lodInfos)
-                {
-                    if (chunkDistanceToCamera <= lodInfo.maxChunkDistance)
-                    {
-                        lod = lodInfo.lod;
-                        visible = true;
-                        break;
-                    }
-                }
-
-                chunk.SetLod(lod);
-                chunk.SetVisible(visible);
-            }
+            _heightMap.Dispose();
         }
         
         [SerializeField] private bool takeSnapshot;

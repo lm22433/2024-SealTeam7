@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Map
@@ -10,11 +11,11 @@ namespace Map
         private readonly float _noiseScale;
         private readonly float _heightScale;
         
-        private float[] _heightMap;
+        private NativeArray<float> _heightMap;
         private bool _running;
         private float _time;
 
-        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref float[] heightMap)
+        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref NativeArray<float> heightMap)
         {
             _size = size;
             _speed = speed;

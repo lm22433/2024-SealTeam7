@@ -10,6 +10,7 @@ namespace Map
     [Serializable]
     public struct ChunkSettings {
         public int Size;
+        public int MapSize;
         public float Spacing;
         public float LerpFactor;
         public int X;
@@ -20,41 +21,23 @@ namespace Map
     public class Chunk : MonoBehaviour {
         [SerializeField] private ChunkSettings _settings;
         private int _lodFactor;
-        private float[] _heightMap;
+        private NativeArray<float> _heightMap;
         private int _vertexSideCount;
         private Mesh _mesh;
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
-        private MeshRenderer _meshRenderer;
         private bool _running;
-        private bool _gettingHeights;
         
-        private bool _newLod;
-        private int _requestedLod;
-        
-        public void SetLod(int lod)
-        {
-            if (_settings.LOD == lod) return;
-            _requestedLod = lod;
-
-        }
-
-        public void SetVisible(bool visible)
-        {
-            _running = visible;
-        }
-
         public int ChunkDistance(Vector3 playerPos)
         {
             return (int) Vector3.Distance(new Vector3(playerPos.x, 0, playerPos.z), new Vector3(transform.position.x + _settings.Size / 2, 0, transform.position.z + _settings.Size / 2)) / _settings.Size;
         }
         
-        public void Setup(ChunkSettings s, ref float[] heightMap)
+        public void Setup(ChunkSettings s, ref NativeArray<float> heightMap)
         {
             _settings = s;
             
             _lodFactor = 1;
-            _requestedLod = _settings.LOD;
             _vertexSideCount = _settings.Size / _lodFactor + 1;
             _heightMap = heightMap;
             
@@ -62,13 +45,14 @@ namespace Map
             _mesh.MarkDynamic();
             
             UpdateMesh();
-            
-            _meshRenderer = GetComponent<MeshRenderer>();
+
             _meshFilter = GetComponent<MeshFilter>();
             _meshCollider = GetComponent<MeshCollider>();
             _meshFilter.sharedMesh = _mesh;
             _meshCollider.sharedMesh = _mesh;
             _meshCollider.enabled = false;
+            
+            _running = true;
         }
 
         private void Update()
@@ -77,71 +61,41 @@ namespace Map
             {
                 UpdateHeights();
             }
-            
-            
-            /*
-            if (_running)
-            {
-                if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
-
-                _meshCollider.enabled = false;
-            }
-
-            _meshRenderer.enabled = _running;
-            */
-        }
-
-        public void SetHeights(float[] heights, ushort lod)
-        {
-            if (_settings.LOD == lod) {
-                _heightMap = heights;
-            }
-            else {
-                _settings.LOD = lod;
-                _lodFactor = lod == 0 ? 1 : lod * 2;
-                _vertexSideCount = _settings.Size / _lodFactor + 1;
-                _heightMap = new float[heights.Length];
-                _heightMap = heights;
-
-                UpdateMesh();
-            }
-            
-            UpdateHeights();
         }
 
         private void UpdateHeights()
         {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
-            var heights = new NativeArray<float>(numberOfVertices, Allocator.TempJob);
+            // var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
+            // var heights = new NativeArray<float>(numberOfVertices, Allocator.TempJob);
             
-            for (int z = 0; z < _vertexSideCount; z++)
+            int zChunkOffset = _settings.Z * _settings.Size;
+            int xChunkOffset = _settings.X * _settings.Size;
+
+            for (int i = 0; i < numberOfVertices; i++)
             {
-                for (int x = 0; x < _vertexSideCount; x++)
-                {
-                    var index = z * _vertexSideCount + x;
-                    var xChunkOffset = _settings.X * _settings.Size;
-                    var zChunkOffset = _settings.Z * _settings.Size;
-                    var chunkIndex = (zChunkOffset + z * _lodFactor) * _settings.Size + xChunkOffset + x * _lodFactor;
-                    heights[index] = _heightMap[chunkIndex];
-                }
+                var x = (int) (i / _vertexSideCount * _lodFactor * _settings.Spacing);
+                var z = (int) (i % _vertexSideCount * _lodFactor * _settings.Spacing);
+                var p = _mesh.vertices[i];
+                var y = p.y;
+                y = Mathf.Lerp(y, _heightMap[(_lodFactor * z + zChunkOffset) * _settings.MapSize + xChunkOffset + _lodFactor * x], _settings.LerpFactor);
+                p.y = y;
+                _mesh.vertices[i] = p;
             }
             
-            var heightUpdate = new HeightUpdate {
+            /*var heightUpdate = new HeightUpdate {
                 Vertices = vertices,
                 Heights = heights,
                 LerpFactor = _settings.LerpFactor
             }.Schedule(numberOfVertices, 1);
-            heightUpdate.Complete();
+            heightUpdate.Complete();*/
             
-            _mesh.SetVertices(vertices);
+            // _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
             _mesh.RecalculateBounds();
             
-            if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
-            
-            vertices.Dispose();
-            heights.Dispose();
+            // vertices.Dispose();
+            // heights.Dispose();
         }
 
         private void UpdateMesh() {
@@ -153,15 +107,14 @@ namespace Map
             var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
             var heights = new NativeArray<float>(numberOfVertices, Allocator.TempJob);
             
+            int zChunkOffset = _settings.Z * _settings.Size;
+            int xChunkOffset = _settings.X * _settings.Size;
+            
             for (int z = 0; z < _vertexSideCount; z++)
             {
                 for (int x = 0; x < _vertexSideCount; x++)
                 {
-                    var index = z * _vertexSideCount + x;
-                    var xChunkOffset = _settings.X * _settings.Size;
-                    var zChunkOffset = _settings.Z * _settings.Size;
-                    var chunkIndex = (zChunkOffset + z * _lodFactor) * _settings.Size + xChunkOffset + x * _lodFactor;
-                    heights[index] = _heightMap[chunkIndex];
+                    heights[z * _vertexSideCount + x] = _heightMap[(_lodFactor * z + zChunkOffset) * _settings.MapSize + xChunkOffset + _lodFactor * x];
                 }
             }
             
