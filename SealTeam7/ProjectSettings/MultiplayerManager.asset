@@ -45,8 +45,8 @@ MultiplayerManager:
     - UnityEngine.UI:UnityEngine.UI:Scrollbar
     - UnityEngine.UI:UnityEngine.UI:Text
     - UnityEngine.UI:UnityEngine.UI:GridLayoutGroup
-    - UnityEngine.UI:UnityEngine.UI:VerticalLayoutGroup
     - UnityEngine.UI:UnityEngine.UI:Mask
+    - UnityEngine.UI:UnityEngine.UI:VerticalLayoutGroup
     - UnityEngine.UI:UnityEngine.UI:Button
     - UnityEngine.UI:UnityEngine.UI:LayoutElement
     - UnityEngine.UI:UnityEngine.EventSystems:Physics2DRaycaster
