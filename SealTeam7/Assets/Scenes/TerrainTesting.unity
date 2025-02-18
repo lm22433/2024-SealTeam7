@@ -249,8 +249,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 584457522}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.31663692, y: -0.48500508, z: 0.19389433, w: 0.7917804}
-  m_LocalPosition: {x: 477.059, y: 166.57997, z: 89.47094}
+  m_LocalRotation: {x: -0.43930843, y: -0.043080613, z: 0.021138448, w: -0.89705366}
+  m_LocalPosition: {x: 177.44604, y: 231.3125, z: 9.174185}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -314,13 +314,13 @@ MonoBehaviour:
   similarityThreshold: 0.5
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   size: 480
-  chunkRow: 20
-  chunkSize: 24
+  chunkRow: 4
+  chunkSize: 120
   heightScale: 50
   lerpFactor: 0.1
   lodInfos:
   - maxChunkDistance: 0
-    lod: 1
+    lod: 0
   isKinectPresent: 0
   takeSnapshot: 0
   texture: {fileID: 0}

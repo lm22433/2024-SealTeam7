@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
@@ -54,44 +55,50 @@ namespace Map
         
         private NoiseGenerator _noise;
         private KinectAPI _kinect;
-        private float[] _heightMap;
+        private NativeArray<float> _heightMap;
         private List<Chunk> _chunks;
         private float _spacing;
-        
+
         private void Awake()
         {
-            texture = new Texture2D(size + 1, size + 1, TextureFormat.RGBA32, false);
-            
-            _spacing = (float) size / chunkRow / chunkSize;
+            texture = new Texture2D(size + chunkRow, size + chunkRow, TextureFormat.RGBA32, false);
+
+            _spacing = (float)size / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
-            _heightMap = new float[(size + 1) * (size + 1)];
-            
+            _heightMap = new NativeArray<float>((size + chunkRow) * (size + chunkRow), Allocator.Persistent);
+
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
             ChunkSettings chunkSettings = new ChunkSettings
             {
                 Size = chunkSize,
-                MapSize = size,
                 Spacing = _spacing,
                 LerpFactor = lerpFactor,
                 LOD = lodInfos[^1].lod
             };
-            
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap);
-            else _noise = new NoiseGenerator(size, noiseSpeed, noiseScale, heightScale, ref _heightMap);
-            
-            for (float z = 0; z < size; z += chunkSize * _spacing) {
-                for (float x = 0; x < size; x += chunkSize * _spacing)
+
+            if (isKinectPresent)
+                _kinect = new KinectAPI(heightScale, minimumSandDepth, maximumSandDepth, irThreshold,
+                    similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd,
+                    ref _heightMap);
+            else
+                _noise = new NoiseGenerator(chunkRow, chunkSize, size, noiseSpeed, noiseScale, heightScale,
+                    ref _heightMap);
+
+            for (int z = 0; z < chunkRow; z++)
+            {
+                for (int x = 0; x < chunkRow; x++)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
-                    chunkSettings.X = (int) (x / (chunkSize * _spacing));
-                    chunkSettings.Z = (int) (z / (chunkSize * _spacing));
+                    var chunk = Instantiate(chunkPrefab,
+                        new Vector3(x * chunkSize * _spacing, 0f, z * chunkSize * _spacing), Quaternion.identity,
+                        chunkParent.transform).GetComponent<Chunk>();
+                    chunkSettings.Index = z * chunkRow + x;
                     chunk.Setup(chunkSettings, ref _heightMap);
                     _chunks.Add(chunk);
                 }
             }
         }
-        
+
         [SerializeField] private bool takeSnapshot;
         [SerializeField] private Texture2D texture;
         private void Update() {
@@ -118,7 +125,7 @@ namespace Map
                 takeSnapshot = false;
             }
             
-            _noise.AdvanceTime(Time.deltaTime);
+            _noise?.AdvanceTime(Time.deltaTime);
         }
     }
 }
