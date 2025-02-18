@@ -79,13 +79,13 @@ namespace Map
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap);
             else _noise = new NoiseGenerator(size, noiseSpeed, noiseScale, heightScale, ref _heightMap);
-            
-            for (float z = 0; z < size; z += chunkSize * _spacing) {
-                for (float x = 0; x < size; x += chunkSize * _spacing)
+
+            for (int z = 0; z < chunkRow; z++) {
+                for (int x = 0; x < chunkRow; x++)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x, 0f, z), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
-                    chunkSettings.X = (int) (x / (chunkSize * _spacing));
-                    chunkSettings.Z = (int) (z / (chunkSize * _spacing));
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x * chunkSize * _spacing, 0f, z * chunkSize * _spacing), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
+                    chunkSettings.X = x;
+                    chunkSettings.Z = z;
                     chunk.Setup(chunkSettings, ref _heightMap);
                     _chunks.Add(chunk);
                 }

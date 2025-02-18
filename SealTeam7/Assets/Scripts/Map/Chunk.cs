@@ -42,7 +42,8 @@ namespace Map
             _meshCollider = GetComponent<MeshCollider>();
             _meshFilter.sharedMesh = _mesh;
             _meshCollider.sharedMesh = _mesh;
-            // _meshCollider.enabled = false;
+            
+            _meshCollider.enabled = false;
 
             _running = true;
         }

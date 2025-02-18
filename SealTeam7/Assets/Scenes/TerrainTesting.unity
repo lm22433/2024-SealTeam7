@@ -313,14 +313,14 @@ MonoBehaviour:
   irThreshold: 0
   similarityThreshold: 0.5
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
-  size: 480
-  chunkRow: 20
-  chunkSize: 24
+  size: 3840
+  chunkRow: 8
+  chunkSize: 60
   heightScale: 50
   lerpFactor: 0.1
   lodInfos:
   - maxChunkDistance: 0
-    lod: 1
+    lod: 0
   isKinectPresent: 0
   takeSnapshot: 0
   texture: {fileID: 0}
