@@ -119,6 +119,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &211765064
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 211765065}
+  - component: {fileID: 211765066}
+  m_Layer: 0
+  m_Name: Ball Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &211765065
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211765064}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1920, y: 400, z: 1920}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &211765066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211765064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09203d91fe749994ab9407ba30ff0c6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballRadius: 10
+  numberOfBalls: 100
+  spawnRadius: 1000
 --- !u!1 &584457522
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +269,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 4000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -249,8 +296,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 584457522}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.31663692, y: -0.48500508, z: 0.19389433, w: 0.7917804}
-  m_LocalPosition: {x: 477.059, y: 166.57997, z: 89.47094}
+  m_LocalRotation: {x: -0.30164248, y: -0.051356945, z: 0.016654033, w: -0.9518913}
+  m_LocalPosition: {x: 1155.2411, y: 927.7571, z: -320.40244}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -314,14 +361,15 @@ MonoBehaviour:
   similarityThreshold: 0.5
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   size: 3840
-  chunkRow: 8
-  chunkSize: 60
-  heightScale: 50
+  chunkRow: 2
+  chunkSize: 240
+  heightScale: 300
   lerpFactor: 0.1
-  lodInfos:
-  - maxChunkDistance: 0
-    lod: 0
+  lodInfo:
+    lod: 1
+    colliderLod: 2
   isKinectPresent: 0
+  paused: 0
   takeSnapshot: 0
   texture: {fileID: 0}
 --- !u!1 &1013185061
@@ -452,3 +500,4 @@ SceneRoots:
   - {fileID: 584457526}
   - {fileID: 1013185063}
   - {fileID: 594167917}
+  - {fileID: 211765065}

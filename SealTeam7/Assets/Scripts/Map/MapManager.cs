@@ -8,8 +8,8 @@ namespace Map
     [Serializable]
     public struct LODInfo
     {
-        public int maxChunkDistance;
         public int lod;
+        public int colliderLod;
     }
     
     public class MapManager : MonoBehaviour
@@ -45,14 +45,20 @@ namespace Map
         [SerializeField] private int chunkSize;
         [SerializeField] private float heightScale;
         [SerializeField] private float lerpFactor;
-        [SerializeField] private LODInfo[] lodInfos;
+        [SerializeField] private LODInfo lodInfo;
         
         [Header("")]
         [Header("Environment Settings")]
         [Header("")]
         [SerializeField] private bool isKinectPresent;
+        [Header("")]
+        [Header("Debug")]
+        [Header("")]
+        [SerializeField] private bool paused;
+        [SerializeField] private bool takeSnapshot;
+        [SerializeField] private Texture2D texture;
         
-        private NoiseGenerator _noise;
+        private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
         private float[] _heightMap;
         private List<Chunk> _chunks;
@@ -60,11 +66,11 @@ namespace Map
         
         private void Awake()
         {
-            texture = new Texture2D(size + 1, size + 1, TextureFormat.RGBA32, false);
-            
             _spacing = (float) size / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
-            _heightMap = new float[(size + 1) * (size + 1)];
+            _heightMap = new float[(int) (size / _spacing + 1) * (int) (size / _spacing + 1)];
+            
+            texture = new Texture2D((int) (size / _spacing) + 1, (int) (size / _spacing) + 1, TextureFormat.RGBA32, false);
             
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
@@ -74,13 +80,15 @@ namespace Map
                 MapSize = size,
                 Spacing = _spacing,
                 LerpFactor = lerpFactor,
-                LOD = lodInfos[^1].lod
+                LOD = lodInfo.lod,
+                ColliderLOD = lodInfo.colliderLod
             };
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap);
-            else _noise = new NoiseGenerator(size, noiseSpeed, noiseScale, heightScale, ref _heightMap);
+            else _noiseGenerator = new NoiseGenerator((int) (size / _spacing), _spacing, noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
-            for (int z = 0; z < chunkRow; z++) {
+            for (int z = 0; z < chunkRow; z++)
+            {
                 for (int x = 0; x < chunkRow; x++)
                 {
                     var chunk = Instantiate(chunkPrefab, new Vector3(x * chunkSize * _spacing, 0f, z * chunkSize * _spacing), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
@@ -91,34 +99,40 @@ namespace Map
                 }
             }
         }
-        
-        [SerializeField] private bool takeSnapshot;
-        [SerializeField] private Texture2D texture;
-        private void Update() {
-            if (takeSnapshot) {
 
+        private void OnApplicationQuit()
+        {
+            _noiseGenerator.Stop();
+        }
+
+        private void Update()
+        {
+            if (takeSnapshot)
+            {
                 Color32[] col = new Color32[_heightMap.Length];
-                for(int i = 0; i < _heightMap.Length; i++) {
+                for(int i = 0; i < _heightMap.Length; i++)
+                {
                     try
                     {
-                        col[i] = new Color32(Convert.ToByte(Mathf.Min(255, _heightMap[i] / heightScale * 255)), 0, 0, Convert.ToByte(255));   
+                        col[i] = new Color32(Convert.ToByte(_heightMap[i] / heightScale * 255), 0, 0, Convert.ToByte(255));   
                     }
-                    catch (OverflowException e)
+                    catch (Exception e)
                     {
-                        Debug.LogWarning(e.Message);
+                        Debug.LogException(e);
                         col[i] = new Color32();
                     }
                 }
 
                 texture.SetPixels32(col);
                 texture.Apply();
-                Debug.Log(_heightMap.Length);
-                Debug.Log("Applied Texture");
 
                 takeSnapshot = false;
             }
             
-            _noise.AdvanceTime(Time.deltaTime);
+            if (!paused)
+            {
+                _noiseGenerator.AdvanceTime(Time.deltaTime);                
+            }
         }
     }
 }

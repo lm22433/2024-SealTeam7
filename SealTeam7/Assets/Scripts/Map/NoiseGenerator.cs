@@ -1,12 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Map
 {
     public class NoiseGenerator
     {
         private readonly int _size;
+        private readonly float _spacing;
         private readonly float _speed;
         private readonly float _noiseScale;
         private readonly float _heightScale;
@@ -15,9 +17,10 @@ namespace Map
         private bool _running;
         private float _time;
 
-        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref float[] heightMap)
+        public NoiseGenerator(int size, float spacing, float speed, float noiseScale, float heightScale, ref float[] heightMap)
         {
             _size = size;
+            _spacing = spacing;
             _speed = speed;
             _noiseScale = noiseScale;
             _heightScale = heightScale;
@@ -28,7 +31,7 @@ namespace Map
             Task.Run(UpdateNoise);
         }
 
-        ~NoiseGenerator()
+        public void Stop()
         {
             _running = false;
         }
@@ -40,15 +43,16 @@ namespace Map
 
         private void UpdateNoise()
         {
+            Profiler.BeginThreadProfiling("NoiseGenerator", "UpdateNoise");
             while (_running)
             {
-                for (int y = 0; y < _size + 1; y++)
+                for (float y = 0; y < _size + 1; y++)
                 {
-                    for (int x = 0; x < _size + 1; x++)
+                    for (float x = 0; x < _size + 1; x++)
                     {
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
-                        _heightMap[y * (_size + 1) + x] = _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        _heightMap[(int) (y * (_size + 1) + x)] = _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
                     }
                 }
             }
