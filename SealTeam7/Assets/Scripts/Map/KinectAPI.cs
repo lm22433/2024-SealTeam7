@@ -12,6 +12,7 @@ namespace Map
         private readonly Device _kinect;
         private readonly Transformation _transformation;
         private float[] _heightMap;
+        private float[] _heightMapTemp;
         
         private readonly float _heightScale;
         private readonly int _minimumSandDepth;
@@ -75,6 +76,56 @@ namespace Map
             _kinect.StopCameras();
             _kinect.Dispose();
         }
+
+        public static float[,] GaussianBlur(int lenght, float weight)
+        {
+            float[,] kernel = new float[lenght, lenght];
+            float kernelSum = 0;
+            int foff = (lenght - 1) / 2;
+            float distance;
+            double constant = 1d / (2 * Math.PI * weight * weight);
+            for (int y = -foff; y <= foff; y++)
+            {
+                for (int x = -foff; x <= foff; x++)
+                {
+                    distance = ((y * y) + (x * x)) / (2 * weight * weight);
+                    kernel[y + foff, x + foff] = (float) (constant * Math.Exp(-distance));
+                    kernelSum += kernel[y + foff, x + foff];
+                }
+            }
+            for (int y = 0; y < lenght; y++)
+            {
+                for (int x = 0; x < lenght; x++)
+                {
+                    kernel[y, x] =  (float) (kernel[y, x] * 1d / kernelSum);
+                }
+            }
+            return kernel;
+        }
+
+        public void Convolve(float[,] kernel)
+        {
+            int foff = (kernel.GetLength(0) - 1) / 2;
+            int kcenter;
+            int kpixel;
+            for (int y = foff; y < _height - foff; y++)
+            {
+                for (int x = foff; x < _width - foff; x++)
+                {
+
+                    kcenter = y * _width + x;
+                    for (int fy = -foff; fy <= foff; fy++)
+                    {
+                        for (int fx = -foff; fx <= foff; fx++)
+                        {
+                            kpixel = kcenter + fy * _width + fx;
+                            _heightMap[kcenter] += _heightMapTemp[kpixel] * kernel[fy + foff, fx + foff];
+                        }
+                    }
+                }
+            }
+        }
+
         
         private async Task GetCaptureAsync()
         {
@@ -93,30 +144,12 @@ namespace Map
 
             // Create Depth Buffer
             Span<float> depthBuffer = transformedDepth.GetPixels<float>().Span;
-            //Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
-
-            //int rangeX = _xOffsetEnd - _xOffsetStart;
-            //int rangeY = _yOffsetEnd - _yOffsetStart;
-
-            //float samplingRateX = rangeX / _width;
-            //float samplingRateY = rangeY / _height;
-
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
                     
-                    /*
-                    int lowerX = (int)Mathf.Floor(x * samplingRateX + _xOffsetStart);
-                    int upperX = (int)Mathf.Ceil(x * samplingRateX + _xOffsetStart);
-                    int lowerY = (int)Mathf.Floor(y * samplingRateY + _xOffsetStart);
-                    int upperY = (int)Mathf.Ceil(y * samplingRateY + _xOffsetStart);
-
-                    ushort lowerSample = depthBuffer[lowerY * _width + lowerX];
-                    ushort upperSample = depthBuffer[upperY * _width + upperX];
-                    half depth = (half) ((half) (lowerSample + upperSample) / 2f);
-                    */
 
                     var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + x];
 
@@ -125,8 +158,6 @@ namespace Map
                     var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
                     var pixelValue = (_maximumSandDepth - depth);
 
-                    //if (ir < irThreshold)
-                    //{
                     float val;
                     if (depth == 0 || depth >= _maximumSandDepth) // No depth image
                     {
@@ -141,10 +172,11 @@ namespace Map
                         val = _heightScale * pixelValue / depthRange;
                     }
 
-                    _heightMap[y * (_width + 1) + x] = val;
-                    //}
+                    _heightMapTemp[y * (_width + 1) + x] = val;
                 }
             }
+
+            Convolve(GaussianBlur(3, 0.5f));
 
         }
     }

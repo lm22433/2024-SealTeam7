@@ -348,7 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseSpeed: 0.1
-  noiseScale: 0.01
+  noiseScale: 5
   width: 0
   height: 0
   xOffsetStart: 0
@@ -359,6 +359,8 @@ MonoBehaviour:
   maximumSandDepth: 600
   irThreshold: 0
   similarityThreshold: 0.5
+  _kernelSize: 10
+  _guassianStrength: 1.8
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   size: 3840
   chunkRow: 2

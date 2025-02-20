@@ -36,6 +36,10 @@ namespace Map
         [Header("")]
         [SerializeField, Range(0.5f, 1f)] private float similarityThreshold;
 
+        [Header("Blur Settings")]
+        [SerializeField] private int _kernelSize;
+        [SerializeField] private float _guassianStrength;
+
         [Header("")]
         [Header("Map Settings")]
         [Header("")]
@@ -85,7 +89,7 @@ namespace Map
             };
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap);
-            else _noiseGenerator = new NoiseGenerator((int) (size / _spacing), _spacing, noiseSpeed, noiseScale, heightScale, ref _heightMap);
+            else _noiseGenerator = new NoiseGenerator((int) (size / _spacing), _spacing, noiseSpeed, noiseScale, heightScale, ref _heightMap, _kernelSize, _guassianStrength);
 
             for (int z = 0; z < chunkRow; z++)
             {
