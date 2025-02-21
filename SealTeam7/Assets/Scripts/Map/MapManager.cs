@@ -37,9 +37,11 @@ namespace Map
         [Header("")]
         [SerializeField, Range(0.5f, 1f)] private float similarityThreshold;
 
+        [Header("")]
         [Header("Blur Settings")]
-        [SerializeField] private int _kernelSize;
-        [SerializeField] private float _guassianStrength;
+        [Header("")]
+        [SerializeField] private int kernelSize;
+        [SerializeField] private float gaussianStrength;
 
         [Header("")]
         [Header("Map Settings")]
@@ -59,8 +61,10 @@ namespace Map
         [Header("")]
         [Header("Debug")]
         [Header("")]
-        [SerializeField] private bool paused;
         [SerializeField] private bool colliderEnabled;
+        [SerializeField] private bool paused;
+        [SerializeField] private bool takeSnapshot;
+        [SerializeField] private Texture2D texture;
         
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
@@ -76,6 +80,8 @@ namespace Map
             
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
+            texture = new Texture2D((int) (mapSize / _mapSpacing + 1), (int) (mapSize / _mapSpacing + 1), TextureFormat.RGBA32, false);
+            
             ChunkSettings chunkSettings = new ChunkSettings
             {
                 Size = chunkSize,
@@ -85,8 +91,8 @@ namespace Map
                 ColliderEnabled = colliderEnabled
             };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, _kernelSize, _guassianStrength);
-            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, lerpFactor, ref _heightMap, lerpFactor, _kernelSize, _guassianStrength);
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
+            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, lerpFactor, ref _heightMap, lerpFactor, kernelSize, gaussianStrength);
 
             for (int z = 0; z < chunkRow; z++)
             {
@@ -125,12 +131,37 @@ namespace Map
             
             return lerp;
         }
-
+        
         private void Update()
         {
-            if (!paused)
+            if (takeSnapshot)
             {
-                //_noiseGenerator.AdvanceTime(Time.deltaTime);                
+
+                Color32[] col = new Color32[_heightMap.Length];
+                for(int i = 0; i < _heightMap.Length; i++)
+                {
+                    try
+                    {
+                        col[i] = new Color32(Convert.ToByte(Mathf.Min(255, _heightMap[i] / heightScale * 255)), 0, 0, Convert.ToByte(255));   
+                    }
+                    catch (OverflowException e)
+                    {
+                        Debug.LogWarning(e.Message);
+                        col[i] = new Color32();
+                    }
+                }
+
+                texture.SetPixels32(col);
+                texture.Apply();
+                Debug.Log(_heightMap.Length);
+                Debug.Log("Applied Texture");
+
+                takeSnapshot = false;
+            }
+            
+            if (!paused && !isKinectPresent)
+            {
+                _noiseGenerator.AdvanceTime(Time.deltaTime);                
             }
         }
     }
