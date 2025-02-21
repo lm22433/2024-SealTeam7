@@ -9,7 +9,7 @@ namespace Enemies
         [Header("")]
         [SerializeField] private GameObject[] enemyTypes;
         [SerializeField] private Transform[] spawnPoints;
-        [SerializeField] private float spawnDelay;
+        [SerializeField] private float spawnInterval;
         [SerializeField] private float spawnGroupSize;
         [SerializeField] private float spawnGroupSpacing;
 
@@ -30,7 +30,7 @@ namespace Enemies
         {
             _lastSpawn += Time.deltaTime;
             
-            if (_lastSpawn < spawnDelay) return;
+            if (_lastSpawn < spawnInterval) return;
             
             _lastSpawn = 0;
             foreach (var spawn in spawnPoints)
