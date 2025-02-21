@@ -71,7 +71,7 @@ namespace Map
             Task.Run(GetCaptureAsync);
         }
         
-        ~KinectAPI()
+        public void StopKinect()
         {
             _running = false;
             _kinect.StopCameras();
@@ -82,9 +82,13 @@ namespace Map
         {
             while (_running)
             {
-                using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
-                using Capture capture = await Task.Run(() => _kinect.GetCapture());
-                GetDepthTextureFromKinect(capture, transformedDepth);
+                try {
+                    using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
+                    using Capture capture = await Task.Run(() => _kinect.GetCapture());
+                    GetDepthTextureFromKinect(capture, transformedDepth);
+                } catch (Exception e) {
+                    Debug.Log(e);
+                }
             }
         }
 
@@ -94,45 +98,24 @@ namespace Map
             _transformation.DepthImageToColorCamera(capture, transformedDepth);
 
             // Create Depth Buffer
-            Span<float> depthBuffer = transformedDepth.GetPixels<float>().Span;
-            //Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
-
-            //int rangeX = _xOffsetEnd - _xOffsetStart;
-            //int rangeY = _yOffsetEnd - _yOffsetStart;
-
-            //float samplingRateX = rangeX / _width;
-            //float samplingRateY = rangeY / _height;
+            Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-                    
-                    /*
-                    int lowerX = (int)Mathf.Floor(x * samplingRateX + _xOffsetStart);
-                    int upperX = (int)Mathf.Ceil(x * samplingRateX + _xOffsetStart);
-                    int lowerY = (int)Mathf.Floor(y * samplingRateY + _xOffsetStart);
-                    int upperY = (int)Mathf.Ceil(y * samplingRateY + _xOffsetStart);
-
-                    ushort lowerSample = depthBuffer[lowerY * _width + lowerX];
-                    ushort upperSample = depthBuffer[upperY * _width + upperX];
-                    half depth = (half) ((half) (lowerSample + upperSample) / 2f);
-                    */
 
                     var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + x];
 
-
                     // Calculate pixel values
                     var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
-                    var pixelValue = (_maximumSandDepth - depth);
+                    var pixelValue = _maximumSandDepth - depth;
 
-                    //if (ir < irThreshold)
-                    //{
                     float val;
                     if (depth == 0 || depth >= _maximumSandDepth) // No depth image
                     {
-                        val = 0;
+                        val = 0.5f;
                     }
                     else if (depth < _minimumSandDepth)
                     {
@@ -140,11 +123,10 @@ namespace Map
                     }
                     else
                     {
-                        val = _heightScale * pixelValue / depthRange;
+                        val = pixelValue / depthRange;
                     }
 
-                    _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], val, _lerpFactor);
-                    //}
+                    _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
                 }
             }
 

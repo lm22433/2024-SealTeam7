@@ -280,8 +280,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 584457522}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.30164248, y: -0.051356945, z: 0.016654033, w: -0.9518913}
-  m_LocalPosition: {x: 1155.2411, y: 927.7571, z: -320.40244}
+  m_LocalRotation: {x: -0.52414507, y: 0.0029100815, z: 0.0019922846, w: -0.85162175}
+  m_LocalPosition: {x: 2129.3833, y: 3513.3145, z: 89.68994}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -333,26 +333,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noiseSpeed: 0.1
   noiseScale: 0.01
-  width: 0
-  height: 0
-  xOffsetStart: 0
-  xOffsetEnd: 0
-  yOffsetStart: 0
-  yOffsetEnd: 0
-  minimumSandDepth: 300
-  maximumSandDepth: 600
-  irThreshold: 0
+  width: 480
+  height: 480
+  xOffsetStart: 690
+  xOffsetEnd: 1170
+  yOffsetStart: 220
+  yOffsetEnd: 700
+  minimumSandDepth: 850
+  maximumSandDepth: 1150
+  irThreshold: 255
   similarityThreshold: 0.5
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
-  size: 3840
+  mapSize: 4080
   chunkRow: 2
   chunkSize: 240
-  heightScale: 300
+  heightScale: 2000
   lerpFactor: 0.1
   lodInfo:
     lod: 1
     colliderLod: 2
-  isKinectPresent: 0
+  isKinectPresent: 1
   paused: 0
   colliderEnabled: 0
 --- !u!1 &1013185061
@@ -383,7 +383,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 0.9622642, g: 0.7912885, b: 0.32499105, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -446,13 +446,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1013185061}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.038123123, y: 0.33599785, z: -0.01361253, w: 0.9409924}
+  m_LocalRotation: {x: 0.6393468, y: 0.20821142, z: 0.12545952, w: 0.7294818}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 4.64, y: 39.3, z: 0}
+  m_LocalEulerAnglesHint: {x: 61.708, y: 78.343, z: 71.424}
 --- !u!114 &1013185064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,6 +561,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Soldier
       objectReference: {fileID: 0}
+    - target: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -613,7 +617,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2085838829
 Transform:
   m_ObjectHideFlags: 0

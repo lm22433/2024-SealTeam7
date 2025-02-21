@@ -99,7 +99,12 @@ namespace Map
 
         private void OnApplicationQuit()
         {
-            _noiseGenerator.Stop();
+            if(isKinectPresent) {
+                _kinect.StopKinect();
+            } else {
+                _noiseGenerator.Stop();
+            }
+            
         }
 
         public float GetHeight(float worldX, float worldZ)
@@ -121,7 +126,7 @@ namespace Map
         {
             if (!paused)
             {
-                _noiseGenerator.AdvanceTime(Time.deltaTime);                
+                //_noiseGenerator.AdvanceTime(Time.deltaTime);                
             }
         }
     }
