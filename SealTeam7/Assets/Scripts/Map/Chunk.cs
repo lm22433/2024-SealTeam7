@@ -1,267 +1,192 @@
 using System;
-using Unity.Burst;
-using Unity.Collections;
-using Unity.Jobs;
-using Unity.Mathematics;
 using UnityEngine;
-using Kinect;
-
-using System.Threading.Tasks;
-using System.Collections;
 
 namespace Map
 {
-    [Serializable]
-    public struct ChunkSettings {
-        public ushort size;
-        public float spacing;
-        public float maxHeight;
-        public float lerpFactor;
-        public ushort x;
-        public ushort z;
-        public ushort lod;
-        public bool isKinectPresent;
+    public struct ChunkSettings
+    {
+        public int Size;
+        public int MapSize;
+        public float Spacing;
+        public float LerpFactor;
+        public int X;
+        public int Z;
+        public int LOD;
+        public int ColliderLOD;
     }
 
-    public class Chunk : MonoBehaviour {
+    public struct MeshData
+    {
+        public int LODFactor;
+        public int VertexSideCount;
+        public Vector3[] Vertices;
+        public int[] Triangles;
+    }
+
+    public class Chunk : MonoBehaviour
+    {
+        private ChunkSettings _settings;
+        private float[] _heightMap;
         
-        [SerializeField] private ChunkSettings settings;
-        private int _lodFactor;
-        private half[] _heightMap;
-        private int _vertexSideCount;
         private Mesh _mesh;
+        private Mesh _colliderMesh;
+        private MeshData _meshData;
+        private MeshData _colliderMeshData;
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
-        private MeshRenderer _meshRenderer;
-        private NoiseGenerator _noiseGenerator;
-        private KinectAPI _kinect;
-        private Bounds _bounds;
+        
         private bool _running;
-        private bool _gettingHeights;
-        private bool _newLod;
-        private ushort requestedLod;
-        
-        public void SetSettings(ChunkSettings s) { settings = s; }
-        
-        public void SetLod(ushort lod)
-        {
-            if (settings.lod == lod) return;
-            requestedLod = lod;
 
-        }
-
-        public void SetVisible(bool visible)
+        public void Setup(ChunkSettings s, ref float[] heightMap)
         {
-            _running = visible;
-        }
-
-        public float SqrDistanceToPlayer(Vector3 playerPos)
-        {
-            return _bounds.SqrDistance(playerPos);
-        }
-        
-        private void Awake()
-        {
-            _lodFactor = 1;
-            requestedLod = settings.lod;
-            _vertexSideCount = settings.size / _lodFactor;
+            _settings = s;
             
-            _mesh = new Mesh {name = "Generated Mesh"};
+            _meshData = new MeshData
+            {
+                LODFactor = _settings.LOD == 0 ? 1 : _settings.LOD * 2,
+                VertexSideCount = _settings.Size / (_settings.LOD == 0 ? 1 : _settings.LOD * 2) + 1
+            };
+
+            _colliderMeshData = new MeshData
+            {
+                LODFactor = _settings.ColliderLOD == 0 ? 1 : _settings.ColliderLOD * 2,
+                VertexSideCount = _settings.Size / (_settings.ColliderLOD == 0 ? 1 : _settings.ColliderLOD * 2) + 1
+            };
+            
+            _heightMap = heightMap;
+
+            _mesh = new Mesh { name = "Generated Mesh" };
             _mesh.MarkDynamic();
             
-            _bounds = new Bounds(transform.position, new Vector3((settings.size - 1) * settings.spacing, 2f * settings.maxHeight, (settings.size - 1) * settings.spacing));
-            _mesh.bounds = _bounds;
-                        
-            _heightMap = new half[_vertexSideCount * _vertexSideCount];
+            _colliderMesh = new Mesh { name = "Generated Collider Mesh" };
+            _colliderMesh.MarkDynamic();
 
-            
             UpdateMesh();
-            
-            _meshRenderer = GetComponent<MeshRenderer>();
+
             _meshFilter = GetComponent<MeshFilter>();
             _meshCollider = GetComponent<MeshCollider>();
             _meshFilter.sharedMesh = _mesh;
-            _meshCollider.sharedMesh = _mesh;
-            _meshCollider.enabled = false;
+            _meshCollider.sharedMesh = _colliderMesh;
 
-            if (!settings.isKinectPresent) {
-                _noiseGenerator = FindAnyObjectByType<NoiseGenerator>();
-            } else {
-                _kinect = FindAnyObjectByType<KinectAPI>();
-            }
+            _running = true;
         }
 
         private void Update()
         {
             if (_running)
             {
-                if (!_gettingHeights) StartCoroutine(GetHeightsCoroutine());
-
-                _meshCollider.enabled = settings.lod == 0;
+                UpdateHeights();
             }
-
-            _meshRenderer.enabled = _running;
-        }
-
-        private IEnumerator GetHeightsCoroutine() {
-            _gettingHeights = true;
-            while (_running)
-            {
-                yield return new WaitForSeconds(0.2f);
-                GetHeights();
-            }
-            _gettingHeights = false;
-        }
-        
-        private void GetHeights() {
-            if (!settings.isKinectPresent) {
-                _noiseGenerator.RequestNoise(requestedLod, settings.size, settings.x, settings.z);
-            } else {
-                _kinect.RequestTexture(requestedLod, settings.size, settings.x, settings.z);
-            }
-        }
-
-        public void SetHeights(half[] heights, ushort lod)
-        {
-            if (settings.lod == lod) {
-                _heightMap = heights;
-            }
-            else {
-                settings.lod = lod;
-                _lodFactor = lod == 0 ? 1 : lod * 2;
-                _vertexSideCount = settings.size / _lodFactor;
-                _heightMap = new half[heights.Length];
-                _heightMap = heights;
-
-                UpdateMesh();
-
-            }
-            UpdateHeights();
         }
 
         private void UpdateHeights()
         {
-            var vertices = new NativeArray<Vector3>(_mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
-            var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
+            var numberOfVertices = _meshData.VertexSideCount * _meshData.VertexSideCount;
+            var vertices = _meshData.Vertices;
             
-            var heightUpdate = new HeightUpdate {
-                Vertices = vertices,
-                Heights = heights,
-                Scale = settings.maxHeight,
-                LerpFactor = settings.lerpFactor
-            }.Schedule(_vertexSideCount * _vertexSideCount, 1);
-            heightUpdate.Complete();
+            var colliderNumberOfVertices = _colliderMeshData.VertexSideCount * _colliderMeshData.VertexSideCount;
+            var colliderVertices = _colliderMeshData.Vertices;
+
+            int zChunkOffset = _settings.Z * _settings.Size;
+            int xChunkOffset = _settings.X * _settings.Size;
+
+            for (int i = 0; i < numberOfVertices; i++)
+            {
+                var x = (int)(i / _meshData.VertexSideCount) * _meshData.LODFactor;
+                var z = (int)(i % _meshData.VertexSideCount) * _meshData.LODFactor;
+                vertices[i].y = Mathf.Lerp(vertices[i].y,
+                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], _settings.LerpFactor);
+                // vertices[i].y = _heightMap[(z + zChunkOffset) * _settings.MapSize + xChunkOffset + x];
+            }
             
+            for (int i = 0; i < colliderNumberOfVertices; i++)
+            {
+                var x = (int)(i / _colliderMeshData.VertexSideCount) * _colliderMeshData.LODFactor;
+                var z = (int)(i % _colliderMeshData.VertexSideCount) * _colliderMeshData.LODFactor;
+                colliderVertices[i].y = Mathf.Lerp(colliderVertices[i].y,
+                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], _settings.LerpFactor);
+            }
+
+            _meshData.Vertices = vertices;
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
-            //_mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
             
-            if (_meshCollider.enabled) _meshCollider.sharedMesh = _mesh;
-            
-            vertices.Dispose();
-            heights.Dispose();
+            _colliderMeshData.Vertices = colliderVertices;
+            _colliderMesh.SetVertices(colliderVertices);
+            _colliderMesh.RecalculateNormals();
+            _colliderMesh.RecalculateBounds();
+            _meshCollider.sharedMesh = _colliderMesh;
         }
 
-        private void UpdateMesh() {
-            var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var numberOfTriangles = (_vertexSideCount - 1) * (_vertexSideCount - 1) * 6;
+        private void UpdateMesh()
+        {
+            var numberOfVertices = _meshData.VertexSideCount * _meshData.VertexSideCount;
+            var numberOfTriangles = (_meshData.VertexSideCount - 1) * (_meshData.VertexSideCount - 1) * 6;
+            var vertices = new Vector3[numberOfVertices];
+            var triangles = new int[numberOfTriangles];
             
-            //TODO: adjust so that old height data is preserved over LOD switch
-            var vertices = new NativeArray<float3>(numberOfVertices, Allocator.TempJob);
-            var triangles = new NativeArray<int>(numberOfTriangles, Allocator.TempJob);
-            var uvs = new NativeArray<float2>(numberOfVertices, Allocator.TempJob);
-            var heights = new NativeArray<half>(_heightMap, Allocator.TempJob);
-            
-            var meshVertexUpdate = new MeshVertexUpdate
+            var colliderNumberOfVertices = _colliderMeshData.VertexSideCount * _colliderMeshData.VertexSideCount;
+            var colliderNumberOfTriangles = (_colliderMeshData.VertexSideCount - 1) * (_colliderMeshData.VertexSideCount - 1) * 6;
+            var colliderVertices = new Vector3[colliderNumberOfVertices];
+            var colliderTriangles = new int[colliderNumberOfTriangles];
+
+            int zChunkOffset = _settings.Z * _settings.Size;
+            int xChunkOffset = _settings.X * _settings.Size;
+
+            for (int i = 0; i < numberOfVertices; i++)
             {
-                Heights = heights,
-                Vertices = vertices,
-                UVs = uvs,
-                VertexSideCount = _vertexSideCount,
-                Spacing = settings.spacing,
-                Size = settings.size,
-                LODFactor = _lodFactor
-            }.Schedule(numberOfVertices, 1);
+                var x = (int) (i / _meshData.VertexSideCount) * _meshData.LODFactor;
+                var z = (int) (i % _meshData.VertexSideCount) * _meshData.LODFactor;
+                vertices[i] = new Vector3(x * _settings.Spacing,
+                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], z * _settings.Spacing);
+            }
             
-            var meshTriangleUpdate = new MeshTriangleUpdate
+            for (int i = 0; i < colliderNumberOfVertices; i++)
             {
-                Triangles = triangles,
-                VertexSideCount = _vertexSideCount
-            }.Schedule(numberOfTriangles, 1, meshVertexUpdate);
+                var x = (int) (i / _colliderMeshData.VertexSideCount) * _colliderMeshData.LODFactor;
+                var z = (int) (i % _colliderMeshData.VertexSideCount) * _colliderMeshData.LODFactor;
+                
+                colliderVertices[i] = new Vector3(x * _settings.Spacing,
+                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], z * _settings.Spacing);
+            }
+
+            for (int i = 0; i < numberOfTriangles; i++)
+            {
+                var baseIndex = i / 6;
+                baseIndex += baseIndex / (_meshData.VertexSideCount - 1);
+                triangles[i] =
+                    i % 3 == 0 ? baseIndex :
+                    i % 6 - 4 == 0 || i % 6 - 2 == 0 ? baseIndex + _meshData.VertexSideCount + 1 :
+                    i % 6 - 1 == 0 ? baseIndex + 1 :
+                    i % 6 - 5 == 0 ? baseIndex + _meshData.VertexSideCount : -1;
+            }
             
-            meshTriangleUpdate.Complete();
+            for (int i = 0; i < colliderNumberOfTriangles; i++)
+            {
+                var baseIndex = i / 6;
+                baseIndex += baseIndex / (_colliderMeshData.VertexSideCount - 1);
+                colliderTriangles[i] =
+                    i % 3 == 0 ? baseIndex :
+                    i % 6 - 4 == 0 || i % 6 - 2 == 0 ? baseIndex + _colliderMeshData.VertexSideCount + 1 :
+                    i % 6 - 1 == 0 ? baseIndex + 1 :
+                    i % 6 - 5 == 0 ? baseIndex + _colliderMeshData.VertexSideCount : -1;
+            }
+
+            _meshData.Vertices = vertices;
+            _meshData.Triangles = triangles;
+            _colliderMeshData.Vertices = colliderVertices;
+            _colliderMeshData.Triangles = colliderTriangles;
             
             _mesh.Clear();
             _mesh.SetVertices(vertices);
-            _mesh.SetTriangles(triangles.ToArray(), 0);
-            _mesh.SetUVs(0, uvs);
+            _mesh.SetTriangles(triangles, 0);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateTangents();
             
-            vertices.Dispose();
-            triangles.Dispose();
-            uvs.Dispose();
-            heights.Dispose();
-        }
-    }
-
-    [BurstCompile]
-    public struct HeightUpdate : IJobParallelFor {
-
-        public NativeArray<float3> Vertices;
-        public NativeArray<half> Heights;
-        public float LerpFactor;
-        public float Scale;
-        
-        public void Execute(int index) {
-            var p = Vertices[index];
-            var y = p.y;
-            y = Mathf.Lerp(y, Heights[index] * Scale, LerpFactor);
-            p.y = y;
-            Vertices[index] = p;
-        }
-    }
-    
-    [BurstCompile]
-    public struct MeshVertexUpdate : IJobParallelFor
-    {
-        public NativeArray<half> Heights;
-        public NativeArray<float3> Vertices;
-        public NativeArray<float2> UVs;
-        public int VertexSideCount;
-        public float Spacing;
-        public float LODFactor;
-        public int Size;
-        
-        public void Execute(int index)
-        {
-            //update vertices
-            var x = (int) (index / VertexSideCount) * LODFactor * Spacing;
-            var z = (int) (index % VertexSideCount) * LODFactor * Spacing;
-            Vertices[index] = new float3(x, Heights[index], z);
-            
-            //update uvs
-            UVs[index] = new float2(x / (Size - 1), z / (Size - 1));
-        }
-    }
-    
-    [BurstCompile]
-    public struct MeshTriangleUpdate : IJobParallelFor
-    {
-        public NativeArray<int> Triangles;
-        public int VertexSideCount;
-        
-        public void Execute(int index)
-        {
-            //update triangles
-            var baseIndex = index / 6;
-            baseIndex += baseIndex / (VertexSideCount - 1);
-            Triangles[index] =
-                index % 3 == 0 ? baseIndex :
-                index % 6 - 4 == 0 || index % 6 - 2 == 0 ? baseIndex + VertexSideCount + 1 :
-                index % 6 - 1 == 0 ? baseIndex + 1 :
-                index % 6 - 5 == 0 ? baseIndex + VertexSideCount : -1;
+            _colliderMesh.Clear();
+            _colliderMesh.SetVertices(colliderVertices);
+            _colliderMesh.SetTriangles(colliderTriangles, 0);
+            _colliderMesh.RecalculateNormals();
         }
     }
 }
