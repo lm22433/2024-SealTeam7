@@ -8,22 +8,22 @@ namespace Map
     public class NoiseGenerator
     {
         private readonly int _size;
-        private readonly float _spacing;
         private readonly float _speed;
         private readonly float _noiseScale;
         private readonly float _heightScale;
+        private readonly float _lerpFactor;
         
         private float[] _heightMap;
         private bool _running;
         private float _time;
 
-        public NoiseGenerator(int size, float spacing, float speed, float noiseScale, float heightScale, ref float[] heightMap)
+        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, float lerpFactor, ref float[] heightMap)
         {
             _size = size;
-            _spacing = spacing;
             _speed = speed;
             _noiseScale = noiseScale;
             _heightScale = heightScale;
+            _lerpFactor = lerpFactor;
             _time = 0f;
             _heightMap = heightMap;
             _running = true;
@@ -46,13 +46,13 @@ namespace Map
             Profiler.BeginThreadProfiling("NoiseGenerator", "UpdateNoise");
             while (_running)
             {
-                for (float y = 0; y < _size + 1; y++)
+                for (int y = 0; y < _size + 1; y++)
                 {
-                    for (float x = 0; x < _size + 1; x++)
+                    for (int x = 0; x < _size + 1; x++)
                     {
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
-                        _heightMap[(int) (y * (_size + 1) + x)] = _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        _heightMap[y * (_size + 1) + x] = Mathf.Lerp(_heightMap[y * (_size + 1) + x], _heightScale * Mathf.PerlinNoise(perlinX, perlinY), _lerpFactor);
                     }
                 }
             }

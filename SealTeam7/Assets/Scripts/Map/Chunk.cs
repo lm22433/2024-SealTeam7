@@ -8,11 +8,10 @@ namespace Map
         public int Size;
         public int MapSize;
         public float Spacing;
-        public float LerpFactor;
         public int X;
         public int Z;
-        public int LOD;
-        public int ColliderLOD;
+        public LODInfo LODInfo;
+        public bool ColliderEnabled;
     }
 
     public struct MeshData
@@ -43,14 +42,14 @@ namespace Map
             
             _meshData = new MeshData
             {
-                LODFactor = _settings.LOD == 0 ? 1 : _settings.LOD * 2,
-                VertexSideCount = _settings.Size / (_settings.LOD == 0 ? 1 : _settings.LOD * 2) + 1
+                LODFactor = _settings.LODInfo.lod == 0 ? 1 : _settings.LODInfo.lod * 2,
+                VertexSideCount = _settings.Size / (_settings.LODInfo.lod == 0 ? 1 : _settings.LODInfo.lod * 2) + 1
             };
 
             _colliderMeshData = new MeshData
             {
-                LODFactor = _settings.ColliderLOD == 0 ? 1 : _settings.ColliderLOD * 2,
-                VertexSideCount = _settings.Size / (_settings.ColliderLOD == 0 ? 1 : _settings.ColliderLOD * 2) + 1
+                LODFactor = _settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2,
+                VertexSideCount = _settings.Size / (_settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2) + 1
             };
             
             _heightMap = heightMap;
@@ -60,13 +59,16 @@ namespace Map
             
             _colliderMesh = new Mesh { name = "Generated Collider Mesh" };
             _colliderMesh.MarkDynamic();
-
-            UpdateMesh();
-
+            
             _meshFilter = GetComponent<MeshFilter>();
             _meshCollider = GetComponent<MeshCollider>();
+            
+            UpdateMesh();
+            
             _meshFilter.sharedMesh = _mesh;
             _meshCollider.sharedMesh = _colliderMesh;
+            
+            if (!_settings.ColliderEnabled) _meshCollider.enabled = false;
 
             _running = true;
         }
@@ -92,19 +94,16 @@ namespace Map
 
             for (int i = 0; i < numberOfVertices; i++)
             {
-                var x = (int)(i / _meshData.VertexSideCount) * _meshData.LODFactor;
-                var z = (int)(i % _meshData.VertexSideCount) * _meshData.LODFactor;
-                vertices[i].y = Mathf.Lerp(vertices[i].y,
-                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], _settings.LerpFactor);
-                // vertices[i].y = _heightMap[(z + zChunkOffset) * _settings.MapSize + xChunkOffset + x];
+                var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
+                var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
+                vertices[i].y = _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)];
             }
             
             for (int i = 0; i < colliderNumberOfVertices; i++)
             {
-                var x = (int)(i / _colliderMeshData.VertexSideCount) * _colliderMeshData.LODFactor;
-                var z = (int)(i % _colliderMeshData.VertexSideCount) * _colliderMeshData.LODFactor;
-                colliderVertices[i].y = Mathf.Lerp(colliderVertices[i].y,
-                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], _settings.LerpFactor);
+                var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
+                var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
+                colliderVertices[i].y = _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)];
             }
 
             _meshData.Vertices = vertices;
@@ -116,7 +115,8 @@ namespace Map
             _colliderMesh.SetVertices(colliderVertices);
             _colliderMesh.RecalculateNormals();
             _colliderMesh.RecalculateBounds();
-            _meshCollider.sharedMesh = _colliderMesh;
+            
+            if (_meshCollider.enabled) _meshCollider.sharedMesh = _colliderMesh;
         }
 
         private void UpdateMesh()
@@ -136,16 +136,16 @@ namespace Map
 
             for (int i = 0; i < numberOfVertices; i++)
             {
-                var x = (int) (i / _meshData.VertexSideCount) * _meshData.LODFactor;
-                var z = (int) (i % _meshData.VertexSideCount) * _meshData.LODFactor;
+                var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
+                var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
                 vertices[i] = new Vector3(x * _settings.Spacing,
                     _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], z * _settings.Spacing);
             }
             
             for (int i = 0; i < colliderNumberOfVertices; i++)
             {
-                var x = (int) (i / _colliderMeshData.VertexSideCount) * _colliderMeshData.LODFactor;
-                var z = (int) (i % _colliderMeshData.VertexSideCount) * _colliderMeshData.LODFactor;
+                var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
+                var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
                 
                 colliderVertices[i] = new Vector3(x * _settings.Spacing,
                     _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], z * _settings.Spacing);

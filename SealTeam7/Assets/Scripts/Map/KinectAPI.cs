@@ -14,6 +14,7 @@ namespace Map
         private float[] _heightMap;
         
         private readonly float _heightScale;
+        private readonly float _lerpFactor;
         private readonly int _minimumSandDepth;
         private readonly int _maximumSandDepth;
         private readonly int _colourWidth;
@@ -27,9 +28,10 @@ namespace Map
 
         private bool _running;
 
-        public KinectAPI(float heightScale, int minimumSandDepth, int maximumSandDepth, int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap)
+        public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap)
         {
             _heightScale = heightScale;
+            _lerpFactor = lerpFactor;
             _minimumSandDepth = minimumSandDepth;
             _maximumSandDepth = maximumSandDepth;
             _width = width;
@@ -141,7 +143,7 @@ namespace Map
                         val = _heightScale * pixelValue / depthRange;
                     }
 
-                    _heightMap[y * (_width + 1) + x] = val;
+                    _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], val, _lerpFactor);
                     //}
                 }
             }
