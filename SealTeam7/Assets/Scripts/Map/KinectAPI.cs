@@ -13,6 +13,7 @@ namespace Map
         private readonly Transformation _transformation;
         private float[] _heightMap;
         private float[] _heightMapTemp;
+        private float[,] _kernel;
         
         private readonly float _heightScale;
         private readonly float _lerpFactor;
@@ -29,12 +30,8 @@ namespace Map
 
         private bool _running;
 
-        private int _kernelSize;
-        private float _guassianStrength;
-        private float[,] _kernel;
-
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float guassianStrength)
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
         {
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;
@@ -47,10 +44,8 @@ namespace Map
             _yOffsetStart = yOffsetStart;
             _yOffsetEnd = yOffsetEnd;
             _heightMap = heightMap;
-
-            _kernelSize = kernelSize;
-            _guassianStrength = guassianStrength;
-            _kernel = GaussianBlur(_kernelSize, _guassianStrength);
+            
+            _kernel = GaussianBlur(kernelSize, gaussianStrength);
             _heightMapTemp = new float[(width + 1) * (height + 1)];
             
             if (minimumSandDepth > maximumSandDepth)
@@ -89,11 +84,11 @@ namespace Map
             _kinect.Dispose();
         }
 
-        public static float[,] GaussianBlur(int lenght, float weight)
+        private static float[,] GaussianBlur(int length, float weight)
         {
-            float[,] kernel = new float[lenght, lenght];
+            float[,] kernel = new float[length, length];
             float kernelSum = 0;
-            int foff = (lenght - 1) / 2;
+            int foff = (length - 1) / 2;
             float distance;
             double constant = 1d / (2 * Math.PI * weight * weight);
             for (int y = -foff; y <= foff; y++)
@@ -105,9 +100,9 @@ namespace Map
                     kernelSum += kernel[y + foff, x + foff];
                 }
             }
-            for (int y = 0; y < lenght; y++)
+            for (int y = 0; y < length; y++)
             {
-                for (int x = 0; x < lenght; x++)
+                for (int x = 0; x < length; x++)
                 {
                     kernel[y, x] =  (float) (kernel[y, x] * 1d / kernelSum);
                 }
@@ -115,7 +110,7 @@ namespace Map
             return kernel;
         }
 
-        public void Convolve()
+        private void Convolve()
         {
             int foff = (_kernel.GetLength(0) - 1) / 2;
             int kcenter;
@@ -188,8 +183,7 @@ namespace Map
                     {
                         val = pixelValue / depthRange;
                     }
-
-                    //_heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
+                    
                     _heightMapTemp[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
                 }
             }

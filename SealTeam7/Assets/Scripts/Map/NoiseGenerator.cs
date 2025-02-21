@@ -16,14 +16,12 @@ namespace Map
         
         private float[] _heightMap;
         private float[] _heightMapTemp;
+        private float[,] _kernel;
+        
         private bool _running;
         private float _time;
 
-        private int _kernelSize;
-        private float _guassianStrength;
-        private float[,] _kernel;
-
-        public NoiseGenerator(int size, float spacing, float speed, float noiseScale, float heightScale, ref float[] heightMap, float lerpFactor, int kernelSize, float guassianStrength)
+        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, float lerpFactor, ref float[] heightMap, int kernelSize, float gaussianStrength)
         {
             _size = size;
             _speed = speed;
@@ -31,13 +29,13 @@ namespace Map
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;
             _time = 0f;
+            
             _heightMap = heightMap;
             _heightMapTemp = new float[(_size + 1) * (_size + 1)];
+            
+            _kernel = GaussianBlur(kernelSize, gaussianStrength);
+            
             _running = true;
-            _kernelSize = kernelSize;
-            _guassianStrength = guassianStrength;
-
-            _kernel = GaussianBlur(_kernelSize, _guassianStrength);
             
             Task.Run(UpdateNoise);
         }
@@ -52,11 +50,11 @@ namespace Map
             _time += deltaTime;
         }
 
-        public static float[,] GaussianBlur(int lenght, float weight)
+        private static float[,] GaussianBlur(int length, float weight)
         {
-            float[,] kernel = new float[lenght, lenght];
+            float[,] kernel = new float[length, length];
             float kernelSum = 0;
-            int foff = (lenght - 1) / 2;
+            int foff = (length - 1) / 2;
             float distance;
             double constant = 1d / (2 * Math.PI * weight * weight);
             for (int y = -foff; y <= foff; y++)
@@ -68,9 +66,9 @@ namespace Map
                     kernelSum += kernel[y + foff, x + foff];
                 }
             }
-            for (int y = 0; y < lenght; y++)
+            for (int y = 0; y < length; y++)
             {
-                for (int x = 0; x < lenght; x++)
+                for (int x = 0; x < length; x++)
                 {
                     kernel[y, x] =  (float) (kernel[y, x] * 1d / kernelSum);
                 }
@@ -78,7 +76,7 @@ namespace Map
             return kernel;
         }
 
-        public void Convolve()
+        private void Convolve()
         {
             int foff = (_kernel.GetLength(0) - 1) / 2;
             int kcenter;
@@ -87,13 +85,14 @@ namespace Map
             {
                 for (int x = foff; x < _size - foff; x++)
                 {
-                    kcenter = y * _size + x;
+
+                    kcenter = y * (_size + 1) + x;
                     float acc = 0f;
                     for (int fy = -foff; fy <= foff; fy++)
                     {
                         for (int fx = -foff; fx <= foff; fx++)
                         {
-                            kpixel = kcenter + fy * _size + fx;
+                            kpixel = kcenter + fy * (_size + 1) + fx;
                             acc += _heightMapTemp[kpixel] * _kernel[fy + foff, fx + foff];
                         }
                     }
@@ -105,7 +104,6 @@ namespace Map
 
         private void UpdateNoise()
         {
-            Profiler.BeginThreadProfiling("NoiseGenerator", "UpdateNoise");
             while (_running)
             {
                 for (int y = 0; y < _size + 1; y++)
@@ -114,11 +112,11 @@ namespace Map
                     {
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
-                        //_heightMap[y * (_size + 1) + x] = Mathf.Lerp(_heightMap[y * (_size + 1) + x], _heightScale * Mathf.PerlinNoise(perlinX, perlinY), _lerpFactor);
-                        _heightMapTemp[(int) (y * (_size + 1) + x)] = _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        _heightMapTemp[y * (_size + 1) + x] = Mathf.Lerp(_heightMap[y * (_size + 1) + x], _heightScale * Mathf.PerlinNoise(perlinX, perlinY), _lerpFactor);
                     }
                 }
-                //Convolve();
+                
+                Convolve();
             }
         }
     }

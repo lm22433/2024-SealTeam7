@@ -9,20 +9,18 @@ namespace Enemies
         [SerializeField] protected float attackRange;
         protected MapManager MapManager;
         protected EnemyManager EnemyManager;
+        protected Rigidbody Rb;
         
         private void Start()
         {
             MapManager = FindFirstObjectByType<MapManager>();
             EnemyManager = FindFirstObjectByType<EnemyManager>();
+            Rb = GetComponent<Rigidbody>();
         }
         
         public virtual void Update()
         {
-            var x = transform.position.x;
-            var z = transform.position.z;
-        
-            // sit on terrain
-            transform.SetPositionAndRotation(new Vector3(x, MapManager.GetHeight(x, z) + transform.lossyScale.y, z), transform.rotation);
+            
         }
     }
 }

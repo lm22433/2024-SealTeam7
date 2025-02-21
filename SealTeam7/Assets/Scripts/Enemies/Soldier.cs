@@ -4,16 +4,16 @@ namespace Enemies
 {
     public class Soldier : Enemy
     {
-        public override void Update()
+        private void FixedUpdate()
         {
-            base.Update();
-
             var objective = EnemyManager.GetObjective();
             objective.y = transform.position.y;
-            transform.LookAt(objective);
+            
+            Rb.MoveRotation(Quaternion.LookRotation(objective - transform.position));
+            
             if ((objective - transform.position).sqrMagnitude > attackRange * attackRange)
             {
-                transform.Translate(Vector3.forward * (moveSpeed * Time.deltaTime));
+                Rb.MovePosition(transform.position + transform.forward * (moveSpeed * Time.deltaTime));
             }
         }
     }
