@@ -51,6 +51,7 @@ namespace Map
             _kernelSize = kernelSize;
             _guassianStrength = guassianStrength;
             _kernel = GaussianBlur(_kernelSize, _guassianStrength);
+            _heightMapTemp = new float[(width + 1) * (height + 1)];
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -114,9 +115,9 @@ namespace Map
             return kernel;
         }
 
-        public void Convolve(float[,] kernel)
+        public void Convolve()
         {
-            int foff = (kernel.GetLength(0) - 1) / 2;
+            int foff = (_kernel.GetLength(0) - 1) / 2;
             int kcenter;
             int kpixel;
             for (int y = foff; y < _height - foff; y++)
@@ -124,19 +125,21 @@ namespace Map
                 for (int x = foff; x < _width - foff; x++)
                 {
 
-                    kcenter = y * _width + x;
+                    kcenter = y * (_width + 1) + x;
+                    float acc = 0f;
                     for (int fy = -foff; fy <= foff; fy++)
                     {
                         for (int fx = -foff; fx <= foff; fx++)
                         {
-                            kpixel = kcenter + fy * _width + fx;
-                            _heightMap[kcenter] += _heightMapTemp[kpixel] * kernel[fy + foff, fx + foff];
+                            kpixel = kcenter + fy * (_width + 1) + fx;
+                            acc += _heightMapTemp[kpixel] * _kernel[fy + foff, fx + foff];
                         }
                     }
+
+                    _heightMap[kcenter] = acc;
                 }
             }
         }
-
         
         private async Task GetCaptureAsync()
         {
@@ -187,11 +190,11 @@ namespace Map
                     }
 
                     //_heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
-                    _heightMapTemp[y * (_width + 1) + x] = val;
+                    _heightMapTemp[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
                 }
             }
 
-            Convolve(_kernel);
+            Convolve();
 
         }
     }

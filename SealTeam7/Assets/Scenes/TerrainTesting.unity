@@ -253,7 +253,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 4000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -337,24 +337,26 @@ MonoBehaviour:
   height: 480
   xOffsetStart: 690
   xOffsetEnd: 1170
-  yOffsetStart: 220
-  yOffsetEnd: 700
+  yOffsetStart: 260
+  yOffsetEnd: 740
   minimumSandDepth: 850
   maximumSandDepth: 1150
   irThreshold: 255
   similarityThreshold: 0.5
+  _kernelSize: 3
+  _guassianStrength: 2
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 4080
   chunkRow: 2
   chunkSize: 240
   heightScale: 2000
-  lerpFactor: 0.1
+  lerpFactor: 1
   lodInfo:
     lod: 1
     colliderLod: 2
   isKinectPresent: 1
   paused: 0
-  colliderEnabled: 0
+  colliderEnabled: 1
 --- !u!1 &1013185061
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,7 +597,7 @@ Transform:
   m_GameObject: {fileID: 1884077985}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 480, y: 150, z: 480}
+  m_LocalPosition: {x: 2000, y: 1000, z: 2000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
