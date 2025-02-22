@@ -8,11 +8,15 @@ namespace Game
     {
         [Header("Game Settings")] 
         [SerializeField, Range(0f, 600f)] private float gameDuration = 10f;
+        
+        [Header("Health Settings")]
+        [SerializeField] private int maxHealth = 100;
 
         private static GameManager _instance;
         private bool _gameActive;
         private float _timer;
         private int _score;
+        private int _health;
 
         private void Awake()
         {
@@ -28,6 +32,7 @@ namespace Game
             
             _timer -= Time.deltaTime;   
             if (_timer <= 0) EndGame();
+            if (_health <= 0) EndGame();
         }
 
         public void StartGame()
@@ -45,8 +50,13 @@ namespace Game
             
             _gameActive = false;
         }
+
+        public void TakeDamage(int damage)
+        {
+            _health -= damage;
+        }
         
-        public GameManager GetInstance() => _instance;
+        public static GameManager GetInstance() => _instance;
         public bool IsGameActive() => _gameActive;
         public float GetTimer() => _timer;
         public int GetScore() => _score;
