@@ -1,4 +1,4 @@
-namespace Weapons
+namespace Enemies.Utils
 {
     public interface IDamageable
     {

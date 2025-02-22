@@ -1,7 +1,7 @@
 ﻿using Map;
 using UnityEngine;
 
-namespace Enemies
+namespace Enemies.Utils
 {
     public class SitOnTerrain : MonoBehaviour
     {

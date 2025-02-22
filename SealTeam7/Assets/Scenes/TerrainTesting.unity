@@ -363,7 +363,7 @@ MonoBehaviour:
   chunkRow: 2
   chunkSize: 240
   heightScale: 50
-  lerpFactor: 1
+  lerpFactor: 0.1
   lodInfo:
     lod: 1
     colliderLod: 2
@@ -668,9 +668,12 @@ MonoBehaviour:
   - {fileID: 207832236}
   - {fileID: 2136277956}
   spawnInterval: 5
-  spawnGroupSize: 5
-  spawnGroupSpacing: 3
+  spawnGroupSize: 10
+  spawnGroupSpacing: 5
+  maxEnemyCount: 100
+  maxEnemyDistance: 500
   objective: {fileID: 1884077986}
+  sqrMaxEnemyDistance: 500
 --- !u!1 &2136277955
 GameObject:
   m_ObjectHideFlags: 0

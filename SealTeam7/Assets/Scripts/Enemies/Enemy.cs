@@ -1,4 +1,4 @@
-using Map;
+using Enemies.Utils;
 using UnityEngine;
 
 namespace Enemies
@@ -7,20 +7,28 @@ namespace Enemies
     {
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float attackRange;
-        protected MapManager MapManager;
+        [SerializeField] protected float attackInterval;
+        [SerializeField] protected float attackDamage;
+        protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
         
-        private void Start()
+        protected virtual void Start()
         {
-            MapManager = FindFirstObjectByType<MapManager>();
             EnemyManager = FindFirstObjectByType<EnemyManager>();
             Rb = GetComponent<Rigidbody>();
-        }
-        
-        public virtual void Update()
-        {
             
+            SqrAttackRange = attackRange * attackRange;
+        }
+
+        protected abstract void Attack(IDamageable target);
+
+        protected virtual void Update()
+        {
+            if ((transform.position - EnemyManager.GetObjectivePosition()).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance)
+            {
+                EnemyManager.Kill(this);
+            }
         }
     }
 }
