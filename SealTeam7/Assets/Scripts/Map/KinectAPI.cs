@@ -12,8 +12,11 @@ namespace Map
         private readonly Device _kinect;
         private readonly Transformation _transformation;
         private float[] _heightMap;
+        private float[] _heightMapTemp;
+        private float[,] _kernel;
         
         private readonly float _heightScale;
+        private readonly float _lerpFactor;
         private readonly int _minimumSandDepth;
         private readonly int _maximumSandDepth;
         private readonly int _colourWidth;
@@ -27,9 +30,11 @@ namespace Map
 
         private bool _running;
 
-        public KinectAPI(float heightScale, int minimumSandDepth, int maximumSandDepth, int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap)
+        public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
         {
             _heightScale = heightScale;
+            _lerpFactor = lerpFactor;
             _minimumSandDepth = minimumSandDepth;
             _maximumSandDepth = maximumSandDepth;
             _width = width;
@@ -39,6 +44,9 @@ namespace Map
             _yOffsetStart = yOffsetStart;
             _yOffsetEnd = yOffsetEnd;
             _heightMap = heightMap;
+            
+            _kernel = GaussianBlur(kernelSize, gaussianStrength);
+            _heightMapTemp = new float[(width + 1) * (height + 1)];
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -69,20 +77,76 @@ namespace Map
             Task.Run(GetCaptureAsync);
         }
         
-        ~KinectAPI()
+        public void StopKinect()
         {
             _running = false;
             _kinect.StopCameras();
             _kinect.Dispose();
+        }
+
+        private static float[,] GaussianBlur(int length, float weight)
+        {
+            float[,] kernel = new float[length, length];
+            float kernelSum = 0;
+            int foff = (length - 1) / 2;
+            float distance;
+            double constant = 1d / (2 * Math.PI * weight * weight);
+            for (int y = -foff; y <= foff; y++)
+            {
+                for (int x = -foff; x <= foff; x++)
+                {
+                    distance = ((y * y) + (x * x)) / (2 * weight * weight);
+                    kernel[y + foff, x + foff] = (float) (constant * Math.Exp(-distance));
+                    kernelSum += kernel[y + foff, x + foff];
+                }
+            }
+            for (int y = 0; y < length; y++)
+            {
+                for (int x = 0; x < length; x++)
+                {
+                    kernel[y, x] =  (float) (kernel[y, x] * 1d / kernelSum);
+                }
+            }
+            return kernel;
+        }
+
+        private void Convolve()
+        {
+            int foff = (_kernel.GetLength(0) - 1) / 2;
+            int kcenter;
+            int kpixel;
+            for (int y = foff; y < _height - foff; y++)
+            {
+                for (int x = foff; x < _width - foff; x++)
+                {
+
+                    kcenter = y * (_width + 1) + x;
+                    float acc = 0f;
+                    for (int fy = -foff; fy <= foff; fy++)
+                    {
+                        for (int fx = -foff; fx <= foff; fx++)
+                        {
+                            kpixel = kcenter + fy * (_width + 1) + fx;
+                            acc += _heightMapTemp[kpixel] * _kernel[fy + foff, fx + foff];
+                        }
+                    }
+
+                    _heightMap[kcenter] = acc;
+                }
+            }
         }
         
         private async Task GetCaptureAsync()
         {
             while (_running)
             {
-                using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
-                using Capture capture = await Task.Run(() => _kinect.GetCapture());
-                GetDepthTextureFromKinect(capture, transformedDepth);
+                try {
+                    using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
+                    using Capture capture = await Task.Run(() => _kinect.GetCapture());
+                    GetDepthTextureFromKinect(capture, transformedDepth);
+                } catch (Exception e) {
+                    Debug.Log(e);
+                }
             }
         }
 
@@ -92,45 +156,24 @@ namespace Map
             _transformation.DepthImageToColorCamera(capture, transformedDepth);
 
             // Create Depth Buffer
-            Span<float> depthBuffer = transformedDepth.GetPixels<float>().Span;
-            //Span<ushort> irBuffer = capture.IR.GetPixels<ushort>().Span;
-
-            //int rangeX = _xOffsetEnd - _xOffsetStart;
-            //int rangeY = _yOffsetEnd - _yOffsetStart;
-
-            //float samplingRateX = rangeX / _width;
-            //float samplingRateY = rangeY / _height;
+            Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-                    
-                    /*
-                    int lowerX = (int)Mathf.Floor(x * samplingRateX + _xOffsetStart);
-                    int upperX = (int)Mathf.Ceil(x * samplingRateX + _xOffsetStart);
-                    int lowerY = (int)Mathf.Floor(y * samplingRateY + _xOffsetStart);
-                    int upperY = (int)Mathf.Ceil(y * samplingRateY + _xOffsetStart);
-
-                    ushort lowerSample = depthBuffer[lowerY * _width + lowerX];
-                    ushort upperSample = depthBuffer[upperY * _width + upperX];
-                    half depth = (half) ((half) (lowerSample + upperSample) / 2f);
-                    */
 
                     var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + x];
 
-
                     // Calculate pixel values
                     var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
-                    var pixelValue = (_maximumSandDepth - depth);
+                    var pixelValue = _maximumSandDepth - depth;
 
-                    //if (ir < irThreshold)
-                    //{
                     float val;
                     if (depth == 0 || depth >= _maximumSandDepth) // No depth image
                     {
-                        val = 0;
+                        val = 0.5f;
                     }
                     else if (depth < _minimumSandDepth)
                     {
@@ -138,13 +181,14 @@ namespace Map
                     }
                     else
                     {
-                        val = _heightScale * pixelValue / depthRange;
+                        val = pixelValue / depthRange;
                     }
-
-                    _heightMap[y * (_width + 1) + x] = val;
-                    //}
+                    
+                    _heightMapTemp[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
                 }
             }
+
+            Convolve();
 
         }
     }
