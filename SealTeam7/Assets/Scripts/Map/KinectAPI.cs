@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
+using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows if on windows
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
 using Unity.Collections;
 
@@ -12,9 +15,19 @@ namespace Map
         private readonly Device _kinect;
         private readonly Transformation _transformation;
         private float[] _heightMap;
-        private float[] _heightMapTemp;
         private float[,] _kernel;
         
+        /*
+         * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
+         * Get a pixel with:
+         * float pixel = _tmpImage.Data[y, x, 0]
+         * Set a pixel with:
+         * _tmpImage.Data[y, x, 0] = 123f
+         */
+        private Image<Gray, float> _tmpImage1;
+        private Image<Gray, float> _tmpImage2;
+        private Image<Gray, float> _tmpImage3;
+
         private readonly float _heightScale;
         private readonly float _lerpFactor;
         private readonly int _minimumSandDepth;
@@ -46,7 +59,9 @@ namespace Map
             _heightMap = heightMap;
             
             _kernel = GaussianBlur(kernelSize, gaussianStrength);
-            _heightMapTemp = new float[(width + 1) * (height + 1)];
+            _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
+            _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
+            _tmpImage3 = new Image<Gray, float>(_width + 1, _height + 1);
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -110,31 +125,31 @@ namespace Map
             return kernel;
         }
 
-        private void Convolve()
-        {
-            int foff = (_kernel.GetLength(0) - 1) / 2;
-            int kcenter;
-            int kpixel;
-            for (int y = foff; y < _height - foff; y++)
-            {
-                for (int x = foff; x < _width - foff; x++)
-                {
-
-                    kcenter = y * (_width + 1) + x;
-                    float acc = 0f;
-                    for (int fy = -foff; fy <= foff; fy++)
-                    {
-                        for (int fx = -foff; fx <= foff; fx++)
-                        {
-                            kpixel = kcenter + fy * (_width + 1) + fx;
-                            acc += _heightMapTemp[kpixel] * _kernel[fy + foff, fx + foff];
-                        }
-                    }
-
-                    _heightMap[kcenter] = acc;
-                }
-            }
-        }
+        // private void Convolve()
+        // {
+        //     int foff = (_kernel.GetLength(0) - 1) / 2;
+        //     int kcenter;
+        //     int kpixel;
+        //     for (int y = foff; y < _height - foff; y++)
+        //     {
+        //         for (int x = foff; x < _width - foff; x++)
+        //         {
+        //
+        //             kcenter = y * (_width + 1) + x;
+        //             float acc = 0f;
+        //             for (int fy = -foff; fy <= foff; fy++)
+        //             {
+        //                 for (int fx = -foff; fx <= foff; fx++)
+        //                 {
+        //                     kpixel = kcenter + fy * (_width + 1) + fx;
+        //                     acc += _heightMapTemp[kpixel] * _kernel[fy + foff, fx + foff];
+        //                 }
+        //             }
+        //
+        //             _heightMap[kcenter] = acc;
+        //         }
+        //     }
+        // }
         
         private async Task GetCaptureAsync()
         {
@@ -184,12 +199,29 @@ namespace Map
                         val = pixelValue / depthRange;
                     }
                     
-                    _heightMapTemp[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
+                    _tmpImage1.Data[y, x, 0] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
                 }
             }
+            
+            // At this point each pixel in _tmpImage1 is val * _heightScale (modulo lerping)
+            // Generate a mask where pixels likely to be of a hand/arm are set to 1
+            CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.9f*_heightScale, 1f, ThresholdType.Binary);
+            
+            // Dilate the mask (extend it slightly along its borders)
+            CvInvoke.Dilate(_tmpImage2, _tmpImage3, null, new System.Drawing.Point(-1, -1), 1, 
+                BorderType.Default, new MCvScalar(1f));
 
-            Convolve();
-
+            // Write new height data to _heightMap
+            for (int y = 0; y < _height + 1; y++)
+            {
+                for (int x = 0; x < _width + 1; x++)
+                {
+                    if (_tmpImage3.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
+                    {
+                        _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0];
+                    }
+                }
+            }
         }
     }
 }
