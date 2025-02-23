@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Serialization;
+﻿using Player;
+using UnityEngine;
 
 namespace Enemies
 {
@@ -14,11 +14,12 @@ namespace Enemies
         [SerializeField] private float spawnGroupSpacing;
         [SerializeField] private int maxEnemyCount;
         [SerializeField] private float maxEnemyDistance;
-
+        
         [Header("")]
         [Header("Game Settings")]
         [Header("")]
-        [SerializeField] private Transform objective;
+        [SerializeField] public PlayerCore godlyCore;
+        [SerializeField] public PlayerHands godlyHands;
         
         [HideInInspector] public float sqrMaxEnemyDistance;
         
@@ -29,11 +30,6 @@ namespace Enemies
         private void Start()
         {
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
-        }
-        
-        public Vector3 GetObjectivePosition()
-        {
-            return objective.position;
         }
 
         public void Kill(Enemy enemy)

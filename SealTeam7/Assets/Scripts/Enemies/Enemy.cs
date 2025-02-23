@@ -1,4 +1,5 @@
 using Enemies.Utils;
+using Player;
 using UnityEngine;
 
 namespace Enemies
@@ -8,7 +9,7 @@ namespace Enemies
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float attackRange;
         [SerializeField] protected float attackInterval;
-        [SerializeField] protected float attackDamage;
+        [SerializeField] protected int attackDamage;
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
@@ -21,11 +22,11 @@ namespace Enemies
             SqrAttackRange = attackRange * attackRange;
         }
 
-        protected abstract void Attack(IDamageable target);
+        protected abstract void Attack(PlayerDamageable target);
 
         protected virtual void Update()
         {
-            if ((transform.position - EnemyManager.GetObjectivePosition()).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance)
+            if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance)
             {
                 EnemyManager.Kill(this);
             }
