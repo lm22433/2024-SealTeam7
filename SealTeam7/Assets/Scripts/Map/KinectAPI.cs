@@ -13,6 +13,7 @@ namespace Map
         //Internal Variables
         private readonly Device _kinect;
         private readonly Transformation _transformation;
+        private Image _transformedDepthImage;
         private float[] _heightMap;
         
         /*
@@ -85,12 +86,13 @@ namespace Map
 
             // Initialize the transformation engine
             _transformation = _kinect.GetCalibration().CreateTransformation();
-
             _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
             _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+            _transformedDepthImage = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight,
+                _colourWidth * sizeof(UInt16));
 
             _running = true;
-            Task.Run(GetCaptureAsync);
+            Task.Run(GetCaptureThread);
         }
         
         public void StopKinect()
@@ -98,29 +100,29 @@ namespace Map
             _running = false;
             _kinect.StopCameras();
             _kinect.Dispose();
+            _transformedDepthImage.Dispose();
         }
         
-        private async Task GetCaptureAsync()
+        private void GetCaptureThread()
         {
             while (_running)
             {
                 try {
-                    using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
-                    using Capture capture = await Task.Run(() => _kinect.GetCapture());
-                    GetDepthTextureFromKinect(capture, transformedDepth);
+                    using Capture capture = _kinect.GetCapture();
+                    UpdateHeightMap(capture);
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
             }
         }
 
-        private void GetDepthTextureFromKinect(Capture capture, Image transformedDepth)
+        private void UpdateHeightMap(Capture capture)
         {
-            // Transform the depth image to the colour camera perspective
-            _transformation.DepthImageToColorCamera(capture, transformedDepth);
+            // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
+            _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
 
             // Create Depth Buffer
-            Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
+            Span<ushort> depthBuffer = _transformedDepthImage.GetPixels<ushort>().Span;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _height + 1; y++)
@@ -134,27 +136,24 @@ namespace Map
                     var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
                     var pixelValue = _maximumSandDepth - depth;
 
-                    float val;
-                    if (depth == 0 || depth >= _maximumSandDepth) // No depth image
+                    // depth == 0 means kinect wasn't able to get a depth for that pixel
+                    if (depth == 0 || depth >= _maximumSandDepth)
                     {
-                        val = 0.5f;
+                        _tmpImage1.Data[y, x, 0] = 0.5f;
                     }
                     else if (depth < _minimumSandDepth)
                     {
-                        val = 1;
+                        _tmpImage1.Data[y, x, 0] = 1f;  // Ensure that the pixel is part of the mask
                     }
                     else
                     {
-                        val = pixelValue / depthRange;
+                        _tmpImage1.Data[y, x, 0] = pixelValue / depthRange;
                     }
-
-                    _tmpImage1.Data[y, x, 0] = _heightScale * val;
                 }
             }
             
-            // At this point each pixel in _tmpImage1 is val * _heightScale
             // Generate a mask where pixels likely to be of a hand/arm are set to 1
-            CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.8f*_heightScale, 1f, ThresholdType.Binary);
+            CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.8, 1, ThresholdType.Binary);
             
             // Dilate the mask (extend it slightly along its borders)
             CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1, 
@@ -168,8 +167,9 @@ namespace Map
                     if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
                         _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
-                        _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0];
+                        _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
                     }
+                    // Otherwise height is kept the same for that pixel
                 }
             }
         }
