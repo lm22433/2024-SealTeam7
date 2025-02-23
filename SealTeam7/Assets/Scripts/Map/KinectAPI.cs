@@ -5,7 +5,6 @@ using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows 
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
-using Unity.Collections;
 
 namespace Map
 {
@@ -15,7 +14,6 @@ namespace Map
         private readonly Device _kinect;
         private readonly Transformation _transformation;
         private float[] _heightMap;
-        private float[,] _kernel;
         
         /*
          * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
@@ -27,9 +25,11 @@ namespace Map
         private Image<Gray, float> _tmpImage1;
         private Image<Gray, float> _tmpImage2;
         private Image<Gray, float> _tmpImage3;
-
+        
+        private readonly Mat _dilationKernel;
+        private readonly System.Drawing.Point _defaultAnchor;
+        private readonly MCvScalar _scalarOne;
         private readonly float _heightScale;
-        private readonly float _lerpFactor;
         private readonly int _minimumSandDepth;
         private readonly int _maximumSandDepth;
         private readonly int _colourWidth;
@@ -47,7 +47,6 @@ namespace Map
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
         {
             _heightScale = heightScale;
-            _lerpFactor = lerpFactor;
             _minimumSandDepth = minimumSandDepth;
             _maximumSandDepth = maximumSandDepth;
             _width = width;
@@ -58,10 +57,12 @@ namespace Map
             _yOffsetEnd = yOffsetEnd;
             _heightMap = heightMap;
             
-            _kernel = GaussianBlur(kernelSize, gaussianStrength);
             _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage3 = new Image<Gray, float>(_width + 1, _height + 1);
+            _dilationKernel = Mat.Ones(100, 100, DepthType.Cv8U, 1);
+            _defaultAnchor = new System.Drawing.Point(-1, -1);
+            _scalarOne = new MCvScalar(1f);
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -98,58 +99,6 @@ namespace Map
             _kinect.StopCameras();
             _kinect.Dispose();
         }
-
-        private static float[,] GaussianBlur(int length, float weight)
-        {
-            float[,] kernel = new float[length, length];
-            float kernelSum = 0;
-            int foff = (length - 1) / 2;
-            float distance;
-            double constant = 1d / (2 * Math.PI * weight * weight);
-            for (int y = -foff; y <= foff; y++)
-            {
-                for (int x = -foff; x <= foff; x++)
-                {
-                    distance = ((y * y) + (x * x)) / (2 * weight * weight);
-                    kernel[y + foff, x + foff] = (float) (constant * Math.Exp(-distance));
-                    kernelSum += kernel[y + foff, x + foff];
-                }
-            }
-            for (int y = 0; y < length; y++)
-            {
-                for (int x = 0; x < length; x++)
-                {
-                    kernel[y, x] =  (float) (kernel[y, x] * 1d / kernelSum);
-                }
-            }
-            return kernel;
-        }
-
-        // private void Convolve()
-        // {
-        //     int foff = (_kernel.GetLength(0) - 1) / 2;
-        //     int kcenter;
-        //     int kpixel;
-        //     for (int y = foff; y < _height - foff; y++)
-        //     {
-        //         for (int x = foff; x < _width - foff; x++)
-        //         {
-        //
-        //             kcenter = y * (_width + 1) + x;
-        //             float acc = 0f;
-        //             for (int fy = -foff; fy <= foff; fy++)
-        //             {
-        //                 for (int fx = -foff; fx <= foff; fx++)
-        //                 {
-        //                     kpixel = kcenter + fy * (_width + 1) + fx;
-        //                     acc += _heightMapTemp[kpixel] * _kernel[fy + foff, fx + foff];
-        //                 }
-        //             }
-        //
-        //             _heightMap[kcenter] = acc;
-        //         }
-        //     }
-        // }
         
         private async Task GetCaptureAsync()
         {
@@ -198,25 +147,26 @@ namespace Map
                     {
                         val = pixelValue / depthRange;
                     }
-                    
-                    _tmpImage1.Data[y, x, 0] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], _heightScale * val, _lerpFactor);
+
+                    _tmpImage1.Data[y, x, 0] = _heightScale * val;
                 }
             }
             
-            // At this point each pixel in _tmpImage1 is val * _heightScale (modulo lerping)
+            // At this point each pixel in _tmpImage1 is val * _heightScale
             // Generate a mask where pixels likely to be of a hand/arm are set to 1
-            CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.9f*_heightScale, 1f, ThresholdType.Binary);
+            CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.8f*_heightScale, 1f, ThresholdType.Binary);
             
             // Dilate the mask (extend it slightly along its borders)
-            CvInvoke.Dilate(_tmpImage2, _tmpImage3, null, new System.Drawing.Point(-1, -1), 1, 
-                BorderType.Default, new MCvScalar(1f));
+            CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1, 
+                BorderType.Default, _scalarOne);
 
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-                    if (_tmpImage3.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
+                    if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
+                        _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
                         _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0];
                     }
