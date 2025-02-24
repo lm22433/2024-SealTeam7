@@ -1,40 +1,46 @@
-﻿using System;
-using System.Linq;
-using FishNet;
-using FishNet.Connection;
-using FishNet.Managing;
-using UnityEngine;
-using FishNet.Object;
-using FishNet.Transporting;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Enemies
 {
-    [Serializable]
-    public struct EnemyInfo
+    public class EnemyManager : MonoBehaviour
     {
-        public GameObject enemyPrefab;
-        public Vector3 position;
-        public Quaternion rotation;
-    }
-    
-    public class EnemyManager : NetworkBehaviour
-    {
-        [SerializeField] private EnemyInfo[] enemies;
-        private GameObject _player;
+        [Header("Spawn Settings")]
+        [Header("")]
+        [SerializeField] private GameObject[] enemyTypes;
+        [SerializeField] private Transform[] spawnPoints;
+        [SerializeField] private float spawnInterval;
+        [SerializeField] private float spawnGroupSize;
+        [SerializeField] private float spawnGroupSpacing;
 
-        public override void OnStartServer()
+        [Header("")]
+        [Header("Game Settings")]
+        [Header("")]
+        [SerializeField] private Transform objective;
+        
+        private float _lastSpawn;
+        
+        
+        public Vector3 GetObjective()
         {
-            base.OnStartServer();
-            SpawnEnemies();
+            return objective.position;
         }
         
-        private void SpawnEnemies()
+        private void Update()
         {
-            foreach (EnemyInfo e in enemies)
+            _lastSpawn += Time.deltaTime;
+            
+            if (_lastSpawn < spawnInterval) return;
+            
+            _lastSpawn = 0;
+            foreach (var spawn in spawnPoints)
             {
-                NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(e.enemyPrefab, e.position, e.rotation, true);
-                ServerManager.Spawn(nob);
+                for (int i = 0; i < spawnGroupSize; i++)
+                {
+                    var spawnOffset = Random.onUnitSphere * spawnGroupSpacing;
+                    spawnOffset.y = 0f;
+                    Instantiate(enemyTypes[Random.Range(0, enemyTypes.Length)], spawn.position + spawnOffset, spawn.rotation, transform);
+                }
             }
         }
     }

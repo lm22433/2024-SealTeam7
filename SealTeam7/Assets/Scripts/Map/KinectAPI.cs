@@ -1,66 +1,74 @@
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
-using FishNet;
+using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows if on windows
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
-using FishNet.Object;
-using FishNet.Connection;
-using Map;
-using FishNet.Transporting;
-using Unity.Mathematics;
-using UnityEngine.Serialization;
 using Python;
 
 namespace Map
 {
-    public class KinectAPI : NetworkBehaviour
+    public class KinectAPI
     {
-
-        [Header("Depth Calibrations")] [SerializeField, Range(300f, 2000f)]
-        private ushort minimumSandDepth;
-
-        [SerializeField, Range(600f, 2000f)] private ushort maximumSandDepth;
-
-        [Header("IR Calibrations")] [SerializeField, Range(0, 255f)]
-        private int irThreshold;
-
-        [Header("Similarity Threshold")] [SerializeField, Range(0f, 10f)]
-        private float _similarityThresholdMin;
-        [SerializeField, Range(0f, 500f)]
-        private float _similarityThresholdMax;
-        [SerializeField, Range(0f, 1f)]
-        private float _similarityThresholdAdjustor;
-
         //Internal Variables
-        private Device _kinect;
-        private Transformation _transformation;
-        [SerializeField] private MapGenerator mapGenerator;
+        private readonly Device _kinect;
+        private readonly Transformation _transformation;
+        private Image _transformedDepthImage;
+        private float[] _heightMap;
+        
+        /*
+         * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
+         * Get a pixel with:
+         * float pixel = _tmpImage.Data[y, x, 0]
+         * Set a pixel with:
+         * _tmpImage.Data[y, x, 0] = 123f
+         */
+        private Image<Gray, float> _tmpImage1;
+        private Image<Gray, float> _tmpImage2;
+        private Image<Gray, float> _tmpImage3;
+        
+        private readonly Mat _dilationKernel;
+        private readonly System.Drawing.Point _defaultAnchor;
+        private readonly MCvScalar _scalarOne;
+        private readonly float _heightScale;
+        private readonly float _lerpFactor;
+        private readonly int _minimumSandDepth;
+        private readonly int _maximumSandDepth;
+        private readonly int _colourWidth;
+        private readonly int _colourHeight;        
+        private readonly int _width;
+        private readonly int _height;
+        private readonly int _xOffsetStart;
+        private readonly int _xOffsetEnd;
+        private readonly int _yOffsetStart;
+        private readonly int _yOffsetEnd;
 
-        private int _colourWidth;
-        private int _colourHeight;
-
-        private half[] _depthMapArray;
-
-        [Header("Position Calibrations")]
-        [SerializeField] private int _width;
-        [SerializeField] private int _length;
-        [SerializeField] private float _maxHeight;
-        [SerializeField, Range(0f, 1920f)] private int _xOffsetStart;
-        [SerializeField, Range(0f, 1920f)] private int _xOffsetEnd;
-        [SerializeField, Range(0f, 1080f)] private int _yOffsetStart;
-        [SerializeField, Range(0f, 1080f)] private int _yOffsetEnd;
-
-        [SerializeField] public bool isKinectPresent;
-        [SerializeField] public bool isObjectDetection;
-
-        [SerializeField] Texture2D texture;
         private bool _running;
         private SandboxObject[] sandBoxObjects;
 
-        public void Start()
+        public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
         {
-            if (!IsServerInitialized || !isKinectPresent) return;
-
+            _heightScale = heightScale;
+            _lerpFactor = lerpFactor;
+            _minimumSandDepth = minimumSandDepth;
+            _maximumSandDepth = maximumSandDepth;
+            _width = width;
+            _height = height;
+            _xOffsetStart = xOffsetStart;
+            _xOffsetEnd = xOffsetEnd;
+            _yOffsetStart = yOffsetStart;
+            _yOffsetEnd = yOffsetEnd;
+            _heightMap = heightMap;
+            
+            _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
+            _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
+            _tmpImage3 = new Image<Gray, float>(_width + 1, _height + 1);
+            _dilationKernel = Mat.Ones(100, 100, DepthType.Cv8U, 1);
+            _defaultAnchor = new System.Drawing.Point(-1, -1);
+            _scalarOne = new MCvScalar(1f);
+            
             if (minimumSandDepth > maximumSandDepth)
             {
                 Debug.LogError("Minimum depth is greater than maximum depth");
@@ -82,195 +90,96 @@ namespace Map
 
             // Initialize the transformation engine
             _transformation = _kinect.GetCalibration().CreateTransformation();
-
-            this._colourWidth = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
-            this._colourHeight = this._kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
-
-            StartKinect();
-        }
-
-        private void StartKinect()
-        {
-            _depthMapArray = new half[_width * _length];
-            texture = new Texture2D(_width, _length);
+            _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
+            _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+            _transformedDepthImage = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight,
+                _colourWidth * sizeof(UInt16));
 
             _running = true;
-            Task.Run(GetCaptureAsync);
+            Task.Run(GetCaptureThread);
         }
         
-        private void OnApplicationQuit()
+        public void StopKinect()
         {
-            if (_kinect != null) {
-                _running = false;
-                _kinect.StopCameras();
-                _kinect.Dispose();
-            }
+            _running = false;
+            _kinect.StopCameras();
+            _kinect.Dispose();
+            _transformedDepthImage.Dispose();
+            _tmpImage1.Dispose();
+            _tmpImage2.Dispose();
+            _tmpImage3.Dispose();
+            _dilationKernel.Dispose();
         }
-
-        /* Chunk Request RPC */
-        public void RequestTexture(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkTextureServerRpc(InstanceFinder.ClientManager.Connection, lod, chunkSize, x, z); 
-        }
-
-        [ServerRpc(RequireOwnership = false, DataLength = 1024)]
-        private void RequestChunkTextureServerRpc(NetworkConnection conn, ushort lod, ushort chunkSize, int x, int z)
+        
+        private void GetCaptureThread()
         {
-            half[] depths = GetChunkTexture(lod, chunkSize, x, z);
-
-            SendChunkTextureTargetRpc(conn, depths, x, z, lod);
-        }
-
-        public half GetHeight(int xPos, int zPos)
-        {
-            return _depthMapArray[zPos * _width + xPos];
-        }
-
-        [TargetRpc(DataLength = 1024)]
-        private void SendChunkTextureTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
-        {
-            mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
-        }
-
-        /* Sandbox objects get request */
-        public SandboxObject[] RequestSandboxObjects() {
-            return sandBoxObjects;
-        }
-
-        private half[] GetChunkTexture(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
-        {
-            
-            //float similarity = 0;
-
-            /*
-            //Similarity Check
-            for (int y = 0; y <= chunkSize + 1; y++ ) {
-                for (int x = 0; x <= chunkSize + 1; x++) {
-                    var col = depths[y * chunkSize + x];
-                    var curr = depthMapArray[(y + yChunkOffset) * chunkSize + xChunkOffset + x];
-
-                    similarity += Mathf.Pow(Mathf.Abs(col - curr), 2);
-                }
-            }
-
-            similarity = Mathf.Sqrt(similarity) / chunkSize;
-
-            if (similarity > _SimilarityThreshold) {
-                //return;
-            }
-            */
-            //Write changed texture
-            var lodFactor = lod == 0 ? 1 : lod * 2;
-            var resolution = chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * (chunkSize - 1);
-            int xChunkOffset = chunkX * (chunkSize - 1);
-            
-            var depth = new half[resolution * resolution];
-            for (int z = 0; z < resolution; z++)
-            {
-                for (int x = 0; x < resolution; x++)
-                {
-                    depth[z * resolution + x] = _depthMapArray[(lodFactor * z + zChunkOffset) * _width + xChunkOffset + lodFactor * x];
-                }
-            }
-
-            return depth;
-        }   
-
-        [SerializeField] bool takeSnapshot = false;
-        private void Update() {
-            if (takeSnapshot) {
-
-                Color32[] col = new Color32[_depthMapArray.Length];
-                for(int i = 0; i < _depthMapArray.Length; i++) {
-                    col[i] = new Color32(Convert.ToByte(_depthMapArray[i] / _maxHeight * 255), 0, 0, Convert.ToByte(255));
-                }
-
-                texture.SetPixels32(col);
-                texture.Apply();
-
-                takeSnapshot = false;
-            }
-        }
-
-        private async Task GetCaptureAsync()
-        {
-            if (isObjectDetection) {
-                if (!PythonManager.Connect()) {
-                    Debug.LogError("Object detection script initialise failed!");
-                    return;
-                }
-            }
-
             while (_running)
             {
-                using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
-                using Capture capture = await Task.Run(() => _kinect.GetCapture());
-                GetDepthTextureFromKinect(capture, transformedDepth);
-                
-                if (isObjectDetection) {
+                try {
+                    using Capture capture = _kinect.GetCapture();
+                    UpdateHeightMap(capture);
                     PythonManager.SendColorImage(capture.Color);
-                    sandBoxObjects = PythonManager.GetSandboxObjects();
+                } catch (Exception e) {
+                    Debug.Log(e);
                 }
             }
-            
         }
 
-        private void GetDepthTextureFromKinect(Capture capture, Image transformedDepth)
+        private void UpdateHeightMap(Capture capture)
         {
-            // Transform the depth image to the colour camera perspective
-            _transformation.DepthImageToColorCamera(capture, transformedDepth);
+            // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
+            _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
 
             // Create Depth Buffer
-            Span<ushort> depthBuffer = transformedDepth.GetPixels<ushort>().Span;
+            Span<ushort> depthBuffer = _transformedDepthImage.GetPixels<ushort>().Span;
 
             // Create a new image with data from the depth and colour image
-            for (int y = 0; y < _length; y++)
+            for (int y = 0; y < _height + 1; y++)
             {
-                for (int x = 0; x < _width; x++)
+                for (int x = 0; x < _width + 1; x++)
                 {
 
                     var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + x];
 
-
                     // Calculate pixel values
-                    half depthRange = (half)(maximumSandDepth - minimumSandDepth);
-                    half pixelValue = (half)(maximumSandDepth - depth);
+                    var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
+                    var pixelValue = _maximumSandDepth - depth;
 
-                    half val;
-                    if (depth == 0 || depth >= maximumSandDepth) // No depth image
+                    // depth == 0 means kinect wasn't able to get a depth for that pixel
+                    if (depth == 0 || depth >= _maximumSandDepth || depth < _minimumSandDepth)
                     {
-                        val = (half) 0;
-
-                    }
-                    else if (depth < minimumSandDepth)
-                    {
-
-                        val = (half) 1;
-
+                        _tmpImage1.Data[y, x, 0] = 1f;  // Ensure that the pixel is part of the mask
                     }
                     else
                     {
-                        val = (half) (pixelValue / depthRange);
-
+                        _tmpImage1.Data[y, x, 0] = pixelValue / depthRange;
                     }
-
-                    var adj_val = (half) (val * _maxHeight);
-                    var prev_val = _depthMapArray[y * _width + x];
-
-                    if (adj_val != 0) {
-                        if (adj_val < prev_val - _similarityThresholdMin ||
-                            adj_val > prev_val + _similarityThresholdMin) {
-                                if (adj_val < prev_val + _similarityThresholdMax && adj_val > prev_val - _similarityThresholdMax) {
-                                    _depthMapArray[y * _width + x] = (half) Mathf.Lerp(prev_val, adj_val, 1 - _similarityThresholdAdjustor);
-                                } else {
-                                    _depthMapArray[y * _width + x] = (half) Mathf.Lerp(prev_val, adj_val, _similarityThresholdAdjustor);
-                                }
-                        }
-                    } 
-
                 }
             }
+            
+            // Generate a mask where pixels likely to be of a hand/arm are set to 1
+            CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.8, 1, ThresholdType.Binary);
+            
+            // Dilate the mask (extend it slightly along its borders)
+            CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1, 
+                BorderType.Default, _scalarOne);
 
+            // Write new height data to _heightMap
+            for (int y = 0; y < _height + 1; y++)
+            {
+                for (int x = 0; x < _width + 1; x++)
+                {
+                    if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
+                        _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
+                    {
+                        _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
+                        _tmpImage1.Data[y, x, 0] * _heightScale, _lerpFactor);
+                        // Debug.Log(_lerpFactor);
+                        // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
+                    }
+                    // Otherwise height is kept the same for that pixel
+                }
+            }
         }
     }
 }

@@ -1,51 +1,104 @@
 ﻿using System.Threading.Tasks;
-using FishNet;
-using FishNet.Connection;
-using FishNet.Object;
-using Unity.Mathematics;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Profiling;
+using System;
 
 namespace Map
 {
-    public class NoiseGenerator : NetworkBehaviour
+    public class NoiseGenerator
     {
-        [SerializeField] private int size;
-        [SerializeField] private float speed;
-        [SerializeField] private float noiseScale;
-        [SerializeField] private float maxHeight;
-        private half[] _noise;
+        private readonly int _size;
+        private readonly float _speed;
+        private readonly float _noiseScale;
+        private readonly float _heightScale;
+        private readonly float _lerpFactor;
+        
+        private float[] _heightMap;
+        private float[] _heightMapTemp;
+        private float[,] _kernel;
+        
         private bool _running;
         private float _time;
-        [SerializeField] private MapGenerator mapGenerator;
-        private KinectAPI _kinect;
 
-        private void Start()
+        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, float lerpFactor, ref float[] heightMap, int kernelSize, float gaussianStrength)
         {
-            _kinect = FindFirstObjectByType<KinectAPI>();
-
-            if (!IsServerInitialized || _kinect.isKinectPresent) return;
-
-            StartNoise();
-        }
-
-        private void StartNoise()
-        {
-            _time = 0;
-            _noise = new half[size * size];
+            _size = size;
+            _speed = speed;
+            _noiseScale = noiseScale;
+            _heightScale = heightScale;
+            _lerpFactor = lerpFactor;
+            _time = 0f;
+            
+            _heightMap = heightMap;
+            _heightMapTemp = new float[(_size + 1) * (_size + 1)];
+            
+            _kernel = GaussianBlur(kernelSize, gaussianStrength);
+            
             _running = true;
+            
             Task.Run(UpdateNoise);
         }
 
-        private void OnApplicationQuit()
+        public void Stop()
         {
             _running = false;
         }
-
-        private void Update()
+        
+        public void AdvanceTime(float deltaTime)
         {
-            if (!_kinect.isKinectPresent)
+            _time += deltaTime;
+        }
+
+        private static float[,] GaussianBlur(int length, float weight)
+        {
+            float[,] kernel = new float[length, length];
+            float kernelSum = 0;
+            int foff = (length - 1) / 2;
+            float distance;
+            double constant = 1d / (2 * Math.PI * weight * weight);
+            for (int y = -foff; y <= foff; y++)
             {
-                _time += Time.deltaTime;
+                for (int x = -foff; x <= foff; x++)
+                {
+                    distance = ((y * y) + (x * x)) / (2 * weight * weight);
+                    kernel[y + foff, x + foff] = (float) (constant * Math.Exp(-distance));
+                    kernelSum += kernel[y + foff, x + foff];
+                }
+            }
+            for (int y = 0; y < length; y++)
+            {
+                for (int x = 0; x < length; x++)
+                {
+                    kernel[y, x] =  (float) (kernel[y, x] * 1d / kernelSum);
+                }
+            }
+            return kernel;
+        }
+
+        private void Convolve()
+        {
+            int foff = (_kernel.GetLength(0) - 1) / 2;
+            int kcenter;
+            int kpixel;
+            for (int y = foff; y < _size - foff; y++)
+            {
+                for (int x = foff; x < _size - foff; x++)
+                {
+
+                    kcenter = y * (_size + 1) + x;
+                    float acc = 0f;
+                    for (int fy = -foff; fy <= foff; fy++)
+                    {
+                        for (int fx = -foff; fx <= foff; fx++)
+                        {
+                            kpixel = kcenter + fy * (_size + 1) + fx;
+                            acc += _heightMapTemp[kpixel] * _kernel[fy + foff, fx + foff];
+                        }
+                    }
+
+                    _heightMap[kcenter] = acc;
+                }
             }
         }
 
@@ -53,59 +106,18 @@ namespace Map
         {
             while (_running)
             {
-                for (int y = 0; y < size; y++)
+                for (int y = 0; y < _size + 1; y++)
                 {
-                    for (int x = 0; x < size; x++)
+                    for (int x = 0; x < _size + 1; x++)
                     {
-                        var perlinX = x * noiseScale + _time * speed;
-                        var perlinY = y * noiseScale + _time * speed;
-                        _noise[y * size + x] = (half) (Mathf.PerlinNoise(perlinX, perlinY) * maxHeight);
+                        var perlinX = x * _noiseScale + _time * _speed;
+                        var perlinY = y * _noiseScale + _time * _speed;
+                        _heightMapTemp[y * (_size + 1) + x] = Mathf.Lerp(_heightMap[y * (_size + 1) + x], _heightScale * Mathf.PerlinNoise(perlinX, perlinY), _lerpFactor);
                     }
                 }
+                
+                Convolve();
             }
-        }
-        
-        public void RequestNoise(ushort lod, ushort chunkSize, int x, int z) {
-            RequestChunkNoiseServerRpc(InstanceFinder.ClientManager.Connection, lod, chunkSize, x, z);
-        }
-
-        [ServerRpc(RequireOwnership = false, DataLength = 1024)]
-        public void RequestChunkNoiseServerRpc(NetworkConnection conn, ushort lod, ushort chunkSize, int x, int z)
-        {
-            half[] depths = GetChunkNoise(lod, chunkSize, x, z);
-            
-            SendChunkNoiseTargetRpc(conn, depths, x, z, lod);
-        }
-
-        [TargetRpc (DataLength = 1024)]
-        private void SendChunkNoiseTargetRpc(NetworkConnection conn, half[] depths, int x, int z, ushort lod)
-        {
-            mapGenerator.GetChunk(x, z).SetHeights(depths, lod);
-        }
-        
-        private half[] GetChunkNoise(ushort lod, ushort chunkSize, int chunkX, int chunkZ)
-        {
-            var lodFactor = lod == 0 ? 1 : lod * 2;
-            var resolution = chunkSize / lodFactor;
-            int zChunkOffset = chunkZ * (chunkSize - 1);
-            int xChunkOffset = chunkX * (chunkSize - 1);
-            
-            var noise = new half[resolution * resolution];
-            
-            for (int z = 0; z < resolution; z++)
-            {
-                for (int x = 0; x < resolution; x++)
-                {
-                    noise[z * resolution + x] = _noise[(lodFactor * z + zChunkOffset) * size + xChunkOffset + lodFactor * x];
-                }
-            }
-
-            return noise;
-        }
-
-        public half GetHeight(int xPos, int zPos)
-        {
-            return _noise[zPos * size + xPos];
         }
     }
 }

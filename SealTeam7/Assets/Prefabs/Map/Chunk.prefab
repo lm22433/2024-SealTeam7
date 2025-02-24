@@ -47,18 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a204c24fd77eed4049fc8627dddb7552, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
-  _addedNetworkObject: {fileID: 0}
-  _networkObjectCache: {fileID: 0}
-  settings:
-    size: 32
-    spacing: 0.9375
-    lerpFactor: 0.1
-    x: 0
-    z: 0
-    lod: 2
-    colliderDst: 0
-    isKinectPresent: 0
 --- !u!33 &5746010189181975162
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -76,5 +76,5 @@ crashlytics-build.properties
 .idea/
 *.blob
 
-/[Aa]ssets/ParrelSync*
-/[Aa]ssets/Plugins/ParrelSync*
+/[Aa]ssets/PythonServer/venv*
+
