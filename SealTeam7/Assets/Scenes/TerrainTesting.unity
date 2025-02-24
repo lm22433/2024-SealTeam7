@@ -362,12 +362,12 @@ MonoBehaviour:
   mapSize: 480
   chunkRow: 2
   chunkSize: 240
-  heightScale: 50
-  lerpFactor: 1
+  heightScale: 300
+  lerpFactor: 0.5
   lodInfo:
     lod: 1
     colliderLod: 2
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0

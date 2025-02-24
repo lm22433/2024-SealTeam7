@@ -51,12 +51,12 @@ def inference_frame(object_detector, hand_landmarker, frame):
 
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB))
     timestamp_ms = int(time.time() * 1000)
-    object_detector.detect_async(mp_image, timestamp_ms)
-    # hand_landmarker.detect_async(mp_image, timestamp_ms)
-    object_detection_done.wait()  # block until inference is done for this frame
-    # hand_landmarking_done.wait()
-    object_detection_done.clear()
-    # hand_landmarking_done.clear()
+    # object_detector.detect_async(mp_image, timestamp_ms)
+    hand_landmarker.detect_async(mp_image, timestamp_ms)
+    # object_detection_done.wait()  # block until inference is done for this frame
+    hand_landmarking_done.wait()
+    # object_detection_done.clear()
+    hand_landmarking_done.clear()
 
     # filter out object detections that are obviously wrong
     detections = list(filter(lambda d: d.bounding_box.width < 25 and d.bounding_box.height < 25,

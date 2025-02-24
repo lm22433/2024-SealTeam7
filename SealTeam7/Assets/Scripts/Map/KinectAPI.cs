@@ -45,7 +45,7 @@ namespace Map
         private readonly int _yOffsetEnd;
 
         private bool _running;
-        private SandboxObject[] sandBoxObjects;
+        private SandboxObject[] _handLandmarks;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
@@ -94,6 +94,10 @@ namespace Map
             _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
             _transformedDepthImage = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight,
                 _colourWidth * sizeof(UInt16));
+            
+            // Initialise Python stuff
+            PythonManager.Connect();
+            PythonManager.StartInference();
 
             _running = true;
             Task.Run(GetCaptureThread);
