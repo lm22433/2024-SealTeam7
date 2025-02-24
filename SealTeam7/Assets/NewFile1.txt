@@ -1,1 +1,0 @@
-﻿Assets/Player.meta Assets/Player/FrictionlessToAvoidWallSticking.physicMaterial.meta Assets/Player/PlayerCharacter.prefab.meta Assets/Prefabs/Test Dummy.prefab.meta Assets/Resources/PerformanceTestRunInfo.json.meta Assets/Resources/PerformanceTestRunSettings.json.meta Assets/Scenes/SampleScene.unity.meta Assets/Scripts/Kinect.meta

@@ -183,11 +183,11 @@ namespace Python
                             var objName = obj["type"]!.ToString();
                             var x = obj["x"]!.ToObject<float>();
                             var y = obj["y"]!.ToObject<float>();
-
+                    
                             // Convert from cropped 256x256 image coordinates to 1280x720 image coordinates
                             x = (x - ImageOffsetX) / ImageScale + ImageCropX;
                             y = (y - ImageOffsetY) / ImageScale + ImageCropY;
-
+                    
                             SandboxObject sandboxObject;
                             switch (objName)
                             {
@@ -201,7 +201,7 @@ namespace Python
                                     // Sometimes the model outputs "background" for some reason
                                     continue; // Just ignore and move onto the next object
                             }
-
+                    
                             // Debug.Log(sandboxObject);
                             _sandboxObjects.Add(sandboxObject);
                         }
