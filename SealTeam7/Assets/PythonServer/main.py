@@ -46,7 +46,7 @@ def hand_landmarker_callback(result, output_image, timestamp_ms):
     hand_landmarking_done.set()
 
 
-def inference_frame(object_detector, hand_landmarker, frame):
+def inference_frame(hand_landmarker, frame):
     """Returns the object bounding boxes and hand landmarks as coordinates in the *256x256* image"""
 
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB))
@@ -58,40 +58,45 @@ def inference_frame(object_detector, hand_landmarker, frame):
     # object_detection_done.clear()
     hand_landmarking_done.clear()
 
-    # filter out object detections that are obviously wrong
-    detections = list(filter(lambda d: d.bounding_box.width < 25 and d.bounding_box.height < 25,
-                             object_detection_result.detections))
+    # # filter out object detections that are obviously wrong
+    # detections = list(filter(lambda d: d.bounding_box.width < 25 and d.bounding_box.height < 25,
+    #                          object_detection_result.detections))
 
     if VISUALISE_INFERENCE_RESULTS:
         scale = 3
-        frame = cv2.resize(frame, (frame.shape[1] * scale, frame.shape[0] * scale),
-                           interpolation=cv2.INTER_NEAREST)
-        for detection in detections:
-            bbox = detection.bounding_box
-            x = int(bbox.origin_x * scale)
-            y = int(bbox.origin_y * scale)
-            w = int(bbox.width * scale)
-            h = int(bbox.height * scale)
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 1)
-            cv2.putText(frame, detection.categories[0].category_name, (x, y-4),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
+        vis_frame = cv2.resize(frame, (frame.shape[1] * scale, frame.shape[0] * scale),
+                               interpolation=cv2.INTER_NEAREST)
+        # for detection in detections:
+        #     bbox = detection.bounding_box
+        #     x = int(bbox.origin_x * scale)
+        #     y = int(bbox.origin_y * scale)
+        #     w = int(bbox.width * scale)
+        #     h = int(bbox.height * scale)
+        #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 1)
+        #     cv2.putText(frame, detection.categories[0].category_name, (x, y-4),
+        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
         for landmarks in hand_landmarking_result.hand_landmarks:  # for each hand
             for connection in HandLandmarksConnections.HAND_CONNECTIONS:
-                cv2.line(frame, (int(landmarks[connection.start].x * frame.shape[1]),
-                                 int(landmarks[connection.start].y * frame.shape[0])),
-                         (int(landmarks[connection.end].x * frame.shape[1]),
-                          int(landmarks[connection.end].y * frame.shape[0])),
+                cv2.line(vis_frame, (int(landmarks[connection.start].x * vis_frame.shape[1]),
+                                     int(landmarks[connection.start].y * vis_frame.shape[0])),
+                         (int(landmarks[connection.end].x * vis_frame.shape[1]),
+                          int(landmarks[connection.end].y * vis_frame.shape[0])),
                          (0, 255, 0), 1)
             for landmark in landmarks:
-                cv2.circle(frame, (int(landmark.x * frame.shape[1]),
-                                   int(landmark.y * frame.shape[0])), 3, (0, 255, 0), -1)
-        cv2.imshow("Inference visualisation", frame)
+                cv2.circle(vis_frame, (int(landmark.x * vis_frame.shape[1]),
+                                       int(landmark.y * vis_frame.shape[0])), 3, (0, 255, 0), -1)
+        cv2.imshow("Inference visualisation", vis_frame)
         cv2.waitKey(1)
 
-    return {"objects": [{"type": detection.categories[0].category_name,
-                         "x": detection.bounding_box.origin_x + detection.bounding_box.width / 2,
-                         "y": detection.bounding_box.origin_y + detection.bounding_box.height / 2}
-                        for detection in detections]}
+    # return {"objects": [{"type": detection.categories[0].category_name,
+    #                      "x": detection.bounding_box.origin_x + detection.bounding_box.width / 2,
+    #                      "y": detection.bounding_box.origin_y + detection.bounding_box.height / 2}
+    #                     for detection in detections]}
+    return {"hand_landmarks": [[{"x": landmark.x * frame.shape[1],
+                                 "y": landmark.y * frame.shape[0],
+                                 "z": landmark.z * frame.shape[0]}  # assuming frame is square
+                                for landmark in landmarks]  # for each landmark in one hand
+                                for landmarks in hand_landmarking_result.hand_landmarks]}  # for each hand
 
 
 def inference_connection(conn):
@@ -101,11 +106,11 @@ def inference_connection(conn):
     conn.settimeout(0.5)  # instead of blocking for ages, check every 0.5s, in case of KeyboardInterrupt
     inference_running = False
 
-    object_detector_options = ObjectDetectorOptions(
-        base_options=BaseOptions(model_asset_path=OBJECT_DETECTION_MODEL_PATH),
-        running_mode=RunningMode.LIVE_STREAM,
-        max_results=5,
-        result_callback=object_detector_callback)
+    # object_detector_options = ObjectDetectorOptions(
+    #     base_options=BaseOptions(model_asset_path=OBJECT_DETECTION_MODEL_PATH),
+    #     running_mode=RunningMode.LIVE_STREAM,
+    #     max_results=5,
+    #     result_callback=object_detector_callback)
     hand_landmarker_options = HandLandmarkerOptions(
         base_options=BaseOptions(model_asset_path=HAND_LANDMARKING_MODEL_PATH),
         running_mode=RunningMode.LIVE_STREAM,
@@ -115,8 +120,7 @@ def inference_connection(conn):
         min_tracking_confidence=0.5,
         result_callback=hand_landmarker_callback)
 
-    with conn, ObjectDetector.create_from_options(object_detector_options) as object_detector, \
-            HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmarker:
+    with conn, HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmarker:
         while not stop_server:
             try:
                 # Check if any control signals in buffer
@@ -153,7 +157,7 @@ def inference_connection(conn):
                         frame = color_image.copy()
                         color_image_lock.release()
 
-                    data = inference_frame(object_detector, hand_landmarker, frame)
+                    data = inference_frame(hand_landmarker, frame)
                     data_json = json.dumps(data)
                     try:
                         conn.send(data_json.encode())
