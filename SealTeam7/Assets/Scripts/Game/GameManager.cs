@@ -31,6 +31,8 @@ namespace Game
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
 
+            _health = maxHealth;
+
             StartGame();
         }
 

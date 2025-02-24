@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using Game;
+using Player;
 using UnityEngine;
 
 namespace Enemies
@@ -25,21 +26,28 @@ namespace Enemies
         
         private float _lastSpawn;
         private int _enemyCount;
-
+        private static EnemyManager _instance;
 
         private void Start()
         {
+            if (_instance == null) _instance = this;
+            else Destroy(gameObject);
+            
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
         }
 
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
-            Destroy(enemy.gameObject);
+            enemy.Die();
         }
+        
+        public static EnemyManager GetInstance() => _instance;
         
         private void Update()
         {
+            if (!GameManager.GetInstance().IsGameActive()) return;
+            
             _lastSpawn += Time.deltaTime;
             
             if (_lastSpawn < spawnInterval) return;

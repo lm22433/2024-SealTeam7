@@ -52,7 +52,8 @@ MonoBehaviour:
   moveSpeed: 10
   attackRange: 20
   attackInterval: 1
-  attackDamage: 10
+  attackDamage: 1
+  killScore: 5
   stopShootingThreshold: 20
 --- !u!33 &3841694198046563008
 MeshFilter:
