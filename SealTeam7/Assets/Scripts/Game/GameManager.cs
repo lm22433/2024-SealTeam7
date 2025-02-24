@@ -19,6 +19,7 @@ namespace Game
         private static GameManager _instance;
         private bool _gameActive;
         private float _timer;
+		private int _totalKills;
         private int _score;
         private int _health;
         
@@ -86,6 +87,9 @@ namespace Game
         public void RegisterKill(int score)
         {
             if (!_gameActive) throw new Exception("Game has not started yet!");
+
+			totalKills++;
+			_score += score;
         }
         
         public static GameManager GetInstance() => _instance;
