@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:SealTeam7/Assets/Packages/Newtonsoft.Json.13.0.3.meta
 guid: 1e2784941054bfa40989f3f5606de48d
-========
-guid: c85782acb46eace3f9e94046bec9cf78
->>>>>>>> hand-masking-threshold:SealTeam7/Assets/Packages/Emgu.CV.4.10.0.5680.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
