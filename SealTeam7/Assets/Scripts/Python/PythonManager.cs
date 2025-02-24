@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Microsoft.Azure.Kinect.Sensor;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace Python
@@ -39,7 +42,9 @@ namespace Python
         private static NetworkStream _imageStream;
         private static Thread _receiveMessagesThread;
         private static bool _stopReceivingMessages = false;
-        private static ConcurrentBag<SandboxObject> _sandboxObjects = new();
+        private static HandLandmarks _handLandmarks;
+        private static Vector3[] _leftHandLandmarks;  // Keep a reference separately as they can be null in HandLandmarks
+        private static Vector3[] _rightHandLandmarks;
 
 
         public static bool Connect()
@@ -68,6 +73,15 @@ namespace Python
             _stopReceivingMessages = false;
             _receiveMessagesThread = new Thread(ReceiveInferenceResults);
             _receiveMessagesThread.Start();
+            
+            HandLandmarks = new HandLandmarks
+            {
+                Left = null,
+                Right = null
+            };
+            _leftHandLandmarks = new Vector3[20];
+            _rightHandLandmarks = new Vector3[20];
+            
             Debug.Log("Connected.");
             return true;
         }
@@ -131,9 +145,15 @@ namespace Python
         }
 
 
-        public static SandboxObject[] GetSandboxObjects()
-        {
-            return _sandboxObjects.ToArray();
+        // public static SandboxObject[] GetSandboxObjects()
+        // {
+        //     return _sandboxObjects.ToArray();
+        // }
+        
+        
+        public static HandLandmarks HandLandmarks { 
+            get => _handLandmarks;
+            private set => _handLandmarks = value;
         }
 
 
@@ -176,34 +196,66 @@ namespace Python
 
                     try
                     {
-                        var objects = JObject.Parse(receivedData)["objects"];
-                        _sandboxObjects.Clear();
-                        foreach (var obj in objects!)
+                        var receivedJson = JObject.Parse(receivedData);
+                        // var objects = receivedJson["objects"];
+                        // _sandboxObjects.Clear();
+                        // foreach (var obj in objects!)
+                        // {
+                        //     var objName = obj["type"]!.ToString();
+                        //     var x = obj["x"]!.ToObject<float>();
+                        //     var y = obj["y"]!.ToObject<float>();
+                        //
+                        //     // Convert from cropped 256x256 image coordinates to 1280x720 image coordinates
+                        //     x = (x - ImageOffsetX) / ImageScale + ImageCropX;
+                        //     y = (y - ImageOffsetY) / ImageScale + ImageCropY;
+                        //
+                        //     SandboxObject sandboxObject;
+                        //     switch (objName)
+                        //     {
+                        //         case "Bunker":
+                        //             sandboxObject = new SandboxObject.Bunker(x, y);
+                        //             break;
+                        //         case "Spawner":
+                        //             sandboxObject = new SandboxObject.Spawner(x, y);
+                        //             break;
+                        //         default:
+                        //             // Sometimes the model outputs "background" for some reason
+                        //             continue; // Just ignore and move onto the next object
+                        //     }
+                        //
+                        //     // Debug.Log(sandboxObject);
+                        //     _sandboxObjects.Add(sandboxObject);
+                        // }
+                        var handLandmarks = receivedJson["hand_landmarks"]!;
+                        var left = handLandmarks["left"];
+                        if (left != null)
                         {
-                            var objName = obj["type"]!.ToString();
-                            var x = obj["x"]!.ToObject<float>();
-                            var y = obj["y"]!.ToObject<float>();
-                    
-                            // Convert from cropped 256x256 image coordinates to 1280x720 image coordinates
-                            x = (x - ImageOffsetX) / ImageScale + ImageCropX;
-                            y = (y - ImageOffsetY) / ImageScale + ImageCropY;
-                    
-                            SandboxObject sandboxObject;
-                            switch (objName)
+                            for (var i = 0; i < 20; i++)
                             {
-                                case "Bunker":
-                                    sandboxObject = new SandboxObject.Bunker(x, y);
-                                    break;
-                                case "Spawner":
-                                    sandboxObject = new SandboxObject.Spawner(x, y);
-                                    break;
-                                default:
-                                    // Sometimes the model outputs "background" for some reason
-                                    continue; // Just ignore and move onto the next object
+                                _leftHandLandmarks[i].x = left[i]!["x"]!.ToObject<float>();
+                                _leftHandLandmarks[i].y = left[i]!["y"]!.ToObject<float>();
+                                _leftHandLandmarks[i].z = left[i]!["z"]!.ToObject<float>();
                             }
-                    
-                            // Debug.Log(sandboxObject);
-                            _sandboxObjects.Add(sandboxObject);
+                            _handLandmarks.Left = _leftHandLandmarks;
+                        }
+                        else
+                        {
+                            _handLandmarks.Left = null;
+                        }
+                        var right = handLandmarks["right"];
+                        if (right != null)
+                        {
+                            for (var i = 0; i < 20; i++)
+                            {
+                                _rightHandLandmarks[i].x = right[i]!["x"]!.ToObject<float>();
+                                _rightHandLandmarks[i].y = right[i]!["y"]!.ToObject<float>();
+                                _rightHandLandmarks[i].z = right[i]!["z"]!.ToObject<float>();
+                            }
+                            _handLandmarks.Right = _rightHandLandmarks;
+                        }
+                        else
+                        {
+                            _handLandmarks.Right = null;
                         }
                     }
                     catch (JsonReaderException)
