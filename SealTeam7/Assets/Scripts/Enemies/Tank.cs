@@ -3,8 +3,9 @@ using UnityEngine;
 
 namespace Enemies
 {
-    public class Soldier : Enemy
+    public class Tank : Enemy
     {
+        [SerializeField] private Transform turret;
         [SerializeField] private Transform gun;
         private float _lastAttack;
         
@@ -12,25 +13,28 @@ namespace Enemies
         {
             target?.TakeDamage(attackDamage);
         }
-
+        
         protected override void EnemyUpdate()
         {
-            TargetRotation = Quaternion.LookRotation(Target - gun.position);
-            gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
+            TargetRotation = Quaternion.Euler(Vector3.Angle(Target - gun.position, turret.forward), 0f, 0f);
+            gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
             
-            TargetRotation = Quaternion.LookRotation(new Vector3(Target.x, transform.position.y, Target.z) - transform.position);
+            TargetRotation = Quaternion.Euler(0f, Mathf.Atan2(Target.x - turret.position.x, Target.z - turret.position.z) * Mathf.Rad2Deg, 0f);
+            turret.localRotation = Quaternion.Slerp(turret.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
             
+            TargetRotation = Quaternion.Euler(0f, Vector3.Angle(transform.forward, new Vector3(Target.x, transform.position.y, Target.z) - transform.position), 0f);
             _lastAttack += Time.deltaTime;
         }
 
         protected override void EnemyFixedUpdate()
         {
-            Rb.MoveRotation(TargetRotation);
+            TargetRotation = Quaternion.LookRotation(Target - transform.position);
                         
             switch (State)
             {
                 case EnemyState.Moving:
                 {
+                    Rb.MoveRotation(TargetRotation);
                     Rb.AddForce(transform.forward * (moveSpeed * 10f));
                     break;
                 }

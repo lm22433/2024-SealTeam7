@@ -43,6 +43,23 @@ namespace Enemies
         }
         
         public static EnemyManager GetInstance() => _instance;
+
+        private void SpawnEnemies()
+        {
+            foreach (var spawn in spawnPoints)
+            {
+                for (int i = 0; i < spawnGroupSize; i++)
+                {
+                    if (_enemyCount >= maxEnemyCount) continue;
+                    
+                    var spawnOffset = Random.onUnitSphere * spawnGroupSpacing;
+                    spawnOffset.y = 0f;
+                    Instantiate(enemyTypes[Random.Range(0, enemyTypes.Length)], spawn.position + spawnOffset, spawn.rotation, transform);
+
+                    _enemyCount++;
+                }
+            }
+        }
         
         private void Update()
         {
@@ -53,17 +70,7 @@ namespace Enemies
             if (_lastSpawn < spawnInterval) return;
             
             _lastSpawn = 0;
-            foreach (var spawn in spawnPoints)
-            {
-                if (_enemyCount + spawnGroupSize > maxEnemyCount) continue;
-                _enemyCount += spawnGroupSize;
-                for (int i = 0; i < spawnGroupSize; i++)
-                {
-                    var spawnOffset = Random.onUnitSphere * spawnGroupSpacing;
-                    spawnOffset.y = 0f;
-                    Instantiate(enemyTypes[Random.Range(0, enemyTypes.Length)], spawn.position + spawnOffset, spawn.rotation, transform);
-                }
-            }
+            SpawnEnemies();
         }
     }
 }
