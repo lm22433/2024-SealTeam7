@@ -92,11 +92,23 @@ def inference_frame(hand_landmarker, frame):
     #                      "x": detection.bounding_box.origin_x + detection.bounding_box.width / 2,
     #                      "y": detection.bounding_box.origin_y + detection.bounding_box.height / 2}
     #                     for detection in detections]}
-    return {"hand_landmarks": [[{"x": landmark.x * frame.shape[1],
-                                 "y": landmark.y * frame.shape[0],
-                                 "z": landmark.z * frame.shape[0]}  # assuming frame is square
-                                for landmark in landmarks]  # for each landmark in one hand
-                                for landmarks in hand_landmarking_result.hand_landmarks]}  # for each hand
+
+    left = None
+    right = None
+    for i, handedness in enumerate(hand_landmarking_result.handedness):  # iterates over each hand
+        if handedness[0].category_name == "Left":  # the [0] is ignoreable
+            left = hand_landmarking_result.hand_landmarks[i]
+        else:
+            right = hand_landmarking_result.hand_landmarks[i]
+
+    return {"hand_landmarks": {"left": [{"x": landmark.x * frame.shape[1],
+                                         "y": landmark.y * frame.shape[0],
+                                         "z": landmark.z * frame.shape[0]}  # assuming frame is square
+                                         for landmark in left] if left is not None else None,
+                              "right": [{"x": landmark.x * frame.shape[1],
+                                         "y": landmark.y * frame.shape[0],
+                                         "z": landmark.z * frame.shape[0]}
+                                         for landmark in right] if right is not None else None}}
 
 
 def inference_connection(conn):
