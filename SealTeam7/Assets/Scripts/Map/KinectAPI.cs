@@ -31,6 +31,7 @@ namespace Map
         private readonly System.Drawing.Point _defaultAnchor;
         private readonly MCvScalar _scalarOne;
         private readonly float _heightScale;
+        private readonly float _lerpFactor;
         private readonly int _minimumSandDepth;
         private readonly int _maximumSandDepth;
         private readonly int _colourWidth;
@@ -48,6 +49,7 @@ namespace Map
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
         {
             _heightScale = heightScale;
+            _lerpFactor = lerpFactor;
             _minimumSandDepth = minimumSandDepth;
             _maximumSandDepth = maximumSandDepth;
             _width = width;
@@ -101,6 +103,10 @@ namespace Map
             _kinect.StopCameras();
             _kinect.Dispose();
             _transformedDepthImage.Dispose();
+            _tmpImage1.Dispose();
+            _tmpImage2.Dispose();
+            _tmpImage3.Dispose();
+            _dilationKernel.Dispose();
         }
         
         private void GetCaptureThread()
@@ -137,11 +143,7 @@ namespace Map
                     var pixelValue = _maximumSandDepth - depth;
 
                     // depth == 0 means kinect wasn't able to get a depth for that pixel
-                    if (depth == 0 || depth >= _maximumSandDepth)
-                    {
-                        _tmpImage1.Data[y, x, 0] = 0.5f;
-                    }
-                    else if (depth < _minimumSandDepth)
+                    if (depth == 0 || depth >= _maximumSandDepth || depth < _minimumSandDepth)
                     {
                         _tmpImage1.Data[y, x, 0] = 1f;  // Ensure that the pixel is part of the mask
                     }
@@ -167,7 +169,10 @@ namespace Map
                     if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
                         _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
-                        _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
+                        _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
+                        _tmpImage1.Data[y, x, 0] * _heightScale, _lerpFactor);
+                        // Debug.Log(_lerpFactor);
+                        // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
                     }
                     // Otherwise height is kept the same for that pixel
                 }
