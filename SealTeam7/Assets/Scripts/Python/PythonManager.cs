@@ -186,7 +186,7 @@ namespace Python
         {
             try
             {
-                var buffer = new byte[1024];
+                var buffer = new byte[4096];
                 int bytesRead;
                 // When the connection is closed, a message of length 0 will be sent so this loop will break
                 while ((bytesRead = _inferenceStream.Read(buffer, 0, buffer.Length)) > 0 && !_stopReceivingMessages)
@@ -262,9 +262,10 @@ namespace Python
                             _handLandmarks.Right = null;
                         }
                     }
-                    catch (JsonReaderException)
+                    catch (JsonReaderException e)
                     {
                         Debug.LogError("Failed to parse JSON. (This happens from time to time and is ok to ignore.)");
+                        Debug.LogError(e);
                     }
                 }
             }

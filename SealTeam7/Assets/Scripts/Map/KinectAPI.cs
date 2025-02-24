@@ -45,7 +45,7 @@ namespace Map
         private readonly int _yOffsetEnd;
 
         private bool _running;
-        private SandboxObject[] _handLandmarks;
+        private Task _getCaptureTask;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
@@ -94,18 +94,15 @@ namespace Map
             _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
             _transformedDepthImage = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight,
                 _colourWidth * sizeof(UInt16));
-            
-            // Initialise Python stuff
-            PythonManager.Connect();
-            PythonManager.StartInference();
 
             _running = true;
-            Task.Run(GetCaptureThread);
+            _getCaptureTask = Task.Run(GetCaptureTask);
         }
         
         public void StopKinect()
         {
             _running = false;
+            _getCaptureTask.Wait();
             _kinect.StopCameras();
             _kinect.Dispose();
             _transformedDepthImage.Dispose();
@@ -115,18 +112,26 @@ namespace Map
             _dilationKernel.Dispose();
         }
         
-        private void GetCaptureThread()
+        private void GetCaptureTask()
         {
+            // Initialise Python stuff - this blocks for 5-10s
+            PythonManager.Connect();
+            PythonManager.StartInference();
+            
             while (_running)
             {
                 try {
                     using Capture capture = _kinect.GetCapture();
                     UpdateHeightMap(capture);
                     PythonManager.SendColorImage(capture.Color);
+                    Debug.Log(PythonManager.HandLandmarks);
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
             }
+            
+            PythonManager.StopInference();
+            PythonManager.Disconnect();
         }
 
         private void UpdateHeightMap(Capture capture)
