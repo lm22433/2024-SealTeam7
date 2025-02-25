@@ -157,8 +157,8 @@ namespace Map
                 
                 try {
                     using Capture capture = _kinect.GetCapture();
-                    UpdateHeightMap(capture);
-                    PythonManager.SendColorImage(capture.Color);
+                    UpdateHeightMap(capture, PythonManager.HandLandmarks);
+                    PythonManager.SendColorImage(capture.Color, flipX: true);
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
@@ -168,7 +168,7 @@ namespace Map
             PythonManager.Disconnect();
         }
 
-        private void UpdateHeightMap(Capture capture)
+        private void UpdateHeightMap(Capture capture, HandLandmarks handLandmarks)
         {
             // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
             _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);

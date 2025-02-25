@@ -157,7 +157,7 @@ namespace Python
         }
 
 
-        public static void SendColorImage(Image colorImage)
+        public static void SendColorImage(Image colorImage, bool flipX = false)
         {
             if (!IsConnected())
             {
@@ -171,7 +171,7 @@ namespace Python
             // Debug.Log($"\u250fMemory.Span: {stopwatch.ElapsedMilliseconds} ms");
 
             // stopwatch.Restart();
-            var resizedImage = ResizeAndPad(span, colorImage.WidthPixels, colorImage.HeightPixels);
+            var resizedImage = ResizeAndPad(span, colorImage.WidthPixels, colorImage.HeightPixels, flipX);
             // stopwatch.Stop();
             // Debug.Log($"\u2523PythonManager.ResizeAndPad: {stopwatch.ElapsedMilliseconds} ms");
 
@@ -276,7 +276,7 @@ namespace Python
         }
 
 
-        private static byte[] ResizeAndPad(Span<byte> src, int srcWidth, int srcHeight)
+        private static byte[] ResizeAndPad(Span<byte> src, int srcWidth, int srcHeight, bool flipX = false)
         {
             // Allocate output buffer: 256x256 pixels, 4 bytes per pixel
             var dst = new byte[PythonImageWidth * PythonImageHeight * 4];
@@ -296,7 +296,7 @@ namespace Python
                 var dstY = y + ImageOffsetY;
                 for (var x = 0; x < ImageScaledWidth; x++)
                 {
-                    var dstX = x + ImageOffsetX;
+                    var dstX = flipX ? PythonImageWidth - ImageOffsetX - x : x + ImageOffsetX;
                     // Find the corresponding source pixel using nearest neighbor.
                     // (x/scale, y/scale) gives the relative position in the crop region.
                     var srcRelX = (int)(x / ImageScale);
