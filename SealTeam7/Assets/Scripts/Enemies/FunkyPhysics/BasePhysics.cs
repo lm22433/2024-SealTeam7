@@ -37,7 +37,9 @@ namespace Enemies.FunkyPhysics
 
             else if (_rb.linearVelocity.y > defianceThreshold && transform.position.y < _mapManager.GetHeight(transform.position.x, transform.position.z) + reasonableGroundedness)
             {
-                _rb.AddForce(Vector3.up * gravityDefiance, ForceMode.Impulse);
+                RaycastHit hit;
+                Physics.Raycast(transform.position, Vector3.down, out hit, reasonableGroundedness * 2.0f);
+                _rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
             }
             else if (-_rb.linearVelocity.y >= fallDeathRequirement && transform.position.y < _mapManager.GetHeight(transform.position.x, transform.position.z) + reasonableGroundedness)
             {
