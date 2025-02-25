@@ -262,6 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2013928995460809366}
   - component: {fileID: 3925053475800111628}
+  - component: {fileID: 3729924882987787105}
   - component: {fileID: 828698031663403021}
   m_Layer: 0
   m_Name: Tank
@@ -308,6 +309,23 @@ MonoBehaviour:
   killScore: 10
   turret: {fileID: 8827629184883852959}
   gun: {fileID: 4181902386754096974}
+--- !u!114 &3729924882987787105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772852043545815630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7004c134e7a4de2a0ec47e7f6165bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravityDefiance: 2
+  defianceThreshold: 1.5
+  sinkFactor: 0.5
+  fallDeathRequirement: 5
+  _self: {fileID: 3925053475800111628}
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
