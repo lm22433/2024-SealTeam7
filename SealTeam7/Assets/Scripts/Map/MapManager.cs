@@ -92,7 +92,7 @@ namespace Map
             };
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
-            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, lerpFactor, ref _heightMap, kernelSize, gaussianStrength);
+            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
             for (int z = 0; z < chunkRow; z++)
             {
@@ -109,12 +109,8 @@ namespace Map
 
         private void OnApplicationQuit()
         {
-            if(isKinectPresent) {
-                _kinect.StopKinect();
-            } else {
-                _noiseGenerator.Stop();
-            }
-            
+            if (isKinectPresent) _kinect.StopKinect();
+            else _noiseGenerator.Stop();
         }
 
         public float GetHeight(float worldX, float worldZ)

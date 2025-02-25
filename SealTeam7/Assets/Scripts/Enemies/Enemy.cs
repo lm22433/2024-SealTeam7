@@ -1,26 +1,111 @@
-using Map;
+using Game;
+using Player;
 using UnityEngine;
 
 namespace Enemies
 {
+    public enum EnemyState
+    {
+        Moving,
+        AttackCore,
+        AttackHands
+    }
+    
     public abstract class Enemy : MonoBehaviour
     {
         [SerializeField] protected float moveSpeed;
+        [SerializeField] protected float aimSpeed;
         [SerializeField] protected float attackRange;
-        protected MapManager MapManager;
+        [SerializeField] protected float attackInterval;
+        [SerializeField] protected float stopShootingThreshold;
+        [SerializeField] protected int attackDamage;
+        [SerializeField] protected int killScore;
+        protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
-        
-        private void Start()
+        protected EnemyState State;
+        protected Vector3 Target;
+        protected Quaternion TargetRotation;
+
+        protected virtual void Start()
         {
-            MapManager = FindFirstObjectByType<MapManager>();
-            EnemyManager = FindFirstObjectByType<EnemyManager>();
+            EnemyManager = EnemyManager.GetInstance();
             Rb = GetComponent<Rigidbody>();
+
+            SqrAttackRange = attackRange * attackRange;
+            State = EnemyState.Moving;
+            Target = transform.position + transform.forward;
+            TargetRotation = transform.rotation;
         }
-        
-        public virtual void Update()
+
+        public void Die()
         {
+            GameManager.GetInstance().RegisterKill(killScore);
+            Destroy(gameObject);
+        }
+
+        protected abstract void Attack(PlayerDamageable target);
+        protected virtual void EnemyUpdate() {}
+        protected virtual void EnemyFixedUpdate() {}
+        
+        private void UpdateState()
+        {
+            if ((EnemyManager.godlyCore.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
+            else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackHands;
+            else if ((EnemyManager.godlyCore.transform.position - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
+        }
+
+        private void UpdateTarget()
+        {
+            switch (State)
+            {
+                case EnemyState.Moving:
+                case EnemyState.AttackCore:
+                {
+                    Target = EnemyManager.godlyCore.transform.position;
+                    break;
+                }
+                case EnemyState.AttackHands:
+                {
+                    Target = EnemyManager.godlyHands.transform.position;
+                    break;
+                }
+            }
+        }
+
+        private void LimitSpeed()
+        {
+            Vector3 vel = new Vector3(Rb.linearVelocity.x, 0f, Rb.linearVelocity.z);
+            // limit velocity if needed
+            if (vel.magnitude > moveSpeed)
+            {
+                Vector3 newVel = vel.normalized * moveSpeed;
+                Rb.linearVelocity = new Vector3(newVel.x, Rb.linearVelocity.y, newVel.z);
+            }
+        }
+
+        private void Update()
+        {
+            if (!GameManager.GetInstance().IsGameActive()) return;
+
+            if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude >
+                EnemyManager.sqrMaxEnemyDistance)
+            {
+                EnemyManager.Kill(this);
+            }
             
+            UpdateState();
+            UpdateTarget();
+            LimitSpeed();
+            
+            EnemyUpdate();
+        }
+
+        private void FixedUpdate()
+        {
+            if (!GameManager.GetInstance().IsGameActive()) return;
+            
+            EnemyFixedUpdate();
         }
     }
 }
