@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Emgu.runtime.windows.msvc.rt.x86</id>
+    <version>19.42.34435</version>
+    <title>MSVC x86 runtime for windows</title>
+    <authors>Emgu Corporation</authors>
+    <owners>Emgu Corporation</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="file">LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>icon.png</icon>
+    <projectUrl>https://www.emgu.com/</projectUrl>
+    <description>This package contains the native x86 MSVC runtime for Windows</description>
+    <summary>MSVC X86 runtime package for Windows</summary>
+    <releaseNotes>This is the x86 MSVC runtime v143 built by 4.10.0 release of Emgu CV.</releaseNotes>
+    <copyright>© Emgu Corporation 2025. All rights reserved.</copyright>
+    <tags>native emgu msvc</tags>
+    <repository type="git" url="https://github.com/emgucv/emgucv" />
+  </metadata>
+</package>
