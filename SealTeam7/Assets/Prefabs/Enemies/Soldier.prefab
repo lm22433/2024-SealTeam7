@@ -211,7 +211,7 @@ MonoBehaviour:
   gravityDefiance: 4
   defianceThreshold: 1.5
   sinkFactor: 3.5
-  fallDeathRequirement: 10
+  fallDeathRequirement: 5
   _self: {fileID: 8717828168720478181}
 --- !u!33 &3841694198046563008
 MeshFilter:
