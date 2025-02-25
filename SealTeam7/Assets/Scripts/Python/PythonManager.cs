@@ -45,6 +45,7 @@ namespace Python
         private static HandLandmarks _handLandmarks;
         private static Vector3[] _leftHandLandmarks;  // Keep a reference separately as they can be null in HandLandmarks
         private static Vector3[] _rightHandLandmarks;
+        private static bool _flipHandedness = true;
 
 
         public static bool Connect()
@@ -79,8 +80,8 @@ namespace Python
                 Left = null,
                 Right = null
             };
-            _leftHandLandmarks = new Vector3[20];
-            _rightHandLandmarks = new Vector3[20];
+            _leftHandLandmarks = new Vector3[21];
+            _rightHandLandmarks = new Vector3[21];
             
             Debug.Log("Connected.");
             return true;
@@ -227,10 +228,10 @@ namespace Python
                         //     _sandboxObjects.Add(sandboxObject);
                         // }
                         var handLandmarks = receivedJson["hand_landmarks"]!;
-                        var left = handLandmarks["left"];
+                        var left = _flipHandedness ? handLandmarks["right"] : handLandmarks["left"];
                         if (left.HasValues)
                         {
-                            for (var i = 0; i < 20; i++)
+                            for (var i = 0; i < 21; i++)
                             {
                                 _leftHandLandmarks[i].x = (left[i]!["x"]!.ToObject<float>()
                                     - ImageOffsetX) / ImageScale + ImageCropX;
@@ -244,10 +245,10 @@ namespace Python
                         {
                             _handLandmarks.Left = null;
                         }
-                        var right = handLandmarks["right"];
+                        var right = _flipHandedness ? handLandmarks["left"] : handLandmarks["right"];
                         if (right.HasValues)
                         {
-                            for (var i = 0; i < 20; i++)
+                            for (var i = 0; i < 21; i++)
                             {
                                 _rightHandLandmarks[i].x = (right[i]!["x"]!.ToObject<float>()
                                     - ImageOffsetX) / ImageScale + ImageCropX;
