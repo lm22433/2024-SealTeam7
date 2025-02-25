@@ -127,7 +127,6 @@ namespace Map
                     using Capture capture = _kinect.GetCapture();
                     UpdateHeightMap(capture);
                     PythonManager.SendColorImage(capture.Color);
-                    Debug.Log(PythonManager.HandLandmarks);
                 } catch (Exception e) {
                     Debug.Log(e);
                 }

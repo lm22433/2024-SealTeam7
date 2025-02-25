@@ -30,7 +30,7 @@ namespace Enemies.FunkyPhysics
             
             if (transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z) - sinkFactor)
             {
-                Debug.Log("WOULD DIE BURIED");
+                //WOULD DIE BURIED
                 EnemyManager.Kill(self);
             }
 
@@ -41,7 +41,7 @@ namespace Enemies.FunkyPhysics
             }
             else if (-Rb.linearVelocity.y >= fallDeathRequirement && transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z) + ReasonableGroundedness)
             {
-                Debug.Log("WOULD DIE FALL DMG");
+                //WOULD DIE FALL DMG
                 EnemyManager.Kill(self);
             }
         }
