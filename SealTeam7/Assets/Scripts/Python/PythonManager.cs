@@ -165,20 +165,20 @@ namespace Python
                 return;
             }
 
-            var stopwatch = Stopwatch.StartNew();
+            // var stopwatch = Stopwatch.StartNew();
             var span = colorImage.Memory.Span;
-            stopwatch.Stop();
-            Debug.Log($"\u250fMemory.Span: {stopwatch.ElapsedMilliseconds} ms");
+            // stopwatch.Stop();
+            // Debug.Log($"\u250fMemory.Span: {stopwatch.ElapsedMilliseconds} ms");
 
-            stopwatch.Restart();
+            // stopwatch.Restart();
             var resizedImage = ResizeAndPad(span, colorImage.WidthPixels, colorImage.HeightPixels);
-            stopwatch.Stop();
-            Debug.Log($"\u2523PythonManager.ResizeAndPad: {stopwatch.ElapsedMilliseconds} ms");
+            // stopwatch.Stop();
+            // Debug.Log($"\u2523PythonManager.ResizeAndPad: {stopwatch.ElapsedMilliseconds} ms");
 
-            stopwatch.Restart();
+            // stopwatch.Restart();
             _imageStream.Write(resizedImage); // 256x256 BGRA image
-            stopwatch.Stop();
-            Debug.Log($"\u2523ImageStream.Write: {stopwatch.ElapsedMilliseconds} ms");
+            // stopwatch.Stop();
+            // Debug.Log($"\u2523ImageStream.Write: {stopwatch.ElapsedMilliseconds} ms");
         }
 
 
