@@ -141,7 +141,7 @@ namespace Map
         {
             while (_running)
             {
-                if (!GameManager.GetInstance().IsGameActive()) continue;
+                //if (!GameManager.GetInstance().IsGameActive()) continue;
                 
                 try {
                     using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
