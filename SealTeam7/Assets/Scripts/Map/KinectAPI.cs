@@ -100,6 +100,26 @@ namespace Map
             _getCaptureTask = Task.Run(GetCaptureTask);
         }
         
+        public Vector3[] GetHandPositions(int hand) {
+
+            if (hand == 0) {
+                var positions = PythonManager.HandLandmarks.Right;
+                if (positions == null) {
+                    return null;
+                }
+
+                for(int i = 0; i < positions.Length; i++) {
+                    positions[i] = new Vector3(positions[i].x, positions[i].y * _heightScale, positions[i].z);
+                }
+                    
+
+                return positions;
+            }
+
+            return null;
+
+        }
+
         public void StopKinect()
         {
             _running = false;
@@ -150,7 +170,7 @@ namespace Map
                 for (int x = 0; x < _width + 1; x++)
                 {
 
-                    var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + x];
+                    var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + (_width - x)];
 
                     // Calculate pixel values
                     var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);

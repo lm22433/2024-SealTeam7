@@ -113,6 +113,15 @@ namespace Map
             else _noiseGenerator.Stop();
         }
 
+        public Vector3[] GetHandPositions(int hand) {
+            if (isKinectPresent) {
+                return _kinect.GetHandPositions(hand);
+            }
+
+            return null;
+
+        }
+
         public float GetHeight(float worldX, float worldZ)
         {
             // just to be safe

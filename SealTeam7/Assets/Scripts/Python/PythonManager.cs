@@ -234,9 +234,9 @@ namespace Python
                             {
                                 _leftHandLandmarks[i].x = (left[i]!["x"]!.ToObject<float>()
                                     - ImageOffsetX) / ImageScale + ImageCropX;
-                                _leftHandLandmarks[i].y = (left[i]!["y"]!.ToObject<float>()
+                                _leftHandLandmarks[i].z = (left[i]!["y"]!.ToObject<float>()
                                     - ImageOffsetY) / ImageScale + ImageCropY;
-                                _leftHandLandmarks[i].z = left[i]!["z"]!.ToObject<float>() / ImageScale;
+                                _leftHandLandmarks[i].y = left[i]!["z"]!.ToObject<float>() / ImageScale;
                             }
                             _handLandmarks.Left = _leftHandLandmarks;
                         }
@@ -251,9 +251,9 @@ namespace Python
                             {
                                 _rightHandLandmarks[i].x = (right[i]!["x"]!.ToObject<float>()
                                     - ImageOffsetX) / ImageScale + ImageCropX;
-                                _rightHandLandmarks[i].y = (right[i]!["y"]!.ToObject<float>()
+                                _rightHandLandmarks[i].z = (right[i]!["y"]!.ToObject<float>()
                                     - ImageOffsetY) / ImageScale + ImageCropY;
-                                _rightHandLandmarks[i].z = right[i]!["z"]!.ToObject<float>() / ImageScale;
+                                _rightHandLandmarks[i].y = right[i]!["z"]!.ToObject<float>() / ImageScale;
                             }
                             _handLandmarks.Right = _rightHandLandmarks;
                         }

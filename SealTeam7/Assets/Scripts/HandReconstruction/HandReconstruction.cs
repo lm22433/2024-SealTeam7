@@ -1,19 +1,30 @@
+using Map;
 using UnityEngine;
 
 public class HandReconstruction : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private GameObject[] bones; //Must be length 18 (palm - 4 fingers left to right - thumb all bottom to top)
+    [SerializeField] private MapManager mapManager;
+    [SerializeField] private GameObject hand;
+    private Vector3[] positions;
+    
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
         //Get hand points Vector3[20]
-        Vector3[] positions = null; //GetPositions();
+        var tempPositions = mapManager.GetHandPositions(0); //GetPositions();
+
+        if (tempPositions == null) {
+            return;
+        }
+
+        positions = tempPositions;
+
         /*
             gameobject position to position of 0
             0 to 12 vector
@@ -48,9 +59,32 @@ public class HandReconstruction : MonoBehaviour
         */
 
         gameObject.transform.position = positions[0];
-        gameObject.transform.rotation = Quaternion.Euler(new Vector3(0, Vector3.Angle(positions[0], gameObject.transform.forward), 0));
+        
+        Vector3 targetDir = positions[17] - positions[5];
+        hand.transform.localRotation = Quaternion.Euler(0, 0, Vector3.SignedAngle(transform.right, targetDir, Vector3.forward));
+
+        //targetDir = positions[9] - positions[0];
+        //bones[1].transform.localRotation = Quaternion.Euler(Vector3.SignedAngle(transform.forward, targetDir, Vector3.forward), bones[1].transform.rotation.y, bones[1].transform.rotation.z);
+
+    }
+
+     private void OnDrawGizmos()
+    {
+
+        if (positions == null) {
+            return;
+        }
 
         Vector3 targetDir = positions[17] - positions[5];
-        bones[0].transform.rotation = Quaternion.Euler(0, 0, Vector3.Angle(targetDir, bones[0].transform.right));
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(positions[5], positions[5] + targetDir);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(positions[0], positions[0] + transform.right * 10);
+
+        Gizmos.color = Color.yellow;
+        foreach(Vector3 pos in positions) {
+            Gizmos.DrawSphere(pos, 2);
+        }
     }
 }
