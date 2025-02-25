@@ -1,4 +1,5 @@
 using System;
+using Game;
 using UnityEngine;
 
 namespace Map
@@ -33,8 +34,6 @@ namespace Map
         private MeshData _colliderMeshData;
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
-        
-        private bool _running;
 
         public void Setup(ChunkSettings s, ref float[] heightMap)
         {
@@ -69,16 +68,13 @@ namespace Map
             _meshCollider.sharedMesh = _colliderMesh;
             
             if (!_settings.ColliderEnabled) _meshCollider.enabled = false;
-
-            _running = true;
         }
 
         private void Update()
         {
-            if (_running)
-            {
-                UpdateHeights();
-            }
+            if (!GameManager.GetInstance().IsGameActive()) return;
+            
+            UpdateHeights();
         }
 
         private void UpdateHeights()

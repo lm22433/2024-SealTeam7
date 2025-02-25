@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
+using Game;
 using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows if on windows
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
@@ -120,11 +121,12 @@ namespace Map
             
             while (_running)
             {
+                //if (!GameManager.GetInstance().IsGameActive()) continue;
+                
                 try {
                     using Capture capture = _kinect.GetCapture();
                     UpdateHeightMap(capture);
                     PythonManager.SendColorImage(capture.Color);
-                    Debug.Log(PythonManager.HandLandmarks);
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
