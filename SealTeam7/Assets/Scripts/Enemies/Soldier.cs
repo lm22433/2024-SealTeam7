@@ -6,6 +6,7 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
+        [SerializeField] private ParticleSystem gunEffects;
         private float _lastAttack;
         
         protected override void Attack(PlayerDamageable target)
@@ -38,6 +39,7 @@ namespace Enemies
                 {
                     if (_lastAttack > attackInterval)
                     {
+                        gunEffects.Emit(1);
                         Attack(EnemyManager.godlyCore);
                         _lastAttack = 0f;
                     }
@@ -47,6 +49,7 @@ namespace Enemies
                 {
                     if (_lastAttack > attackInterval)
                     {
+                        gunEffects.Emit(1);
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;
                     }
