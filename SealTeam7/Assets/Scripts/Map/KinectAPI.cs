@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
+using Game;
 using Microsoft.Azure.Kinect.Sensor;
 using Unity.Collections;
 
@@ -140,6 +141,8 @@ namespace Map
         {
             while (_running)
             {
+                if (!GameManager.GetInstance().IsGameActive()) continue;
+                
                 try {
                     using Image transformedDepth = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight, _colourWidth * sizeof(UInt16));
                     using Capture capture = await Task.Run(() => _kinect.GetCapture());
