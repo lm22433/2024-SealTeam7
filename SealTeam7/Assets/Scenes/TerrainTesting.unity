@@ -594,7 +594,7 @@ MonoBehaviour:
   xOffsetEnd: 1170
   yOffsetStart: 260
   yOffsetEnd: 740
-  minimumSandDepth: 850
+  minimumSandDepth: 900
   maximumSandDepth: 1150
   irThreshold: 255
   similarityThreshold: 0.5
@@ -604,8 +604,8 @@ MonoBehaviour:
   mapSize: 480
   chunkRow: 2
   chunkSize: 240
-  heightScale: 300
-  lerpFactor: 0.1
+  heightScale: 250
+  lerpFactor: 1
   lodInfo:
     lod: 1
     colliderLod: 2
