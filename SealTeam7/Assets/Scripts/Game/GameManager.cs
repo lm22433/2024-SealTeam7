@@ -8,6 +8,7 @@ namespace Game
     public struct Difficulty
     {
         public int index;
+        public float duration;
         public float spawnInterval;
         public int spawnGroupSize;
         public EnemyData[] enemies;
@@ -27,7 +28,6 @@ namespace Game
         [SerializeField] private int survivalBonusScore = 500;
         
         [Header("Difficulty Settings")]
-        [SerializeField, Range(0f, 600f)] private float difficultyIncreaseInterval = 60f;
         [SerializeField] private Difficulty[] difficulties;
 
         private static GameManager _instance;
@@ -59,7 +59,7 @@ namespace Game
             
             _timer -= Time.deltaTime;
 
-            if (Time.time - _lastDifficultyIncrease >= difficultyIncreaseInterval)
+            if (Time.time - _lastDifficultyIncrease >= _difficulty.duration)
             {
                 if (_difficulty.index < difficulties.Length - 1)
                 {
