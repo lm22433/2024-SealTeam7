@@ -1,6 +1,4 @@
-﻿using Enemies.Utils;
-using Map;
-using Player;
+﻿using Map;
 using UnityEngine;
 
 namespace Enemies.FunkyPhysics
@@ -11,40 +9,37 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float defianceThreshold;
         [SerializeField] protected float sinkFactor;
         [SerializeField] protected float fallDeathRequirement;
-        [SerializeField] protected Enemy _self;
-        protected float reasonableGroundedness = 0.6f;
-        protected MapManager _mapManager;
-        protected EnemyManager _enemyManager;
-        protected Rigidbody _rb;
+        [SerializeField] protected Enemy self;
+        protected float ReasonableGroundedness = 0.6f;
+        protected MapManager MapManager;
+        protected EnemyManager EnemyManager;
+        protected Rigidbody Rb;
         
         protected virtual void Start()
         {
-            _enemyManager = FindFirstObjectByType<EnemyManager>();
-            _mapManager = FindFirstObjectByType<MapManager>();
-            _rb = GetComponent<Rigidbody>();
-            _rb.freezeRotation = true;
+            EnemyManager = FindFirstObjectByType<EnemyManager>();
+            MapManager = FindFirstObjectByType<MapManager>();
+            Rb = GetComponent<Rigidbody>();
+            Rb.freezeRotation = true;
         }
-
-        protected abstract void DeathAffect(EnemyManager manager);
 
         protected virtual void Update()
         {
-            if (transform.position.y < _mapManager.GetHeight(transform.position.x, transform.position.z) - sinkFactor)
+            if (transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z) - sinkFactor)
             {
                 Debug.Log("WOULD DIE BURIED");
-                _enemyManager.Kill(_self);
+                EnemyManager.Kill(self);
             }
 
-            else if (_rb.linearVelocity.y > defianceThreshold && transform.position.y < _mapManager.GetHeight(transform.position.x, transform.position.z) + reasonableGroundedness)
+            else if (Rb.linearVelocity.y > defianceThreshold && transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z) + ReasonableGroundedness)
             {
-                RaycastHit hit;
-                Physics.Raycast(transform.position, Vector3.down, out hit, reasonableGroundedness * 2.0f);
-                _rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
+                Physics.Raycast(transform.position, Vector3.down, out var hit, ReasonableGroundedness * 2.0f);
+                Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
             }
-            else if (-_rb.linearVelocity.y >= fallDeathRequirement && transform.position.y < _mapManager.GetHeight(transform.position.x, transform.position.z) + reasonableGroundedness)
+            else if (-Rb.linearVelocity.y >= fallDeathRequirement && transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z) + ReasonableGroundedness)
             {
                 Debug.Log("WOULD DIE FALL DMG");
-                _enemyManager.Kill(_self);
+                EnemyManager.Kill(self);
             }
         }
         
