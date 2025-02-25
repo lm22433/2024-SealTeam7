@@ -6,7 +6,6 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
 using Python;
-using System.Linq;
 
 namespace Map
 {
@@ -28,11 +27,6 @@ namespace Map
         private Image<Gray, float> _tmpImage1;
         private Image<Gray, float> _tmpImage2;
         private Image<Gray, float> _tmpImage3;
-
-        private Image<Gray, float> _tmpImage1_1;
-        private Image<Gray, float> _tmpImage1_2;
-        private Image<Gray, float> _tmpImage1_3;
-        private Image<Gray, float> _tmpImage1_4;
         
         private readonly Mat _dilationKernel;
         private readonly System.Drawing.Point _defaultAnchor;
@@ -51,8 +45,7 @@ namespace Map
         private readonly int _yOffsetEnd;
 
         private bool _running;
-        private SandboxObject[] sandBoxObjects;
-        private int _kernelSize;
+        private Task _getCaptureTask;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
@@ -68,17 +61,10 @@ namespace Map
             _yOffsetStart = yOffsetStart;
             _yOffsetEnd = yOffsetEnd;
             _heightMap = heightMap;
-            _kernelSize = kernelSize;
             
             _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage3 = new Image<Gray, float>(_width + 1, _height + 1);
-
-            _tmpImage1_1 = new Image<Gray, float>(_width + 1, _height + 1);
-            _tmpImage1_2 = new Image<Gray, float>(_width + 1, _height + 1);
-            _tmpImage1_3 = new Image<Gray, float>(_width + 1, _height + 1);
-            _tmpImage1_4 = new Image<Gray, float>(_width + 1, _height + 1);
-
             _dilationKernel = Mat.Ones(100, 100, DepthType.Cv8U, 1);
             _defaultAnchor = new System.Drawing.Point(-1, -1);
             _scalarOne = new MCvScalar(1f);
@@ -110,12 +96,13 @@ namespace Map
                 _colourWidth * sizeof(UInt16));
 
             _running = true;
-            Task.Run(GetCaptureThread);
+            _getCaptureTask = Task.Run(GetCaptureTask);
         }
         
         public void StopKinect()
         {
             _running = false;
+            _getCaptureTask.Wait();
             _kinect.StopCameras();
             _kinect.Dispose();
             _transformedDepthImage.Dispose();
@@ -125,18 +112,26 @@ namespace Map
             _dilationKernel.Dispose();
         }
         
-        private void GetCaptureThread()
+        private void GetCaptureTask()
         {
+            // Initialise Python stuff - this blocks for 5-10s
+            PythonManager.Connect();
+            PythonManager.StartInference();
+            
             while (_running)
             {
                 try {
                     using Capture capture = _kinect.GetCapture();
                     UpdateHeightMap(capture);
                     PythonManager.SendColorImage(capture.Color);
+                    Debug.Log(PythonManager.HandLandmarks);
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
             }
+            
+            PythonManager.StopInference();
+            PythonManager.Disconnect();
         }
 
         private void UpdateHeightMap(Capture capture)
@@ -186,22 +181,14 @@ namespace Map
                     if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
                         _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
-                        float[] tmpArray = {_tmpImage1.Data[y, x, 0], _tmpImage1_1.Data[y, x, 0], _tmpImage1_2.Data[y, x, 0], _tmpImage1_3.Data[y, x, 0], _tmpImage1_4.Data[y, x, 0]};
-                        Array.Sort(tmpArray);
-                        var tmp = tmpArray[Mathf.CeilToInt(tmpArray.Length / 2)];
                         _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
-                            tmp * _heightScale, _lerpFactor);
+                        _tmpImage1.Data[y, x, 0] * _heightScale, _lerpFactor);
                         // Debug.Log(_lerpFactor);
                         // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
                     }
                     // Otherwise height is kept the same for that pixel
                 }
             }
-
-            _tmpImage1_4 = _tmpImage1_3;
-            _tmpImage1_3 = _tmpImage1_2;
-            _tmpImage1_2 = _tmpImage1_1;
-            _tmpImage1_1 = _tmpImage1;
         }
     }
 }
