@@ -23,10 +23,10 @@ namespace Python
 
         private const int PythonImageWidth = 256;
         private const int PythonImageHeight = 256;
-        private const int ImageCropX = 356;
-        private const int ImageCropY = 130;
-        private const int ImageCropWidth = 575;
-        private const int ImageCropHeight = 440;
+        private const int ImageCropX = 0;
+        private const int ImageCropY = 0;
+        private const int ImageCropWidth = 1920;
+        private const int ImageCropHeight = 1080;
 
         private static readonly float ImageScale =
             Math.Min((float)PythonImageWidth / ImageCropWidth, (float)PythonImageHeight / ImageCropHeight);
@@ -228,7 +228,7 @@ namespace Python
                         // }
                         var handLandmarks = receivedJson["hand_landmarks"]!;
                         var left = handLandmarks["left"];
-                        if (left != null)
+                        if (left.HasValues)
                         {
                             for (var i = 0; i < 20; i++)
                             {
@@ -245,7 +245,7 @@ namespace Python
                             _handLandmarks.Left = null;
                         }
                         var right = handLandmarks["right"];
-                        if (right != null)
+                        if (right.HasValues)
                         {
                             for (var i = 0; i < 20; i++)
                             {

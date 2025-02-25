@@ -18,15 +18,15 @@ namespace Python
             PythonManager.Connect();
             // Thread.Sleep(5000);
             PythonManager.StartInference();
-            // _kinect = Device.Open();
-            // _kinect.StartCameras(new DeviceConfiguration
-            // {
-            //     ColorFormat = ImageFormat.ColorBGRA32,
-            //     ColorResolution = ColorResolution.R720p,
-            //     DepthMode = DepthMode.NFOV_Unbinned,
-            //     SynchronizedImagesOnly = true,
-            //     CameraFPS = FPS.FPS30
-            // });
+            _kinect = Device.Open();
+            _kinect.StartCameras(new DeviceConfiguration
+            {
+                ColorFormat = ImageFormat.ColorBGRA32,
+                ColorResolution = ColorResolution.R1080p,
+                DepthMode = DepthMode.NFOV_Unbinned,
+                SynchronizedImagesOnly = true,
+                CameraFPS = FPS.FPS30
+            });
             Debug.Log("Connected and started.");
         }
 
@@ -37,24 +37,24 @@ namespace Python
             if (PythonManager.IsConnected())
             {
                 // var stopwatch = Stopwatch.StartNew();
-                // try
-                // {
-                //     var capture = _kinect.GetCapture();
-                //     stopwatch.Stop();
-                //     Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
-                //
-                //     stopwatch.Restart();
-                //     PythonManager.SendColorImage(capture.Color);
-                //     stopwatch.Stop();
-                //     Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
-                //
-                //     capture.Dispose();
-                // }
-                // catch (AzureKinectException e)
-                // {
-                //     Debug.LogError("Failed to get capture due to the following error:");
-                //     Debug.LogError(e);
-                // }
+                try
+                {
+                    var capture = _kinect.GetCapture();
+                    // stopwatch.Stop();
+                    // Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
+                
+                    // stopwatch.Restart();
+                    PythonManager.SendColorImage(capture.Color);
+                    // stopwatch.Stop();
+                    // Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
+                
+                    capture.Dispose();
+                }
+                catch (AzureKinectException e)
+                {
+                    Debug.LogError("Failed to get capture due to the following error:");
+                    Debug.LogError(e);
+                }
 
                 Debug.Log(PythonManager.HandLandmarks);
             }
@@ -67,8 +67,8 @@ namespace Python
             PythonManager.StopInference();
             // Thread.Sleep(5000);
             PythonManager.Disconnect();
-            // _kinect.StopCameras();
-            // _kinect.Dispose();
+            _kinect.StopCameras();
+            _kinect.Dispose();
             Debug.Log("Disconnected and stopped.");
         }
 

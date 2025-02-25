@@ -17,7 +17,7 @@ HAND_LANDMARKING_MODEL_PATH = 'hand_landmarking_model.task'
 HOST = "127.0.0.1"
 PORT = 65465
 
-MOCK_KINECT = True
+MOCK_KINECT = False
 """Mock the Kinect camera using OpenCV to read from a webcam"""
 
 VISUALISE_INFERENCE_RESULTS = True
