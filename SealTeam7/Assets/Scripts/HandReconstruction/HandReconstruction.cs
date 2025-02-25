@@ -13,7 +13,7 @@ public class HandReconstruction : MonoBehaviour
     void Update()
     {
         //Get hand points Vector3[20]
-        Vector3[] positions = GetPositions();
+        Vector3[] positions = null; //GetPositions();
         /*
             gameobject position to position of 0
             0 to 12 vector
