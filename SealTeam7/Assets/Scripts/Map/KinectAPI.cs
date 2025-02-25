@@ -25,9 +25,10 @@ namespace Map
          * Set a pixel with:
          * _tmpImage.Data[y, x, 0] = 123f
          */
-        private Image<Gray, float> _tmpImage1;
-        private Image<Gray, float> _tmpImage2;
-        private Image<Gray, float> _tmpImage3;
+        private Image<Gray, float> _rawHeightImage;
+        private Image<Gray, float> _maskedHeightImage;
+        private Image<Gray, float> _heightMask;
+        private Image<Gray, float> _tmpImage;
         
         private readonly Mat _dilationKernel;
         private readonly System.Drawing.Point _defaultAnchor;
@@ -63,9 +64,10 @@ namespace Map
             _yOffsetEnd = yOffsetEnd;
             _heightMap = heightMap;
             
-            _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
-            _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
-            _tmpImage3 = new Image<Gray, float>(_width + 1, _height + 1);
+            _rawHeightImage = new Image<Gray, float>(_width + 1, _height + 1);
+            _maskedHeightImage = new Image<Gray, float>(_width + 1, _height + 1);
+            _heightMask = new Image<Gray, float>(_width + 1, _height + 1);
+            _tmpImage = new Image<Gray, float>(_width + 1, _height + 1);
             _dilationKernel = Mat.Ones(100, 100, DepthType.Cv8U, 1);
             _defaultAnchor = new System.Drawing.Point(-1, -1);
             _scalarOne = new MCvScalar(1f);
@@ -108,12 +110,21 @@ namespace Map
                     return null;
                 }
 
-                for(int i = 0; i < positions.Length; i++) {
-                    positions[i] = new Vector3(positions[i].x, positions[i].y * _heightScale, positions[i].z);
-                }
-                    
+                if (positions[0].z >= _yOffsetStart && positions[0].z <= _yOffsetEnd &&
+                    positions[0].x >= _xOffsetStart && positions[0].x <= _xOffsetEnd) {
 
-                return positions;
+                    var height = _rawHeightImage.Data[(int)positions[0].z - _yOffsetStart, (int) positions[0].x - _xOffsetStart, 0];
+                    if (height == 0) {
+                        return null;
+                    }
+
+                    for(int i = 0; i < positions.Length; i++) {
+                        positions[i] = new Vector3(positions[i].x - _xOffsetStart, (height - positions[i].y) * _heightScale, positions[i].z - _yOffsetStart);
+                    }
+
+                    return positions;
+                }
+                
             }
 
             return null;
@@ -127,9 +138,10 @@ namespace Map
             _kinect.StopCameras();
             _kinect.Dispose();
             _transformedDepthImage.Dispose();
-            _tmpImage1.Dispose();
-            _tmpImage2.Dispose();
-            _tmpImage3.Dispose();
+            _rawHeightImage.Dispose();
+            _maskedHeightImage.Dispose();
+            _heightMask.Dispose();
+            _tmpImage.Dispose();
             _dilationKernel.Dispose();
         }
         
@@ -161,7 +173,7 @@ namespace Map
             // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
             _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
 
-            // Create Depth Buffer
+            // Raw depth from kinect
             Span<ushort> depthBuffer = _transformedDepthImage.GetPixels<ushort>().Span;
 
             // Create a new image with data from the depth and colour image
@@ -169,46 +181,54 @@ namespace Map
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-
                     var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + (_width - x)];
 
-                    // Calculate pixel values
                     var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
-                    var pixelValue = _maximumSandDepth - depth;
+                    // Max depth is the lowest height, so this is the height normalised to [0, 1]
+                    var height = (_maximumSandDepth - depth) / depthRange;
+                    _rawHeightImage.Data[y, x, 0] = height;
 
                     // depth == 0 means kinect wasn't able to get a depth for that pixel
-                    if (depth == 0 || depth >= _maximumSandDepth || depth < _minimumSandDepth)
-                    {
-                        _tmpImage1.Data[y, x, 0] = 1f;  // Ensure that the pixel is part of the mask
+                    // hand masking threshold is now just _minimumSandDepth
+                    if (depth == 0 || height >= 1f || height < 0f)
+                    { 
+                        // Mask the pixel
+                        _tmpImage.Data[y, x, 0] = 1f;
                     }
                     else
                     {
-                        _tmpImage1.Data[y, x, 0] = pixelValue / depthRange;
+                        // Don't mask the pixel (modulo dilation)
+                        _tmpImage.Data[y, x, 0] = 0f;
                     }
                 }
             }
             
-            // Generate a mask where pixels likely to be of a hand/arm are set to 1
-            CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.8, 1, ThresholdType.Binary);
-            
             // Dilate the mask (extend it slightly along its borders)
-            CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1, 
+            CvInvoke.Dilate(_tmpImage, _heightMask, _dilationKernel, _defaultAnchor, iterations: 1, 
                 BorderType.Default, _scalarOne);
+            
+            // Update the heights, only in the non-masked part
+            for (int y = 0; y < _height + 1; y++)
+            {
+                for (int x = 0; x < _width + 1; x++)
+                {
+                    if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
+                    {
+                        _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
+                    }
+                    // Otherwise height is kept the same for that pixel
+                }
+            }
+            
+            // Gaussian blur
+            CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, new System.Drawing.Size(31, 31), 15);
 
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-                    if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
-                        _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
-                    {
-                        _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
-                        _tmpImage1.Data[y, x, 0] * _heightScale, _lerpFactor);
-                        // Debug.Log(_lerpFactor);
-                        // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
-                    }
-                    // Otherwise height is kept the same for that pixel
+                    _heightMap[y * (_width + 1) + x] = _tmpImage.Data[y, x, 0] * _heightScale;
                 }
             }
         }

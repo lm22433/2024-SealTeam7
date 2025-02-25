@@ -577,6 +577,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -628,6 +640,10 @@ PrefabInstance:
       propertyPath: mapManager
       value: 
       objectReference: {fileID: 594167918}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _lerpFactor
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

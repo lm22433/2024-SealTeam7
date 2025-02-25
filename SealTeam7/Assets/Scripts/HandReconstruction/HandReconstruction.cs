@@ -7,7 +7,9 @@ public class HandReconstruction : MonoBehaviour
     [SerializeField] private GameObject[] bones; //Must be length 18 (palm - 4 fingers left to right - thumb all bottom to top)
     [SerializeField] private MapManager mapManager;
     [SerializeField] private GameObject hand;
+    [SerializeField] private float _lerpFactor;
     private Vector3[] positions;
+
     
     void Start()
     {
@@ -23,7 +25,10 @@ public class HandReconstruction : MonoBehaviour
             return;
         }
 
-        positions = tempPositions;
+        for(int i = 0; i < positions.Length; i++) {
+            positions[i] = Vector3.Lerp(positions[i], tempPositions[i], _lerpFactor);
+        } 
+
 
         /*
             gameobject position to position of 0
@@ -60,8 +65,8 @@ public class HandReconstruction : MonoBehaviour
 
         gameObject.transform.position = positions[0];
         
-        Vector3 targetDir = positions[17] - positions[5];
-        hand.transform.localRotation = Quaternion.Euler(0, 0, Vector3.SignedAngle(transform.right, targetDir, Vector3.forward));
+        //Vector3 targetDir = positions[17] - positions[5];
+        //hand.transform.localRotation = Quaternion.Euler(0, 0, Vector3.SignedAngle(transform.right, targetDir, Vector3.forward));
 
         //targetDir = positions[9] - positions[0];
         //bones[1].transform.localRotation = Quaternion.Euler(Vector3.SignedAngle(transform.forward, targetDir, Vector3.forward), bones[1].transform.rotation.y, bones[1].transform.rotation.z);
