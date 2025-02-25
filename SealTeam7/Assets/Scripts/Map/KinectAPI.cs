@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Game;
 using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows if on windows
@@ -177,6 +178,39 @@ namespace Map
             // Dilate the mask (extend it slightly along its borders)
             CvInvoke.Dilate(_tmpImage, _heightMask, _dilationKernel, _defaultAnchor, iterations: 1, 
                 BorderType.Default, _scalarOne);
+            
+            // Also mask using hand landmarks
+            const float padding = 50f;
+            var bboxLeft = new Rect();
+            var bboxRight = new Rect();
+            if (handLandmarks.Left != null)
+            {
+                // TODO the hand landmark coordinates need scaling - either scale them here or in PythonManager
+                bboxLeft.xMin = handLandmarks.Left.Min(p => p.x) - padding;
+                bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) + padding;
+                bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - padding;
+                bboxLeft.yMax = handLandmarks.Left.Max(p => p.z) + padding;
+            }
+            if (handLandmarks.Right != null)
+            {
+                bboxRight.xMin = handLandmarks.Right.Min(p => p.x) - padding;
+                bboxRight.xMax = handLandmarks.Right.Max(p => p.x) + padding;
+                bboxRight.yMin = handLandmarks.Right.Min(p => p.z) - padding;
+                bboxRight.yMax = handLandmarks.Right.Max(p => p.z) + padding;
+            }
+            var vec2 = new Vector2();
+            for (int y = 0; y < _height + 1; y++)
+            {
+                for (int x = 0; x < _width + 1; x++)
+                {
+                    vec2.Set(x, y);
+                    if ((handLandmarks.Left != null && bboxLeft.Contains(vec2)) || 
+                        (handLandmarks.Right != null && bboxRight.Contains(vec2)))
+                    {
+                        _heightMask.Data[y, x, 0] = 1f;
+                    }
+                }
+            }
             
             // Update the heights, only in the non-masked part
             for (int y = 0; y < _height + 1; y++)
