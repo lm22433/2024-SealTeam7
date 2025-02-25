@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 68321768}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 20, z: 0}
+  m_LocalPosition: {x: 0, y: 320, z: 0}
   m_LocalScale: {x: 1, y: 60, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -310,7 +310,7 @@ Transform:
   m_GameObject: {fileID: 332022278}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40, y: 40, z: 50}
+  m_LocalPosition: {x: 40, y: 400, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -586,8 +586,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.25
-  noiseScale: 0.03
+  noiseSpeed: 0.1
+  noiseScale: 0.005
   width: 480
   height: 480
   xOffsetStart: 690
@@ -604,7 +604,7 @@ MonoBehaviour:
   mapSize: 480
   chunkRow: 2
   chunkSize: 240
-  heightScale: 50
+  heightScale: 300
   lerpFactor: 0.1
   lodInfo:
     lod: 1
@@ -872,7 +872,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 10, z: 0}
-  m_LocalScale: {x: 10, y: 20, z: 10}
+  m_LocalScale: {x: 20, y: 300, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1884077986}
@@ -1014,7 +1014,7 @@ Transform:
   m_GameObject: {fileID: 1884077985}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 60, y: 25, z: 100}
+  m_LocalPosition: {x: 240, y: 150, z: 240}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1066,6 +1066,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameDuration: 120
   maxHealth: 1000
+  completionBonusScore: 1000
   survivalBonusInterval: 30
   survivalBonusScore: 500
 --- !u!4 &2004182967
