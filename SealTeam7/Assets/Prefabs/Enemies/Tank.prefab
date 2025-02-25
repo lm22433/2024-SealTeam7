@@ -323,9 +323,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityDefiance: 2
   defianceThreshold: 1.5
-  sinkFactor: 0.5
+  sinkFactor: 100
   fallDeathRequirement: 5
-  _self: {fileID: 3925053475800111628}
+  self: {fileID: 3925053475800111628}
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0

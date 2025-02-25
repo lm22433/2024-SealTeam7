@@ -45,7 +45,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
-                    if (_lastAttack < attackInterval)
+                    if (_lastAttack > attackInterval)
                     {
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;

@@ -1,4 +1,5 @@
-﻿using Map;
+﻿using Game;
+using Map;
 using UnityEngine;
 
 namespace Enemies.FunkyPhysics
@@ -25,6 +26,8 @@ namespace Enemies.FunkyPhysics
 
         protected virtual void Update()
         {
+            if (!GameManager.GetInstance().IsGameActive()) return;
+            
             if (transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z) - sinkFactor)
             {
                 Debug.Log("WOULD DIE BURIED");
