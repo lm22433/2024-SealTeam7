@@ -586,8 +586,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.1
-  noiseScale: 0.005
+  noiseSpeed: 0.05
+  noiseScale: 0.001
   width: 480
   height: 480
   xOffsetStart: 690
@@ -1138,8 +1138,8 @@ MonoBehaviour:
   spawnInterval: 5
   spawnGroupSize: 1
   spawnGroupSpacing: 10
-  maxEnemyCount: 100
-  maxEnemyDistance: 500
+  maxEnemyCount: 1
+  maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
   sqrMaxEnemyDistance: 500
