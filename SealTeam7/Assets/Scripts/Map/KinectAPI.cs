@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Game;
 using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows if on windows
@@ -49,6 +50,12 @@ namespace Map
 
         private bool _running;
         private Task _getCaptureTask;
+
+        // public for gizmos
+        public Rect? BboxLeft = null;
+        public Rect? BboxRight = null;
+        public HandLandmarks HandLandmarks;
+        public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
@@ -121,6 +128,7 @@ namespace Map
         {
             // Initialise Python stuff - this blocks for 5-10s
             PythonManager.Connect();
+            Thread.Sleep(1000);
             PythonManager.StartInference();
             
             while (_running)
@@ -130,6 +138,7 @@ namespace Map
                 try {
                     using Capture capture = _kinect.GetCapture();
                     UpdateHeightMap(capture, PythonManager.HandLandmarks);
+                    HandLandmarks = PythonManager.HandLandmarks;
                     PythonManager.SendColorImage(capture.Color, flipX: true);
                 } catch (Exception e) {
                     Debug.Log(e);
@@ -137,6 +146,7 @@ namespace Map
             }
             
             PythonManager.StopInference();
+            Thread.Sleep(1000);
             PythonManager.Disconnect();
         }
 
@@ -175,30 +185,35 @@ namespace Map
                 }
             }
             
-            // Dilate the mask (extend it slightly along its borders)
-            CvInvoke.Dilate(_tmpImage, _heightMask, _dilationKernel, _defaultAnchor, iterations: 1, 
-                BorderType.Default, _scalarOne);
+            // // Dilate the mask (extend it slightly along its borders)
+            // CvInvoke.Dilate(_tmpImage, _heightMask, _dilationKernel, _defaultAnchor, iterations: 1, 
+            //     BorderType.Default, _scalarOne);
             
             // Also mask using hand landmarks
-            const float padding = 50f;
+            const float padding = 20f;
             var bboxLeft = new Rect();
             var bboxRight = new Rect();
             if (handLandmarks.Left != null)
             {
                 // TODO the hand landmark coordinates need scaling - either scale them here or in PythonManager
-                bboxLeft.xMin = handLandmarks.Left.Min(p => p.x) - padding;
-                bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) + padding;
-                bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - padding;
-                bboxLeft.yMax = handLandmarks.Left.Max(p => p.z) + padding;
+                bboxLeft.xMin = handLandmarks.Left.Min(p => p.x) - _xOffsetStart - padding;
+                bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) - _xOffsetStart + padding;
+                bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - _yOffsetStart - padding;
+                bboxLeft.yMax = handLandmarks.Left.Max(p => p.z) - _yOffsetStart + padding;
+                Debug.Log($"Left hand bbox: {bboxLeft}");
             }
             if (handLandmarks.Right != null)
             {
-                bboxRight.xMin = handLandmarks.Right.Min(p => p.x) - padding;
-                bboxRight.xMax = handLandmarks.Right.Max(p => p.x) + padding;
-                bboxRight.yMin = handLandmarks.Right.Min(p => p.z) - padding;
-                bboxRight.yMax = handLandmarks.Right.Max(p => p.z) + padding;
+                bboxRight.xMin = handLandmarks.Right.Min(p => p.x) - _xOffsetStart - padding;
+                bboxRight.xMax = handLandmarks.Right.Max(p => p.x) - _xOffsetStart + padding;
+                bboxRight.yMin = handLandmarks.Right.Min(p => p.z) - _yOffsetStart - padding;
+                bboxRight.yMax = handLandmarks.Right.Max(p => p.z) - _yOffsetStart + padding;
+                Debug.Log($"Right hand bbox: {bboxRight}");
             }
+            BboxLeft = bboxLeft;
+            BboxRight = bboxRight;
             var vec2 = new Vector2();
+            var maskCounter = 0;
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
@@ -208,9 +223,15 @@ namespace Map
                         (handLandmarks.Right != null && bboxRight.Contains(vec2)))
                     {
                         _heightMask.Data[y, x, 0] = 1f;
+                        maskCounter++;
+                    }
+                    else
+                    {
+                        _heightMask.Data[y, x, 0] = 0f; //temp
                     }
                 }
             }
+            Debug.Log("Masked pixels: " + maskCounter);
             
             // Update the heights, only in the non-masked part
             for (int y = 0; y < _height + 1; y++)
@@ -226,14 +247,16 @@ namespace Map
             }
             
             // Gaussian blur
-            CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, new System.Drawing.Size(31, 31), 15);
+            // CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, new System.Drawing.Size(31, 31), 15);
+            _maskedHeightImage.CopyTo(_tmpImage);
 
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-                    _heightMap[y * (_width + 1) + x] = _tmpImage.Data[y, x, 0] * _heightScale;
+                    _heightMap[y * (_width + 1) + x] = _maskedHeightImage.Data[y, x, 0] * _heightScale;
+                    // _heightMap[y * (_width + 1) + x] = _heightMask.Data[y, x, 0] * 50f;
                 }
             }
         }

@@ -137,7 +137,7 @@ def inference_connection(conn):
             try:
                 # Check if any control signals in buffer
                 try:
-                    # print("[inference_connection] conn.recv()")
+                    print("[inference_connection] conn.recv()")
                     message = conn.recv(1024).decode()
                     print(f"[inference_connection] Received message: {message}")
                     if message == "START":
@@ -258,7 +258,7 @@ def main():
     global stop_server
     
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-        server.settimeout(5)
+        server.settimeout(0.5)
         server.bind((HOST, PORT))
         server.listen()
         print(f"Server listening on {HOST}:{PORT}...")

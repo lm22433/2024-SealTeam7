@@ -102,6 +102,7 @@ namespace Python
             _inferenceClient.Close();
             _imageStream.Close();
             _imageClient.Close();
+            Debug.Log("Waiting for receiveMessagesThread to finish...");
             _receiveMessagesThread.Join();
             _inferenceStream = null;
             _inferenceClient = null;
@@ -140,6 +141,7 @@ namespace Python
                 return false;
             }
 
+            Debug.Log("Sending STOP...");
             _inferenceStream.Write(Encoding.GetBytes("STOP"));
             Debug.Log("Sent: STOP");
             return true;
@@ -235,9 +237,9 @@ namespace Python
                             {
                                 _leftHandLandmarks[i].x = (left[i]!["x"]!.ToObject<float>()
                                     - ImageOffsetX) / ImageScale + ImageCropX;
-                                _leftHandLandmarks[i].y = (left[i]!["y"]!.ToObject<float>()
+                                _leftHandLandmarks[i].z = (left[i]!["y"]!.ToObject<float>()
                                     - ImageOffsetY) / ImageScale + ImageCropY;
-                                _leftHandLandmarks[i].z = left[i]!["z"]!.ToObject<float>() / ImageScale;
+                                _leftHandLandmarks[i].y = left[i]!["z"]!.ToObject<float>() / ImageScale;
                             }
                             _handLandmarks.Left = _leftHandLandmarks;
                         }
@@ -252,9 +254,9 @@ namespace Python
                             {
                                 _rightHandLandmarks[i].x = (right[i]!["x"]!.ToObject<float>()
                                     - ImageOffsetX) / ImageScale + ImageCropX;
-                                _rightHandLandmarks[i].y = (right[i]!["y"]!.ToObject<float>()
+                                _rightHandLandmarks[i].z = (right[i]!["y"]!.ToObject<float>()
                                     - ImageOffsetY) / ImageScale + ImageCropY;
-                                _rightHandLandmarks[i].z = right[i]!["z"]!.ToObject<float>() / ImageScale;
+                                _rightHandLandmarks[i].y = right[i]!["z"]!.ToObject<float>() / ImageScale;
                             }
                             _handLandmarks.Right = _rightHandLandmarks;
                         }
