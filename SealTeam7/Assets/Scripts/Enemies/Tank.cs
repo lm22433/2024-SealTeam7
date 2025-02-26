@@ -28,7 +28,7 @@ namespace Enemies
 
         protected override void EnemyFixedUpdate()
         {
-            TargetRotation = Quaternion.LookRotation(Target - transform.position);
+            TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Vector3.SignedAngle(transform.forward, Target - transform.position, Vector3.up), transform.rotation.eulerAngles.z);
                         
             switch (State)
             {

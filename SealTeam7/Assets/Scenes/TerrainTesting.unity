@@ -609,7 +609,7 @@ MonoBehaviour:
   lodInfo:
     lod: 1
     colliderLod: 2
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -1129,14 +1129,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyTypes:
-  - {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
+  - {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
   spawnPoints:
   - {fileID: 207832236}
   - {fileID: 2136277956}
   - {fileID: 553266628}
   - {fileID: 393166120}
-  spawnInterval: 2.5
-  spawnGroupSize: 10
+  spawnInterval: 5
+  spawnGroupSize: 1
   spawnGroupSpacing: 10
   maxEnemyCount: 100
   maxEnemyDistance: 500
