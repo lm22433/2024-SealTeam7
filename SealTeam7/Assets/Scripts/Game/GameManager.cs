@@ -1,9 +1,19 @@
 using System;
+using Enemies;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game
 {
+    [Serializable]
+    public struct Difficulty
+    {
+        public int index;
+        public float duration;
+        public float spawnInterval;
+        public int spawnGroupSize;
+        public EnemyData[] enemies;
+    }
+    
     public class GameManager : MonoBehaviour
     {
         [Header("Game Settings")] 
@@ -16,6 +26,9 @@ namespace Game
         [SerializeField] private int completionBonusScore = 1000;
         [SerializeField] private float survivalBonusInterval = 30f;
         [SerializeField] private int survivalBonusScore = 500;
+        
+        [Header("Difficulty Settings")]
+        [SerializeField] private Difficulty[] difficulties;
 
         private static GameManager _instance;
         private bool _gameActive;
@@ -23,15 +36,18 @@ namespace Game
 		private int _totalKills;
         private int _score;
         private int _health;
+        private Difficulty _difficulty;
         
         private float _lastSurvivalBonusTime;
         private float _lastDamageTime;
+        private float _lastDifficultyIncrease;
         
         private void Awake()
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
 
+            _difficulty = difficulties[0];
             _health = maxHealth;
 
             StartGame();
@@ -42,6 +58,17 @@ namespace Game
             if (!_gameActive) return;
             
             _timer -= Time.deltaTime;
+
+            if (Time.time - _lastDifficultyIncrease >= _difficulty.duration)
+            {
+                if (_difficulty.index < difficulties.Length - 1)
+                {
+                    _difficulty = difficulties[_difficulty.index + 1];
+                    EnemyManager.GetInstance().SetDifficulty(_difficulty);
+                    _lastDifficultyIncrease = Time.time;
+                    Debug.Log($"Difficulty increased! Current difficulty: {_difficulty.index}");   
+                }
+            }
             
             if (Time.time - _lastSurvivalBonusTime >= survivalBonusInterval)
             {
@@ -62,6 +89,7 @@ namespace Game
             _score = 0;
 
             _lastSurvivalBonusTime = Time.time;
+            _lastDifficultyIncrease = Time.time;
             
             Debug.Log("Game started!");
         }
@@ -112,5 +140,6 @@ namespace Game
         public bool IsGameActive() => _gameActive;
         public float GetTimer() => _timer;
         public int GetScore() => _score;
+        public Difficulty GetInitialDifficulty() => difficulties[0];
     }
 }

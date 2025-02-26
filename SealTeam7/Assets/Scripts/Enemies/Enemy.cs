@@ -50,9 +50,10 @@ namespace Enemies
         
         private void UpdateState()
         {
-            if ((EnemyManager.godlyCore.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
+            var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, transform.position.y, EnemyManager.godlyCore.transform.position.z);
+            if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
             else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackHands;
-            else if ((EnemyManager.godlyCore.transform.position - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
+            else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
         }
 
         private void UpdateTarget()
