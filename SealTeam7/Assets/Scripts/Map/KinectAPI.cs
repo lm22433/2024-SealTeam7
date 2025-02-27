@@ -150,7 +150,7 @@ namespace Map
                 for (int x = 0; x < _width + 1; x++)
                 {
 
-                    var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + x];
+                    var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + (_width - x)];
 
                     // Calculate pixel values
                     var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
