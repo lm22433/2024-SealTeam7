@@ -310,7 +310,7 @@ Transform:
   m_GameObject: {fileID: 332022278}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40, y: 400, z: 50}
+  m_LocalPosition: {x: 40, y: 50, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -855,9 +855,9 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &1034803636 stripped
+--- !u!1 &1046336025 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 4509204569429118891, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8532159380291369616, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}
   m_PrefabInstance: {fileID: 1334753106}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1129775591 stripped
@@ -1465,7 +1465,7 @@ MonoBehaviour:
       spawnChance: 1
   scoreText: {fileID: 1129775591}
   timerText: {fileID: 689466560}
-  healthBar: {fileID: 1034803636}
+  healthBar: {fileID: 1046336025}
   gameoverScoreText: {fileID: 1386844821}
 --- !u!4 &2004182967
 Transform:
