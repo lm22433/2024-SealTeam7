@@ -33,6 +33,7 @@ namespace Game
         [Header("UI objects")]
         [SerializeField] private TMP_Text scoreText;
         [SerializeField] private TMP_Text timerText;
+        [SerializeField] private GameObject healthBar;
         [SerializeField] private TMP_Text gameoverScoreText;
 
         private static GameManager _instance;
@@ -89,7 +90,10 @@ namespace Game
 
         private void UIUpdate() {
             scoreText.SetText($"Score: {_score}");
-            timerText.SetText($"{(int) _timer / 60}:{(int) (_timer % 60)}");
+            var seconds = (_timer % 60 < 10) ? $"0{(int) (_timer % 60)}" : $"{(int) (_timer % 60)}";
+            timerText.SetText($"{(int) _timer / 60}:{seconds}");
+
+            healthBar.transform.localScale = new Vector3((float)_health / (float)maxHealth, 1, 1);
         }
 
         public void StartGame()
@@ -124,6 +128,7 @@ namespace Game
         {
             if (!_gameActive) throw new Exception("Game has not started yet, how have you died dummy!");
             
+            _gameActive = false;
             Debug.Log($"You died! Score: {_score} Total Kills: {_totalKills}");
         }
         
