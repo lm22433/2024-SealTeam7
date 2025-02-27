@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 68321768}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 220, z: 0}
+  m_LocalPosition: {x: 0, y: 150, z: 0}
   m_LocalScale: {x: 1, y: 60, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -871,8 +871,8 @@ Transform:
   m_GameObject: {fileID: 1461191794}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
-  m_LocalScale: {x: 20, y: 200, z: 20}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
+  m_LocalScale: {x: 20, y: 100, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1884077986}
@@ -1014,7 +1014,7 @@ Transform:
   m_GameObject: {fileID: 1884077985}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 240, y: 150, z: 240}
+  m_LocalPosition: {x: 240, y: 50, z: 240}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1089,7 +1089,17 @@ MonoBehaviour:
       spawnChance: 0.5
     - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
       groupSize: 2
-      spawnChance: 0.5
+      spawnChance: 1
+  - index: 2
+    duration: 60
+    spawnInterval: 2
+    enemies:
+    - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
+      groupSize: 20
+      spawnChance: 0.296
+    - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
+      groupSize: 5
+      spawnChance: 1
 --- !u!4 &2004182967
 Transform:
   m_ObjectHideFlags: 0
@@ -1155,7 +1165,7 @@ MonoBehaviour:
   - {fileID: 553266628}
   - {fileID: 393166120}
   spawnGroupSpacing: 10
-  maxEnemyCount: 10
+  maxEnemyCount: 200
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
