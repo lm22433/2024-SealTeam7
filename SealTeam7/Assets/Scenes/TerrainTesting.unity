@@ -646,7 +646,11 @@ PrefabInstance:
       objectReference: {fileID: 594167918}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: _lerpFactor
-      value: 0.5
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _thresholdDst
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -761,7 +765,11 @@ PrefabInstance:
       objectReference: {fileID: 594167918}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: _lerpFactor
-      value: 0.5
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _thresholdDst
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

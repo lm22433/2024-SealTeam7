@@ -8,6 +8,7 @@ public class HandReconstruction : MonoBehaviour
     [SerializeField] private MapManager mapManager;
     [SerializeField] private GameObject hand;
     [SerializeField] private float _lerpFactor;
+    [SerializeField] private float _thresholdDst;
     [SerializeField, Range(0,1)] private int _hand;
     [SerializeField] private Vector3[] positions;
 
@@ -34,6 +35,7 @@ public class HandReconstruction : MonoBehaviour
     {
         //Get hand points Vector3[20]
         var tempPositions = mapManager.GetHandPositions(_hand); //GetPositions();
+        var prevPos = positions[0];
 
         if (tempPositions != null) {   
             for(int i = 0; i < tempPositions.Length; i++) {
@@ -41,17 +43,19 @@ public class HandReconstruction : MonoBehaviour
             }
         }
 
-        Vector3 targetDir = positions[9] - positions[0];
-        gameObject.transform.localPosition = positions[0] + (targetDir / 2);
-        
-        gameObject.transform.localRotation = Quaternion.Euler(gameObject.transform.localRotation.eulerAngles.x, Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, gameObject.transform.localRotation.eulerAngles.z);
+        if (Vector3.Distance(prevPos, tempPositions[0]) < _thresholdDst) {
 
-        //targetDir = positions[17] - positions[5];
-        //hand.transform.localRotation = Quaternion.LookRotation(targetDir.normalized, Vector3.right);
+            Vector3 targetDir = positions[9] - positions[0];
+            gameObject.transform.localPosition = positions[0];
+            
+            gameObject.transform.localRotation = Quaternion.Euler(gameObject.transform.localRotation.eulerAngles.x, Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, gameObject.transform.localRotation.eulerAngles.z);
 
-        targetDir = positions[9] - positions[0];
-        bones[1].transform.localRotation = Quaternion.Euler(Vector3.SignedAngle(transform.forward, targetDir, Vector3.forward), bones[1].transform.rotation.y, bones[1].transform.rotation.z);
+            //targetDir = positions[17] - positions[5];
+            //hand.transform.localRotation = Quaternion.LookRotation(targetDir.normalized, Vector3.right);
 
+            targetDir = positions[9] - positions[0];
+            bones[1].transform.localRotation = Quaternion.Euler(Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.x, bones[1].transform.rotation.y, bones[1].transform.rotation.z);
+        }
     }
 
      private void OnDrawGizmos()
