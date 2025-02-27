@@ -131,6 +131,7 @@ namespace Map
             Thread.Sleep(1000);
             PythonManager.StartInference();
             
+            
             while (_running)
             {
                 //if (!GameManager.GetInstance().IsGameActive()) continue;
@@ -214,45 +215,45 @@ namespace Map
             //     BorderType.Default, _scalarOne);
             
             // Also mask using hand landmarks
-            const float padding = 20f;
-            var bboxLeft = new Rect();
-            var bboxRight = new Rect();
-            if (handLandmarks.Left != null)
-            {
-                // TODO the hand landmark coordinates need scaling - either scale them here or in PythonManager
-                bboxLeft.xMin = handLandmarks.Left.Min(p => p.x) - _xOffsetStart - padding;
-                bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) - _xOffsetStart + padding;
-                bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - _yOffsetStart - padding;
-                bboxLeft.yMax = handLandmarks.Left.Max(p => p.z) - _yOffsetStart + padding;
-                // Debug.Log($"Left hand bbox: {bboxLeft}");
-            }
-            if (handLandmarks.Right != null)
-            {
-                bboxRight.xMin = handLandmarks.Right.Min(p => p.x) - _xOffsetStart - padding;
-                bboxRight.xMax = handLandmarks.Right.Max(p => p.x) - _xOffsetStart + padding;
-                bboxRight.yMin = handLandmarks.Right.Min(p => p.z) - _yOffsetStart - padding;
-                bboxRight.yMax = handLandmarks.Right.Max(p => p.z) - _yOffsetStart + padding;
-                // Debug.Log($"Right hand bbox: {bboxRight}");
-            }
-            BboxLeft = bboxLeft;
-            BboxRight = bboxRight;
-            var vec2 = new Vector2();
-            for (int y = 0; y < _height + 1; y++)
-            {
-                for (int x = 0; x < _width + 1; x++)
-                {
-                    vec2.Set(x, y);
-                    if ((handLandmarks.Left != null && bboxLeft.Contains(vec2)) || 
-                        (handLandmarks.Right != null && bboxRight.Contains(vec2)))
-                    {
-                        _heightMask.Data[y, x, 0] = 1f;
-                    }
-                    else
-                    {
-                        _heightMask.Data[y, x, 0] = 0f; //temp
-                    }
-                }
-            }
+            // const float padding = 20f;
+            // var bboxLeft = new Rect();
+            // var bboxRight = new Rect();
+            // if (handLandmarks.Left != null)
+            // {
+            //     // TODO the hand landmark coordinates need scaling - either scale them here or in PythonManager
+            //     bboxLeft.xMin = handLandmarks.Left.Min(p => p.x) - _xOffsetStart - padding;
+            //     bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) - _xOffsetStart + padding;
+            //     bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - _yOffsetStart - padding;
+            //     bboxLeft.yMax = handLandmarks.Left.Max(p => p.z) - _yOffsetStart + padding;
+            //     // Debug.Log($"Left hand bbox: {bboxLeft}");
+            // }
+            // if (handLandmarks.Right != null)
+            // {
+            //     bboxRight.xMin = handLandmarks.Right.Min(p => p.x) - _xOffsetStart - padding;
+            //     bboxRight.xMax = handLandmarks.Right.Max(p => p.x) - _xOffsetStart + padding;
+            //     bboxRight.yMin = handLandmarks.Right.Min(p => p.z) - _yOffsetStart - padding;
+            //     bboxRight.yMax = handLandmarks.Right.Max(p => p.z) - _yOffsetStart + padding;
+            //     // Debug.Log($"Right hand bbox: {bboxRight}");
+            // }
+            // BboxLeft = bboxLeft;
+            // BboxRight = bboxRight;
+            // var vec2 = new Vector2();
+            // for (int y = 0; y < _height + 1; y++)
+            // {
+            //     for (int x = 0; x < _width + 1; x++)
+            //     {
+            //         vec2.Set(x, y);
+            //         if ((handLandmarks.Left != null && bboxLeft.Contains(vec2)) || 
+            //             (handLandmarks.Right != null && bboxRight.Contains(vec2)))
+            //         {
+            //             _heightMask.Data[y, x, 0] = 1f;
+            //         }
+            //         else
+            //         {
+            //             _heightMask.Data[y, x, 0] = 0f; //temp
+            //         }
+            //     }
+            // }
             
             // Update the heights, only in the non-masked part
             for (int y = 0; y < _height + 1; y++)
@@ -288,7 +289,7 @@ namespace Map
             var depthRange = _maximumSandDepth - _minimumSandDepth;
             var offsetLeft = new Vector3();
             var offsetRight = new Vector3();
-            var wristYOffset = -30f;
+            var wristYOffset = 0f;
             if (leftHandDepth.HasValue)
             {
                 offsetLeft = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
@@ -301,10 +302,14 @@ namespace Map
                     (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
+
+            var handYScaling = 3f;
             HandLandmarks = new HandLandmarks
             {
-                Left = handLandmarks.Left?.Select(p => p + offsetLeft).ToArray(),
-                Right = handLandmarks.Right?.Select(p => p + offsetRight).ToArray()
+                Left = handLandmarks.Left?.Select(p => 
+                    new Vector3(p.x + offsetLeft.x, p.y*handYScaling + offsetLeft.y, p.z + offsetLeft.z)).ToArray(),
+                Right = handLandmarks.Right?.Select(p =>
+                    new Vector3(p.x + offsetRight.x, p.y*handYScaling + offsetRight.y, p.z + offsetRight.z)).ToArray()
             };
             Debug.Log($"Hand landmarks after: {HandLandmarks}");
         }

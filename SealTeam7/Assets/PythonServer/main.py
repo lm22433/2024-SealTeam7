@@ -71,13 +71,13 @@ def inference_frame(hand_landmarker, frame, depth):
         if handedness[0].category_name == "Left":  # the [0] is ignoreable
             landmarks = hand_landmarking_result.hand_landmarks[i]
             left = [{"x": landmark.x * frame.shape[1],
-                     "y": landmark.z * frame.shape[0],  # z is depth/height so it's the y coordinate
+                     "y": -landmark.z * frame.shape[1],  # z is depth so it's the negative y coordinate
                      "z": landmark.y * frame.shape[0]}
                      for landmark in landmarks] if landmarks is not None else None
         else:
             landmarks = hand_landmarking_result.hand_landmarks[i]
             right = [{"x": landmark.x * frame.shape[1],
-                      "y": landmark.z * frame.shape[0],
+                      "y": -landmark.z * frame.shape[1],
                       "z": landmark.y * frame.shape[0]}
                       for landmark in landmarks] if landmarks is not None else None
             

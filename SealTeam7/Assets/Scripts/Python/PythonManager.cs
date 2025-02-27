@@ -20,7 +20,7 @@ namespace Python
         public static float? LeftHandDepth { get; private set; }
         public static float? RightHandDepth { get; private set; }
         public static bool FlipX { get; set; } = true;
-        public static bool FlipHandedness { get; set; } = true;
+        public static bool FlipHandedness { get; set; } = false;
         
         private const string Host = "localhost";
         private const int Port = 65465;
@@ -245,9 +245,9 @@ namespace Python
                                 var x = left[i]!["x"]!.ToObject<float>();
                                 x = FlipX ? PythonImageWidth - x + ImageOffsetX : x - ImageOffsetX;
                                 _leftHandLandmarks[i].x = x / ImageScale + ImageCropX;
-                                _leftHandLandmarks[i].y = (left[i]!["y"]!.ToObject<float>()
-                                    - ImageOffsetY) / ImageScale + ImageCropY;
-                                _leftHandLandmarks[i].z = left[i]!["z"]!.ToObject<float>() / ImageScale;
+                                _leftHandLandmarks[i].y = left[i]!["y"]!.ToObject<float>() / ImageScale;
+                                _leftHandLandmarks[i].z = (left[i]!["z"]!.ToObject<float>() - ImageOffsetY)
+                                    / ImageScale + ImageCropY;
                             }
                             _handLandmarks.Left = _leftHandLandmarks;
                             LeftHandDepth = (FlipHandedness ? handDepth["right"]! : handDepth["left"]!)
@@ -267,9 +267,9 @@ namespace Python
                                 var x = right[i]!["x"]!.ToObject<float>();
                                 x = FlipX ? PythonImageWidth - x + ImageOffsetX : x - ImageOffsetX;
                                 _rightHandLandmarks[i].x = x / ImageScale + ImageCropX;
-                                _rightHandLandmarks[i].y = (right[i]!["y"]!.ToObject<float>()
-                                    - ImageOffsetY) / ImageScale + ImageCropY;
-                                _rightHandLandmarks[i].z = right[i]!["z"]!.ToObject<float>() / ImageScale;
+                                _rightHandLandmarks[i].y = right[i]!["y"]!.ToObject<float>() / ImageScale;
+                                _rightHandLandmarks[i].z = (right[i]!["z"]!.ToObject<float>() - ImageOffsetY)
+                                    / ImageScale + ImageCropY;
                             }
                             _handLandmarks.Right = _rightHandLandmarks;
                             RightHandDepth = (FlipHandedness ? handDepth["left"]! : handDepth["right"]!)
