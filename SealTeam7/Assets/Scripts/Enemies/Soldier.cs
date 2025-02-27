@@ -7,6 +7,7 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem gunEffects;
+        [SerializeField] private ParticleSystem deathParticles;
         private float _lastAttack;
         
         protected override void Attack(PlayerDamageable target)
@@ -39,7 +40,7 @@ namespace Enemies
                 {
                     if (_lastAttack > attackInterval)
                     {
-                        gunEffects.Emit(1);
+                        gunEffects.Play();
                         Attack(EnemyManager.godlyCore);
                         _lastAttack = 0f;
                     }
@@ -49,13 +50,19 @@ namespace Enemies
                 {
                     if (_lastAttack > attackInterval)
                     {
-                        gunEffects.Emit(1);
+                        gunEffects.Play();
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;
                     }
                     break;
                 }
             }
+        }
+
+        public override void Die()
+        {
+            deathParticles.Play();
+            base.Die();
         }
     }
 }

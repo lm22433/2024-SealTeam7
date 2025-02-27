@@ -7,6 +7,7 @@ namespace Enemies
     {
         [SerializeField] private Transform turret;
         [SerializeField] private Transform gun;
+        [SerializeField] private ParticleSystem deathParticles;
         private float _lastAttack;
         
         protected override void Attack(PlayerDamageable target)
@@ -57,6 +58,12 @@ namespace Enemies
                     break;
                 }
             }
+        }
+
+        public override void Die()
+        {
+            deathParticles.Play();
+            base.Die();
         }
     }
 }

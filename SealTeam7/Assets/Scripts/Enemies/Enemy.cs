@@ -38,7 +38,7 @@ namespace Enemies
             TargetRotation = transform.rotation;
         }
 
-        public void Die()
+        public virtual void Die()
         {
             GameManager.GetInstance().RegisterKill(killScore);
             Destroy(gameObject);
