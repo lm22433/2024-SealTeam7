@@ -33,6 +33,7 @@ namespace Game
         [Header("UI objects")]
         [SerializeField] private TMP_Text scoreText;
         [SerializeField] private TMP_Text timerText;
+        [SerializeField] private TMP_Text gameoverScoreText;
 
         private static GameManager _instance;
         private bool _gameActive;
@@ -114,6 +115,9 @@ namespace Game
             
             _gameActive = false;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
+
+            gameoverScoreText.SetText($"Score: {_score}");
+            gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
         }
 
         private void Die()
