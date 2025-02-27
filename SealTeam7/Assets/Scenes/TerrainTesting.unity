@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 68321768}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 320, z: 0}
+  m_LocalPosition: {x: 0, y: 220, z: 0}
   m_LocalScale: {x: 1, y: 60, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -586,8 +586,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.05
-  noiseScale: 0.001
+  noiseSpeed: 0.01
+  noiseScale: 0.005
   width: 480
   height: 480
   xOffsetStart: 690
@@ -872,7 +872,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 10, z: 0}
-  m_LocalScale: {x: 20, y: 300, z: 20}
+  m_LocalScale: {x: 20, y: 200, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1884077986}
@@ -1073,18 +1073,22 @@ MonoBehaviour:
   - index: 0
     duration: 20
     spawnInterval: 10
-    spawnGroupSize: 2
     enemies:
     - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
+      groupSize: 10
       spawnChance: 1
+    - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
+      groupSize: 2
+      spawnChance: 0
   - index: 1
     duration: 60
     spawnInterval: 5
-    spawnGroupSize: 5
     enemies:
     - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
+      groupSize: 10
       spawnChance: 0.5
     - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
+      groupSize: 2
       spawnChance: 0.5
 --- !u!4 &2004182967
 Transform:
@@ -1150,10 +1154,8 @@ MonoBehaviour:
   - {fileID: 2136277956}
   - {fileID: 553266628}
   - {fileID: 393166120}
-  spawnInterval: 5
-  spawnGroupSize: 1
   spawnGroupSpacing: 10
-  maxEnemyCount: 1
+  maxEnemyCount: 10
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}

@@ -10,7 +10,6 @@ namespace Game
         public int index;
         public float duration;
         public float spawnInterval;
-        public int spawnGroupSize;
         public EnemyData[] enemies;
     }
     
