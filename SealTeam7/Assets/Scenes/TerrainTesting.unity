@@ -609,7 +609,7 @@ MonoBehaviour:
   lodInfo:
     lod: 1
     colliderLod: 2
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -1398,24 +1398,34 @@ MonoBehaviour:
   difficulties:
   - index: 0
     duration: 20
-    spawnInterval: 10
+    spawnInterval: 5
+    enemies:
+    - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
+      groupSize: 5
+      spawnChance: 1
+    - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
+      groupSize: 2
+      spawnChance: 0
+  - index: 1
+    duration: 40
+    spawnInterval: 2
     enemies:
     - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
       groupSize: 10
-      spawnChance: 0
+      spawnChance: 0.5
     - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
       groupSize: 2
       spawnChance: 1
   - index: 1
     duration: 60
-    spawnInterval: 5
+    spawnInterval: 2
     enemies:
     - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-      groupSize: 10
-      spawnChance: 0.5
+      groupSize: 15
+      spawnChance: 0.273
     - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-      groupSize: 2
-      spawnChance: 0.5
+      groupSize: 5
+      spawnChance: 1
   scoreText: {fileID: 1129775591}
   timerText: {fileID: 689466560}
   gameoverScoreText: {fileID: 1386844821}
