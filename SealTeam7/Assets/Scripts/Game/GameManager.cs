@@ -1,5 +1,6 @@
 using System;
 using Enemies;
+using TMPro;
 using UnityEngine;
 
 namespace Game
@@ -28,6 +29,10 @@ namespace Game
         
         [Header("Difficulty Settings")]
         [SerializeField] private Difficulty[] difficulties;
+
+        [Header("UI objects")]
+        [SerializeField] private TMP_Text scoreText;
+        [SerializeField] private TMP_Text timerText;
 
         private static GameManager _instance;
         private bool _gameActive;
@@ -77,6 +82,13 @@ namespace Game
             }
             
             if (_timer <= 0) EndGame();
+
+            UIUpdate();
+        }
+
+        private void UIUpdate() {
+            scoreText.SetText($"Score: {_score}");
+            timerText.SetText($"{(int) _timer / 60}:{(int) (_timer % 60)}");
         }
 
         public void StartGame()
