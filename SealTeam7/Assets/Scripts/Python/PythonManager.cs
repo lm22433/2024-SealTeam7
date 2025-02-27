@@ -240,10 +240,6 @@ namespace Python
                             }
                             _handLandmarks.Left = _leftHandLandmarks;
                         }
-                        else
-                        {
-                            _handLandmarks.Left = null;
-                        }
                         var right = handLandmarks["right"];
                         if (right.HasValues)
                         {
@@ -256,10 +252,6 @@ namespace Python
                                 _rightHandLandmarks[i].y = right[i]!["z"]!.ToObject<float>() / ImageScale;
                             }
                             _handLandmarks.Right = _rightHandLandmarks;
-                        }
-                        else
-                        {
-                            _handLandmarks.Right = null;
                         }
                     }
                     catch (JsonReaderException e)

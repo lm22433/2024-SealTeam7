@@ -103,30 +103,37 @@ namespace Map
         }
         
         public Vector3[] GetHandPositions(int hand) {
+            Vector3[] positions;
 
             if (hand == 0) {
-                var positions = PythonManager.HandLandmarks.Right;
-                if (positions == null) {
+                positions = PythonManager.HandLandmarks.Right;
+            } else {
+                positions = PythonManager.HandLandmarks.Left;
+            }
+
+            if (positions == null) {
+                Debug.Log("null position");
+                return null;
+            }
+
+            if (positions[9].z >= _yOffsetStart && positions[9].z <= _yOffsetEnd &&
+                positions[9].x >= _xOffsetStart && positions[9].x <= _xOffsetEnd) {
+
+                var height = _rawHeightImage.Data[(int) positions[9].z - _yOffsetStart, (int) positions[9].x - _xOffsetStart, 0];
+                if (height == 0) {
                     return null;
                 }
 
-                if (positions[0].z >= _yOffsetStart && positions[0].z <= _yOffsetEnd &&
-                    positions[0].x >= _xOffsetStart && positions[0].x <= _xOffsetEnd) {
-
-                    var height = _rawHeightImage.Data[(int)positions[0].z - _yOffsetStart, (int) positions[0].x - _xOffsetStart, 0];
-                    if (height == 0) {
-                        return null;
-                    }
-
-                    for(int i = 0; i < positions.Length; i++) {
-                        positions[i] = new Vector3(positions[i].x - _xOffsetStart, (height - positions[i].y) * _heightScale, positions[i].z - _yOffsetStart);
-                    }
-
-                    return positions;
+                for(int i = 0; i < positions.Length; i++) {
+                    positions[i] = new Vector3((int) positions[i].x - _xOffsetStart, (height + 0.0002f * (positions[0].y + positions[i].y)) * _heightScale, positions[i].z - _yOffsetStart);
                 }
-                
-            }
 
+                return positions;
+            }
+            else {
+                Debug.Log("out of bounds");
+            }
+                
             return null;
 
         }

@@ -8,77 +8,54 @@ public class HandReconstruction : MonoBehaviour
     [SerializeField] private MapManager mapManager;
     [SerializeField] private GameObject hand;
     [SerializeField] private float _lerpFactor;
-    private Vector3[] positions;
+    [SerializeField, Range(0,1)] private int _hand;
+    [SerializeField] private Vector3[] positions;
 
-    
     void Start()
     {
+        positions = new Vector3[21];
+    }
+
+    float SignedAngleBetween(Vector3 a, Vector3 b, Vector3 n){
+        // angle in [0,180]
+        float angle = Vector3.Angle(a,b);
+        float sign = Mathf.Sign(Vector3.Dot(n,Vector3.Cross(a,b)));
+
+        // angle in [-179,180]
+        float signed_angle = angle * sign;
+
+        float angle360 =  (signed_angle + 180) % 360;
+
+        return angle360;
     }
 
     // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         //Get hand points Vector3[20]
-        var tempPositions = mapManager.GetHandPositions(0); //GetPositions();
+        var tempPositions = mapManager.GetHandPositions(_hand); //GetPositions();
 
-        if (tempPositions == null) {
-            return;
+        if (tempPositions != null) {   
+            for(int i = 0; i < tempPositions.Length; i++) {
+                positions[i] = Vector3.Lerp(positions[i], tempPositions[i], _lerpFactor);
+            }
         }
 
-        for(int i = 0; i < positions.Length; i++) {
-            positions[i] = Vector3.Lerp(positions[i], tempPositions[i], _lerpFactor);
-        } 
-
-
-        /*
-            gameobject position to position of 0
-            0 to 12 vector
-            cosine angle with forward
-            rotation for gameobject around y
-
-            vector 5 to 17 
-            cosine angle between left vector
-            rotation around z for bone 0
-
-            vector 0 to 9
-            cosine angle between up vector
-            rotaition around x for bone 1
-
-            vector 5 to 6 
-            rotation bone 2
-            vector 6 to 7 
-            rotation bone 3
-            vector 7 to 8 
-            rotation bone 4
-
-
-            ...
-
-            1 to 2 
-            rotation bone 16
-            2 to 3 
-            rotation bone 17
-            3 to 4 
-            rotation bone 18
-
-        */
-
-        gameObject.transform.position = positions[0];
+        Vector3 targetDir = positions[9] - positions[0];
+        gameObject.transform.localPosition = positions[0] + (targetDir / 2);
         
-        //Vector3 targetDir = positions[17] - positions[5];
-        //hand.transform.localRotation = Quaternion.Euler(0, 0, Vector3.SignedAngle(transform.right, targetDir, Vector3.forward));
+        gameObject.transform.localRotation = Quaternion.Euler(gameObject.transform.localRotation.eulerAngles.x, Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, gameObject.transform.localRotation.eulerAngles.z);
 
-        //targetDir = positions[9] - positions[0];
-        //bones[1].transform.localRotation = Quaternion.Euler(Vector3.SignedAngle(transform.forward, targetDir, Vector3.forward), bones[1].transform.rotation.y, bones[1].transform.rotation.z);
+        //targetDir = positions[17] - positions[5];
+        //hand.transform.localRotation = Quaternion.LookRotation(targetDir.normalized, Vector3.right);
+
+        targetDir = positions[9] - positions[0];
+        bones[1].transform.localRotation = Quaternion.Euler(Vector3.SignedAngle(transform.forward, targetDir, Vector3.forward), bones[1].transform.rotation.y, bones[1].transform.rotation.z);
 
     }
 
      private void OnDrawGizmos()
     {
-
-        if (positions == null) {
-            return;
-        }
 
         Vector3 targetDir = positions[17] - positions[5];
 
@@ -88,8 +65,6 @@ public class HandReconstruction : MonoBehaviour
         Gizmos.DrawLine(positions[0], positions[0] + transform.right * 10);
 
         Gizmos.color = Color.yellow;
-        foreach(Vector3 pos in positions) {
-            Gizmos.DrawSphere(pos, 2);
-        }
+        Gizmos.DrawSphere(positions[0], 2);
     }
 }

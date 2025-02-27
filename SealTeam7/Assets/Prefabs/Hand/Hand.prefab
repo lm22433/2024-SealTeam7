@@ -64,6 +64,11 @@ MonoBehaviour:
   - {fileID: 7691059987066210468}
   - {fileID: 5202523293393431742}
   - {fileID: 1965312104201684194}
+  mapManager: {fileID: 0}
+  hand: {fileID: 0}
+  _lerpFactor: 0
+  _hand: 0
+  positions: []
 --- !u!1001 &8765556666464952307
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72,6 +77,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4990981103674803823}
     m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 2b8d5b33a9b5a994cad422d7358b6f11, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2b8d5b33a9b5a994cad422d7358b6f11, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2b8d5b33a9b5a994cad422d7358b6f11, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2b8d5b33a9b5a994cad422d7358b6f11, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
