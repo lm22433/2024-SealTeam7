@@ -17,12 +17,17 @@ namespace Python
 {
     public static class PythonManager
     {
+        public static float? LeftHandDepth { get; private set; }
+        public static float? RightHandDepth { get; private set; }
+        public static bool FlipX { get; set; } = true;
+        public static bool FlipHandedness { get; set; } = true;
+        
         private const string Host = "localhost";
         private const int Port = 65465;
         private static readonly Encoding Encoding = Encoding.UTF8;
 
-        private const int PythonImageWidth = 256;
-        private const int PythonImageHeight = 256;
+        private const int PythonImageWidth = 1920;
+        private const int PythonImageHeight = 1080;
         private const int ImageCropX = 0;
         private const int ImageCropY = 0;
         private const int ImageCropWidth = 1920;
@@ -45,7 +50,6 @@ namespace Python
         private static HandLandmarks _handLandmarks;
         private static Vector3[] _leftHandLandmarks;  // Keep a reference separately as they can be null in HandLandmarks
         private static Vector3[] _rightHandLandmarks;
-        private static bool _flipHandedness = true;
 
 
         public static bool Connect()
@@ -160,7 +164,7 @@ namespace Python
         }
 
 
-        public static void SendColorImage(Image colorImage, bool flipX = false)
+        public static void SendColorImage(Image colorImage, Image depthImage)
         {
             if (!IsConnected())
             {
@@ -169,17 +173,18 @@ namespace Python
             }
 
             // var stopwatch = Stopwatch.StartNew();
-            var span = colorImage.Memory.Span;
+            // var span = colorImage.Memory.Span;
             // stopwatch.Stop();
             // Debug.Log($"\u250fMemory.Span: {stopwatch.ElapsedMilliseconds} ms");
 
             // stopwatch.Restart();
-            var resizedImage = ResizeAndPad(span, colorImage.WidthPixels, colorImage.HeightPixels, flipX);
+            // var resizedImage = ResizeAndPad(span, colorImage.WidthPixels, colorImage.HeightPixels, flipX);
             // stopwatch.Stop();
             // Debug.Log($"\u2523PythonManager.ResizeAndPad: {stopwatch.ElapsedMilliseconds} ms");
 
             // stopwatch.Restart();
-            _imageStream.Write(resizedImage); // 256x256 BGRA image
+            _imageStream.Write(colorImage.Memory.Span);
+            _imageStream.Write(depthImage.Memory.Span);
             // stopwatch.Stop();
             // Debug.Log($"\u2523ImageStream.Write: {stopwatch.ElapsedMilliseconds} ms");
         }
@@ -230,39 +235,50 @@ namespace Python
                         //     _sandboxObjects.Add(sandboxObject);
                         // }
                         var handLandmarks = receivedJson["hand_landmarks"]!;
-                        var left = _flipHandedness ? handLandmarks["right"] : handLandmarks["left"];
+                        var handDepth = receivedJson["hand_depth"]!;
+                        var left = FlipHandedness ? handLandmarks["right"] : handLandmarks["left"];
                         if (left.HasValues)
                         {
                             for (var i = 0; i < 21; i++)
                             {
-                                _leftHandLandmarks[i].x = (left[i]!["x"]!.ToObject<float>()
-                                    - ImageOffsetX) / ImageScale + ImageCropX;
-                                _leftHandLandmarks[i].z = (left[i]!["y"]!.ToObject<float>()
+                                Debug.Log($"ImageOffsetX: {ImageOffsetX}");
+                                var x = left[i]!["x"]!.ToObject<float>();
+                                x = FlipX ? PythonImageWidth - x + ImageOffsetX : x - ImageOffsetX;
+                                _leftHandLandmarks[i].x = x / ImageScale + ImageCropX;
+                                _leftHandLandmarks[i].y = (left[i]!["y"]!.ToObject<float>()
                                     - ImageOffsetY) / ImageScale + ImageCropY;
-                                _leftHandLandmarks[i].y = left[i]!["z"]!.ToObject<float>() / ImageScale;
+                                _leftHandLandmarks[i].z = left[i]!["z"]!.ToObject<float>() / ImageScale;
                             }
                             _handLandmarks.Left = _leftHandLandmarks;
+                            LeftHandDepth = (FlipHandedness ? handDepth["right"]! : handDepth["left"]!)
+                                .ToObject<float>();
                         }
                         else
                         {
                             _handLandmarks.Left = null;
+                            LeftHandDepth = null;
                         }
-                        var right = _flipHandedness ? handLandmarks["left"] : handLandmarks["right"];
+
+                        var right = FlipHandedness ? handLandmarks["left"] : handLandmarks["right"];
                         if (right.HasValues)
                         {
                             for (var i = 0; i < 21; i++)
                             {
-                                _rightHandLandmarks[i].x = (right[i]!["x"]!.ToObject<float>()
-                                    - ImageOffsetX) / ImageScale + ImageCropX;
-                                _rightHandLandmarks[i].z = (right[i]!["y"]!.ToObject<float>()
+                                var x = right[i]!["x"]!.ToObject<float>();
+                                x = FlipX ? PythonImageWidth - x + ImageOffsetX : x - ImageOffsetX;
+                                _rightHandLandmarks[i].x = x / ImageScale + ImageCropX;
+                                _rightHandLandmarks[i].y = (right[i]!["y"]!.ToObject<float>()
                                     - ImageOffsetY) / ImageScale + ImageCropY;
-                                _rightHandLandmarks[i].y = right[i]!["z"]!.ToObject<float>() / ImageScale;
+                                _rightHandLandmarks[i].z = right[i]!["z"]!.ToObject<float>() / ImageScale;
                             }
                             _handLandmarks.Right = _rightHandLandmarks;
+                            RightHandDepth = (FlipHandedness ? handDepth["left"]! : handDepth["right"]!)
+                                .ToObject<float>();
                         }
                         else
                         {
                             _handLandmarks.Right = null;
+                            RightHandDepth = null;
                         }
                     }
                     catch (JsonReaderException e)

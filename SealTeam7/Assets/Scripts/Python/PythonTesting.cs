@@ -44,7 +44,7 @@ namespace Python
                     // Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
                 
                     // stopwatch.Restart();
-                    PythonManager.SendColorImage(capture.Color);
+                    PythonManager.SendColorImage(capture.Color, capture.Depth);
                     // stopwatch.Stop();
                     // Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
                 

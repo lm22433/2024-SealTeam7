@@ -137,9 +137,12 @@ namespace Map
                 
                 try {
                     using Capture capture = _kinect.GetCapture();
+                    // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
+                    _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
                     UpdateHeightMap(capture, PythonManager.HandLandmarks);
-                    HandLandmarks = PythonManager.HandLandmarks;
-                    PythonManager.SendColorImage(capture.Color, flipX: true);
+                    UpdateHandLandmarks(PythonManager.HandLandmarks, PythonManager.LeftHandDepth, 
+                        PythonManager.RightHandDepth);
+                    PythonManager.SendColorImage(capture.Color, _transformedDepthImage);
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
@@ -152,8 +155,29 @@ namespace Map
 
         private void UpdateHeightMap(Capture capture, HandLandmarks handLandmarks)
         {
-            // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
-            _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
+            // var im = new Image<Bgra, byte>(capture.Color.WidthPixels, capture.Color.HeightPixels);
+            // Debug.Log($"capture.Color.WidthPixels: {capture.Color.WidthPixels}, capture.Color.Memory.Span.Length: {capture.Color.Memory.Span.Length}");
+            // for (int y = 0; y < capture.Color.HeightPixels; y++)
+            // {
+            //     for (int x = 0; x < capture.Color.WidthPixels; y++)
+            //     {
+            //         for (int z = 0; z < 4; z++)
+            //         {
+            //             im.Data[y, x, z] = capture.Color.Memory.Span[y * capture.Color.WidthPixels * 4 + x * 4 + z];
+            //         }
+            //     }
+            // }
+            // im.Save("Assets/Scripts/Python/colour.png");
+            // var im2 = new Image<Gray, ushort>(_transformedDepthImage.WidthPixels, _transformedDepthImage.HeightPixels);
+            // for (int y = 0; y < _transformedDepthImage.HeightPixels; y++)
+            // {
+            //     for (int x = 0; x < _transformedDepthImage.WidthPixels; x++)
+            //     {
+            //         im2.Data[y, x, 0] = _transformedDepthImage.Memory.Span[y * _transformedDepthImage.WidthPixels * 2 + x * 2];
+            //         im2.Data[y, x, 1] = _transformedDepthImage.Memory.Span[y * _transformedDepthImage.WidthPixels * 2 + x * 2 + 1];
+            //     }
+            // }
+            // im2.Save("Assets/Scripts/Python/depth.png");
 
             // Raw depth from kinect
             Span<ushort> depthBuffer = _transformedDepthImage.GetPixels<ushort>().Span;
@@ -200,7 +224,7 @@ namespace Map
                 bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) - _xOffsetStart + padding;
                 bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - _yOffsetStart - padding;
                 bboxLeft.yMax = handLandmarks.Left.Max(p => p.z) - _yOffsetStart + padding;
-                Debug.Log($"Left hand bbox: {bboxLeft}");
+                // Debug.Log($"Left hand bbox: {bboxLeft}");
             }
             if (handLandmarks.Right != null)
             {
@@ -208,12 +232,11 @@ namespace Map
                 bboxRight.xMax = handLandmarks.Right.Max(p => p.x) - _xOffsetStart + padding;
                 bboxRight.yMin = handLandmarks.Right.Min(p => p.z) - _yOffsetStart - padding;
                 bboxRight.yMax = handLandmarks.Right.Max(p => p.z) - _yOffsetStart + padding;
-                Debug.Log($"Right hand bbox: {bboxRight}");
+                // Debug.Log($"Right hand bbox: {bboxRight}");
             }
             BboxLeft = bboxLeft;
             BboxRight = bboxRight;
             var vec2 = new Vector2();
-            var maskCounter = 0;
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
@@ -223,7 +246,6 @@ namespace Map
                         (handLandmarks.Right != null && bboxRight.Contains(vec2)))
                     {
                         _heightMask.Data[y, x, 0] = 1f;
-                        maskCounter++;
                     }
                     else
                     {
@@ -231,7 +253,6 @@ namespace Map
                     }
                 }
             }
-            Debug.Log("Masked pixels: " + maskCounter);
             
             // Update the heights, only in the non-masked part
             for (int y = 0; y < _height + 1; y++)
@@ -259,6 +280,33 @@ namespace Map
                     // _heightMap[y * (_width + 1) + x] = _heightMask.Data[y, x, 0] * 50f;
                 }
             }
+        }
+
+        private void UpdateHandLandmarks(HandLandmarks handLandmarks, float? leftHandDepth, float? rightHandDepth)
+        {
+            Debug.Log($"Hand landmarks before: {handLandmarks}");
+            var depthRange = _maximumSandDepth - _minimumSandDepth;
+            var offsetLeft = new Vector3();
+            var offsetRight = new Vector3();
+            var wristYOffset = -30f;
+            if (leftHandDepth.HasValue)
+            {
+                offsetLeft = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                    (_maximumSandDepth - leftHandDepth.Value) / depthRange * _heightScale + wristYOffset,
+                    -_yOffsetStart);
+            }
+            if (rightHandDepth.HasValue)
+            {
+                offsetRight = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                    (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
+                    -_yOffsetStart);
+            }
+            HandLandmarks = new HandLandmarks
+            {
+                Left = handLandmarks.Left?.Select(p => p + offsetLeft).ToArray(),
+                Right = handLandmarks.Right?.Select(p => p + offsetRight).ToArray()
+            };
+            Debug.Log($"Hand landmarks after: {HandLandmarks}");
         }
     }
 }
