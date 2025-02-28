@@ -33,11 +33,13 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
+                    gunEffects.Stop();
                     Rb.AddForce(transform.forward * (moveSpeed * 10f));
                     break;
                 }
                 case EnemyState.AttackCore:
                 {
+                    gunEffects.Play();
                     if (_lastAttack > attackInterval)
                     {
                         gunEffects.Play();
@@ -48,6 +50,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
+                    gunEffects.Play();
                     if (_lastAttack > attackInterval)
                     {
                         gunEffects.Play();

@@ -229,7 +229,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 0
   useUnscaledTime: 0
@@ -5119,7 +5119,7 @@ ParticleSystem:
   emitterVelocityMode: 0
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -5356,7 +5356,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 20
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -9873,8 +9873,8 @@ ParticleSystemRenderer:
   m_RenderMode: 0
   m_MeshDistribution: 1
   m_SortMode: 0
-  m_MinParticleSize: 0
-  m_MaxParticleSize: 0.5
+  m_MinParticleSize: 0.001
+  m_MaxParticleSize: 0.002
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
   m_LengthScale: 2
