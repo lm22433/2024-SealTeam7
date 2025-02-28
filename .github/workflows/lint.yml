@@ -8,6 +8,10 @@ jobs:
   lint:
     name: Lint Unity Project
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -15,7 +19,7 @@ jobs:
           fetch-depth: 0
           lfs: true
       - name: Super-linter
-        uses: super-linter/super-linter@v7.1.0
+        uses: super-linter/super-linter@v7.3.0
         env:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
