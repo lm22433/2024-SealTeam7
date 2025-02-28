@@ -17,10 +17,20 @@ namespace Enemies
 
         protected override void EnemyUpdate()
         {
-            TargetRotation = Quaternion.LookRotation(Target - gun.position);
-            gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
+            switch (State)
+            {
+                case EnemyState.Moving:
+                case EnemyState.AttackCore: break;
+                case EnemyState.AttackHands:
+                {
+                    TargetRotation = Quaternion.LookRotation(Target.transform.position - gun.position);
+                    gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
+                    break;
+                }
+            }
             
-            TargetRotation = Quaternion.LookRotation(new Vector3(Target.x, transform.position.y, Target.z) - transform.position);
+            TargetRotation = Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position);
+            TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
             
             _lastAttack += Time.deltaTime;
         }
@@ -33,8 +43,8 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
+                    Rb.AddForce(TargetDirection * (moveSpeed * 10f));
                     gunEffects.Stop();
-                    Rb.AddForce(transform.forward * (moveSpeed * 10f));
                     break;
                 }
                 case EnemyState.AttackCore:

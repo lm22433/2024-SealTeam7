@@ -10,6 +10,7 @@ namespace Enemies
     public struct EnemyData
     {
         public GameObject prefab;
+        public int groupSize;
         [Range(0, 1)] public float spawnChance;
     }
 
@@ -30,7 +31,6 @@ namespace Enemies
         private float _lastSpawn;
         private int _enemyCount;
         private float _spawnInterval;
-        private int _spawnGroupSize;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
 
@@ -54,7 +54,6 @@ namespace Enemies
         public void SetDifficulty(Difficulty difficulty)
         {
             _spawnInterval = difficulty.spawnInterval;
-            _spawnGroupSize = difficulty.spawnGroupSize;
             _enemyTypes = difficulty.enemies;
         }
 
@@ -63,22 +62,21 @@ namespace Enemies
             // choose random spawn point
             var spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
-            for (int i = 0; i < _spawnGroupSize; i++)
+            var spawnOffset = Random.onUnitSphere * spawnGroupSpacing;
+            spawnOffset.y = 0f;
+            
+            foreach (var enemy in _enemyTypes)
             {
-                if (_enemyCount >= maxEnemyCount) continue;
+                if (Random.value > enemy.spawnChance) continue;
 
-                var spawnOffset = Random.onUnitSphere * spawnGroupSpacing;
-                spawnOffset.y = 0f;
-                
-                foreach (var enemy in _enemyTypes)
+                for (int i = 0; i < enemy.groupSize; i++)
                 {
-                    if (Random.value > enemy.spawnChance) continue;
-                    
+                    if (_enemyCount >= maxEnemyCount) continue;
                     Instantiate(enemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);
-                    break;
+                    _enemyCount++;
                 }
 
-                _enemyCount++;
+                break;
             }
         }
         

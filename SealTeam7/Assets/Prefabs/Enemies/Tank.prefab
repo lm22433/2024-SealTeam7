@@ -126,7 +126,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023846786496917964}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: d223a85fd2b6d2155bb00a5e846146d1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -324,10 +324,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7004c134e7a4de2a0ec47e7f6165bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 2
+  gravityDefiance: 50
   defianceThreshold: 1.5
   sinkFactor: 10
-  fallDeathRequirement: 1
+  fallDeathRequirement: 5
   self: {fileID: 3925053475800111628}
 --- !u!54 &828698031663403021
 Rigidbody:
@@ -339,7 +339,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -354,7 +354,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!1 &3011231988329932183
 GameObject:
@@ -5309,7 +5309,6 @@ GameObject:
   - component: {fileID: 3373662646575886563}
   - component: {fileID: 4308544609974287824}
   - component: {fileID: 7187945476594986272}
-  - component: {fileID: 4488672668141427814}
   m_Layer: 0
   m_Name: Barrel
   m_TagString: Untagged
@@ -5637,7 +5636,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8934381948426218899}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: d223a85fd2b6d2155bb00a5e846146d1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
