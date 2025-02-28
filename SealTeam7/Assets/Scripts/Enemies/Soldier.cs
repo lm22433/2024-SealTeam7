@@ -6,6 +6,8 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
+        [SerializeField] private ParticleSystem gunEffects;
+        [SerializeField] private ParticleSystem deathParticles;
         private float _lastAttack;
         
         protected override void Attack(PlayerDamageable target)
@@ -42,12 +44,15 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     Rb.AddForce(TargetDirection * (moveSpeed * 10f));
+                    gunEffects.Stop();
                     break;
                 }
                 case EnemyState.AttackCore:
                 {
+                    gunEffects.Play();
                     if (_lastAttack > attackInterval)
                     {
+                        gunEffects.Play();
                         Attack(EnemyManager.godlyCore);
                         _lastAttack = 0f;
                     }
@@ -55,14 +60,22 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
+                    gunEffects.Play();
                     if (_lastAttack > attackInterval)
                     {
+                        gunEffects.Play();
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;
                     }
                     break;
                 }
             }
+        }
+
+        public override void Die()
+        {
+            deathParticles.Play();
+            base.Die();
         }
     }
 }

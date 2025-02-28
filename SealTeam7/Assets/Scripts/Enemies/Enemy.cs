@@ -47,7 +47,7 @@ namespace Enemies
             TargetDirection = transform.forward;
         }
 
-        public void Die()
+        public virtual void Die()
         {
             GameManager.GetInstance().RegisterKill(killScore);
             Destroy(gameObject);
