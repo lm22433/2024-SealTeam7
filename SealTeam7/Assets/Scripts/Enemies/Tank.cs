@@ -8,6 +8,7 @@ namespace Enemies
         [SerializeField] private Transform turret;
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem deathParticles;
+        [SerializeField] private ParticleSystem gunEffects;
         private float _lastAttack;
         
         protected override void Attack(PlayerDamageable target)
@@ -37,6 +38,7 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
+                    gunEffects.Stop();
                     if (Mathf.Abs(Vector3.Dot(transform.forward, Vector3.up)) < 0.1f) break;
                     Rb.MoveRotation(TargetRotation);
                     Rb.AddForce(TargetDirection * (moveSpeed * 10f));
@@ -46,6 +48,7 @@ namespace Enemies
                 {
                     if (_lastAttack > attackInterval)
                     {
+                        gunEffects.Play();
                         Attack(EnemyManager.godlyCore);
                         _lastAttack = 0f;
                     }
@@ -55,6 +58,7 @@ namespace Enemies
                 {
                     if (_lastAttack < attackInterval)
                     {
+                        gunEffects.Play();
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;
                     }
