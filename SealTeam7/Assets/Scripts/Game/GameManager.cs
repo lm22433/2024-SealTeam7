@@ -1,5 +1,6 @@
 using System;
 using Enemies;
+using TMPro;
 using UnityEngine;
 
 namespace Game
@@ -10,7 +11,6 @@ namespace Game
         public int index;
         public float duration;
         public float spawnInterval;
-        public int spawnGroupSize;
         public EnemyData[] enemies;
     }
     
@@ -29,6 +29,12 @@ namespace Game
         
         [Header("Difficulty Settings")]
         [SerializeField] private Difficulty[] difficulties;
+
+        [Header("UI objects")]
+        [SerializeField] private TMP_Text scoreText;
+        [SerializeField] private TMP_Text timerText;
+        [SerializeField] private GameObject healthBar;
+        [SerializeField] private TMP_Text gameoverScoreText;
 
         private static GameManager _instance;
         private bool _gameActive;
@@ -78,6 +84,16 @@ namespace Game
             }
             
             if (_timer <= 0) EndGame();
+
+            UIUpdate();
+        }
+
+        private void UIUpdate() {
+            scoreText.SetText($"Score: {_score}");
+            var seconds = (_timer % 60 < 10) ? $"0{(int) (_timer % 60)}" : $"{(int) (_timer % 60)}";
+            timerText.SetText($"{(int) _timer / 60}:{seconds}");
+
+            healthBar.transform.localScale = new Vector3((float)_health / (float)maxHealth, 1, 1);
         }
 
         public void StartGame()
@@ -103,12 +119,16 @@ namespace Game
             
             _gameActive = false;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
+
+            gameoverScoreText.SetText($"Score: {_score}");
+            gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
         }
 
         private void Die()
         {
             if (!_gameActive) throw new Exception("Game has not started yet, how have you died dummy!");
             
+            _gameActive = false;
             Debug.Log($"You died! Score: {_score} Total Kills: {_totalKills}");
         }
         
