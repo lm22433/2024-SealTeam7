@@ -20,7 +20,7 @@ COLOUR_IMAGE_FILE_NAME = "colour_image.dat"
 HAND_LANDMARKS_SIZE = 21 * 3 * 2 * 4  # 21 landmarks, 3 coordinates per landmark, 2 hands, 4 bytes per float
 HAND_LANDMARKS_FILE_NAME = "hand_landmarks.dat"
 READY_EVENT_NAME = "SealTeam7ColourImageReady"
-DONE_EVENT_NAME = "SealTeam7ColourImageDone"
+DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
 
 OBJECT_DETECTION_MODEL_PATH = 'object_detection_model.tflite'
 HAND_LANDMARKING_MODEL_PATH = 'hand_landmarking_model.task'
@@ -108,10 +108,13 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
 
             # Write the hand landmarks
             hand_landmarks_buffer.seek(0)
-            for landmark in left:
-                hand_landmarks_buffer.write(struct.pack('<f<f<f', landmark["x"], landmark["y"], landmark["z"]))
-            for landmark in right:
-                hand_landmarks_buffer.write(struct.pack('<f<f<f', landmark["x"], landmark["y"], landmark["z"]))
+            for hand in (left, right):
+                if hand is None:
+                    for i in range(21):
+                        hand_landmarks_buffer.write(struct.pack('<f<f<f', 0, 0, 0))
+                else:
+                    for landmark in hand:
+                        hand_landmarks_buffer.write(struct.pack('<f<f<f', landmark["x"], landmark["y"], landmark["z"]))
 
             # Signal that frame has been processed
             win32event.SetEvent(done_event)
