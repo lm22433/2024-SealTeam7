@@ -4,6 +4,7 @@ import threading
 import time
 import traceback
 from typing import Optional
+from contextlib import contextmanager
 
 import cv2
 import mediapipe as mp
@@ -20,7 +21,7 @@ PORT = 65465
 MOCK_KINECT = False
 """Mock the Kinect camera using OpenCV to read from a webcam"""
 
-VISUALISE_INFERENCE_RESULTS = True
+VISUALISE_INFERENCE_RESULTS = False
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
 stop_server = False
@@ -32,6 +33,13 @@ color_image = np.zeros((1080, 1920, 4), dtype=np.uint8)
 depth_image = np.zeros((1080, 1920), dtype=np.uint16)
 image_lock = threading.Lock()
 
+
+@contextmanager
+def timer(name):
+    start = time.time()
+    yield
+    end = time.time()
+    print(f"{name} took {int((end - start)*1000)} ms")
 
 
 def object_detector_callback(result, output_image, timestamp_ms):
@@ -82,8 +90,6 @@ def inference_frame(hand_landmarker, frame, depth):
                       for landmark in landmarks] if landmarks is not None else None
             
     # determine depth of each hand
-    print(left)
-    print(right)
     left_depth = float(depth[int(left[0]["z"]), int(left[0]["x"])]) if left is not None else None
     right_depth = float(depth[int(right[0]["z"]), int(right[0]["x"])]) if right is not None else None
 
@@ -152,7 +158,7 @@ def inference_connection(conn):
             try:
                 # Check if any control signals in buffer
                 try:
-                    print("[inference_connection] conn.recv()")
+                    # print("[inference_connection] conn.recv()")
                     message = conn.recv(1024).decode()
                     print(f"[inference_connection] Received message: {message}")
                     if message == "START":
@@ -184,8 +190,9 @@ def inference_connection(conn):
                         frame = color_image.copy()
                         depth = depth_image.copy()
                         image_lock.release()
-
-                    data = inference_frame(hand_landmarker, frame, depth)
+                    
+                    with timer("inference_frame"):
+                        data = inference_frame(hand_landmarker, frame, depth)
                     data_json = json.dumps(data)
                     try:
                         conn.send(data_json.encode())

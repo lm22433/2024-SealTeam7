@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
 using Python;
+using Debug = UnityEngine.Debug;
 
 namespace Map
 {
@@ -136,14 +138,30 @@ namespace Map
             {
                 //if (!GameManager.GetInstance().IsGameActive()) continue;
                 
-                try {
+                try
+                {
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
                     using Capture capture = _kinect.GetCapture();
+                    stopwatch.Stop();
+                    Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
+                    
                     // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
                     _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
+                    
+                    stopwatch.Restart();
                     UpdateHeightMap(capture, PythonManager.HandLandmarks);
+                    stopwatch.Stop();
+                    Debug.Log($"UpdateHeightMap: {stopwatch.ElapsedMilliseconds} ms");
+                    
                     UpdateHandLandmarks(PythonManager.HandLandmarks, PythonManager.LeftHandDepth, 
                         PythonManager.RightHandDepth);
+                    
+                    stopwatch.Restart();
                     PythonManager.SendColorImage(capture.Color, _transformedDepthImage);
+                    stopwatch.Stop();
+                    Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
+                    
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
@@ -285,7 +303,7 @@ namespace Map
 
         private void UpdateHandLandmarks(HandLandmarks handLandmarks, float? leftHandDepth, float? rightHandDepth)
         {
-            Debug.Log($"Hand landmarks before: {handLandmarks}");
+            // Debug.Log($"Hand landmarks before: {handLandmarks}");
             var depthRange = _maximumSandDepth - _minimumSandDepth;
             var offsetLeft = new Vector3();
             var offsetRight = new Vector3();
@@ -311,7 +329,7 @@ namespace Map
                 Right = handLandmarks.Right?.Select(p =>
                     new Vector3(p.x + offsetRight.x, p.y*handYScaling + offsetRight.y, p.z + offsetRight.z)).ToArray()
             };
-            Debug.Log($"Hand landmarks after: {HandLandmarks}");
+            // Debug.Log($"Hand landmarks after: {HandLandmarks}");
         }
     }
 }

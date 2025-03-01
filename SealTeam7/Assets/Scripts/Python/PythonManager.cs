@@ -241,7 +241,6 @@ namespace Python
                         {
                             for (var i = 0; i < 21; i++)
                             {
-                                Debug.Log($"ImageOffsetX: {ImageOffsetX}");
                                 var x = left[i]!["x"]!.ToObject<float>();
                                 x = FlipX ? PythonImageWidth - x + ImageOffsetX : x - ImageOffsetX;
                                 _leftHandLandmarks[i].x = x / ImageScale + ImageCropX;
