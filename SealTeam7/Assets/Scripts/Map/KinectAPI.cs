@@ -142,21 +142,22 @@ namespace Map
                     stopwatch.Stop();
                     Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
                     
-                    // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
-                    _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
-                    
                     stopwatch.Restart();
-                    HandLandmarks = PythonManager2.ProcessFrame(capture.Color);
+                    var hl = PythonManager2.ProcessFrame(capture.Color);
                     stopwatch.Stop();
                     Debug.Log($"PythonManager2.ProcessFrame: {stopwatch.ElapsedMilliseconds} ms");
+                    
+                    _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
+                    UpdateHandLandmarks(hl,  // Saves adjusted hand landmarks to HandLandmarks
+                        leftHandDepth:hl.Left == null ? null : _transformedDepthImage.GetPixel<ushort>(
+                            (int)hl.Left[0].z, (int)hl.Left[0].x), 
+                        rightHandDepth:hl.Right == null ? null : _transformedDepthImage.GetPixel<ushort>(
+                            (int)hl.Right[0].z, (int)hl.Right[0].x));
                     
                     stopwatch.Restart();
                     UpdateHeightMap(capture, HandLandmarks);
                     stopwatch.Stop();
                     Debug.Log($"UpdateHeightMap: {stopwatch.ElapsedMilliseconds} ms");
-                    
-                    // UpdateHandLandmarks(PythonManager2.HandLandmarks, PythonManager2.LeftHandDepth, 
-                    //     PythonManager2.RightHandDepth);
                     
                 } catch (Exception e) {
                     Debug.Log(e);
@@ -168,30 +169,6 @@ namespace Map
 
         private void UpdateHeightMap(Capture capture, HandLandmarks handLandmarks)
         {
-            // var im = new Image<Bgra, byte>(capture.Color.WidthPixels, capture.Color.HeightPixels);
-            // Debug.Log($"capture.Color.WidthPixels: {capture.Color.WidthPixels}, capture.Color.Memory.Span.Length: {capture.Color.Memory.Span.Length}");
-            // for (int y = 0; y < capture.Color.HeightPixels; y++)
-            // {
-            //     for (int x = 0; x < capture.Color.WidthPixels; y++)
-            //     {
-            //         for (int z = 0; z < 4; z++)
-            //         {
-            //             im.Data[y, x, z] = capture.Color.Memory.Span[y * capture.Color.WidthPixels * 4 + x * 4 + z];
-            //         }
-            //     }
-            // }
-            // im.Save("Assets/Scripts/Python/colour.png");
-            // var im2 = new Image<Gray, ushort>(_transformedDepthImage.WidthPixels, _transformedDepthImage.HeightPixels);
-            // for (int y = 0; y < _transformedDepthImage.HeightPixels; y++)
-            // {
-            //     for (int x = 0; x < _transformedDepthImage.WidthPixels; x++)
-            //     {
-            //         im2.Data[y, x, 0] = _transformedDepthImage.Memory.Span[y * _transformedDepthImage.WidthPixels * 2 + x * 2];
-            //         im2.Data[y, x, 1] = _transformedDepthImage.Memory.Span[y * _transformedDepthImage.WidthPixels * 2 + x * 2 + 1];
-            //     }
-            // }
-            // im2.Save("Assets/Scripts/Python/depth.png");
-
             // Raw depth from kinect
             Span<ushort> depthBuffer = _transformedDepthImage.GetPixels<ushort>().Span;
 
@@ -232,7 +209,6 @@ namespace Map
             // var bboxRight = new Rect();
             // if (handLandmarks.Left != null)
             // {
-            //     // TODO the hand landmark coordinates need scaling - either scale them here or in PythonManager
             //     bboxLeft.xMin = handLandmarks.Left.Min(p => p.x) - _xOffsetStart - padding;
             //     bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) - _xOffsetStart + padding;
             //     bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - _yOffsetStart - padding;
@@ -282,7 +258,6 @@ namespace Map
             
             // Gaussian blur
             // CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, new System.Drawing.Size(31, 31), 15);
-            _maskedHeightImage.CopyTo(_tmpImage);
 
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
@@ -301,21 +276,21 @@ namespace Map
             var depthRange = _maximumSandDepth - _minimumSandDepth;
             var offsetLeft = new Vector3();
             var offsetRight = new Vector3();
-            var wristYOffset = 0f;
+            const float wristYOffset = 0f;
             if (leftHandDepth.HasValue)
             {
-                offsetLeft = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetLeft = new Vector3(true ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - leftHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
             if (rightHandDepth.HasValue)
             {
-                offsetRight = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetRight = new Vector3(true ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
 
-            var handYScaling = 3f;
+            const float handYScaling = 3f;
             HandLandmarks = new HandLandmarks
             {
                 Left = handLandmarks.Left?.Select(p => 

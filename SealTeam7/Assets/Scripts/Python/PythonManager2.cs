@@ -1,10 +1,7 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.IO.MemoryMappedFiles;
-using System.Runtime.InteropServices;
 using System.Threading;
-using Emgu.CV;
 using Microsoft.Azure.Kinect.Sensor;
 using Microsoft.Win32.SafeHandles;
 using UnityEngine;
@@ -12,9 +9,8 @@ using Debug = UnityEngine.Debug;
 
 namespace Python
 {
-    public class PythonManager2
+    public static class PythonManager2
     {
-        public static bool FlipX { get; set; } = true;
         public static bool FlipHandedness { get; set; } = false;
         public static HandLandmarks HandLandmarks => _handLandmarks;
         

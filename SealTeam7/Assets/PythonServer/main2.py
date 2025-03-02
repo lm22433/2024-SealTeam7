@@ -25,7 +25,7 @@ DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
 
 OBJECT_DETECTION_MODEL_PATH = 'object_detection_model.tflite'
 HAND_LANDMARKING_MODEL_PATH = 'hand_landmarking_model.task'
-VISUALISE_INFERENCE_RESULTS = False
+VISUALISE_INFERENCE_RESULTS = True
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
 @contextmanager
@@ -58,9 +58,6 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
         while True:
             # Wait for new frame
             result = win32event.WaitForSingleObject(ready_event, win32event.INFINITE)
-            if result != win32event.WAIT_OBJECT_0:
-                print("Error: Sender not responding")
-                break
 
             # Read the frame
             with timer("Reading frame"):
