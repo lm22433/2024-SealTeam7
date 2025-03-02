@@ -69,8 +69,9 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                     (COLOUR_IMAGE_FULL_HEIGHT, COLOUR_IMAGE_FULL_WIDTH, COLOUR_IMAGE_NUM_CHANNELS))
 
             # Perform hand landmarking
-            with timer("Hand landmarking"):
+            with timer("Creating mp image"):
                 mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=colour_image_data)
+            with timer("Hand landmarking"):
                 hand_landmarking_result = hand_landmarker.detect_for_video(mp_image, int(time.monotonic()*1000))
 
             # determine handedness and scale to pixel coordinates
