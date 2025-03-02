@@ -33,6 +33,8 @@ namespace Enemies
         protected PlayerDamageable Target;
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;
+        protected Vector3[] Path;
+        protected int PathIndex;
 
         protected virtual void Start()
         {
@@ -45,6 +47,9 @@ namespace Enemies
             Target = EnemyManager.godlyCore;
             TargetRotation = transform.rotation;
             TargetDirection = transform.forward;
+            
+            
+            PathFind();
         }
 
         public void Die()
@@ -94,6 +99,12 @@ namespace Enemies
             }
         }
 
+        private void PathFind()
+        {
+            Path = EnemyManager.GetPath(transform.position, Target.transform.position);
+            PathIndex = 0;
+        }
+
         private void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
@@ -107,6 +118,7 @@ namespace Enemies
             UpdateState();
             UpdateTarget();
             LimitSpeed();
+            // PathFind();
             
             EnemyUpdate();
         }

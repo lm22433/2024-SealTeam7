@@ -1,5 +1,7 @@
 ﻿using System;
+using Enemies.Utils;
 using Game;
+using Map;
 using Player;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -31,6 +33,7 @@ namespace Enemies
         private float _lastSpawn;
         private int _enemyCount;
         private float _spawnInterval;
+        private Node[] _map;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
 
@@ -55,6 +58,11 @@ namespace Enemies
         {
             _spawnInterval = difficulty.spawnInterval;
             _enemyTypes = difficulty.enemies;
+        }
+
+        public Vector3[] GetPath(Vector3 position, Vector3 target)
+        {
+            return MapManager.GetInstance().FindPath(position, target);
         }
 
         private void SpawnEnemies()

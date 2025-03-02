@@ -613,6 +613,7 @@ MonoBehaviour:
   isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
+  updatePath: 0
   takeSnapshot: 0
   texture: {fileID: 0}
 --- !u!114 &689466560 stripped
@@ -1377,7 +1378,7 @@ Transform:
   m_GameObject: {fileID: 1884077985}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 240, y: 50, z: 240}
+  m_LocalPosition: {x: 91.29, y: 50, z: 110.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1434,11 +1435,11 @@ MonoBehaviour:
   survivalBonusScore: 500
   difficulties:
   - index: 0
-    duration: 20
+    duration: 120
     spawnInterval: 5
     enemies:
     - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-      groupSize: 5
+      groupSize: 1
       spawnChance: 1
     - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
       groupSize: 2
@@ -1528,9 +1529,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoints:
   - {fileID: 207832236}
-  - {fileID: 2136277956}
-  - {fileID: 553266628}
-  - {fileID: 393166120}
   spawnGroupSpacing: 20
   maxEnemyCount: 200
   maxEnemyDistance: 600

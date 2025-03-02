@@ -27,8 +27,12 @@ namespace Enemies
                 }
             }
             
-            TargetRotation = Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position);
-            TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
+            //TargetRotation = Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position);
+            //TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
+            
+            if ((transform.position - Path[PathIndex]).sqrMagnitude < 0.2f) PathIndex++;
+            TargetDirection = Path[PathIndex] - transform.position;
+            TargetRotation = Quaternion.LookRotation(new Vector3(TargetDirection.x, 0f, TargetDirection.z));
             
             _lastAttack += Time.deltaTime;
         }
