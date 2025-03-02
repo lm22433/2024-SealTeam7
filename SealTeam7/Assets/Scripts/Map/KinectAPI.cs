@@ -128,11 +128,7 @@ namespace Map
         
         private void GetCaptureTask()
         {
-            // Initialise Python stuff - this blocks for 5-10s
-            PythonManager.Connect();
-            Thread.Sleep(1000);
-            PythonManager.StartInference();
-            
+            PythonManager2.Initialize();
             
             while (_running)
             {
@@ -150,26 +146,24 @@ namespace Map
                     _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
                     
                     stopwatch.Restart();
-                    UpdateHeightMap(capture, PythonManager.HandLandmarks);
+                    HandLandmarks = PythonManager2.ProcessFrame(capture.Color);
+                    stopwatch.Stop();
+                    Debug.Log($"PythonManager2.ProcessFrame: {stopwatch.ElapsedMilliseconds} ms");
+                    
+                    stopwatch.Restart();
+                    UpdateHeightMap(capture, HandLandmarks);
                     stopwatch.Stop();
                     Debug.Log($"UpdateHeightMap: {stopwatch.ElapsedMilliseconds} ms");
                     
-                    UpdateHandLandmarks(PythonManager.HandLandmarks, PythonManager.LeftHandDepth, 
-                        PythonManager.RightHandDepth);
-                    
-                    stopwatch.Restart();
-                    PythonManager.SendColorImage(capture.Color, _transformedDepthImage);
-                    stopwatch.Stop();
-                    Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
+                    // UpdateHandLandmarks(PythonManager2.HandLandmarks, PythonManager2.LeftHandDepth, 
+                    //     PythonManager2.RightHandDepth);
                     
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
             }
             
-            PythonManager.StopInference();
-            Thread.Sleep(1000);
-            PythonManager.Disconnect();
+            PythonManager2.Dispose();
         }
 
         private void UpdateHeightMap(Capture capture, HandLandmarks handLandmarks)
@@ -310,13 +304,13 @@ namespace Map
             var wristYOffset = 0f;
             if (leftHandDepth.HasValue)
             {
-                offsetLeft = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetLeft = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - leftHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
             if (rightHandDepth.HasValue)
             {
-                offsetRight = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetRight = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
