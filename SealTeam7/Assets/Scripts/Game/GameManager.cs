@@ -115,7 +115,7 @@ namespace Game
             if (!_gameActive) throw new Exception("Game has not started yet, how can it end dummy?");
 
             _score += completionBonusScore;
-            Debug.Log("Completion Bonus! +1000 points");
+            Debug.Log($"Completion Bonus! +{completionBonusScore} points");
             
             _gameActive = false;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
