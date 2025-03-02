@@ -279,13 +279,13 @@ namespace Map
             const float wristYOffset = 0f;
             if (leftHandDepth.HasValue)
             {
-                offsetLeft = new Vector3(true ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetLeft = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - leftHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
             if (rightHandDepth.HasValue)
             {
-                offsetRight = new Vector3(true ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetRight = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }

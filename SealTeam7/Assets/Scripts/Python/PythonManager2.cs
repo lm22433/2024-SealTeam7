@@ -11,6 +11,7 @@ namespace Python
 {
     public static class PythonManager2
     {
+        public static bool FlipX { get; set; } = true;
         public static bool FlipHandedness { get; set; } = false;
         public static HandLandmarks HandLandmarks => _handLandmarks;
         
@@ -21,16 +22,18 @@ namespace Python
         private const string ReadyEventName = "SealTeam7ColourImageReady";
         private const string DoneEventName = "SealTeam7HandLandmarksDone";
 
-        private static MemoryMappedFile _colourImageBuffer;
-        private static MemoryMappedFile _handLandmarksBuffer;
+        private static MemoryMappedFile _colourImageMemory;
+        private static MemoryMappedFile _handLandmarksMemory;
         private static MemoryMappedViewAccessor _colourImageViewAccessor;
         private static SafeMemoryMappedViewHandle _colourImageViewHandle;
-        private static MemoryMappedViewStream _handLandmarksBufferStream;
+        private static MemoryMappedViewAccessor _handLandmarksViewAccessor;
+        private static SafeMemoryMappedViewHandle _handLandmarksViewHandle;
         private static EventWaitHandle _readyEvent;
         private static EventWaitHandle _doneEvent;
-        private static HandLandmarks _handLandmarks;
+        private static HandLandmarks _handLandmarks;  // Sometimes has a reference to _left/rightHandLandmarks
         private static Vector3[] _leftHandLandmarks;
         private static Vector3[] _rightHandLandmarks;
+        private static Vector3[] _handLandmarksBuffer;  // Temporary buffer for reading hand landmarks
 
         public static void Initialize()
         {
@@ -46,16 +49,18 @@ namespace Python
                 // }
     
                 // Then try with MemoryMappedFile with size parameter set to 0
-                _colourImageBuffer = MemoryMappedFile.OpenExisting(ColourImageFileName, MemoryMappedFileRights.Write);
-                _handLandmarksBuffer = MemoryMappedFile.OpenExisting(HandLandmarksFileName, MemoryMappedFileRights.Read);
-                _colourImageViewAccessor = _colourImageBuffer.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Write);
+                _colourImageMemory = MemoryMappedFile.OpenExisting(ColourImageFileName, MemoryMappedFileRights.Write);
+                _handLandmarksMemory = MemoryMappedFile.OpenExisting(HandLandmarksFileName, MemoryMappedFileRights.Read);
+                _colourImageViewAccessor = _colourImageMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Write);
                 _colourImageViewHandle = _colourImageViewAccessor.SafeMemoryMappedViewHandle;
-                _handLandmarksBufferStream = _handLandmarksBuffer.CreateViewStream(0, 0, MemoryMappedFileAccess.Read);
+                _handLandmarksViewAccessor = _handLandmarksMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
+                _handLandmarksViewHandle = _handLandmarksViewAccessor.SafeMemoryMappedViewHandle;
                 _readyEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ReadyEventName);
                 _doneEvent = new EventWaitHandle(false, EventResetMode.AutoReset, DoneEventName);
                 _handLandmarks = new HandLandmarks();
                 _leftHandLandmarks = new Vector3[21];
                 _rightHandLandmarks = new Vector3[21];
+                _handLandmarksBuffer = new Vector3[21];
             }
             catch (Exception ex) {
                 Debug.LogError($"{ex.GetType().Name}: {ex.Message}");
@@ -97,10 +102,38 @@ namespace Python
             
             // Read the hand landmarks from the memory mapped file
             stopwatch.Restart();
-            _handLandmarksBufferStream.SafeMemoryMappedViewHandle.ReadArray(0, _leftHandLandmarks, 0, 21);
-            _handLandmarksBufferStream.SafeMemoryMappedViewHandle.ReadArray(21*3*4, _rightHandLandmarks, 0, 21);
-            _handLandmarks.Left = _leftHandLandmarks[0].x == 0f ? null : _leftHandLandmarks;
-            _handLandmarks.Right = _rightHandLandmarks[0].x == 0f ? null : _rightHandLandmarks;
+            _handLandmarksViewHandle.ReadArray(0, _handLandmarksBuffer, 0, 21);
+            if (_handLandmarksBuffer[0].x == 0f)
+            {
+                _handLandmarks.Left = null;
+            }
+            else
+            {
+                for (var i = 0; i < 21; i++)
+                {
+                    _leftHandLandmarks[i].x =
+                        FlipX ? PythonImageWidth - _handLandmarksBuffer[i].x : _handLandmarksBuffer[i].x;
+                    _leftHandLandmarks[i].y = _handLandmarksBuffer[i].y;
+                    _leftHandLandmarks[i].z = _handLandmarksBuffer[i].z;
+                }
+                _handLandmarks.Left = _leftHandLandmarks;
+            }
+            _handLandmarksViewHandle.ReadArray(21*3*4, _handLandmarksBuffer, 0, 21);
+            if (_handLandmarksBuffer[0].x == 0f)
+            {
+                _handLandmarks.Right = null;
+            }
+            else
+            {
+                for (var i = 0; i < 21; i++)
+                {
+                    _rightHandLandmarks[i].x =
+                        FlipX ? PythonImageWidth - _handLandmarksBuffer[i].x : _handLandmarksBuffer[i].x;
+                    _rightHandLandmarks[i].y = _handLandmarksBuffer[i].y;
+                    _rightHandLandmarks[i].z = _handLandmarksBuffer[i].z;
+                }
+                _handLandmarks.Right = _rightHandLandmarks;
+            }
             stopwatch.Stop();
             Debug.Log($"Reading hand landmarks from memory mapped file: {stopwatch.ElapsedMilliseconds} ms");
 
@@ -111,9 +144,10 @@ namespace Python
         {
             _colourImageViewHandle.Dispose();
             _colourImageViewAccessor.Dispose();
-            _handLandmarksBufferStream.Dispose();
-            _colourImageBuffer.Dispose();
-            _handLandmarksBuffer.Dispose();
+            _handLandmarksViewHandle.Dispose();
+            _handLandmarksViewAccessor.Dispose();
+            _colourImageMemory.Dispose();
+            _handLandmarksMemory.Dispose();
             _readyEvent.Dispose();
             _doneEvent.Dispose();
         }
