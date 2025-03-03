@@ -9,8 +9,8 @@ namespace Enemies
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem deathParticles;
         [SerializeField] private ParticleSystem gunEffects;
-        private float _lastAttack;
-        
+        private float _lastAttack;      
+
         protected override void Attack(PlayerDamageable target)
         {
             target?.TakeDamage(attackDamage);
@@ -64,13 +64,25 @@ namespace Enemies
                     }
                     break;
                 }
+                case EnemyState.Dying:
+                {
+					var x = transform.position.x;
+					var z = transform.position.z;
+					transform.position = new Vector3(x, _mapManager.GetHeight(x, z)-buried, z);
+                    break;
+                }
             }
         }
 
+		public override void SetupDeath()
+		{
+			deathParticles.Play();
+			State = EnemyState.Dying;
+		}
+
         public override void Die()
         {
-            deathParticles.Play();
-            base.Die();
+			base.Die();
         }
     }
 }

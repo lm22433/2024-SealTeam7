@@ -1,4 +1,5 @@
 using Game;
+using Map;
 using Player;
 using UnityEngine;
 
@@ -8,7 +9,8 @@ namespace Enemies
     {
         Moving,
         AttackCore,
-        AttackHands
+        AttackHands,
+        Dying
     }
 
     public enum Target
@@ -26,6 +28,7 @@ namespace Enemies
         [SerializeField] protected float stopShootingThreshold;
         [SerializeField] protected int attackDamage;
         [SerializeField] protected int killScore;
+        protected MapManager _mapManager;
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
@@ -33,10 +36,14 @@ namespace Enemies
         protected PlayerDamageable Target;
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;
+		protected float deathDuration = 2.0f;
+		public float buried = 0.0f;
+		public float buriedAmount = 1.0f;
 
         protected virtual void Start()
         {
             EnemyManager = EnemyManager.GetInstance();
+			_mapManager = FindFirstObjectByType<MapManager>();
             Rb = GetComponent<Rigidbody>();
 
             SqrAttackRange = attackRange * attackRange;
@@ -53,12 +60,18 @@ namespace Enemies
             Destroy(gameObject);
         }
 
+		public virtual void SetupDeath()
+		{
+			State = EnemyState.Dying;
+		}
+
         protected abstract void Attack(PlayerDamageable target);
         protected virtual void EnemyUpdate() {}
         protected virtual void EnemyFixedUpdate() {}
         
         private void UpdateState()
         {
+			if(State == EnemyState.Dying) return;
             var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, transform.position.y, EnemyManager.godlyCore.transform.position.z);
             if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
             else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackHands;
@@ -98,6 +111,12 @@ namespace Enemies
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
 
+			if (State == EnemyState.Dying) {
+				
+				deathDuration -= Time.deltaTime;
+				if (deathDuration <= 0.0f) this.Die();
+			}
+
             if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude >
                 EnemyManager.sqrMaxEnemyDistance)
             {
@@ -109,6 +128,7 @@ namespace Enemies
             LimitSpeed();
             
             EnemyUpdate();
+
         }
 
         private void FixedUpdate()
