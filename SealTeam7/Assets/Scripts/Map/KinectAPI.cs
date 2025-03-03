@@ -183,6 +183,12 @@ namespace Map
                     // Max depth is the lowest height, so this is the height normalised to [0, 1]
                     var height = (_maximumSandDepth - depth) / depthRange;
                     _rawHeightImage.Data[y, x, 0] = height;
+                    
+                    // temp for testing
+                    if (depth == 0)
+                    {
+                        _rawHeightImage.Data[y, x, 0] = 0f;
+                    }
 
                     // depth == 0 means kinect wasn't able to get a depth for that pixel
                     // hand masking threshold is now just _minimumSandDepth
