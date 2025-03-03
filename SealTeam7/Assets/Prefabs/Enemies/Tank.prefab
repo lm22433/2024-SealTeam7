@@ -309,6 +309,8 @@ MonoBehaviour:
   stopShootingThreshold: 20
   attackDamage: 2
   killScore: 10
+  buried: 0
+  buriedAmount: 10
   turret: {fileID: 8827629184883852959}
   gun: {fileID: 4181902386754096974}
   deathParticles: {fileID: 6796803004105206313}
@@ -327,8 +329,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityDefiance: 50
   defianceThreshold: 1.5
-  sinkFactor: 10
-  fallDeathRequirement: 5
+  sinkFactor: 2
+  fallDeathRequirement: 10
   self: {fileID: 3925053475800111628}
 --- !u!54 &828698031663403021
 Rigidbody:
@@ -5603,7 +5605,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.10683896, g: 0.30769715, b: 0.91823894, a: 1}
+        key0: {r: 0.10588232, g: 0.4964495, b: 0.91764706, a: 1}
         key1: {r: 0.061468955, g: 0.84301186, b: 0.9308176, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -10516,7 +10518,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -1
+      scalar: 2
       minScalar: 5
       maxCurve:
         serializedVersion: 2

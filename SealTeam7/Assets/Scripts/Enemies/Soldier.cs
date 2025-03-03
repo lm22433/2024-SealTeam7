@@ -14,7 +14,7 @@ namespace Enemies
 		{
 			base.Start();
 			deathDuration = 0.5f;
-			buriedAmount = 0.5f;
+			buriedAmount = 0.25f;
 		}
         
         protected override void Attack(PlayerDamageable target)

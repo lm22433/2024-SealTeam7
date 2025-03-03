@@ -47,7 +47,7 @@ namespace Enemies.FunkyPhysics
             }
 			else if (Rb.linearVelocity.y < 0 && transform.position.y > MapManager.GetHeight(transform.position.x, transform.position.z) + ReasonableGroundedness)
 			{
-				Rb.AddForce(transform.up * -2.0f, ForceMode.Impulse);
+				Rb.AddForce(transform.up * -10.0f, ForceMode.Impulse);
 			}
         }
         

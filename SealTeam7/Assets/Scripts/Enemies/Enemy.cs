@@ -38,7 +38,7 @@ namespace Enemies
         protected Vector3 TargetDirection;
 		protected float deathDuration = 2.0f;
 		public float buried = 0.0f;
-		public float buriedAmount = 1.0f;
+		public float buriedAmount = 0.5f;
 
         protected virtual void Start()
         {
