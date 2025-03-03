@@ -11,6 +11,7 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float sinkFactor;
         [SerializeField] protected float fallDeathRequirement;
         [SerializeField] protected Enemy self;
+        [SerializeField] protected ParticleSystem _sandFall;
         protected float ReasonableGroundedness = 0.6f;
         protected MapManager MapManager;
         protected EnemyManager EnemyManager;
@@ -39,6 +40,7 @@ namespace Enemies.FunkyPhysics
             {
                 Physics.Raycast(transform.position, Vector3.down, out var hit, ReasonableGroundedness * 2.0f);
                 Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
+                _sandFall.Play();
             }
             else if (-Rb.linearVelocity.y >= fallDeathRequirement && transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z) + ReasonableGroundedness)
             {

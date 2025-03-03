@@ -4,7 +4,6 @@ namespace Enemies.FunkyPhysics
 {
     public class TankPhysics : BasePhysics
     {
-
 		private bool _exploded = false;
 
         protected override void Start()
