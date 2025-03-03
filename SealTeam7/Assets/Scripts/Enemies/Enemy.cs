@@ -137,5 +137,10 @@ namespace Enemies
             
             EnemyFixedUpdate();
         }
+
+		public bool IsDying()
+		{
+			return State == EnemyState.Dying;
+		}
     }
 }
