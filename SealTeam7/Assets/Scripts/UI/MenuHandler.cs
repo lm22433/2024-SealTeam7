@@ -19,7 +19,7 @@ namespace Game
     {
         [Header("Game Settings")]
         [SerializeField] private DifficultyProfile[] difficulties;
-        [SerializeField] private int currentDifficulty = 0;
+        [SerializeField] private int currentDifficulty;
         [SerializeField, Range(0f, 600f)] private int maxGameDuration = 600;
         [SerializeField] private int currentDuration = 180;
 
@@ -31,7 +31,7 @@ namespace Game
         [SerializeField] private Slider _durationSlider;
         [SerializeField] private TMP_Text _durationSliderText;
 
-        private bool pauseGame = false;
+        private bool _paused;
 
         private void Awake() {
 
@@ -42,12 +42,12 @@ namespace Game
         void Update()
         {
             if (Input.GetKeyDown("escape")) {
-                pauseGame = !pauseGame;
-                GameManager.GetInstance().GameActive = !pauseGame;
-                Time.timeScale = (pauseGame) ? 0 : 1;
+                _paused = !_paused;
+                GameManager.GetInstance().GameActive = !_paused;
+                Time.timeScale = (_paused) ? 0 : 1;
                 
-                if (pauseGame) {
-                    onSettingButtonClicked();
+                if (_paused) {
+                    OnSettingButtonClicked();
                 } else{
                     _settingsMenu.SetActive(false);
                 }
@@ -76,7 +76,6 @@ namespace Game
             _difficultyDropdown.onValueChanged.AddListener(evt =>
             {
                 currentDifficulty = _difficultyDropdown.value;
-                GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficulties);
             });
 
             _durationSlider.maxValue = maxGameDuration;
@@ -93,7 +92,8 @@ namespace Game
 
         }
 
-        public void onPlayButtonClicked() {
+        public void OnPlayButtonClicked() {
+            GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficulties);
             GameManager.GetInstance().StartGame();
 
             _mainMenu.SetActive(false);
@@ -101,20 +101,20 @@ namespace Game
 
         }
 
-        public void onSettingButtonClicked() {
+        public void OnSettingButtonClicked() {
             _mainMenu.SetActive(false);
             _settingsMenu.SetActive(true);
 
             InitialiseSettings();
         }
 
-        public void offSettingButtonClicked() {
+        public void OnSettingButtonClickedOff() {
             _mainMenu.SetActive(true);
             _settingsMenu.SetActive(false);
 
         }
 
-        public void onExitButtonClicked() {
+        public void OnExitButtonClicked() {
             Application.Quit();
         }
     }

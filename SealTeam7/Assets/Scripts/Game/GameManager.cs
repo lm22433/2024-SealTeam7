@@ -26,9 +26,6 @@ namespace Game
         [SerializeField] private int completionBonusScore = 1000;
         [SerializeField] private float survivalBonusInterval = 30f;
         [SerializeField] private int survivalBonusScore = 500;
-        
-        [Header("Difficulty Settings")]
-        [SerializeField] private Difficulty[] difficulties;
 
         [Header("UI objects")]
         [SerializeField] private TMP_Text scoreText;
@@ -43,6 +40,7 @@ namespace Game
         private int _score;
         private int _health;
         private Difficulty _difficulty;
+        private Difficulty[] _difficulties;
         
         private float _lastSurvivalBonusTime;
         private float _lastDamageTime;
@@ -53,7 +51,6 @@ namespace Game
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
 
-            _difficulty = difficulties[0];
             _health = maxHealth;
         }
 
@@ -65,9 +62,9 @@ namespace Game
 
             if (Time.time - _lastDifficultyIncrease >= _difficulty.durationPercentage * gameDuration)
             {
-                if (_difficulty.index < difficulties.Length - 1)
+                if (_difficulty.index < _difficulties.Length - 1)
                 {
-                    _difficulty = difficulties[_difficulty.index + 1];
+                    _difficulty = _difficulties[_difficulty.index + 1];
                     EnemyManager.GetInstance().SetDifficulty(_difficulty);
                     _lastDifficultyIncrease = Time.time;
                     Debug.Log($"Difficulty increased! Current difficulty: {_difficulty.index}");   
@@ -86,17 +83,20 @@ namespace Game
             UIUpdate();
         }
 
-        private void UIUpdate() {
+        private void UIUpdate()
+        {
             scoreText.SetText($"Score: {_score}");
             var seconds = (_timer % 60 < 10) ? $"0{(int) (_timer % 60)}" : $"{(int) (_timer % 60)}";
             timerText.SetText($"{(int) _timer / 60}:{seconds}");
 
-            healthBar.transform.localScale = new Vector3((float)_health / (float)maxHealth, 1, 1);
+            healthBar.transform.localScale = new Vector3((float) _health / maxHealth, 1, 1);
         }
 
         public void StartGame()
         {
             EnemyManager.GetInstance().KillAllEnemies();
+            _difficulty = _difficulties[0];
+            EnemyManager.GetInstance().SetDifficulty(_difficulty);
             
             GameActive = true;
             _timer = gameDuration;
@@ -107,8 +107,6 @@ namespace Game
             
             Debug.Log("Game started!");
         }
-
-
         
         private void EndGame()
         {
@@ -158,20 +156,12 @@ namespace Game
 			_score += score;
         }
 
-        public void SetDifficulty(Difficulty[] difficulty) {
-            difficulties = difficulty;
-            EnemyManager.GetInstance().SetDifficulty(difficulties[0]);
-        }
-
-        public void SetGameDuration(int time) {
-            gameDuration = time;
-        }
+        public void SetDifficulty(Difficulty[] difficulties) => _difficulties = difficulties;
+        public void SetGameDuration(int time) => gameDuration = time;
         
         public static GameManager GetInstance() => _instance;
         public bool IsGameActive() => GameActive;
-
         public float GetTimer() => _timer;
         public int GetScore() => _score;
-        public Difficulty GetInitialDifficulty() => difficulties[0];
     }
 }
