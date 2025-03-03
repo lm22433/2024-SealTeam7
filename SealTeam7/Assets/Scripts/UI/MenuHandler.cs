@@ -16,15 +16,19 @@ namespace Game
 
     public class MenuHandler : MonoBehaviour
     {
-        [Header("Difficulty Settings")]
+        [Header("Game Settings")]
         [SerializeField] private DifficultyProfile[] difficulties;
         [SerializeField] private int currentDifficulty = 0;
+        [SerializeField, Range(0f, 600f)] private int maxGameDuration = 600;
+        [SerializeField] private int currentDuration = 180;
 
         [Header("UI containers")]
         [SerializeField] private GameObject _settingsMenu;
         [SerializeField] private GameObject _mainMenu;
         [SerializeField] private GameObject _scoreUI;
         [SerializeField] private TMP_Dropdown _difficultyDropdown;
+        [SerializeField] private Slider _durationSlider;
+        [SerializeField] private TMP_Text _durationSliderText;
 
         private void Awake() {
             GameManager.GetInstance().GameActive = false;
@@ -51,6 +55,18 @@ namespace Game
             {
                 currentDifficulty = _difficultyDropdown.value;
                 GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficulties);
+            });
+
+            _durationSlider.maxValue = maxGameDuration;
+            _durationSlider.value = currentDuration;
+            _durationSlider.onValueChanged.AddListener(evt =>
+            {
+                currentDuration = (int) _durationSlider.value;
+
+                var seconds = (currentDuration % 60 < 10) ? $"0{(int) (currentDuration % 60)}" : $"{(int) (currentDuration % 60)}";
+                _durationSliderText.SetText($"{(int) currentDuration / 60}:{seconds}");
+                
+                GameManager.GetInstance().SetGameDuration(currentDuration);
             });
 
         }
