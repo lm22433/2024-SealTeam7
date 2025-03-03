@@ -9,7 +9,7 @@ namespace Game
     public struct Difficulty
     {
         public int index;
-        public float duration;
+        public float durationPercentage;
         public float spawnInterval;
         public EnemyData[] enemies;
     }
@@ -37,7 +37,7 @@ namespace Game
         [SerializeField] private TMP_Text gameoverScoreText;
 
         private static GameManager _instance;
-        private bool _gameActive;
+        public bool GameActive {get; set;}
         private float _timer;
 		private int _totalKills;
         private int _score;
@@ -55,17 +55,15 @@ namespace Game
 
             _difficulty = difficulties[0];
             _health = maxHealth;
-
-            StartGame();
         }
 
         private void Update()
         {
-            if (!_gameActive) return;
+            if (!GameActive) return;
             
             _timer -= Time.deltaTime;
 
-            if (Time.time - _lastDifficultyIncrease >= _difficulty.duration)
+            if (Time.time - _lastDifficultyIncrease >= _difficulty.durationPercentage * gameDuration)
             {
                 if (_difficulty.index < difficulties.Length - 1)
                 {
@@ -98,9 +96,9 @@ namespace Game
 
         public void StartGame()
         {
-            if (_gameActive) throw new Exception("You can't start a game when one is already happening dummy!");
+            if (GameActive) throw new Exception("You can't start a game when one is already happening dummy!");
             
-            _gameActive = true;
+            GameActive = true;
             _timer = gameDuration;
             _score = 0;
 
@@ -112,12 +110,12 @@ namespace Game
         
         private void EndGame()
         {
-            if (!_gameActive) throw new Exception("Game has not started yet, how can it end dummy?");
+            if (!GameActive) throw new Exception("Game has not started yet, how can it end dummy?");
 
             _score += completionBonusScore;
             Debug.Log("Completion Bonus! +1000 points");
             
-            _gameActive = false;
+            GameActive = false;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
 
             gameoverScoreText.SetText($"Score: {_score}");
@@ -126,15 +124,15 @@ namespace Game
 
         private void Die()
         {
-            if (!_gameActive) throw new Exception("Game has not started yet, how have you died dummy!");
+            if (!GameActive) throw new Exception("Game has not started yet, how have you died dummy!");
             
-            _gameActive = false;
+            GameActive = false;
             Debug.Log($"You died! Score: {_score} Total Kills: {_totalKills}");
         }
         
         public void TakeDamage(int damage)
         {
-            if (!_gameActive) throw new Exception("Game has not started yet, how can you take damage dummy?");
+            if (!GameActive) throw new Exception("Game has not started yet, how can you take damage dummy?");
             
             _health -= damage;
             Debug.Log($"Ouch! Took {damage} damage!");
@@ -148,16 +146,26 @@ namespace Game
 
         public void RegisterKill(int score)
         {
-            if (!_gameActive) throw new Exception("Game has not started yet, how have you killed something dummy?");
+            if (!GameActive) throw new Exception("Game has not started yet, how have you killed something dummy?");
             
             Debug.Log($"Killed something! +{score} points");
 
 			_totalKills++;
 			_score += score;
         }
+
+        public void SetDifficulty(Difficulty[] difficulty) {
+            difficulties = difficulty;
+            EnemyManager.GetInstance().SetDifficulty(difficulties[0]);
+        }
+
+        public void SetGameDuration(int time) {
+            gameDuration = time;
+        }
         
         public static GameManager GetInstance() => _instance;
-        public bool IsGameActive() => _gameActive;
+        public bool IsGameActive() => GameActive;
+
         public float GetTimer() => _timer;
         public int GetScore() => _score;
         public Difficulty GetInitialDifficulty() => difficulties[0];

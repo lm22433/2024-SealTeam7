@@ -1,0 +1,20 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/MainMenu.uss?fileID=7433441132597879392&amp;guid=009efadbb2bd0bd4b9c3c085e4939e2e&amp;type=3#MainMenu" />
+    <engine:VisualElement name="Container" enabled="true" class="menu-container">
+        <engine:VisualElement name="ButtonRow" style="flex-grow: 0; width: 100%; height: auto; align-content: auto; flex-direction: row; align-self: auto; margin-top: auto; margin-right: auto; margin-bottom: auto; margin-left: auto; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); flex-shrink: 1;">
+            <engine:Button text="Game" name="Button" class="menu-button" />
+            <engine:Button text="Audio" class="menu-button" />
+            <engine:Button text="Visual" class="menu-button" />
+        </engine:VisualElement>
+        <engine:VisualElement name="Tabs" enabled="false" style="flex-grow: 1;">
+            <engine:VisualElement name="GameSettings" class="settings-tab">
+                <engine:VisualElement name="ScrollableRegion" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); color: rgb(255, 255, 255); margin-top: 0; margin-right: 32px; margin-bottom: 0;">
+                    <engine:VisualElement name="DropdownSetting" class="dropdown-container">
+                        <engine:DropdownField label="&#x9;Difficulty" name="DifficultyDropdown" enabled="true" class="dropdown" style="height: 42px; width: 1480px; -unity-text-outline-color: rgba(0, 0, 0, 0); background-color: rgba(0, 0, 0, 0);" />
+                    </engine:VisualElement>
+                </engine:VisualElement>
+                <engine:Scroller high-value="100" direction="Vertical" value="42" enabled="true" name="Scroller" class="settings-scrollbar" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>
