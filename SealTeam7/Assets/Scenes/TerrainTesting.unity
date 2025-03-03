@@ -352,7 +352,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 594167917}
+  m_Father: {fileID: 1695711131}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &393166121
 MonoBehaviour:
@@ -576,8 +576,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 393166120}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &594167918
@@ -1358,6 +1357,7 @@ Transform:
   - {fileID: 207832236}
   - {fileID: 2136277956}
   - {fileID: 553266628}
+  - {fileID: 393166120}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1752941129
@@ -1872,22 +1872,6 @@ PrefabInstance:
       propertyPath: _scoreUI
       value: 
       objectReference: {fileID: 366592715}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[0].durationPercentage
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].durationPercentage
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].durationPercentage
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].durationPercentage
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5291816572976963037, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2234,37 +2218,6 @@ MonoBehaviour:
   completionBonusScore: 1000
   survivalBonusInterval: 30
   survivalBonusScore: 500
-  difficulties:
-  - index: 0
-    durationPercentage: 0
-    spawnInterval: 5
-    enemies:
-    - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-      groupSize: 5
-      spawnChance: 1
-    - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-      groupSize: 2
-      spawnChance: 0
-  - index: 1
-    durationPercentage: 0
-    spawnInterval: 2
-    enemies:
-    - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-      groupSize: 10
-      spawnChance: 0.5
-    - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-      groupSize: 2
-      spawnChance: 1
-  - index: 1
-    durationPercentage: 0
-    spawnInterval: 2
-    enemies:
-    - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-      groupSize: 15
-      spawnChance: 0.273
-    - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-      groupSize: 5
-      spawnChance: 1
   scoreText: {fileID: 1129775591}
   timerText: {fileID: 689466560}
   healthBar: {fileID: 1046336025}
@@ -2333,7 +2286,6 @@ MonoBehaviour:
   - {fileID: 2136277956}
   - {fileID: 553266628}
   - {fileID: 393166120}
-  spawnGroupSpacing: 20
   maxEnemyCount: 200
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}

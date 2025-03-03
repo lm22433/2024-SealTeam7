@@ -11,6 +11,7 @@ namespace Enemies
     {
         public GameObject prefab;
         public int groupSize;
+        public float groupSpacing;
         [Range(0, 1)] public float spawnChance;
     }
 
@@ -18,7 +19,6 @@ namespace Enemies
     {
         [Header("Spawn Settings")]
         [SerializeField] private Transform[] spawnPoints;
-        [SerializeField] private float spawnGroupSpacing;
         [SerializeField] private int maxEnemyCount;
         [SerializeField] private float maxEnemyDistance;
 
@@ -40,7 +40,6 @@ namespace Enemies
             else Destroy(gameObject);
             
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
-            SetDifficulty(GameManager.GetInstance().GetInitialDifficulty());
         }
 
         public void Kill(Enemy enemy)
@@ -57,7 +56,8 @@ namespace Enemies
             _enemyTypes = difficulty.enemies;
         }
 
-        public void KillAllEnemies() {
+        public void KillAllEnemies()
+        {
             foreach (Transform child in transform)
             {
                 Destroy(child.gameObject);
@@ -68,9 +68,6 @@ namespace Enemies
         {
             // choose random spawn point
             var spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
-
-            var spawnOffset = Random.onUnitSphere * spawnGroupSpacing;
-            spawnOffset.y = 0f;
             
             foreach (var enemy in _enemyTypes)
             {
@@ -78,6 +75,9 @@ namespace Enemies
 
                 for (int i = 0; i < enemy.groupSize; i++)
                 {
+                    var spawnOffset2D = Random.insideUnitCircle.normalized * enemy.groupSpacing;
+                    var spawnOffset = new Vector3(spawnOffset2D.x, 0f, spawnOffset2D.y);
+                    
                     if (_enemyCount >= maxEnemyCount) continue;
                     Instantiate(enemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);
                     _enemyCount++;
