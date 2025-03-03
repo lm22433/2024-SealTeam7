@@ -34,7 +34,7 @@ namespace Missiles
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
             foreach (Collider hit  in hitColliders)
             {
-                if (hit.TryGetComponent(out PlayerDamageable damageable))
+                if (hit.TryGetComponent(out PlayerHands damageable))
                 {
                     damageable.TakeDamage(explosionDamage);
                 }
