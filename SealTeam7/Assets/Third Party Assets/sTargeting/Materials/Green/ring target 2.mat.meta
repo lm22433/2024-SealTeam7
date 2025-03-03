@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 062e1a8f00f0e0f4ca2164d88a08bcc8
+timeCreated: 1487088163
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 83113
+  packageName: sTargeting
+  packageVersion: 1.0
+  assetPath: Assets/sTargeting/Materials/Green/ring target 2.mat
+  uploadId: 175437

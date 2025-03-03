@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7c00b97146b6f9047b67b5a87aef27c8
+timeCreated: 1487088183
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 83113
+  packageName: sTargeting
+  packageVersion: 1.0
+  assetPath: Assets/sTargeting/Materials/Red/ring target 7.mat
+  uploadId: 175437

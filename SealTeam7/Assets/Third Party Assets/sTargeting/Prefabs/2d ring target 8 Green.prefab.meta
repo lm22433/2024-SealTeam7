@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8a952e8ec7bdf60419ef2088081629bb
+timeCreated: 1487160174
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 83113
+  packageName: sTargeting
+  packageVersion: 1.0
+  assetPath: Assets/sTargeting/Prefabs/2d ring target 8 Green.prefab
+  uploadId: 175437

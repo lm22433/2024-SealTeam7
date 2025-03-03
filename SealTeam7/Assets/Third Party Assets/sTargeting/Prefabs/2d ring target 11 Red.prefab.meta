@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 98414cb793fe9064c995ad0e2b589278
+timeCreated: 1487160086
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 83113
+  packageName: sTargeting
+  packageVersion: 1.0
+  assetPath: Assets/sTargeting/Prefabs/2d ring target 11 Red.prefab
+  uploadId: 175437

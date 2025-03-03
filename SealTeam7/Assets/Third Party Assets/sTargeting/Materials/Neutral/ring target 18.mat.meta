@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c72e50bd0c342ba41a1859a173af7c14
+timeCreated: 1487088271
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 83113
+  packageName: sTargeting
+  packageVersion: 1.0
+  assetPath: Assets/sTargeting/Materials/Neutral/ring target 18.mat
+  uploadId: 175437

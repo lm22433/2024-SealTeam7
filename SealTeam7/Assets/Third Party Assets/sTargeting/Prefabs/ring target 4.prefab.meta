@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 81486691a615d4f42acc5d5ab06896f0
+timeCreated: 1487097357
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 83113
+  packageName: sTargeting
+  packageVersion: 1.0
+  assetPath: Assets/sTargeting/Prefabs/ring target 4.prefab
+  uploadId: 175437
