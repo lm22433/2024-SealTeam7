@@ -160,5 +160,7 @@ namespace Map
                 _noiseGenerator.AdvanceTime(Time.deltaTime);                
             }
         }
+
+        public int GetMapSize() => mapSize;
     }
 }

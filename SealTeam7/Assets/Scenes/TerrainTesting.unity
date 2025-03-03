@@ -300,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31f049bbb64a4ce0b078abaae085b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armour: 0
+  armour: 5
 --- !u!4 &332022280
 Transform:
   m_ObjectHideFlags: 0
@@ -1351,6 +1351,53 @@ Transform:
   - {fileID: 553266628}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1727779073
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1727779075}
+  - component: {fileID: 1727779074}
+  m_Layer: 0
+  m_Name: MissileManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1727779074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1727779073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0a4ab811e24c0383dce57e02f08d8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapManager: {fileID: 594167918}
+  missilePrefab: {fileID: 8363675225984208166, guid: 1765b3b28e6fc413aa7c0289d30f1b55, type: 3}
+  missileDelay: 2
+--- !u!4 &1727779075
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1727779073}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 74.63923, y: 6.92904, z: 58.056976}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1884077985
 GameObject:
   m_ObjectHideFlags: 0
@@ -1397,7 +1444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 154a2adaa336411dafb323224b1bd428, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armour: 5
+  armour: 0
 --- !u!1 &2004182965
 GameObject:
   m_ObjectHideFlags: 0
@@ -1590,6 +1637,7 @@ SceneRoots:
   - {fileID: 2004182967}
   - {fileID: 594167917}
   - {fileID: 2085838829}
+  - {fileID: 1727779075}
   - {fileID: 1695711131}
   - {fileID: 332022280}
   - {fileID: 1884077986}
