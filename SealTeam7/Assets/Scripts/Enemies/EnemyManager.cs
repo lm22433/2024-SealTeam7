@@ -57,6 +57,13 @@ namespace Enemies
             _enemyTypes = difficulty.enemies;
         }
 
+        public void KillAllEnemies() {
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
         private void SpawnEnemies()
         {
             // choose random spawn point

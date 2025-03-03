@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Game
@@ -30,11 +31,32 @@ namespace Game
         [SerializeField] private Slider _durationSlider;
         [SerializeField] private TMP_Text _durationSliderText;
 
+        private bool pauseGame = false;
+
         private void Awake() {
-            GameManager.GetInstance().GameActive = false;
 
             _mainMenu.SetActive(true);
             _settingsMenu.SetActive(false);
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown("escape")) {
+                pauseGame = !pauseGame;
+                GameManager.GetInstance().GameActive = !pauseGame;
+                Time.timeScale = (pauseGame) ? 0 : 1;
+                
+                if (pauseGame) {
+                    onSettingButtonClicked();
+                } else{
+                    _settingsMenu.SetActive(false);
+                }
+
+            }
+
+            if (Input.GetKeyDown("r")) {
+                GameManager.GetInstance().StartGame();
+            }
         }
         
         private void InitialiseSettings() {
@@ -90,6 +112,10 @@ namespace Game
             _mainMenu.SetActive(true);
             _settingsMenu.SetActive(false);
 
+        }
+
+        public void onExitButtonClicked() {
+            Application.Quit();
         }
     }
 }

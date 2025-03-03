@@ -9,7 +9,7 @@ namespace Game
     public struct Difficulty
     {
         public int index;
-        public float durationPercentage;
+        [Range(0f, 1f)] public float durationPercentage;
         public float spawnInterval;
         public EnemyData[] enemies;
     }
@@ -96,7 +96,7 @@ namespace Game
 
         public void StartGame()
         {
-            if (GameActive) throw new Exception("You can't start a game when one is already happening dummy!");
+            EnemyManager.GetInstance().KillAllEnemies();
             
             GameActive = true;
             _timer = gameDuration;
@@ -107,6 +107,8 @@ namespace Game
             
             Debug.Log("Game started!");
         }
+
+
         
         private void EndGame()
         {
@@ -120,6 +122,8 @@ namespace Game
 
             gameoverScoreText.SetText($"Score: {_score}");
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
+
+            EnemyManager.GetInstance().KillAllEnemies();
         }
 
         private void Die()

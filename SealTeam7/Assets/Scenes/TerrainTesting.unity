@@ -310,7 +310,7 @@ Transform:
   m_GameObject: {fileID: 332022278}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40, y: 50, z: 50}
+  m_LocalPosition: {x: 240, y: 50, z: 240}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -604,18 +604,18 @@ MonoBehaviour:
   maximumSandDepth: 1150
   irThreshold: 255
   similarityThreshold: 0.5
-  kernelSize: 10
+  kernelSize: 31
   gaussianStrength: 2
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 480
   chunkRow: 2
   chunkSize: 240
   heightScale: 300
-  lerpFactor: 0.5
+  lerpFactor: 0.4
   lodInfo:
     lod: 1
     colliderLod: 2
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -1872,6 +1872,22 @@ PrefabInstance:
       propertyPath: _scoreUI
       value: 
       objectReference: {fileID: 366592715}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[0].durationPercentage
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].durationPercentage
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].durationPercentage
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].durationPercentage
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5291816572976963037, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
