@@ -8,6 +8,7 @@ namespace Enemies
         [SerializeField] private Transform turret;
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem deathParticles;
+        [SerializeField] private ParticleSystem dustTrail;
         [SerializeField] private ParticleSystem gunEffects;
         private float _lastAttack;      
 
@@ -39,6 +40,11 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     gunEffects.Stop();
+                    if(!dustTrail.isPlaying)
+                    {
+                        if (transform.position.y < _mapManager.GetHeight(transform.position.x, transform.position.z) + 1.0f) dustTrail.Play();
+                        else dustTrail.Stop();
+                    }
                     if (Mathf.Abs(Vector3.Dot(transform.forward, Vector3.up)) < 0.1f) break;
                     Rb.MoveRotation(TargetRotation);
                     Rb.AddForce(TargetDirection * (moveSpeed * 10f));
@@ -46,6 +52,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
+                    dustTrail.Stop();
                     if (_lastAttack > attackInterval)
                     {
                         gunEffects.Play();
@@ -56,6 +63,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
+                    dustTrail.Stop();
                     if (_lastAttack < attackInterval)
                     {
                         gunEffects.Play();
@@ -66,6 +74,7 @@ namespace Enemies
                 }
                 case EnemyState.Dying:
                 {
+                    dustTrail.Stop();
 					var x = transform.position.x;
 					var z = transform.position.z;
 					transform.position = new Vector3(x, _mapManager.GetHeight(x, z)-buried, z);

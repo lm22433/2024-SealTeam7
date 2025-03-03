@@ -20,7 +20,7 @@ namespace Enemies.FunkyPhysics
 				RaycastHit[] objs = Physics.SphereCastAll(transform.position, 50.0f, transform.forward, 1.0f);
                 foreach (var item in objs)
                 {
-                    if(item.rigidbody != null)item.rigidbody.AddForce((item.point-transform.position + (3.0f * Vector3.up)).normalized * 10.0f, ForceMode.Impulse);
+                    if(item.rigidbody != null)item.rigidbody.AddForce((item.point-transform.position + (5.0f * Vector3.up)).normalized * 25.0f, ForceMode.Impulse);
                 }
                 _exploded = true;
 			}
