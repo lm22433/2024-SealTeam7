@@ -300,8 +300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc6c0171c084d7cb202329c32b1c168, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  aimSpeed: 2
+  moveSpeed: 10
+  aimSpeed: 20
   attackRange: 40
   attackInterval: 4
   stopShootingThreshold: 20
@@ -321,10 +321,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7004c134e7a4de2a0ec47e7f6165bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 50
-  defianceThreshold: 1.5
+  gravityDefiance: 20
+  defianceThreshold: 8
   sinkFactor: 10
-  fallDeathRequirement: 5
+  groundedOffset: 4
+  fallDeathVelocityY: 60
   self: {fileID: 3925053475800111628}
 --- !u!54 &828698031663403021
 Rigidbody:
@@ -334,7 +335,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2772852043545815630}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -352,7 +353,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!1 &3011231988329932183
 GameObject:
   m_ObjectHideFlags: 0

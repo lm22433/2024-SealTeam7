@@ -18,16 +18,21 @@ namespace Enemies
             switch (State)
             {
                 case EnemyState.Moving:
-                case EnemyState.AttackCore: break;
+                case EnemyState.AttackCore:
+                {
+                    TargetRotation = Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position), aimSpeed * Time.deltaTime);
+                    gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
+                    break;
+                }
                 case EnemyState.AttackHands:
                 {
                     TargetRotation = Quaternion.LookRotation(Target.transform.position - gun.position);
                     gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
+                    TargetRotation = Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position), aimSpeed * Time.deltaTime);
                     break;
                 }
             }
             
-            TargetRotation = Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position);
             TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
             
             _lastAttack += Time.deltaTime;
@@ -35,7 +40,7 @@ namespace Enemies
 
         protected override void EnemyFixedUpdate()
         {
-            Rb.MoveRotation(TargetRotation);
+            Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime));
                         
             switch (State)
             {

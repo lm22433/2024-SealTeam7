@@ -32,6 +32,7 @@ namespace Game
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private GameObject healthBar;
         [SerializeField] private TMP_Text gameoverScoreText;
+        [SerializeField] private TMP_Text gameoverText;
 
         private static GameManager _instance;
         public bool GameActive {get; set;}
@@ -45,6 +46,7 @@ namespace Game
         private float _lastSurvivalBonusTime;
         private float _lastDamageTime;
         private float _lastDifficultyIncrease;
+        private bool _isGameOver = false; 
         
         private void Awake()
         {
@@ -94,6 +96,7 @@ namespace Game
 
         public void StartGame()
         {
+            _isGameOver = false;
             EnemyManager.GetInstance().KillAllEnemies();
             _difficulty = _difficulties[0];
             EnemyManager.GetInstance().SetDifficulty(_difficulty);
@@ -101,9 +104,12 @@ namespace Game
             GameActive = true;
             _timer = gameDuration;
             _score = 0;
+            _health = maxHealth;
 
             _lastSurvivalBonusTime = Time.time;
             _lastDifficultyIncrease = Time.time;
+
+            gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(false);
             
             Debug.Log("Game started!");
         }
@@ -112,12 +118,16 @@ namespace Game
         {
             if (!GameActive) throw new Exception("Game has not started yet, how can it end dummy?");
 
+            if (_isGameOver) {return;}
+
             _score += completionBonusScore;
             Debug.Log("Completion Bonus! +1000 points");
             
             GameActive = false;
+            _isGameOver = true;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
 
+            gameoverText.SetText("Game over!");
             gameoverScoreText.SetText($"Score: {_score}");
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
 
@@ -130,6 +140,13 @@ namespace Game
             
             GameActive = false;
             Debug.Log($"You died! Score: {_score} Total Kills: {_totalKills}");
+
+            _isGameOver = true;
+            gameoverScoreText.SetText($"Score: {_score}");
+            gameoverText.SetText("You died :(");
+            gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
+
+            EnemyManager.GetInstance().KillAllEnemies();
         }
         
         public void TakeDamage(int damage)

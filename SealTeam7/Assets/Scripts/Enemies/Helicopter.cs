@@ -3,11 +3,14 @@ using UnityEngine;
 
 namespace Enemies
 {
-    public class Tank : Enemy
+    public class Helicopter : Enemy
     {
-        [SerializeField] private Transform turret;
-        [SerializeField] private Transform gun;
+        [SerializeField] float flyHeight;
         private float _lastAttack;
+
+        private void Awake() {
+            transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
+        }
         
         protected override void Attack(PlayerDamageable target)
         {
@@ -16,21 +19,6 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-            if (State == EnemyState.AttackHands)
-            {
-                // gun rotation
-                TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position - gun.position, gun.right), 0f, 0f);
-                gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);   
-            }
-            else
-            {
-                gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
-            }
-            
-            // turret rotation
-            TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(Target.transform.position - turret.position).eulerAngles.y - transform.rotation.eulerAngles.y, 0f);
-            turret.localRotation = Quaternion.Slerp(turret.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
-            
             TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
             TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
             
@@ -39,13 +27,14 @@ namespace Enemies
 
         protected override void EnemyFixedUpdate()
         {
+            if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
+            if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
+            Rb.MoveRotation(TargetRotation);
+            
             switch (State)
             {
                 case EnemyState.Moving:
                 {
-                    // if upside-down / pointing upwards
-                    if (Vector3.Dot(transform.up, Vector3.up) < 0.5f) break;
-                    Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime));
                     Rb.AddForce(TargetDirection * (moveSpeed * 10f));
                     break;
                 }
