@@ -27,7 +27,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Fresnel_Strength: 0.25
+    - _Fresnel_Strength: 0.645
     m_Colors:
     - _Tint: {r: 0.047169805, g: 0.047169805, b: 0.047169805, a: 0}
   m_BuildTextureStacks: []
