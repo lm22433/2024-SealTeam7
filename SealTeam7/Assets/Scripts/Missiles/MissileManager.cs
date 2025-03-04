@@ -10,9 +10,11 @@ namespace Missiles
         [Header("References")] 
         [SerializeField] private MapManager mapManager;
         [SerializeField] private GameObject missilePrefab;
+        [SerializeField] private GameObject targetIndicatorPrefab;
         
         [Header("Settings")]
         [SerializeField] private float missileDelay = 5.0f;
+        [SerializeField] private float missileSpawnHeight = 100.0f;
 
         private void Start()
         {
@@ -29,8 +31,15 @@ namespace Missiles
             float randomX = Random.Range(0f, mapSize);
             float randomZ = Random.Range(0f, mapSize);
             float mapY = mapManager.GetHeight(randomX, randomZ);
-         
-            Instantiate(missilePrefab, new Vector3(randomX, mapY, randomZ), Quaternion.identity);
+            
+            Vector3 targetPosition = new Vector3(randomX, mapY, randomZ);
+            GameObject targetIndicator = 
+                Instantiate(targetIndicatorPrefab, targetPosition, Quaternion.identity, transform);
+
+            Vector3 missilePosition = new Vector3(randomX, mapY + missileSpawnHeight, randomZ);
+            GameObject missile = Instantiate(missilePrefab, missilePosition, Quaternion.identity, transform);
+            
+            missile.GetComponent<Missile>().SetTarget(targetPosition, targetIndicator);
         }
     }
 }

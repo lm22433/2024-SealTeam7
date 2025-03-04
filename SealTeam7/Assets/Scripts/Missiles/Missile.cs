@@ -6,30 +6,36 @@ namespace Missiles
     public class Missile : MonoBehaviour
     {
         [Header("References")] 
-        [SerializeField] private GameObject indicatorPrefab;
         [SerializeField] private ParticleSystem explosionParticleSystem;
         
         [Header("Settings")] 
-        [SerializeField] private float detonationTimer;
+        [SerializeField] private float missileFallSpeed;
         [Header("")]
         [SerializeField] private float explosionRadius;
         [SerializeField] private int explosionDamage;
-
-        private float elapsedTime = 0f;
-
-        private void Start()
+        
+        private Vector3 targetPosition;
+        private GameObject targetIndicator;
+        private bool isFalling = false;
+        
+        public void SetTarget(Vector3 targetPosition, GameObject targetIndicator)
         {
-            Invoke(nameof(Explode), detonationTimer);
+            this.targetPosition = targetPosition;
+            this.targetIndicator = targetIndicator;
+            isFalling = true;
         }
 
         private void Update()
         {
-            elapsedTime += Time.deltaTime;
+            if (!isFalling) return;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, missileFallSpeed * Time.deltaTime);
+            if (Vector3.Distance(transform.position, targetPosition) < 0.1f) Explode();
         }
 
         private void Explode()
         {
-            if (explosionParticleSystem != null) explosionParticleSystem.Play(); 
+            Destroy(targetIndicator);
+            explosionParticleSystem.Play(); 
             
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
             foreach (Collider hit  in hitColliders)
