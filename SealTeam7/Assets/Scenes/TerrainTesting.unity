@@ -535,8 +535,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 584457522}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.25991732, y: 0.2500116, z: -0.069475256, w: -0.93011314}
-  m_LocalPosition: {x: 410.43274, y: 115.77343, z: -32.01629}
+  m_LocalRotation: {x: 0.012289254, y: -0.8420068, z: 0.5389852, w: 0.01919782}
+  m_LocalPosition: {x: 246.67781, y: 707.601, z: 439.54456}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -590,10 +590,10 @@ MonoBehaviour:
   noiseScale: 0.005
   width: 480
   height: 480
-  xOffsetStart: 690
-  xOffsetEnd: 1170
-  yOffsetStart: 260
-  yOffsetEnd: 740
+  xOffsetStart: 700
+  xOffsetEnd: 1180
+  yOffsetStart: 460
+  yOffsetEnd: 940
   minimumSandDepth: 900
   maximumSandDepth: 1150
   irThreshold: 255
@@ -604,7 +604,7 @@ MonoBehaviour:
   mapSize: 480
   chunkRow: 2
   chunkSize: 240
-  heightScale: 250
+  heightScale: 300
   lerpFactor: 1
   lodInfo:
     lod: 1
