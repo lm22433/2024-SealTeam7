@@ -36,7 +36,7 @@ namespace Map
         private Image<Gray, float> _tmpImage;
         
         private readonly Mat _dilationKernel;
-        private readonly System.Drawing.Point _defaultAnchor;
+        private readonly Point _defaultAnchor;
         private readonly MCvScalar _scalarOne;
         private readonly float _heightScale;
         private readonly float _lerpFactor;
@@ -65,7 +65,7 @@ namespace Map
         public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int gaussianKernelRadius, float gaussianKernelSigma)
+                float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int gaussianKernelRadius, float gaussianKernelSigma)
         {
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;

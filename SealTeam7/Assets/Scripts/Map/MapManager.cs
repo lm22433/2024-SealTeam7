@@ -32,16 +32,14 @@ namespace Map
         [Header("")]
         [SerializeField, Range(300f, 2000f)] private ushort minimumSandDepth;
         [SerializeField, Range(600f, 2000f)] private ushort maximumSandDepth;
-        [Header("")]
-        [SerializeField, Range(0, 255f)] private int irThreshold;
-        [Header("")]
-        [SerializeField, Range(0.5f, 1f)] private float similarityThreshold;
 
         [Header("")]
-        [Header("Blur Settings")]
+        [Header("Image Processing Settings")]
         [Header("")]
-        [FormerlySerializedAs("kernelSize")] [SerializeField] private int radius;
-        [FormerlySerializedAs("gaussianStrength")] [SerializeField] private float sigma;
+        [FormerlySerializedAs("kernelSize")] [SerializeField] private int blurRadius;
+        [FormerlySerializedAs("gaussianStrength")] [SerializeField] private float blurSigma;
+        [SerializeField] private float similarityThreshold;
+        [SerializeField] private float lerpFactor;
 
         [Header("")]
         [Header("Map Settings")]
@@ -51,7 +49,6 @@ namespace Map
         [SerializeField] private int chunkRow;
         [SerializeField] private int chunkSize;
         [SerializeField] private float heightScale;
-        [SerializeField] private float lerpFactor;
         [SerializeField] private LODInfo lodInfo;
         
         [Header("")]
@@ -91,7 +88,9 @@ namespace Map
                 ColliderEnabled = colliderEnabled
             };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, radius, sigma);
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, 
+                similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, 
+                blurRadius, blurSigma);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
             for (int z = 0; z < chunkRow; z++)
