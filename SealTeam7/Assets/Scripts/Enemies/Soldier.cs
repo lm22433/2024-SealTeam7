@@ -51,7 +51,7 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     Rb.AddForce(TargetDirection * (moveSpeed * 10f));
-                    gunEffects.Stop();
+                    //gunEffects.Stop();
                     break;
                 }
                 case EnemyState.AttackCore:
@@ -59,7 +59,7 @@ namespace Enemies
                     gunEffects.Stop();
                     if (_lastAttack > attackInterval)
                     {
-                        gunEffects.Play();
+                        if(!gunEffects.isPlaying) gunEffects.Play();
                         Attack(EnemyManager.godlyCore);
                         _lastAttack = 0f;
                     }
@@ -70,7 +70,7 @@ namespace Enemies
                     gunEffects.Stop();
                     if (_lastAttack > attackInterval)
                     {
-                        gunEffects.Play();
+                        if(!gunEffects.isPlaying) gunEffects.Play();
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;
                     }

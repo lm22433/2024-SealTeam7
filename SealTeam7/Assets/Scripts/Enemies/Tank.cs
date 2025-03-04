@@ -55,7 +55,7 @@ namespace Enemies
                     dustTrail.Stop();
                     if (_lastAttack > attackInterval)
                     {
-                        gunEffects.Play();
+                        if(!gunEffects.isPlaying) gunEffects.Play();
                         Attack(EnemyManager.godlyCore);
                         _lastAttack = 0f;
                     }
@@ -66,7 +66,7 @@ namespace Enemies
                     dustTrail.Stop();
                     if (_lastAttack < attackInterval)
                     {
-                        gunEffects.Play();
+                        if(!gunEffects.isPlaying) gunEffects.Play();
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;
                     }
