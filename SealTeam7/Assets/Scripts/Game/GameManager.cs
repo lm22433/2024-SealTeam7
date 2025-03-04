@@ -101,9 +101,12 @@ namespace Game
             GameActive = true;
             _timer = gameDuration;
             _score = 0;
+            _health = maxHealth;
 
             _lastSurvivalBonusTime = Time.time;
             _lastDifficultyIncrease = Time.time;
+
+            gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(false);
             
             Debug.Log("Game started!");
         }

@@ -94,6 +94,8 @@ namespace Game
 
         public void OnPlayButtonClicked() {
             GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficulties);
+            GameManager.GetInstance().SetGameDuration(currentDuration);
+            
             GameManager.GetInstance().StartGame();
 
             _mainMenu.SetActive(false);
