@@ -39,7 +39,7 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
-                    gunEffects.Stop();
+                    //gunEffects.Stop();
                     if(!dustTrail.isPlaying)
                     {
                         if (transform.position.y < _mapManager.GetHeight(transform.position.x, transform.position.z) + 1.0f) dustTrail.Play();
@@ -52,7 +52,6 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
-                    dustTrail.Stop();
                     if (_lastAttack > attackInterval)
                     {
                         if(!gunEffects.isPlaying) gunEffects.Play();
@@ -63,7 +62,6 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
-                    dustTrail.Stop();
                     if (_lastAttack < attackInterval)
                     {
                         if(!gunEffects.isPlaying) gunEffects.Play();

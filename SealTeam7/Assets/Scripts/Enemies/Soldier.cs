@@ -56,7 +56,6 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
-                    gunEffects.Stop();
                     if (_lastAttack > attackInterval)
                     {
                         if(!gunEffects.isPlaying) gunEffects.Play();
@@ -67,7 +66,6 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
-                    gunEffects.Stop();
                     if (_lastAttack > attackInterval)
                     {
                         if(!gunEffects.isPlaying) gunEffects.Play();

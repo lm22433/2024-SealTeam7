@@ -18845,7 +18845,7 @@ ParticleSystem:
       m_Bits: 3072
     maxCollisionShapes: 256
     quality: 1
-    voxelSize: 0.1
+    voxelSize: 5
     collisionMessages: 0
     collidesWithDynamic: 1
     interiorCollisions: 0
