@@ -32,6 +32,7 @@ namespace Game
         [SerializeField] private TMP_Text _durationSliderText;
 
         private bool _paused;
+        private bool _isGameRunning = false;
 
         private void Awake() {
 
@@ -42,21 +43,25 @@ namespace Game
         void Update()
         {
             if (Input.GetKeyDown("escape")) {
-                _paused = !_paused;
-                GameManager.GetInstance().GameActive = !_paused;
-                Time.timeScale = (_paused) ? 0 : 1;
-                
-                if (_paused) {
-                    OnSettingButtonClicked();
-                } else{
-                    _settingsMenu.SetActive(false);
-                }
-
+                PauseGame();
             }
 
             if (Input.GetKeyDown("r")) {
                 GameManager.GetInstance().StartGame();
             }
+        }
+
+        private void PauseGame() {
+            _paused = !_paused;
+            GameManager.GetInstance().GameActive = !_paused;
+            Time.timeScale = (_paused) ? 0 : 1;
+            
+            if (_paused) {
+                OnSettingButtonClicked();
+            } else{
+                _settingsMenu.SetActive(false);
+            }
+                
         }
         
         private void InitialiseSettings() {
@@ -95,11 +100,13 @@ namespace Game
         public void OnPlayButtonClicked() {
             GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficulties);
             GameManager.GetInstance().SetGameDuration(currentDuration);
-            
+
             GameManager.GetInstance().StartGame();
 
             _mainMenu.SetActive(false);
             _scoreUI.SetActive(true);
+
+            _isGameRunning = true;
 
         }
 
@@ -110,9 +117,14 @@ namespace Game
             InitialiseSettings();
         }
 
-        public void OnSettingButtonClickedOff() {
-            _mainMenu.SetActive(true);
-            _settingsMenu.SetActive(false);
+        public void OnBackButtonClicked() {
+            if (_isGameRunning) {
+                PauseGame();
+
+            } else {
+                _mainMenu.SetActive(true);
+                _settingsMenu.SetActive(false);
+            }
 
         }
 
