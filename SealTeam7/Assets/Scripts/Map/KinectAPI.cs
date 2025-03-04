@@ -150,9 +150,9 @@ namespace Map
                     _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
                     UpdateHandLandmarks(hl,  // Saves adjusted hand landmarks to HandLandmarks
                         leftHandDepth:hl.Left == null ? null : _transformedDepthImage.GetPixel<ushort>(
-                            (int)hl.Left[0].z, (int)hl.Left[0].x), 
+                            (int)hl.Left[0].z, 1920 - (int)hl.Left[0].x),  //  
                         rightHandDepth:hl.Right == null ? null : _transformedDepthImage.GetPixel<ushort>(
-                            (int)hl.Right[0].z, (int)hl.Right[0].x));
+                            (int)hl.Right[0].z, 1920 - (int)hl.Right[0].x));
                     
                     stopwatch.Restart();
                     UpdateHeightMap(capture, HandLandmarks);
