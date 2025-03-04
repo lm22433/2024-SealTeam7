@@ -150,7 +150,7 @@ namespace Map
                     _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
                     UpdateHandLandmarks(hl,  // Saves adjusted hand landmarks to HandLandmarks
                         leftHandDepth:hl.Left == null ? null : _transformedDepthImage.GetPixel<ushort>(
-                            (int)hl.Left[0].z, 1920 - (int)hl.Left[0].x),  //  
+                            (int)hl.Left[0].z, 1920 - (int)hl.Left[0].x),
                         rightHandDepth:hl.Right == null ? null : _transformedDepthImage.GetPixel<ushort>(
                             (int)hl.Right[0].z, 1920 - (int)hl.Right[0].x));
                     
@@ -205,49 +205,45 @@ namespace Map
                 }
             }
             
-            // // Dilate the mask (extend it slightly along its borders)
-            // CvInvoke.Dilate(_tmpImage, _heightMask, _dilationKernel, _defaultAnchor, iterations: 1, 
-            //     BorderType.Default, _scalarOne);
+            // Dilate the mask (extend it slightly along its borders)
+            CvInvoke.Dilate(_tmpImage, _heightMask, _dilationKernel, _defaultAnchor, iterations: 1, 
+                BorderType.Default, _scalarOne);
             
             // Also mask using hand landmarks
-            // const float padding = 20f;
-            // var bboxLeft = new Rect();
-            // var bboxRight = new Rect();
-            // if (handLandmarks.Left != null)
-            // {
-            //     bboxLeft.xMin = handLandmarks.Left.Min(p => p.x) - _xOffsetStart - padding;
-            //     bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) - _xOffsetStart + padding;
-            //     bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - _yOffsetStart - padding;
-            //     bboxLeft.yMax = handLandmarks.Left.Max(p => p.z) - _yOffsetStart + padding;
-            //     // Debug.Log($"Left hand bbox: {bboxLeft}");
-            // }
-            // if (handLandmarks.Right != null)
-            // {
-            //     bboxRight.xMin = handLandmarks.Right.Min(p => p.x) - _xOffsetStart - padding;
-            //     bboxRight.xMax = handLandmarks.Right.Max(p => p.x) - _xOffsetStart + padding;
-            //     bboxRight.yMin = handLandmarks.Right.Min(p => p.z) - _yOffsetStart - padding;
-            //     bboxRight.yMax = handLandmarks.Right.Max(p => p.z) - _yOffsetStart + padding;
-            //     // Debug.Log($"Right hand bbox: {bboxRight}");
-            // }
-            // BboxLeft = bboxLeft;
-            // BboxRight = bboxRight;
-            // var vec2 = new Vector2();
-            // for (int y = 0; y < _height + 1; y++)
-            // {
-            //     for (int x = 0; x < _width + 1; x++)
-            //     {
-            //         vec2.Set(x, y);
-            //         if ((handLandmarks.Left != null && bboxLeft.Contains(vec2)) || 
-            //             (handLandmarks.Right != null && bboxRight.Contains(vec2)))
-            //         {
-            //             _heightMask.Data[y, x, 0] = 1f;
-            //         }
-            //         else
-            //         {
-            //             _heightMask.Data[y, x, 0] = 0f; //temp
-            //         }
-            //     }
-            // }
+            const float padding = 20f;
+            var bboxLeft = new Rect();
+            var bboxRight = new Rect();
+            if (handLandmarks.Left != null)
+            {
+                bboxLeft.xMin = handLandmarks.Left.Min(p => p.x) - padding;
+                bboxLeft.xMax = handLandmarks.Left.Max(p => p.x) + padding;
+                bboxLeft.yMin = handLandmarks.Left.Min(p => p.z) - padding;
+                bboxLeft.yMax = handLandmarks.Left.Max(p => p.z) + padding;
+                // Debug.Log($"Left hand bbox: {bboxLeft}");
+            }
+            if (handLandmarks.Right != null)
+            {
+                bboxRight.xMin = handLandmarks.Right.Min(p => p.x) - padding;
+                bboxRight.xMax = handLandmarks.Right.Max(p => p.x) + padding;
+                bboxRight.yMin = handLandmarks.Right.Min(p => p.z) - padding;
+                bboxRight.yMax = handLandmarks.Right.Max(p => p.z) + padding;
+                // Debug.Log($"Right hand bbox: {bboxRight}");
+            }
+            BboxLeft = bboxLeft;
+            BboxRight = bboxRight;
+            var vec2 = new Vector2();
+            for (int y = 0; y < _height + 1; y++)
+            {
+                for (int x = 0; x < _width + 1; x++)
+                {
+                    vec2.Set(x, y);
+                    if ((handLandmarks.Left != null && bboxLeft.Contains(vec2)) || 
+                        (handLandmarks.Right != null && bboxRight.Contains(vec2)))
+                    {
+                        _heightMask.Data[y, x, 0] = 1f;
+                    }
+                }
+            }
             
             // Update the heights, only in the non-masked part
             for (int y = 0; y < _height + 1; y++)
@@ -263,14 +259,14 @@ namespace Map
             }
             
             // Gaussian blur
-            // CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, new System.Drawing.Size(31, 31), 15);
+            CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, new System.Drawing.Size(31, 31), 15);
 
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-                    _heightMap[y * (_width + 1) + x] = _maskedHeightImage.Data[y, x, 0] * _heightScale;
+                    _heightMap[y * (_width + 1) + x] = _tmpImage.Data[y, x, 0] * _heightScale;
                     // _heightMap[y * (_width + 1) + x] = _heightMask.Data[y, x, 0] * 50f;
                 }
             }
