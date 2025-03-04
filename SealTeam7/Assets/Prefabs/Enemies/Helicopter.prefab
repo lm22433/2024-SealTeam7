@@ -1350,7 +1350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 15
-  aimSpeed: 2
+  aimSpeed: 20
   attackRange: 90
   attackInterval: 2
   stopShootingThreshold: 20
@@ -1365,7 +1365,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5638199596941746840}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 5
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -1383,7 +1383,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &2280521706687957157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1396,10 +1396,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20cd61a0970409d4e9cb698c14991df7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 1
-  defianceThreshold: 1
-  sinkFactor: 1
-  fallDeathRequirement: 1
+  gravityDefiance: 0
+  defianceThreshold: 0
+  sinkFactor: 10
+  groundedOffset: 3
+  fallDeathVelocityY: 60
   self: {fileID: 3557171694228446854}
   mainPropeller: {fileID: 8921211315842660821}
   subPropeller: {fileID: 196575309360567279}

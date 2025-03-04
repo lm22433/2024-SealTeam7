@@ -19,24 +19,23 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-
             TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
             TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
             
             _lastAttack += Time.deltaTime;
-            transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
 
         protected override void EnemyFixedUpdate()
         {
+            if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
+            if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
+            Rb.MoveRotation(TargetRotation);
+            
             switch (State)
             {
                 case EnemyState.Moving:
                 {
-
-                    Rb.MoveRotation(TargetRotation);
                     Rb.AddForce(TargetDirection * (moveSpeed * 10f));
-
                     break;
                 }
                 case EnemyState.AttackCore:

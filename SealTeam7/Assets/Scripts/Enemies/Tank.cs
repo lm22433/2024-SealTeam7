@@ -16,9 +16,16 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-            // gun rotation
-            // TargetRotation = Quaternion.Euler(Vector3.Angle(Target - gun.position, Vector3.right), 0f, 0f);
-            // gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
+            if (State == EnemyState.AttackHands)
+            {
+                // gun rotation
+                TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position - gun.position, gun.right), 0f, 0f);
+                gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);   
+            }
+            else
+            {
+                gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
+            }
             
             // turret rotation
             TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(Target.transform.position - turret.position).eulerAngles.y - transform.rotation.eulerAngles.y, 0f);
@@ -36,8 +43,9 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
-                    if (Mathf.Abs(Vector3.Dot(transform.forward, Vector3.up)) < 0.1f) break;
-                    Rb.MoveRotation(TargetRotation);
+                    // if upside-down / pointing upwards
+                    if (Vector3.Dot(transform.up, Vector3.up) < 0.5f) break;
+                    Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime));
                     Rb.AddForce(TargetDirection * (moveSpeed * 10f));
                     break;
                 }

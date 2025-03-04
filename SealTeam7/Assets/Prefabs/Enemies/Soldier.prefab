@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 3518766936964173033}
   - component: {fileID: 3841694198046563008}
   - component: {fileID: 7112355148585912911}
-  - component: {fileID: 1549461368443677197}
   - component: {fileID: 4195251952092455746}
+  - component: {fileID: 3022295029764522985}
   m_Layer: 0
   m_Name: Soldier
   m_TagString: Untagged
@@ -50,8 +50,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  aimSpeed: 2
+  moveSpeed: 20
+  aimSpeed: 20
   attackRange: 50
   attackInterval: 1
   stopShootingThreshold: 20
@@ -70,10 +70,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9187c63d084cd6a09f2dc794cdcc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 4
-  defianceThreshold: 1.5
+  gravityDefiance: 20
+  defianceThreshold: 8
   sinkFactor: 10
-  fallDeathRequirement: 1
+  groundedOffset: 4
+  fallDeathVelocityY: 60
   self: {fileID: 8717828168720478181}
 --- !u!33 &3841694198046563008
 MeshFilter:
@@ -128,7 +129,34 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &1549461368443677197
+--- !u!54 &4195251952092455746
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3438950281418470787}
+  serializedVersion: 4
+  m_Mass: 3
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 2
+--- !u!136 &3022295029764522985
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,33 +179,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &4195251952092455746
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3438950281418470787}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 80
-  m_CollisionDetection: 1
 --- !u!1 &6408983562744472360
 GameObject:
   m_ObjectHideFlags: 0
