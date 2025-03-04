@@ -29,7 +29,6 @@ namespace Enemies
 
         protected override void EnemyFixedUpdate()
         {
-            Debug.Log(State);
             switch (State)
             {
                 case EnemyState.Moving:

@@ -56,6 +56,7 @@ namespace Game
             GameManager.GetInstance().GameActive = !_paused;
             Time.timeScale = (_paused) ? 0 : 1;
             
+            _scoreUI.SetActive(!_paused);
             if (_paused) {
                 OnSettingButtonClicked();
             } else{

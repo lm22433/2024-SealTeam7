@@ -317,6 +317,11 @@ Transform:
   - {fileID: 810540143}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &363072743 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4509204569429118891, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}
+  m_PrefabInstance: {fileID: 1334753106}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &366592715 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8956783800170575745, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}
@@ -614,7 +619,7 @@ MonoBehaviour:
   lodInfo:
     lod: 1
     colliderLod: 2
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -859,11 +864,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &1046336025 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8532159380291369616, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}
-  m_PrefabInstance: {fileID: 1334753106}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1129775591 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5268268820810764970, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}
@@ -2432,7 +2432,7 @@ MonoBehaviour:
   survivalBonusScore: 500
   scoreText: {fileID: 1129775591}
   timerText: {fileID: 689466560}
-  healthBar: {fileID: 1046336025}
+  healthBar: {fileID: 363072743}
   gameoverScoreText: {fileID: 1386844821}
 --- !u!4 &2004182967
 Transform:
