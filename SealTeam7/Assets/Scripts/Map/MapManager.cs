@@ -40,8 +40,8 @@ namespace Map
         [Header("")]
         [Header("Blur Settings")]
         [Header("")]
-        [SerializeField] private int kernelSize;
-        [SerializeField] private float gaussianStrength;
+        [FormerlySerializedAs("kernelSize")] [SerializeField] private int radius;
+        [FormerlySerializedAs("gaussianStrength")] [SerializeField] private float sigma;
 
         [Header("")]
         [Header("Map Settings")]
@@ -91,7 +91,7 @@ namespace Map
                 ColliderEnabled = colliderEnabled
             };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, radius, sigma);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
             for (int z = 0; z < chunkRow; z++)

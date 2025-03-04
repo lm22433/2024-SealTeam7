@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,6 +50,8 @@ namespace Map
         private readonly int _xOffsetEnd;
         private readonly int _yOffsetStart;
         private readonly int _yOffsetEnd;
+        private readonly Size _gaussianKernelSize;
+        private readonly float _gaussianKernelSigma;
 
         private bool _running;
         private Task _getCaptureTask;
@@ -62,7 +65,7 @@ namespace Map
         public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int gaussianKernelRadius, float gaussianKernelSigma)
         {
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;
@@ -80,9 +83,11 @@ namespace Map
             _maskedHeightImage = new Image<Gray, float>(_width + 1, _height + 1);
             _heightMask = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage = new Image<Gray, float>(_width + 1, _height + 1);
-            _dilationKernel = Mat.Ones(100, 100, DepthType.Cv8U, 1);
-            _defaultAnchor = new System.Drawing.Point(-1, -1);
+            _dilationKernel = Mat.Ones(50, 50, DepthType.Cv8U, 1);
+            _defaultAnchor = new Point(-1, -1);
             _scalarOne = new MCvScalar(1f);
+            _gaussianKernelSize = new Size(gaussianKernelRadius * 2 + 1, gaussianKernelRadius * 2 + 1);
+            _gaussianKernelSigma = gaussianKernelSigma;
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -158,11 +163,8 @@ namespace Map
                     if (_rightHandAbsentCount is >= 1 and <= 2) continue;
                     
                     _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
-                    UpdateHandLandmarks(hl,  // Saves adjusted hand landmarks to HandLandmarks
-                        leftHandDepth:hl.Left == null ? null : _transformedDepthImage.GetPixel<ushort>(
-                            (int)hl.Left[0].z, 1920 - (int)hl.Left[0].x),
-                        rightHandDepth:hl.Right == null ? null : _transformedDepthImage.GetPixel<ushort>(
-                            (int)hl.Right[0].z, 1920 - (int)hl.Right[0].x));
+                    // Saves adjusted hand landmarks to HandLandmarks
+                    UpdateHandLandmarks(hl, _transformedDepthImage);
                     
                     stopwatch.Restart();
                     UpdateHeightMap(capture, HandLandmarks);
@@ -280,7 +282,7 @@ namespace Map
             }
             
             // Gaussian blur
-            CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, new System.Drawing.Size(1, 1), 15);
+            CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, _gaussianKernelSize, _gaussianKernelSigma);
 
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
@@ -293,10 +295,16 @@ namespace Map
             }
         }
 
-        private void UpdateHandLandmarks(HandLandmarks handLandmarks, float? leftHandDepth, float? rightHandDepth)
+        private void UpdateHandLandmarks(HandLandmarks handLandmarks, Image depthImage)
         {
-            // Debug.Log($"Hand landmarks before: {handLandmarks}");
+            float? leftHandDepth = handLandmarks.Left == null 
+                ? null 
+                : depthImage.GetPixel<ushort>((int)handLandmarks.Left[0].z, 1920 - (int)handLandmarks.Left[0].x);
+            float? rightHandDepth = handLandmarks.Right == null
+                ? null
+                : depthImage.GetPixel<ushort>((int)handLandmarks.Right[0].z, 1920 - (int)handLandmarks.Right[0].x);
             var depthRange = _maximumSandDepth - _minimumSandDepth;
+            
             var offsetLeft = new Vector3();
             var offsetRight = new Vector3();
             const float wristYOffset = 0f;
@@ -321,7 +329,6 @@ namespace Map
                 Right = handLandmarks.Right?.Select(p =>
                     new Vector3(p.x + offsetRight.x, p.y*handYScaling + offsetRight.y, p.z + offsetRight.z)).ToArray()
             };
-            // Debug.Log($"Hand landmarks after: {HandLandmarks}");
         }
     }
 }
