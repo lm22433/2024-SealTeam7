@@ -227,6 +227,55 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 68321768}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &98187276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 98187278}
+  - component: {fileID: 98187277}
+  m_Layer: 0
+  m_Name: MissileManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &98187277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98187276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0a4ab811e24c0383dce57e02f08d8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapManager: {fileID: 594167918}
+  missilePrefab: {fileID: 8363675225984208166, guid: 1765b3b28e6fc413aa7c0289d30f1b55, type: 3}
+  targetIndicatorPrefab: {fileID: 8672914393087867955, guid: d7d29f5cb793b44c69e19a3619ed18e9, type: 3}
+  missileDelay: 2
+  missileSpawnHeight: 400
+--- !u!4 &98187278
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98187276}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 195.25848, y: 206.53052, z: 19.746302}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &207832235
 GameObject:
   m_ObjectHideFlags: 0
@@ -2434,6 +2483,7 @@ MonoBehaviour:
   timerText: {fileID: 689466560}
   healthBar: {fileID: 363072743}
   gameoverScoreText: {fileID: 1386844821}
+  gameoverText: {fileID: 0}
 --- !u!4 &2004182967
 Transform:
   m_ObjectHideFlags: 0
@@ -2558,6 +2608,7 @@ SceneRoots:
   - {fileID: 2004182967}
   - {fileID: 594167917}
   - {fileID: 2085838829}
+  - {fileID: 98187278}
   - {fileID: 1695711131}
   - {fileID: 332022280}
   - {fileID: 1884077986}

@@ -1,3 +1,4 @@
+using System.Collections;
 using Player;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace Missiles
     {
         [Header("References")] 
         [SerializeField] private ParticleSystem explosionParticleSystem;
+        [SerializeField] private GameObject missileObject;
         
         [Header("Settings")] 
         [SerializeField] private float missileFallSpeed;
@@ -34,20 +36,23 @@ namespace Missiles
 
         private void Explode()
         {
+            isFalling = false;
+            missileObject.SetActive(false);
+            
             Destroy(targetIndicator);
-            explosionParticleSystem.Play(); 
             
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
-            foreach (Collider hit  in hitColliders)
+            foreach (Collider hit in Physics.OverlapSphere(transform.position, explosionRadius))
             {
-                if (hit.TryGetComponent(out PlayerHands damageable))
-                {
-                    damageable.TakeDamage(explosionDamage);
-                }
+                if (hit.TryGetComponent(out PlayerHands damageable)) damageable.TakeDamage(explosionDamage);
             }
-            
-            Debug.Log("Big Boom!");
-            
+         
+            explosionParticleSystem.Play();
+            StartCoroutine(WaitForExplosion());
+        }
+
+        private IEnumerator WaitForExplosion()
+        {
+            yield return new WaitForSeconds(explosionParticleSystem.main.duration);
             Destroy(gameObject);
         }
     }
