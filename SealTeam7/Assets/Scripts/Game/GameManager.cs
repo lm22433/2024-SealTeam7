@@ -120,7 +120,12 @@ namespace Game
 
             if (_isGameOver) {return;}
 
-            _score += completionBonusScore;
+            _score += _health;
+
+            if (_health >= maxHealth - 25) {
+                _score += completionBonusScore;
+            }
+
             Debug.Log("Completion Bonus! +1000 points");
             
             GameActive = false;
