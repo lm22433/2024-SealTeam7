@@ -39,23 +39,23 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Albedo:
-        m_Texture: {fileID: 2800000, guid: 143a4e2922a2bbb46a564a38f376b649, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Lighting_Ramp:
-        m_Texture: {fileID: 2800000, guid: ede22ad64b20be7478ffb3a5ff4faf17, type: 3}
+        m_Texture: {fileID: 2800000, guid: c31110c729efb7d4c9fac4ee4fc848ce, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Normal_Map:
-        m_Texture: {fileID: 2800000, guid: 715484ab397e6df4f894799cb920b379, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - FRESNEL: 1
     - _Fresnel_Strength: 0.24
-    - _Smoothness: 0.24
+    - _Smoothness: 0
     m_Colors:
-    - _Tint: {r: 1, g: 1, b: 1, a: 0}
+    - _Tint: {r: 1, g: 0.65739936, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

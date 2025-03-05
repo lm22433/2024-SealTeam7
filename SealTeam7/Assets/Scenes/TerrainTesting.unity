@@ -666,7 +666,7 @@ Transform:
   m_GameObject: {fileID: 192676327}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 56, y: 38, z: -181}
+  m_LocalPosition: {x: 56, y: 38, z: -114}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1062,7 +1062,7 @@ Transform:
   m_GameObject: {fileID: 501758270}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 614, y: 38, z: 20}
+  m_LocalPosition: {x: 614, y: 38, z: 87}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1103,7 +1103,7 @@ Transform:
   m_GameObject: {fileID: 512902786}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16, y: 38, z: 20}
+  m_LocalPosition: {x: 56, y: 38, z: 87}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1561,13 +1561,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseSpeed: 0.01
-  noiseScale: 0.002
-  width: 480
-  height: 480
-  xOffsetStart: 700
-  xOffsetEnd: 1180
-  yOffsetStart: 460
-  yOffsetEnd: 940
+  noiseScale: 0.005
+  width: 520
+  height: 520
+  xOffsetStart: 680
+  xOffsetEnd: 1200
+  yOffsetStart: 440
+  yOffsetEnd: 960
   minimumSandDepth: 850
   maximumSandDepth: 1150
   irThreshold: 255
@@ -1575,9 +1575,9 @@ MonoBehaviour:
   kernelSize: 5
   gaussianStrength: 30
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
-  mapSize: 480
+  mapSize: 520
   chunkRow: 2
-  chunkSize: 240
+  chunkSize: 260
   heightScale: 300
   lerpFactor: 0.1
   lodInfo:
@@ -2021,13 +2021,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1013185061}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.56632704, y: 0.3624772, z: 0.30508533, w: 0.67439383}
+  m_LocalRotation: {x: 0.35995677, y: -0.19851191, z: 0.5657271, w: 0.7148266}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 32.866, y: 83.453, z: 78.156}
+  m_LocalEulerAnglesHint: {x: 47.665, y: 10.564, z: 81.395}
 --- !u!114 &1013185064
 MonoBehaviour:
   m_ObjectHideFlags: 0
