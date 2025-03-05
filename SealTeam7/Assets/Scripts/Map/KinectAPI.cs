@@ -284,11 +284,10 @@ namespace Map
                 for (int x = 0; x < _width + 1; x++)
                 {
                     var currentHeight = _heightMap[y * (_width + 1) + x];
-                    var newHeight = Mathf.Lerp(currentHeight, _tmpImage.Data[y, x, 0] * _heightScale, _lerpFactor);
-                    if (Mathf.Abs(currentHeight - newHeight) > _lerpFactor * _similarityThreshold)
-                    {
-                        _heightMap[y * (_width + 1) + x] = newHeight;
-                    }
+                    var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
+                    var distance = Mathf.Abs(currentHeight - newHeight);
+                    var lerpFactor = Mathf.Clamp01(distance / 10f);
+                    _heightMap[y * (_width + 1) + x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
                     // _heightMap[y * (_width + 1) + x] = _heightMask.Data[y, x, 0] * 50f;
                 }
             }
