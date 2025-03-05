@@ -90,7 +90,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BumpScale: 0.2
+    - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -117,8 +117,8 @@ Material:
     - _WorkflowMode: 0
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.7660377, g: 0.6406892, b: 0.2991883, a: 1}
-    - _Color: {r: 0.7660377, g: 0.64068913, b: 0.29918826, a: 1}
+    - _BaseColor: {r: 0.9622642, g: 0.7772263, b: 0.2741545, a: 1}
+    - _Color: {r: 0.9622641, g: 0.7772263, b: 0.27415448, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.3433962, g: 0.33051106, b: 0.2999857, a: 1}
   m_BuildTextureStacks: []
