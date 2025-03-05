@@ -596,9 +596,9 @@ MonoBehaviour:
   yOffsetEnd: 940
   minimumSandDepth: 900
   maximumSandDepth: 1150
-  blurRadius: 2
-  blurSigma: 2
-  similarityThreshold: 0.5
+  blurRadius: 5
+  blurSigma: 5
+  similarityThreshold: 0
   lerpFactor: 1
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 480

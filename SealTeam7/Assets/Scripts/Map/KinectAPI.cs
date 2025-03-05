@@ -3,9 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Game;
 using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows if on windows
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
@@ -52,6 +50,7 @@ namespace Map
         private readonly int _yOffsetEnd;
         private readonly Size _gaussianKernelSize;
         private readonly float _gaussianKernelSigma;
+        private readonly float _similarityThreshold;
 
         private bool _running;
         private Task _getCaptureTask;
@@ -88,6 +87,7 @@ namespace Map
             _scalarOne = new MCvScalar(1f);
             _gaussianKernelSize = new Size(gaussianKernelRadius * 2 + 1, gaussianKernelRadius * 2 + 1);
             _gaussianKernelSigma = gaussianKernelSigma;
+            _similarityThreshold = similarityThreshold;
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -167,7 +167,7 @@ namespace Map
                     UpdateHandLandmarks(hl, _transformedDepthImage);
                     
                     stopwatch.Restart();
-                    UpdateHeightMap(capture, HandLandmarks);
+                    UpdateHeightMap(_transformedDepthImage, HandLandmarks);
                     stopwatch.Stop();
                     Debug.Log($"UpdateHeightMap: {stopwatch.ElapsedMilliseconds} ms");
                     
@@ -179,10 +179,10 @@ namespace Map
             PythonManager2.Dispose();
         }
 
-        private void UpdateHeightMap(Capture capture, HandLandmarks handLandmarks)
+        private void UpdateHeightMap(Image depthImage, HandLandmarks handLandmarks)
         {
             // Raw depth from kinect
-            Span<ushort> depthBuffer = _transformedDepthImage.GetPixels<ushort>().Span;
+            Span<ushort> depthBuffer = depthImage.GetPixels<ushort>().Span;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _height + 1; y++)
@@ -195,12 +195,6 @@ namespace Map
                     // Max depth is the lowest height, so this is the height normalised to [0, 1]
                     var height = (_maximumSandDepth - depth) / depthRange;
                     _rawHeightImage.Data[y, x, 0] = height;
-                    
-                    // temp for testing
-                    if (depth == 0)
-                    {
-                        _rawHeightImage.Data[y, x, 0] = 0f;
-                    }
 
                     // depth == 0 means kinect wasn't able to get a depth for that pixel
                     // hand masking threshold is now just _minimumSandDepth
@@ -289,7 +283,12 @@ namespace Map
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-                    _heightMap[y * (_width + 1) + x] = _tmpImage.Data[y, x, 0] * _heightScale;
+                    var currentHeight = _heightMap[y * (_width + 1) + x];
+                    var newHeight = Mathf.Lerp(currentHeight, _tmpImage.Data[y, x, 0] * _heightScale, _lerpFactor);
+                    if (Mathf.Abs(currentHeight - newHeight) > _lerpFactor * _similarityThreshold)
+                    {
+                        _heightMap[y * (_width + 1) + x] = newHeight;
+                    }
                     // _heightMap[y * (_width + 1) + x] = _heightMask.Data[y, x, 0] * 50f;
                 }
             }
