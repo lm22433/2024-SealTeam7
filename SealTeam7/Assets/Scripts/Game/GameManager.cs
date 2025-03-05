@@ -167,7 +167,7 @@ namespace Game
         {
             if (!GameActive) throw new Exception("Game has not started yet, how have you killed something dummy?");
             
-            Debug.Log($"Killed something! +{score} points");
+            // Debug.Log($"Killed something! +{score} points");
 
 			_totalKills++;
 			_score += score;

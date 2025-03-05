@@ -545,8 +545,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 584457522}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
-  m_LocalPosition: {x: 246, y: 502.01108, z: -50}
+  m_LocalRotation: {x: 0.012289254, y: -0.8420068, z: 0.5389852, w: 0.01919782}
+  m_LocalPosition: {x: 246.67781, y: 707.601, z: 439.54456}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -581,8 +581,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1926948479}
+  m_Children: [{fileID: 1926948479}]
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &594167918
@@ -605,10 +604,11 @@ MonoBehaviour:
   xOffsetEnd: 1180
   yOffsetStart: 460
   yOffsetEnd: 940
-  minimumSandDepth: 850
+  minimumSandDepth: 900
   maximumSandDepth: 1150
-  irThreshold: 255
-  similarityThreshold: 0.5
+  blurRadius: 5
+  blurSigma: 5
+  similarityThreshold: 0
   kernelSize: 5
   gaussianStrength: 30
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
@@ -616,7 +616,7 @@ MonoBehaviour:
   chunkRow: 2
   chunkSize: 240
   heightScale: 300
-  lerpFactor: 0.1
+  lerpFactor: 1
   lodInfo:
     lod: 1
     colliderLod: 2
@@ -2528,7 +2528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87a1452b48c5c4a2abd64a7a86f65051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameDuration: 120
+  gameDuration: 600
   maxHealth: 1000
   completionBonusScore: 1000
   survivalBonusInterval: 30

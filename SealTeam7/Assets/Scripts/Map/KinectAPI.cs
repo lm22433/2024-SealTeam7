@@ -1,12 +1,15 @@
 using UnityEngine;
 using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
-using Game;
 using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows if on windows
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
 using Python;
+using Debug = UnityEngine.Debug;
 
 namespace Map
 {
@@ -25,12 +28,13 @@ namespace Map
          * Set a pixel with:
          * _tmpImage.Data[y, x, 0] = 123f
          */
-        private Image<Gray, float> _tmpImage1;
-        private Image<Gray, float> _tmpImage2;
-        private Image<Gray, float> _tmpImage3;
+        private Image<Gray, float> _rawHeightImage;
+        private Image<Gray, float> _maskedHeightImage;
+        private Image<Gray, float> _heightMask;
+        private Image<Gray, float> _tmpImage;
         
         private readonly Mat _dilationKernel;
-        private readonly System.Drawing.Point _defaultAnchor;
+        private readonly Point _defaultAnchor;
         private readonly MCvScalar _scalarOne;
         private readonly float _heightScale;
         private readonly float _lerpFactor;
@@ -44,14 +48,23 @@ namespace Map
         private readonly int _xOffsetEnd;
         private readonly int _yOffsetStart;
         private readonly int _yOffsetEnd;
+        private readonly Size _gaussianKernelSize;
+        private readonly float _gaussianKernelSigma;
+        private readonly float _similarityThreshold;
 
         private bool _running;
         private Task _getCaptureTask;
-        private int _kernelSize;
-        private float _gaussianStrength;
+        private int _leftHandAbsentCount = 0;
+        private int _rightHandAbsentCount = 0;
+
+        // public for gizmos
+        public Rect? BboxLeft = null;
+        public Rect? BboxRight = null;
+        public HandLandmarks HandLandmarks;
+        public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
+                float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int gaussianKernelRadius, float gaussianKernelSigma)
         {
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;
@@ -64,15 +77,17 @@ namespace Map
             _yOffsetStart = yOffsetStart;
             _yOffsetEnd = yOffsetEnd;
             _heightMap = heightMap;
-            _kernelSize = kernelSize;
-            _gaussianStrength = gaussianStrength;
             
-            _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
-            _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
-            _tmpImage3 = new Image<Gray, float>(_width + 1, _height + 1);
-            _dilationKernel = Mat.Ones(100, 100, DepthType.Cv8U, 1);
-            _defaultAnchor = new System.Drawing.Point(-1, -1);
+            _rawHeightImage = new Image<Gray, float>(_width + 1, _height + 1);
+            _maskedHeightImage = new Image<Gray, float>(_width + 1, _height + 1);
+            _heightMask = new Image<Gray, float>(_width + 1, _height + 1);
+            _tmpImage = new Image<Gray, float>(_width + 1, _height + 1);
+            _dilationKernel = Mat.Ones(50, 50, DepthType.Cv8U, 1);
+            _defaultAnchor = new Point(-1, -1);
             _scalarOne = new MCvScalar(1f);
+            _gaussianKernelSize = new Size(gaussianKernelRadius * 2 + 1, gaussianKernelRadius * 2 + 1);
+            _gaussianKernelSigma = gaussianKernelSigma;
+            _similarityThreshold = similarityThreshold;
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -111,97 +126,207 @@ namespace Map
             _kinect.StopCameras();
             _kinect.Dispose();
             _transformedDepthImage.Dispose();
-            _tmpImage1.Dispose();
-            _tmpImage2.Dispose();
-            _tmpImage3.Dispose();
+            _rawHeightImage.Dispose();
+            _maskedHeightImage.Dispose();
+            _heightMask.Dispose();
+            _tmpImage.Dispose();
             _dilationKernel.Dispose();
         }
         
         private void GetCaptureTask()
         {
-            // Initialise Python stuff - this blocks for 5-10s
-            PythonManager.Connect();
-            PythonManager.StartInference();
+            PythonManager2.Initialize();
             
             while (_running)
             {
                 //if (!GameManager.GetInstance().IsGameActive()) continue;
                 
-                try {
+                try
+                {
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
                     using Capture capture = _kinect.GetCapture();
-                    UpdateHeightMap(capture);
-                    PythonManager.SendColorImage(capture.Color);
+                    stopwatch.Stop();
+                    Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
+                    
+                    stopwatch.Restart();
+                    var hl = PythonManager2.ProcessFrame(capture.Color);
+                    stopwatch.Stop();
+                    Debug.Log($"PythonManager2.ProcessFrame: {stopwatch.ElapsedMilliseconds} ms");
+
+                    // Skip frame if hand is absent, up to a few frames
+                    if (hl.Left == null) _leftHandAbsentCount++;
+                    else _leftHandAbsentCount = 0;
+                    if (hl.Right == null) _rightHandAbsentCount++;
+                    else _rightHandAbsentCount = 0;
+                    if (_leftHandAbsentCount is >= 1 and <= 2) continue;
+                    if (_rightHandAbsentCount is >= 1 and <= 2) continue;
+                    
+                    _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
+                    // Saves adjusted hand landmarks to HandLandmarks
+                    UpdateHandLandmarks(hl, _transformedDepthImage);
+                    
+                    stopwatch.Restart();
+                    UpdateHeightMap(_transformedDepthImage, HandLandmarks);
+                    stopwatch.Stop();
+                    Debug.Log($"UpdateHeightMap: {stopwatch.ElapsedMilliseconds} ms");
+                    
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
             }
             
-            PythonManager.StopInference();
-            PythonManager.Disconnect();
+            PythonManager2.Dispose();
         }
 
-        private void UpdateHeightMap(Capture capture)
+        private void UpdateHeightMap(Image depthImage, HandLandmarks handLandmarks)
         {
-            // Transform the depth image to the colour camera perspective, saving in _transformedDepthImage
-            _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
-
-            // Create Depth Buffer
-            Span<ushort> depthBuffer = _transformedDepthImage.GetPixels<ushort>().Span;
+            // Raw depth from kinect
+            Span<ushort> depthBuffer = depthImage.GetPixels<ushort>().Span;
 
             // Create a new image with data from the depth and colour image
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-
                     var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + (_width - x)];
 
-                    // Calculate pixel values
                     var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
-                    var pixelValue = _maximumSandDepth - depth;
+                    // Max depth is the lowest height, so this is the height normalised to [0, 1]
+                    var height = (_maximumSandDepth - depth) / depthRange;
+                    _rawHeightImage.Data[y, x, 0] = height;
 
                     // depth == 0 means kinect wasn't able to get a depth for that pixel
-                    if (depth == 0 || depth >= _maximumSandDepth || depth < _minimumSandDepth)
-                    {
-                        _tmpImage1.Data[y, x, 0] = 1f;  // Ensure that the pixel is part of the mask
+                    // hand masking threshold is now just _minimumSandDepth
+                    if (depth == 0 || height >= 1f || height < 0f)
+                    { 
+                        // Mask the pixel
+                        _tmpImage.Data[y, x, 0] = 1f;
                     }
                     else
                     {
-                        _tmpImage1.Data[y, x, 0] = pixelValue / depthRange;
+                        // Don't mask the pixel (yet)
+                        _tmpImage.Data[y, x, 0] = 0f;
                     }
                 }
             }
             
-            // Generate a mask where pixels likely to be of a hand/arm are set to 1
-            CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.8, 1, ThresholdType.Binary);
-            
             // Dilate the mask (extend it slightly along its borders)
-            CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1, 
+            CvInvoke.Dilate(_tmpImage, _heightMask, _dilationKernel, _defaultAnchor, iterations: 1, 
                 BorderType.Default, _scalarOne);
-
-            CvInvoke.GaussianBlur(_tmpImage1, _tmpImage2, new System.Drawing.Size(_kernelSize, _kernelSize), _gaussianStrength);
+            
+            // Also mask using hand landmarks
+            const float paddingHand = 20f;
+            const float paddingWrist = 50f;
+            var bboxLeftHand = new Rect();
+            var bboxRightHand = new Rect();
+            var bboxLeftWrist = new Rect();
+            var bboxRightWrist = new Rect();
+            if (handLandmarks.Left != null)
+            {
+                bboxLeftHand.xMin = handLandmarks.Left.Min(p => p.x) - paddingHand;
+                bboxLeftHand.xMax = handLandmarks.Left.Max(p => p.x) + paddingHand;
+                bboxLeftHand.yMin = handLandmarks.Left.Min(p => p.z) - paddingHand;
+                bboxLeftHand.yMax = handLandmarks.Left.Max(p => p.z) + paddingHand;
+                bboxLeftWrist.xMin = handLandmarks.Left[0].x - paddingWrist;
+                bboxLeftWrist.xMax = handLandmarks.Left[0].x + paddingWrist;
+                bboxLeftWrist.yMin = handLandmarks.Left[0].z - paddingWrist;
+                bboxLeftWrist.yMax = handLandmarks.Left[0].z + paddingWrist;
+                // Debug.Log($"Left hand bbox: {bboxLeft}");
+            }
+            if (handLandmarks.Right != null)
+            {
+                bboxRightHand.xMin = handLandmarks.Right.Min(p => p.x) - paddingHand;
+                bboxRightHand.xMax = handLandmarks.Right.Max(p => p.x) + paddingHand;
+                bboxRightHand.yMin = handLandmarks.Right.Min(p => p.z) - paddingHand;
+                bboxRightHand.yMax = handLandmarks.Right.Max(p => p.z) + paddingHand;
+                bboxRightWrist.xMin = handLandmarks.Right[0].x - paddingWrist;
+                bboxRightWrist.xMax = handLandmarks.Right[0].x + paddingWrist;
+                bboxRightWrist.yMin = handLandmarks.Right[0].z - paddingWrist;
+                bboxRightWrist.yMax = handLandmarks.Right[0].z + paddingWrist;
+                // Debug.Log($"Right hand bbox: {bboxRight}");
+            }
+            BboxLeft = bboxLeftHand;
+            BboxRight = bboxRightHand;
+            var vec2 = new Vector2();
+            for (int y = 0; y < _height + 1; y++)
+            {
+                for (int x = 0; x < _width + 1; x++)
+                {
+                    vec2.Set(x, y);
+                    if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
+                        (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
+                    {
+                        _heightMask.Data[y, x, 0] = 1f;
+                    }
+                }
+            }
+            
+            // Update the heights, only in the non-masked part
+            for (int y = 0; y < _height + 1; y++)
+            {
+                for (int x = 0; x < _width + 1; x++)
+                {
+                    if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
+                    {
+                        _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
+                    }
+                    // Otherwise height is kept the same for that pixel
+                }
+            }
+            
+            // Gaussian blur
+            CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, _gaussianKernelSize, _gaussianKernelSigma);
 
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
                 {
-                    if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
-                        _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
-                    {
-                        if (y == 0 || y == _height || x == 0 || x == _width) {
-                            _heightMap[y * (_width + 1) + x] = 0;
-                            
-                        } else {
-                            _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
-                                _tmpImage2.Data[y, x, 0] * _heightScale, _lerpFactor);
-                        }
-                        // Debug.Log(_lerpFactor);
-                        // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
-                    }
-                    // Otherwise height is kept the same for that pixel
+                    var currentHeight = _heightMap[y * (_width + 1) + x];
+                    var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
+                    var distance = Mathf.Abs(currentHeight - newHeight);
+                    var lerpFactor = Mathf.Clamp01(distance / 10f);
+                    _heightMap[y * (_width + 1) + x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
+                    // _heightMap[y * (_width + 1) + x] = _heightMask.Data[y, x, 0] * 50f;
                 }
             }
+        }
+
+        private void UpdateHandLandmarks(HandLandmarks handLandmarks, Image depthImage)
+        {
+            float? leftHandDepth = handLandmarks.Left == null 
+                ? null 
+                : depthImage.GetPixel<ushort>((int)handLandmarks.Left[0].z, 1920 - (int)handLandmarks.Left[0].x);
+            float? rightHandDepth = handLandmarks.Right == null
+                ? null
+                : depthImage.GetPixel<ushort>((int)handLandmarks.Right[0].z, 1920 - (int)handLandmarks.Right[0].x);
+            var depthRange = _maximumSandDepth - _minimumSandDepth;
+            
+            var offsetLeft = new Vector3();
+            var offsetRight = new Vector3();
+            const float wristYOffset = 0f;
+            if (leftHandDepth.HasValue)
+            {
+                offsetLeft = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                    (_maximumSandDepth - leftHandDepth.Value) / depthRange * _heightScale + wristYOffset,
+                    -_yOffsetStart);
+            }
+            if (rightHandDepth.HasValue)
+            {
+                offsetRight = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                    (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
+                    -_yOffsetStart);
+            }
+
+            const float handYScaling = 3f;
+            HandLandmarks = new HandLandmarks
+            {
+                Left = handLandmarks.Left?.Select(p => 
+                    new Vector3(p.x + offsetLeft.x, p.y*handYScaling + offsetLeft.y, p.z + offsetLeft.z)).ToArray(),
+                Right = handLandmarks.Right?.Select(p =>
+                    new Vector3(p.x + offsetRight.x, p.y*handYScaling + offsetRight.y, p.z + offsetRight.z)).ToArray()
+            };
         }
     }
 }
