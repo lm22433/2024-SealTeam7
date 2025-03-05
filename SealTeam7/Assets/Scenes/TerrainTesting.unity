@@ -592,6 +592,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4957578726440732668, guid: 26e5c3c42dfbcf14fb07a7da9eb22581, type: 3}
   m_PrefabInstance: {fileID: 172177313}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &178228821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 178228823}
+  - component: {fileID: 178228822}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &178228822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 178228821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: cf740295a1e0ecf4ba63d05269c8c3ad, type: 2}
+--- !u!4 &178228823
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 178228821}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 206.3462, y: 451.1394, z: 669.9838}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &192676327
 GameObject:
   m_ObjectHideFlags: 0
@@ -1891,6 +1940,7 @@ GameObject:
   - component: {fileID: 1013185063}
   - component: {fileID: 1013185062}
   - component: {fileID: 1013185064}
+  - component: {fileID: 1013185065}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -2001,6 +2051,136 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &1013185065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013185061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc4d76f733087744991913c9d19d5274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LensFlareData: {fileID: 11400000, guid: bd7eaf3bd49c39f4cb77bd809459aa72, type: 2}
+  version: 0
+  intensity: 1
+  maxAttenuationDistance: 100
+  maxAttenuationScale: 100
+  distanceAttenuationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  scaleByDistanceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  attenuationByLightShape: 1
+  radialScreenAttenuationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useOcclusion: 0
+  useBackgroundCloudOcclusion: 0
+  environmentOcclusion: 0
+  useWaterOcclusion: 0
+  occlusionRadius: 0.1
+  sampleCount: 32
+  occlusionOffset: 0.05
+  scale: 1
+  allowOffScreen: 0
+  volumetricCloudOcclusion: 0
+  occlusionRemapCurve:
+    <length>k__BackingField: 2
+    m_Loop: 0
+    m_ZeroValue: 1
+    m_Range: 1
+    m_Curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  lightOverride: {fileID: 0}
 --- !u!4 &1047621032 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4957578726440732668, guid: 26e5c3c42dfbcf14fb07a7da9eb22581, type: 3}
@@ -3700,6 +3880,10 @@ PrefabInstance:
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -3723,6 +3907,10 @@ PrefabInstance:
       propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].prefab
+      value: 
+      objectReference: {fileID: 3438950281418470787, guid: 686713a87e5f9ae41bc31365cb21d88e, type: 3}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.data[2].prefab
       value: 
@@ -3752,6 +3940,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[0].prefab
+      value: 
+      objectReference: {fileID: 3438950281418470787, guid: 686713a87e5f9ae41bc31365cb21d88e, type: 3}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[0].prefab
       value: 
       objectReference: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
@@ -3759,6 +3951,10 @@ PrefabInstance:
       propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[1].prefab
       value: 
       objectReference: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].groupSize
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.data[2].groupSize
       value: 1
@@ -3788,12 +3984,28 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[0].groupSize
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[1].groupSize
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[0].groupSize
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[1].groupSize
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[1].spawnChance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].spawnChance
+      value: 0.33
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.data[2].spawnChance
@@ -3830,6 +4042,10 @@ PrefabInstance:
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[1].spawnChance
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].groupSpacing
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.data[2].groupSpacing
@@ -4588,3 +4804,4 @@ SceneRoots:
   - {fileID: 1695711131}
   - {fileID: 332022280}
   - {fileID: 1884077986}
+  - {fileID: 178228823}
