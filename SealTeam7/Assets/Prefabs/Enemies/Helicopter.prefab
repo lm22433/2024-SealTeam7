@@ -1356,7 +1356,7 @@ MonoBehaviour:
   stopShootingThreshold: 20
   attackDamage: 8
   killScore: 20
-  flyHeight: 180
+  flyHeight: 165
 --- !u!54 &7202123808863129688
 Rigidbody:
   m_ObjectHideFlags: 0
