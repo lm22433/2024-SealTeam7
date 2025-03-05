@@ -5145,7 +5145,7 @@ MonoBehaviour:
   attackDamage: 2
   killScore: 10
   buried: 0
-  buriedAmount: 10
+  buriedAmount: 1
   turret: {fileID: 8827629184883852959}
   gun: {fileID: 4181902386754096974}
   deathParticles: {fileID: 6796803004105206313}

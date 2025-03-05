@@ -6193,6 +6193,7 @@ MonoBehaviour:
   buried: 0
   buriedAmount: 0.5
   flyHeight: 180
+  deathParticles: {fileID: 5362065807862948548}
 --- !u!54 &7202123808863129688
 Rigidbody:
   m_ObjectHideFlags: 0

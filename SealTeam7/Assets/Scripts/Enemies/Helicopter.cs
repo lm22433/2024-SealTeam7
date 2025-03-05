@@ -6,6 +6,7 @@ namespace Enemies
     public class Helicopter : Enemy
     {
         [SerializeField] float flyHeight;
+        [SerializeField] private ParticleSystem deathParticles;
         private float _lastAttack;
 
         private void Awake() {
@@ -57,7 +58,25 @@ namespace Enemies
                     }
                     break;
                 }
+                case EnemyState.Dying:
+                {
+					var x = transform.position.x;
+					var z = transform.position.z;
+					transform.position = new Vector3(x, _mapManager.GetHeight(x, z)-buried, z);
+                    break;
+                }
             }
+        }
+
+        public override void SetupDeath()
+		{
+			deathParticles.Play();
+			State = EnemyState.Dying;
+		}
+
+        public override void Die()
+        {
+			base.Die();
         }
     }
 }

@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 68321772}
   - component: {fileID: 68321771}
   - component: {fileID: 68321770}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 332022280}
   - component: {fileID: 332022279}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Godly Hands
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -310,7 +310,7 @@ Transform:
   m_GameObject: {fileID: 332022278}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 240, y: 50, z: 240}
+  m_LocalPosition: {x: 240, y: 500, z: 240}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -596,8 +596,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.01
-  noiseScale: 0.001
+  noiseSpeed: 0.07
+  noiseScale: 0.005
   width: 480
   height: 480
   xOffsetStart: 690
@@ -614,7 +614,7 @@ MonoBehaviour:
   mapSize: 480
   chunkRow: 2
   chunkSize: 240
-  heightScale: 300
+  heightScale: 100
   lerpFactor: 0.4
   lodInfo:
     lod: 1
@@ -647,7 +647,7 @@ GameObject:
   - component: {fileID: 810540146}
   - component: {fileID: 810540145}
   - component: {fileID: 810540144}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1227,7 +1227,7 @@ GameObject:
   - component: {fileID: 1461191798}
   - component: {fileID: 1461191797}
   - component: {fileID: 1461191796}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2359,7 +2359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1884077986}
   - component: {fileID: 1884077987}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Godly Core
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2434,6 +2434,7 @@ MonoBehaviour:
   timerText: {fileID: 689466560}
   healthBar: {fileID: 363072743}
   gameoverScoreText: {fileID: 1386844821}
+  gameoverText: {fileID: 0}
 --- !u!4 &2004182967
 Transform:
   m_ObjectHideFlags: 0
