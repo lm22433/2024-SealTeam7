@@ -1561,7 +1561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseSpeed: 0.01
-  noiseScale: 0.001
+  noiseScale: 0.002
   width: 480
   height: 480
   xOffsetStart: 700
@@ -1583,7 +1583,7 @@ MonoBehaviour:
   lodInfo:
     lod: 1
     colliderLod: 2
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
