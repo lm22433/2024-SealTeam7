@@ -29,7 +29,7 @@ namespace Enemies
             TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
             
             if (State == EnemyState.AttackCore || State == EnemyState.AttackHands) _charge += Time.deltaTime;
-            transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
+            if(!(State == EnemyState.Dying)) transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
 
         protected override void EnemyFixedUpdate()
