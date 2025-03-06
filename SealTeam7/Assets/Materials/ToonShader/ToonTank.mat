@@ -28,6 +28,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Fresnel_Strength: 0.25
+    - _Smoothness: 8
     m_Colors:
     - _Tint: {r: 0, g: 0.2824634, b: 0.5372549, a: 0}
   m_BuildTextureStacks: []
