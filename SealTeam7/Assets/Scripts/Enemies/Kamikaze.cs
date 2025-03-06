@@ -51,10 +51,12 @@ namespace Enemies
                     //trail.Stop();
                     if(!chargeParticles.isPlaying) chargeParticles.Play();
                     smokeTrail.Stop();
+                    Rb.linearVelocity = new Vector3 (0,0,0);
                     if (_charge > attackInterval)
                     {
                         Attack(EnemyManager.godlyCore);
-                        State = EnemyState.Dying;
+                        killScore = 0;
+                        this.SetupDeath();
                     }
                     break;
                 }
@@ -63,10 +65,12 @@ namespace Enemies
                     //trail.Stop();
                     if(!chargeParticles.isPlaying) chargeParticles.Play();
                     smokeTrail.Stop();
+                    Rb.linearVelocity = new Vector3 (0,0,0);
                     if (_charge > attackInterval)
                     {
                         Attack(EnemyManager.godlyHands);
-                        State = EnemyState.Dying;
+                        killScore = 0;
+                        this.SetupDeath();
                     }
                     break;
                 }
@@ -76,6 +80,7 @@ namespace Enemies
         public override void SetupDeath()
 		{
 			deathParticles.Play();
+            smokeTrail.Stop();
 			State = EnemyState.Dying;
 		}
     }
