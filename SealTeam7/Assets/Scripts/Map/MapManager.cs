@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Map
 {
@@ -72,8 +70,13 @@ namespace Map
         private List<Chunk> _chunks;
         private float _mapSpacing;
         
+        private static MapManager _instance;
+        
         private void Awake()
         {
+            if (_instance == null) _instance = this;
+            else Destroy(gameObject);
+            
             _mapSpacing = (float) mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
             _heightMap = new float[(int) (mapSize / _mapSpacing + 1) * (int) (mapSize / _mapSpacing + 1)];
@@ -112,6 +115,8 @@ namespace Map
             if (isKinectPresent) _kinect.StopKinect();
             else _noiseGenerator.Stop();
         }
+        
+        public static MapManager GetInstance() => _instance;
 
         public float GetHeight(float worldX, float worldZ)
         {

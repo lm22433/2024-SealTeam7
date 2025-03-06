@@ -1,4 +1,5 @@
 using System.Collections;
+using Map;
 using Player;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace Missiles
         
         private Vector3 targetPosition;
         private GameObject targetIndicator;
-        private bool isFalling = false;
+        private bool isFalling;
         
         public void SetTarget(Vector3 targetPosition, GameObject targetIndicator)
         {
@@ -30,6 +31,7 @@ namespace Missiles
         private void Update()
         {
             if (!isFalling) return;
+            targetPosition.y = MapManager.GetInstance().GetHeight(targetPosition.x, targetPosition.z);
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, missileFallSpeed * Time.deltaTime);
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f) Explode();
         }

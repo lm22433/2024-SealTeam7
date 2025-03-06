@@ -8,7 +8,6 @@ namespace Missiles
     public class MissileManager : MonoBehaviour
     {
         [Header("References")] 
-        [SerializeField] private MapManager mapManager;
         [SerializeField] private GameObject missilePrefab;
         [SerializeField] private GameObject targetIndicatorPrefab;
         
@@ -18,14 +17,13 @@ namespace Missiles
 
         private void Start()
         {
-            if (mapManager == null) mapManager = FindFirstObjectByType<MapManager>();
-            
             InvokeRepeating(nameof(SpawnMissile), 0.0f, missileDelay);
         }
 
         private void SpawnMissile()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
+            MapManager mapManager = MapManager.GetInstance(); 
             
             float mapSize = mapManager.GetMapSize();
             float randomX = Random.Range(0f, mapSize);
