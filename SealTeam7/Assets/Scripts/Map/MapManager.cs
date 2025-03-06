@@ -38,8 +38,8 @@ namespace Map
         [Header("")]
         [FormerlySerializedAs("kernelSize")] [SerializeField] private int blurRadius;
         [FormerlySerializedAs("gaussianStrength")] [SerializeField] private float blurSigma;
-        [SerializeField] private float similarityThreshold;
-        [SerializeField] private float lerpFactor;
+        [SerializeField] private float minLerpFactor;
+        [SerializeField] private float maxLerpFactor;
 
         [Header("")]
         [Header("Map Settings")]
@@ -88,8 +88,8 @@ namespace Map
                 ColliderEnabled = colliderEnabled
             };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, 
-                similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, 
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, minLerpFactor, maxLerpFactor, minimumSandDepth, 
+                maximumSandDepth, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, 
                 blurRadius, blurSigma);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 

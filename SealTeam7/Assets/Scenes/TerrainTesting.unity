@@ -1572,15 +1572,13 @@ MonoBehaviour:
   maximumSandDepth: 1150
   blurRadius: 5
   blurSigma: 5
-  similarityThreshold: 0
-  kernelSize: 5
-  gaussianStrength: 30
+  minLerpFactor: 0.02
+  maxLerpFactor: 1
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 480
   chunkRow: 2
   chunkSize: 240
   heightScale: 300
-  lerpFactor: 1
   lodInfo:
     lod: 1
     colliderLod: 2
