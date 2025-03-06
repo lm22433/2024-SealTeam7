@@ -57,6 +57,7 @@ MonoBehaviour:
   stopShootingThreshold: 20
   attackDamage: 1
   killScore: 5
+  State: 0
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
@@ -71,10 +72,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityDefiance: 20
-  defianceThreshold: 8
+  defianceThreshold: 4
   sinkFactor: 10
   groundedOffset: 4
-  fallDeathVelocityY: 60
+  fallDeathVelocityY: 40
   self: {fileID: 8717828168720478181}
 --- !u!33 &3841694198046563008
 MeshFilter:

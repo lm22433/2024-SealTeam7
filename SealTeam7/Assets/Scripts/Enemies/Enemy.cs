@@ -10,12 +10,6 @@ namespace Enemies
         AttackCore,
         AttackHands
     }
-
-    public enum Target
-    {
-        Core,
-        Hands
-    }
     
     public abstract class Enemy : MonoBehaviour
     {
@@ -29,7 +23,8 @@ namespace Enemies
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
-        protected EnemyState State;
+        [Header("Debug")]
+        [SerializeField] protected EnemyState State;
         protected PlayerDamageable Target;
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;

@@ -608,7 +608,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &178228822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1576,14 +1576,14 @@ MonoBehaviour:
   gaussianStrength: 30
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 520
-  chunkRow: 2
-  chunkSize: 260
+  chunkRow: 4
+  chunkSize: 130
   heightScale: 300
   lerpFactor: 0.1
   lodInfo:
-    lod: 1
+    lod: 0
     colliderLod: 2
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -2281,7 +2281,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f01c76a322ae43e4aa91887fa14a2fcf, type: 2}
+  - {fileID: 2100000, guid: 0499ae80836f25f4e9d3f4cd30cdd9d9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

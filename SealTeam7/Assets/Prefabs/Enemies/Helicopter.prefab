@@ -1258,7 +1258,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+  - {fileID: 2100000, guid: 08eda9de8843e054286dcba9b3dc84d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1356,6 +1356,7 @@ MonoBehaviour:
   stopShootingThreshold: 20
   attackDamage: 8
   killScore: 20
+  State: 0
   flyHeight: 165
 --- !u!54 &7202123808863129688
 Rigidbody:
@@ -1491,7 +1492,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+  - {fileID: 2100000, guid: 08eda9de8843e054286dcba9b3dc84d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1707,7 +1708,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+  - {fileID: 2100000, guid: 08eda9de8843e054286dcba9b3dc84d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

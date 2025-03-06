@@ -106,7 +106,6 @@ namespace Map
             _meshData.Vertices = vertices;
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
             
             _colliderMeshData.Vertices = colliderVertices;

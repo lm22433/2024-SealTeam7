@@ -301,12 +301,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
-  aimSpeed: 20
+  aimSpeed: 5
   attackRange: 40
   attackInterval: 4
   stopShootingThreshold: 20
   attackDamage: 2
   killScore: 10
+  State: 0
   turret: {fileID: 8827629184883852959}
   gun: {fileID: 4181902386754096974}
 --- !u!114 &3729924882987787105
@@ -321,11 +322,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7004c134e7a4de2a0ec47e7f6165bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 20
-  defianceThreshold: 8
+  gravityDefiance: 15
+  defianceThreshold: 4
   sinkFactor: 10
   groundedOffset: 4
-  fallDeathVelocityY: 60
+  fallDeathVelocityY: 40
   self: {fileID: 3925053475800111628}
 --- !u!54 &828698031663403021
 Rigidbody:
