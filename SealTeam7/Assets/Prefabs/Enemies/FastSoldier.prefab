@@ -4894,7 +4894,7 @@ MonoBehaviour:
   killScore: 10
   buried: 0
   buriedAmount: 0.5
-  gun: {fileID: 0}
+  gun: {fileID: 8504172332382226243}
   gunEffects: {fileID: 9185895167031479839}
   deathParticles: {fileID: 8091458353736044771}
 --- !u!114 &3518766936964173033
