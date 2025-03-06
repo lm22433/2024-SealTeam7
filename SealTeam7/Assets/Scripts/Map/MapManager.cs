@@ -47,6 +47,7 @@ namespace Map
         [Header("Map Settings")]
         [Header("")]
         [SerializeField] private GameObject chunkPrefab;
+        [SerializeField] private GameObject backgroundChunkPrefab;
         [SerializeField] private int mapSize;
         [SerializeField] private int chunkRow;
         [SerializeField] private int chunkSize;
@@ -94,15 +95,32 @@ namespace Map
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
-            for (int z = 0; z < chunkRow; z++)
+            for (int z = -1; z < chunkRow + 1; z++)
             {
-                for (int x = 0; x < chunkRow; x++)
+                for (int x = -1; x < chunkRow + 1; x++)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
-                    chunkSettings.X = x;
-                    chunkSettings.Z = z;
-                    chunk.Setup(chunkSettings, ref _heightMap);
-                    _chunks.Add(chunk);
+                    // Play region chunks
+                    if (z >= 0 && z < chunkRow && x >= 0 && x < chunkRow)
+                    {
+                        var chunk = Instantiate(chunkPrefab,
+                            new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing),
+                            Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
+                        chunkSettings.X = x;
+                        chunkSettings.Z = z;
+                        chunk.Setup(chunkSettings, ref _heightMap);
+                        _chunks.Add(chunk);
+                    }
+                    // Background chunks
+                    else
+                    {
+                        var chunk = Instantiate(backgroundChunkPrefab,
+                            new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing),
+                            Quaternion.identity, chunkParent.transform).GetComponent<BackgroundChunk>();
+                        chunkSettings.X = x;
+                        chunkSettings.Z = z;
+                        chunk.Setup(chunkSettings);
+                        // _chunks.Add(chunk);
+                    }
                 }
             }
         }
