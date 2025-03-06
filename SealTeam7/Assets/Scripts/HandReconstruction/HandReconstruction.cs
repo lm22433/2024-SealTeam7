@@ -41,21 +41,21 @@ public class HandReconstruction : MonoBehaviour
             for(int i = 0; i < tempPositions.Length; i++) {
                 positions[i] = Vector3.Lerp(positions[i], tempPositions[i], _lerpFactor);
             }
+        } else {
+            return;
         }
 
-        if (Vector3.Distance(prevPos, tempPositions[0]) < _thresholdDst) {
 
-            Vector3 targetDir = positions[9] - positions[0];
-            gameObject.transform.localPosition = positions[0];
-            
-            gameObject.transform.localRotation = Quaternion.Euler(gameObject.transform.localRotation.eulerAngles.x, Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, gameObject.transform.localRotation.eulerAngles.z);
+        Vector3 targetDir = positions[9] - positions[0];
+        gameObject.transform.localPosition = positions[0];
+        
+        gameObject.transform.localRotation = Quaternion.Euler(gameObject.transform.localRotation.eulerAngles.x, Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, gameObject.transform.localRotation.eulerAngles.z);
 
-            //targetDir = positions[17] - positions[5];
-            //hand.transform.localRotation = Quaternion.LookRotation(targetDir.normalized, Vector3.right);
+        //targetDir = positions[17] - positions[5];
+        //hand.transform.localRotation = Quaternion.LookRotation(targetDir.normalized, Vector3.right);
 
-            targetDir = positions[9] - positions[0];
-            bones[1].transform.localRotation = Quaternion.Euler(Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.x, bones[1].transform.rotation.y, bones[1].transform.rotation.z);
-        }
+        targetDir = positions[9] - positions[0];
+        bones[1].transform.localRotation = Quaternion.Euler(Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.x, bones[1].transform.rotation.y, bones[1].transform.rotation.z);
     }
 
      private void OnDrawGizmos()

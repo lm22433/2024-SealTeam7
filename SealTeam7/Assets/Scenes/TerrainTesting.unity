@@ -119,6 +119,96 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &5070786
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5603455988040826351, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5768996772893462416, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: m_Name
+      value: Hand (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: hand
+      value: 
+      objectReference: {fileID: 5070787}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _hand
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: mapManager
+      value: 
+      objectReference: {fileID: 594167918}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _lerpFactor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _thresholdDst
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: positions.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+--- !u!1 &5070787 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5082498155782940501, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+  m_PrefabInstance: {fileID: 5070786}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7865289
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1260,6 +1350,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed2bcae8d9c848778cf672a51e02ce15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &578412639 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6961489748271865038, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+  m_PrefabInstance: {fileID: 923039065}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f049bbb64a4ce0b078abaae085b1d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &584457522
 GameObject:
   m_ObjectHideFlags: 0
@@ -1390,8 +1491,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 584457522}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.012289254, y: -0.8420068, z: 0.5389852, w: 0.01919782}
-  m_LocalPosition: {x: 246.67781, y: 707.601, z: 439.54456}
+  m_LocalRotation: {x: 0, y: 0.92387956, z: -0.38268343, w: 0}
+  m_LocalPosition: {x: 240, y: 397, z: 538}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1525,9 +1626,9 @@ MonoBehaviour:
   minimumSandDepth: 900
   maximumSandDepth: 1150
   blurRadius: 5
-  blurSigma: 5
-  minLerpFactor: 0.02
-  maxLerpFactor: 1
+  blurSigma: 30
+  minLerpFactor: 0.1
+  maxLerpFactor: 0.5
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 480
   chunkRow: 2
@@ -1536,7 +1637,7 @@ MonoBehaviour:
   lodInfo:
     lod: 1
     colliderLod: 2
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -1768,6 +1869,10 @@ PrefabInstance:
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: _lerpFactor
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _thresholdDst
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: positions.Array.size
@@ -4656,7 +4761,7 @@ MonoBehaviour:
   maxEnemyCount: 200
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
-  godlyHands: {fileID: 0}
+  godlyHands: {fileID: 578412639}
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped
 MonoBehaviour:
@@ -4728,3 +4833,4 @@ SceneRoots:
   - {fileID: 1884077986}
   - {fileID: 178228823}
   - {fileID: 923039065}
+  - {fileID: 5070786}
