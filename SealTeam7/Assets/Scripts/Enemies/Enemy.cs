@@ -10,6 +10,12 @@ namespace Enemies
         AttackCore,
         AttackHands
     }
+
+    public enum Target
+    {
+        Core,
+        Hands
+    }
     
     public abstract class Enemy : MonoBehaviour
     {
@@ -24,8 +30,9 @@ namespace Enemies
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
         protected EnemyState State;
-        protected Vector3 Target;
+        protected PlayerDamageable Target;
         protected Quaternion TargetRotation;
+        protected Vector3 TargetDirection;
 
         protected virtual void Start()
         {
@@ -34,8 +41,10 @@ namespace Enemies
 
             SqrAttackRange = attackRange * attackRange;
             State = EnemyState.Moving;
-            Target = transform.position + transform.forward;
+            // Target = transform.position + transform.forward;
+            Target = EnemyManager.godlyCore;
             TargetRotation = transform.rotation;
+            TargetDirection = transform.forward;
         }
 
         public void Die()
@@ -50,9 +59,10 @@ namespace Enemies
         
         private void UpdateState()
         {
-            if ((EnemyManager.godlyCore.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
+            var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, transform.position.y, EnemyManager.godlyCore.transform.position.z);
+            if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
             else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackHands;
-            else if ((EnemyManager.godlyCore.transform.position - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
+            else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
         }
 
         private void UpdateTarget()
@@ -62,12 +72,12 @@ namespace Enemies
                 case EnemyState.Moving:
                 case EnemyState.AttackCore:
                 {
-                    Target = EnemyManager.godlyCore.transform.position;
+                    Target = EnemyManager.godlyCore;
                     break;
                 }
                 case EnemyState.AttackHands:
                 {
-                    Target = EnemyManager.godlyHands.transform.position;
+                    Target = EnemyManager.godlyHands;
                     break;
                 }
             }

@@ -1,24 +1,28 @@
-﻿using Game;
+﻿using System;
+using Game;
 using Player;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Enemies
 {
+    [Serializable]
+    public struct EnemyData
+    {
+        public GameObject prefab;
+        public int groupSize;
+        public float groupSpacing;
+        [Range(0, 1)] public float spawnChance;
+    }
+
     public class EnemyManager : MonoBehaviour
     {
         [Header("Spawn Settings")]
-        [Header("")]
-        [SerializeField] private GameObject[] enemyTypes;
         [SerializeField] private Transform[] spawnPoints;
-        [SerializeField] private float spawnInterval;
-        [SerializeField] private int spawnGroupSize;
-        [SerializeField] private float spawnGroupSpacing;
         [SerializeField] private int maxEnemyCount;
         [SerializeField] private float maxEnemyDistance;
-        
-        [Header("")]
+
         [Header("Game Settings")]
-        [Header("")]
         [SerializeField] public PlayerCore godlyCore;
         [SerializeField] public PlayerHands godlyHands;
         
@@ -26,9 +30,11 @@ namespace Enemies
         
         private float _lastSpawn;
         private int _enemyCount;
+        private float _spawnInterval;
+        private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
 
-        private void Start()
+        private void Awake()
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
@@ -44,20 +50,40 @@ namespace Enemies
         
         public static EnemyManager GetInstance() => _instance;
 
+        public void SetDifficulty(Difficulty difficulty)
+        {
+            _spawnInterval = difficulty.spawnInterval;
+            _enemyTypes = difficulty.enemies;
+        }
+
+        public void KillAllEnemies()
+        {
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
         private void SpawnEnemies()
         {
-            foreach (var spawn in spawnPoints)
+            // choose random spawn point
+            var spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            
+            foreach (var enemy in _enemyTypes)
             {
-                for (int i = 0; i < spawnGroupSize; i++)
-                {
-                    if (_enemyCount >= maxEnemyCount) continue;
-                    
-                    var spawnOffset = Random.onUnitSphere * spawnGroupSpacing;
-                    spawnOffset.y = 0f;
-                    Instantiate(enemyTypes[Random.Range(0, enemyTypes.Length)], spawn.position + spawnOffset, spawn.rotation, transform);
+                if (Random.value > enemy.spawnChance) continue;
 
+                for (int i = 0; i < enemy.groupSize; i++)
+                {
+                    var spawnOffset2D = Random.insideUnitCircle.normalized * enemy.groupSpacing;
+                    var spawnOffset = new Vector3(spawnOffset2D.x, 0f, spawnOffset2D.y);
+                    
+                    if (_enemyCount >= maxEnemyCount) continue;
+                    Instantiate(enemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);
                     _enemyCount++;
                 }
+
+                break;
             }
         }
         
@@ -67,7 +93,7 @@ namespace Enemies
             
             _lastSpawn += Time.deltaTime;
             
-            if (_lastSpawn < spawnInterval) return;
+            if (_lastSpawn < _spawnInterval) return;
             
             _lastSpawn = 0;
             SpawnEnemies();

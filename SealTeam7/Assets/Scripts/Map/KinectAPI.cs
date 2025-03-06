@@ -37,7 +37,8 @@ namespace Map
         private readonly Point _defaultAnchor;
         private readonly MCvScalar _scalarOne;
         private readonly float _heightScale;
-        private readonly float _lerpFactor;
+        private readonly float _minLerpFactor;
+        private readonly float _maxLerpFactor;
         private readonly int _minimumSandDepth;
         private readonly int _maximumSandDepth;
         private readonly int _colourWidth;
@@ -50,7 +51,6 @@ namespace Map
         private readonly int _yOffsetEnd;
         private readonly Size _gaussianKernelSize;
         private readonly float _gaussianKernelSigma;
-        private readonly float _similarityThreshold;
 
         private bool _running;
         private Task _getCaptureTask;
@@ -63,11 +63,12 @@ namespace Map
         public HandLandmarks HandLandmarks;
         public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
-        public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int gaussianKernelRadius, float gaussianKernelSigma)
+        public KinectAPI(float heightScale, float minLerpFactor, float maxLerpFactor, int minimumSandDepth, int maximumSandDepth, 
+                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int gaussianKernelRadius, float gaussianKernelSigma)
         {
             _heightScale = heightScale;
-            _lerpFactor = lerpFactor;
+            _minLerpFactor = minLerpFactor;
+            _maxLerpFactor = maxLerpFactor;
             _minimumSandDepth = minimumSandDepth;
             _maximumSandDepth = maximumSandDepth;
             _width = width;
@@ -87,7 +88,6 @@ namespace Map
             _scalarOne = new MCvScalar(1f);
             _gaussianKernelSize = new Size(gaussianKernelRadius * 2 + 1, gaussianKernelRadius * 2 + 1);
             _gaussianKernelSigma = gaussianKernelSigma;
-            _similarityThreshold = similarityThreshold;
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -170,7 +170,7 @@ namespace Map
         
         private void GetCaptureTask()
         {
-            PythonManager2.Initialize();
+            PythonManager.Initialize();
             
             while (_running)
             {
@@ -185,7 +185,7 @@ namespace Map
                     Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
                     
                     stopwatch.Restart();
-                    var hl = PythonManager2.ProcessFrame(capture.Color);
+                    var hl = PythonManager.ProcessFrame(capture.Color);
                     stopwatch.Stop();
                     Debug.Log($"PythonManager2.ProcessFrame: {stopwatch.ElapsedMilliseconds} ms");
 
@@ -211,7 +211,7 @@ namespace Map
                 }
             }
             
-            PythonManager2.Dispose();
+            PythonManager.Dispose();
         }
 
         private void UpdateHeightMap(Image depthImage, HandLandmarks handLandmarks)
@@ -321,9 +321,8 @@ namespace Map
                     var currentHeight = _heightMap[y * (_width + 1) + x];
                     var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
                     var distance = Mathf.Abs(currentHeight - newHeight);
-                    var lerpFactor = Mathf.Clamp01(distance / 10f);
+                    var lerpFactor = Mathf.Clamp(distance / 10f, _minLerpFactor, _maxLerpFactor);
                     _heightMap[y * (_width + 1) + x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
-                    // _heightMap[y * (_width + 1) + x] = _heightMask.Data[y, x, 0] * 50f;
                 }
             }
         }
@@ -343,13 +342,13 @@ namespace Map
             const float wristYOffset = 0f;
             if (leftHandDepth.HasValue)
             {
-                offsetLeft = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetLeft = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - leftHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
             if (rightHandDepth.HasValue)
             {
-                offsetRight = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetRight = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }

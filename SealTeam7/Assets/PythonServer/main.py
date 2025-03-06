@@ -1,319 +1,134 @@
-import json
-import socket
-import threading
+print("Initialising server...")
+
+import struct
+import mmap
 import time
-import traceback
-from typing import Optional
 from contextlib import contextmanager
 
+import win32event
 import cv2
 import mediapipe as mp
 import numpy as np
 from mediapipe.tasks.python import BaseOptions
 from mediapipe.tasks.python.vision import *
 
+# Configuration
+COLOUR_IMAGE_FULL_WIDTH = 1920
+COLOUR_IMAGE_FULL_HEIGHT = 1080
+COLOUR_IMAGE_NUM_CHANNELS = 3
+COLOUR_IMAGE_FULL_SIZE = COLOUR_IMAGE_FULL_WIDTH * COLOUR_IMAGE_FULL_HEIGHT * COLOUR_IMAGE_NUM_CHANNELS
+COLOUR_IMAGE_FILE_NAME = "colour_image"
+HAND_LANDMARKS_SIZE = 21 * 3 * 2 * 4  # 21 landmarks, 3 coordinates per landmark, 2 hands, 4 bytes per float
+HAND_LANDMARKS_FILE_NAME = "hand_landmarks"
+READY_EVENT_NAME = "SealTeam7ColourImageReady"
+DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
 
 OBJECT_DETECTION_MODEL_PATH = 'object_detection_model.tflite'
 HAND_LANDMARKING_MODEL_PATH = 'hand_landmarking_model.task'
-HOST = "127.0.0.1"
-PORT = 65465
-
-MOCK_KINECT = False
-"""Mock the Kinect camera using OpenCV to read from a webcam"""
-
-VISUALISE_INFERENCE_RESULTS = False
+VISUALISE_INFERENCE_RESULTS = True
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
-
-stop_server = False
-object_detection_result: Optional[ObjectDetectorResult] = None
-object_detection_done = threading.Event()
-hand_landmarking_result: Optional[HandLandmarkerResult] = None
-hand_landmarking_done = threading.Event()
-color_image = np.zeros((1080, 1920, 4), dtype=np.uint8)
-depth_image = np.zeros((1080, 1920), dtype=np.uint16)
-image_lock = threading.Lock()
-
 
 @contextmanager
 def timer(name):
     start = time.time()
     yield
     end = time.time()
-    print(f"{name} took {int((end - start)*1000)} ms")
+    print(f"{name}: {int((end - start)*1000)} ms")
 
+# Create events
+ready_event = win32event.CreateEvent(None, 0, 0, READY_EVENT_NAME)
+done_event = win32event.CreateEvent(None, 0, 0, DONE_EVENT_NAME)
 
-def object_detector_callback(result, output_image, timestamp_ms):
-    global object_detection_result
+# Initialise the mapping
+colour_image_buffer = mmap.mmap(-1, COLOUR_IMAGE_FULL_SIZE, access=mmap.ACCESS_WRITE, tagname=COLOUR_IMAGE_FILE_NAME)
+hand_landmarks_buffer = mmap.mmap(-1, HAND_LANDMARKS_SIZE, access=mmap.ACCESS_WRITE, tagname=HAND_LANDMARKS_FILE_NAME)
 
-    object_detection_result = result
-    object_detection_done.set()
-    
-    
-def hand_landmarker_callback(result, output_image, timestamp_ms):
-    global hand_landmarking_result
+hand_landmarker_options = HandLandmarkerOptions(
+    base_options=BaseOptions(model_asset_path=HAND_LANDMARKING_MODEL_PATH),
+    running_mode=RunningMode.VIDEO,
+    num_hands=2,
+    min_hand_detection_confidence=0.5,
+    min_hand_presence_confidence=0.5,
+    min_tracking_confidence=0.5)
 
-    hand_landmarking_result = result
-    hand_landmarking_done.set()
+with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmarker:
+    print("Ready.")
 
-
-def inference_frame(hand_landmarker, frame, depth):
-    """Returns the object bounding boxes and hand landmarks as coordinates in the *256x256* image"""
-
-    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB))
-    timestamp_ms = int(time.time() * 1000)
-    # object_detector.detect_async(mp_image, timestamp_ms)
-    hand_landmarker.detect_async(mp_image, timestamp_ms)
-    # object_detection_done.wait()  # block until inference is done for this frame
-    hand_landmarking_done.wait()
-    # object_detection_done.clear()
-    hand_landmarking_done.clear()
-
-    # # filter out object detections that are obviously wrong
-    # detections = list(filter(lambda d: d.bounding_box.width < 25 and d.bounding_box.height < 25,
-    #                          object_detection_result.detections))
-
-    # determine handedness and scale to pixel coordinates
-    left = None
-    right = None
-    for i, handedness in enumerate(hand_landmarking_result.handedness):  # iterates over each hand
-        if handedness[0].category_name == "Left":  # the [0] is ignoreable
-            landmarks = hand_landmarking_result.hand_landmarks[i]
-            left = [{"x": landmark.x * frame.shape[1],
-                     "y": -landmark.z * frame.shape[1],  # z is depth so it's the negative y coordinate
-                     "z": landmark.y * frame.shape[0]}
-                     for landmark in landmarks] if landmarks is not None else None
-        else:
-            landmarks = hand_landmarking_result.hand_landmarks[i]
-            right = [{"x": landmark.x * frame.shape[1],
-                      "y": -landmark.z * frame.shape[1],
-                      "z": landmark.y * frame.shape[0]}
-                      for landmark in landmarks] if landmarks is not None else None
-            
-    # determine depth of each hand
-    left_depth = float(depth[int(left[0]["z"]), int(left[0]["x"])]) if left is not None else None
-    right_depth = float(depth[int(right[0]["z"]), int(right[0]["x"])]) if right is not None else None
-
-    if VISUALISE_INFERENCE_RESULTS:
-        scale = 1
-        # vis_frame = cv2.resize(depth, (frame.shape[1] * scale, frame.shape[0] * scale),
-        #                        interpolation=cv2.INTER_NEAREST)
-        depth_clipped = np.clip(depth, 800, 1150)
-        vis_frame = cv2.normalize(depth_clipped, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
-        vis_frame = cv2.cvtColor(vis_frame, cv2.COLOR_GRAY2BGR)
-        # for detection in detections:
-        #     bbox = detection.bounding_box
-        #     x = int(bbox.origin_x * scale)
-        #     y = int(bbox.origin_y * scale)
-        #     w = int(bbox.width * scale)
-        #     h = int(bbox.height * scale)
-        #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 1)
-        #     cv2.putText(frame, detection.categories[0].category_name, (x, y-4),
-        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
-        for landmarks, colour in ((left, (0, 255, 0)), (right, (0, 0, 255))):
-            if landmarks is not None:
-                for connection in HandLandmarksConnections.HAND_CONNECTIONS:
-                    cv2.line(vis_frame, (int(landmarks[connection.start]["x"]),
-                                         int(landmarks[connection.start]["z"])),
-                             (int(landmarks[connection.end]["x"]),
-                              int(landmarks[connection.end]["z"])),
-                             colour, 1)
-                for landmark in landmarks:
-                    cv2.circle(vis_frame, (int(landmark["x"]),
-                                           int(landmark["z"])), 3, colour, -1)
-        cv2.imshow("Inference visualisation", vis_frame)
-        cv2.waitKey(1)
-
-    # return {"objects": [{"type": detection.categories[0].category_name,
-    #                      "x": detection.bounding_box.origin_x + detection.bounding_box.width / 2,
-    #                      "y": detection.bounding_box.origin_y + detection.bounding_box.height / 2}
-    #                     for detection in detections]}
-
-    return {"hand_landmarks": {"left": left, "right": right},
-            "hand_depth": {"left": left_depth, "right": right_depth}}
-
-
-def inference_connection(conn):
-    global stop_server
-    
-    conn.setblocking(True)  # block until START control signal received
-    conn.settimeout(0.5)  # instead of blocking for ages, check every 0.5s, in case of KeyboardInterrupt
-    inference_running = False
-
-    # object_detector_options = ObjectDetectorOptions(
-    #     base_options=BaseOptions(model_asset_path=OBJECT_DETECTION_MODEL_PATH),
-    #     running_mode=RunningMode.LIVE_STREAM,
-    #     max_results=5,
-    #     result_callback=object_detector_callback)
-    hand_landmarker_options = HandLandmarkerOptions(
-        base_options=BaseOptions(model_asset_path=HAND_LANDMARKING_MODEL_PATH),
-        running_mode=RunningMode.LIVE_STREAM,
-        num_hands=2,
-        min_hand_detection_confidence=0.5,
-        min_hand_presence_confidence=0.5,
-        min_tracking_confidence=0.5,
-        result_callback=hand_landmarker_callback)
-
-    with conn, HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmarker:
-        while not stop_server:
-            try:
-                # Check if any control signals in buffer
-                try:
-                    # print("[inference_connection] conn.recv()")
-                    message = conn.recv(1024).decode()
-                    print(f"[inference_connection] Received message: {message}")
-                    if message == "START":
-                        inference_running = True
-                        conn.setblocking(False)  # no longer should block and wait for control signals
-                        if MOCK_KINECT: video_capture = cv2.VideoCapture(0)
-                    elif message == "STOP":
-                        inference_running = False
-                        conn.setblocking(True)  # block until START control signal received again
-                        if MOCK_KINECT: video_capture.release()
-                    elif message == "":  # Empty string means client disconnected
-                        print("[inference_connection] Client disconnected, closing connection.")
-                        break
-                except BlockingIOError:
-                    pass  # No control signal in buffer - that's normal, continue with object detection
-                except socket.timeout:
-                    pass  # Still waiting for control signal - OK
-
-                # Main logic - read frame from camera, run object detection, send result to client
-                if inference_running:
-                    if MOCK_KINECT:
-                        success, frame = video_capture.read()
-                        if not success:
-                            print("[inference_connection] Failed to read frame from VideoCapture.")
-                            continue
-                    else:
-                        # print("[inference_connection] Acquiring lock...")
-                        image_lock.acquire()
-                        frame = color_image.copy()
-                        depth = depth_image.copy()
-                        image_lock.release()
-                    
-                    with timer("inference_frame"):
-                        data = inference_frame(hand_landmarker, frame, depth)
-                    data_json = json.dumps(data)
-                    try:
-                        conn.send(data_json.encode())
-                    except BlockingIOError:
-                        print("[inference_connection] Failed to send data, buffer full.")
-                    except ConnectionResetError:
-                        print("[inference_connection] Client disconnected, closing connection.")
-                        break
-
-            except KeyboardInterrupt:
-                print("[inference_connection] Closing connection.")
-                break
-
-            except Exception:
-                print(traceback.format_exc(), end="")
-                print("[inference_connection] Error, closing connection.")
-                break
-                
-        stop_server = True  # if this thread is stopping, all threads should stop
-
-    # clean up
-    cv2.destroyAllWindows()
-    if 'video_capture' in locals() and video_capture.isOpened():
-        video_capture.release()
-
-
-def image_connection(conn):
-    global stop_server, color_image, depth_image
-    
-    conn.setblocking(True)
-    conn.settimeout(0.5)
-    cumulative_message = b''
-
-    with conn:
-        while not stop_server:
-            try:
-                # handle receiving message
-                # print("[image_connection] conn.recv()")
-                image_length = 1080*1920*4 + 1080*1920*2  # 1920x1080 BGRA colour image + 1920x1080 2-bit depth image
-                message = conn.recv(image_length)
-                if message == b'':  # Empty string means client disconnected
-                    print("[image_connection] Client disconnected, closing connection.")
-                    break
-                elif len(message) == image_length:
-                    # print("[image_connection] Full message received.")
-                    cumulative_message = message
-                elif 1 <= len(message) < image_length:
-                    cumulative_message += message
-                    # print(f"[image_connection] Partial message received. "
-                    #       f"(length: {len(message)}, cumulative length: {len(cumulative_message)})")
-                else:
-                    print(f"[image_connection] Invalid message received, ignoring. (length: {len(message)})")
-                    continue
-
-                # Decode full message as image and store in color_image
-                if len(cumulative_message) == image_length:
-                    # Save image onto disk - temp
-                    # image = np.frombuffer(cumulative_message, dtype=np.uint8).reshape(color_image.shape)
-                    # image = image[90:470, 370:870, :3]
-                    # cv2.imwrite(f"{time.strftime("%Y-%m-%d_%H-%M-%S")}_{str(time.time())[11:14]}.png", image)
-                    
-                    color = np.frombuffer(cumulative_message[:1080*1920*4], dtype=np.uint8).reshape(1080, 1920, 4)
-                    depth = np.frombuffer(cumulative_message[1080*1920*4:], dtype=np.uint16).reshape(1080, 1920)
-                    # print("[image_connection] Acquiring lock...")
-                    image_lock.acquire()
-                    color_image = color
-                    depth_image = depth
-                    image_lock.release()
-                    cumulative_message = b''
-                
-            except socket.timeout:
-                # print("[color_image_connection] Temp - timeout")
-                pass
-
-            except KeyboardInterrupt:
-                print("[image_connection] Closing connection.")
-                break
-
-            except Exception:
-                print(traceback.format_exc(), end="")
-                print("[image_connection] Error, closing connection.")
-                break
-                
-        stop_server = True  # if this thread is stopping, all threads should stop
-
-
-def main():
-    global stop_server
-    
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-        server.settimeout(5)
-        server.bind((HOST, PORT))
-        server.listen()
-        print(f"Server listening on {HOST}:{PORT}...")
-        
+    try:
         while True:
-            try:
-                # print("server.accept()")
-                inf_conn, addr = server.accept()  # this will frequently raise a timeout exception and skip the below
-                print(f"Inference connection from {addr}")
-                inf_thread = threading.Thread(target=inference_connection, args=(inf_conn,))
-                inf_thread.start()
-        
-                im_conn, addr = server.accept()
-                print(f"Image connection from {addr}")
-                image_connection(im_conn)
-                
-                # at this point the client has disconnected -> join thread and then listen again
-                inf_thread.join()
-                stop_server = False
-                print(f"Server listening on {HOST}:{PORT}...")
-                
-            except socket.timeout:
-                pass  # OK, just keep listening
-            except KeyboardInterrupt:
-                print("Shutting down server.")
-                break
-            except Exception:
-                print(traceback.format_exc(), end="")
-                print("Error, shutting down server.")
-                break
+            # Wait for new frame
+            result = win32event.WaitForSingleObject(ready_event, win32event.INFINITE)
 
+            # Read the frame
+            with timer("Reading frame"):
+                colour_image_buffer.seek(0)
+                colour_image_data = np.frombuffer(colour_image_buffer, dtype=np.uint8).reshape(
+                    (COLOUR_IMAGE_FULL_HEIGHT, COLOUR_IMAGE_FULL_WIDTH, COLOUR_IMAGE_NUM_CHANNELS))
 
-main()
+            # Perform hand landmarking
+            with timer("Creating mp image"):
+                mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=colour_image_data)
+            with timer("Hand landmarking"):
+                hand_landmarking_result = hand_landmarker.detect_for_video(mp_image, int(time.monotonic()*1000))
+
+            # determine handedness and scale to pixel coordinates
+            with timer("Processing results"):
+                left = None
+                right = None
+                for i, handedness in enumerate(hand_landmarking_result.handedness):  # iterates over each hand
+                    if handedness[0].category_name == "Left":  # the [0] is ignoreable
+                        landmarks = hand_landmarking_result.hand_landmarks[i]
+                        left = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
+                                 "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,  # z is depth so it's the negative y coordinate
+                                 "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
+                                for landmark in landmarks] if landmarks is not None else None
+                    else:
+                        landmarks = hand_landmarking_result.hand_landmarks[i]
+                        right = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
+                                  "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
+                                  "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
+                                 for landmark in landmarks] if landmarks is not None else None
+                    # todo break if both are found, also change this so that we're not making a new list each time
+
+            if VISUALISE_INFERENCE_RESULTS:
+                with timer("Visualising results"):
+                    scale = 1
+                    vis_frame = cv2.cvtColor(colour_image_data, cv2.COLOR_RGB2BGR)
+                    for landmarks, colour in ((left, (0, 255, 0)), (right, (0, 0, 255))):
+                        if landmarks is not None:
+                            for connection in HandLandmarksConnections.HAND_CONNECTIONS:
+                                cv2.line(vis_frame, (int(landmarks[connection.start]["x"]),
+                                                     int(landmarks[connection.start]["z"])),
+                                         (int(landmarks[connection.end]["x"]),
+                                          int(landmarks[connection.end]["z"])),
+                                         colour, 1)
+                            for landmark in landmarks:
+                                cv2.circle(vis_frame, (int(landmark["x"]),
+                                                       int(landmark["z"])), 3, colour, -1)
+                    cv2.imshow("Inference visualisation", vis_frame)
+                    cv2.waitKey(1)
+
+            # Write the hand landmarks
+            with timer("Writing results"):
+                hand_landmarks_buffer.seek(0)
+                for i, hand in enumerate((left, right)):
+                    if hand is None:
+                        for j in range(21):
+                            struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4, 0, 0, 0)
+                    else:
+                        for j, landmark in enumerate(hand):
+                            struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4, landmark["x"], landmark["y"], landmark["z"])
+
+            # Signal that frame has been processed
+            win32event.SetEvent(done_event)
+
+    except KeyboardInterrupt:
+        print("Shutting down server.")
+
+    finally:
+        # Clean up
+        cv2.destroyAllWindows()
+        colour_image_buffer.close()
+        hand_landmarks_buffer.close()
+        win32event.CloseHandle(ready_event)
+        win32event.CloseHandle(done_event)
