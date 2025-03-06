@@ -32,16 +32,14 @@ namespace Map
         [Header("")]
         [SerializeField, Range(300f, 2000f)] private ushort minimumSandDepth;
         [SerializeField, Range(600f, 2000f)] private ushort maximumSandDepth;
-        [Header("")]
-        [SerializeField, Range(0, 255f)] private int irThreshold;
-        [Header("")]
-        [SerializeField, Range(0.5f, 1f)] private float similarityThreshold;
 
         [Header("")]
-        [Header("Blur Settings")]
+        [Header("Image Processing Settings")]
         [Header("")]
-        [SerializeField] private int kernelSize;
-        [SerializeField] private float gaussianStrength;
+        [FormerlySerializedAs("kernelSize")] [SerializeField] private int blurRadius;
+        [FormerlySerializedAs("gaussianStrength")] [SerializeField] private float blurSigma;
+        [SerializeField] private float similarityThreshold;
+        [SerializeField] private float lerpFactor;
 
         [Header("")]
         [Header("Map Settings")]
@@ -51,7 +49,6 @@ namespace Map
         [SerializeField] private int chunkRow;
         [SerializeField] private int chunkSize;
         [SerializeField] private float heightScale;
-        [SerializeField] private float lerpFactor;
         [SerializeField] private LODInfo lodInfo;
         
         [Header("")]
@@ -91,7 +88,9 @@ namespace Map
                 ColliderEnabled = colliderEnabled
             };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, 
+                similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, 
+                blurRadius, blurSigma);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
             for (int z = 0; z < chunkRow; z++)
@@ -167,6 +166,79 @@ namespace Map
             if (!paused && !isKinectPresent)
             {
                 _noiseGenerator.AdvanceTime(Time.deltaTime);                
+            }
+        }
+        
+        private void OnDrawGizmos()
+        {
+            if (_kinect != null)
+            {
+                Gizmos.matrix = Matrix4x4.identity;
+                Gizmos.color = Color.blue;
+
+                // Draw hand landmarks bounding boxes
+                if (_kinect.BboxLeft.HasValue)
+                {
+                    // Debug.Log(_kinect.BboxLeft);
+                    var bb = _kinect.BboxLeft.Value;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Gizmos.DrawRay(new Vector3(bb.xMin + (i/4f)*bb.width, 0, bb.yMin), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMin, 0, bb.yMin + ((i+1)/4f)*bb.height), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMin + ((i+1)/4f)*bb.width, 0, bb.yMax), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMin + (i/4f)*bb.height), Vector3.up * 1000f);
+                    }
+                    Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMax), Vector3.up * 1000f);
+                }
+                if (_kinect.BboxRight.HasValue)
+                {
+                    // Debug.Log(_kinect.BboxRight);
+                    var bb = _kinect.BboxRight.Value;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Gizmos.DrawRay(new Vector3(bb.xMin + (i/4f)*bb.width, 0, bb.yMin), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMin, 0, bb.yMin + ((i+1)/4f)*bb.height), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMin + ((i+1)/4f)*bb.width, 0, bb.yMax), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMin + (i/4f)*bb.height), Vector3.up * 1000f);
+                    }
+                    Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMax), Vector3.up * 1000f);
+                }
+
+                // Draw hand landmarks
+                /* TODO Think about which landmark(s) to use for finding y coordinate. Consider that if the region around the landmark is
+                   TODO steep it will be a less reliable place to sample depth from. Also consider that landmarks
+                   TODO may sometimes be outside of the map. And consider that landmarks might be occluded by other
+                   TODO parts of the hand. */
+                var handConnections = new[] {(0, 1), (0, 5), (9, 13), (13, 17), (5, 9), (0, 17), (1, 2), (2, 3), (3, 4),
+                    (5, 6), (6, 7), (7, 8), (9, 10), (10, 11), (11, 12), (13, 14), (14, 15), (15, 16), (17, 18), 
+                    (18, 19), (19, 20)};
+                // Debug.Log(_kinect.HandLandmarks);
+                if (_kinect.HandLandmarks.Left != null)
+                {
+                    Gizmos.color = Color.green;
+                    foreach (var connection in handConnections)
+                    {
+                        Gizmos.DrawLine(_kinect.HandLandmarks.Left[connection.Item1], 
+                            _kinect.HandLandmarks.Left[connection.Item2]);
+                    }
+                    foreach (var landmark in _kinect.HandLandmarks.Left)
+                    {
+                        Gizmos.DrawSphere(landmark, 5f);
+                    }
+                }
+                if (_kinect.HandLandmarks.Right != null)
+                {
+                    Gizmos.color = Color.red;
+                    foreach (var connection in handConnections)
+                    {
+                        Gizmos.DrawLine(_kinect.HandLandmarks.Right[connection.Item1], 
+                            _kinect.HandLandmarks.Right[connection.Item2]);
+                    }
+                    foreach (var landmark in _kinect.HandLandmarks.Right)
+                    {
+                        Gizmos.DrawSphere(landmark, 5f);
+                    }
+                }
             }
         }
     }

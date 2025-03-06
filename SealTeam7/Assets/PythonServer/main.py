@@ -4,6 +4,7 @@ import threading
 import time
 import traceback
 from typing import Optional
+from contextlib import contextmanager
 
 import cv2
 import mediapipe as mp
@@ -20,7 +21,7 @@ PORT = 65465
 MOCK_KINECT = False
 """Mock the Kinect camera using OpenCV to read from a webcam"""
 
-VISUALISE_INFERENCE_RESULTS = True
+VISUALISE_INFERENCE_RESULTS = False
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
 stop_server = False
@@ -28,8 +29,17 @@ object_detection_result: Optional[ObjectDetectorResult] = None
 object_detection_done = threading.Event()
 hand_landmarking_result: Optional[HandLandmarkerResult] = None
 hand_landmarking_done = threading.Event()
-color_image = np.zeros((256, 256, 4), dtype=np.uint8)  # 256x256 BGRA image
-color_image_lock = threading.Lock()
+color_image = np.zeros((1080, 1920, 4), dtype=np.uint8)
+depth_image = np.zeros((1080, 1920), dtype=np.uint16)
+image_lock = threading.Lock()
+
+
+@contextmanager
+def timer(name):
+    start = time.time()
+    yield
+    end = time.time()
+    print(f"{name} took {int((end - start)*1000)} ms")
 
 
 def object_detector_callback(result, output_image, timestamp_ms):
@@ -46,7 +56,7 @@ def hand_landmarker_callback(result, output_image, timestamp_ms):
     hand_landmarking_done.set()
 
 
-def inference_frame(hand_landmarker, frame):
+def inference_frame(hand_landmarker, frame, depth):
     """Returns the object bounding boxes and hand landmarks as coordinates in the *256x256* image"""
 
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB))
@@ -62,10 +72,34 @@ def inference_frame(hand_landmarker, frame):
     # detections = list(filter(lambda d: d.bounding_box.width < 25 and d.bounding_box.height < 25,
     #                          object_detection_result.detections))
 
+    # determine handedness and scale to pixel coordinates
+    left = None
+    right = None
+    for i, handedness in enumerate(hand_landmarking_result.handedness):  # iterates over each hand
+        if handedness[0].category_name == "Left":  # the [0] is ignoreable
+            landmarks = hand_landmarking_result.hand_landmarks[i]
+            left = [{"x": landmark.x * frame.shape[1],
+                     "y": -landmark.z * frame.shape[1],  # z is depth so it's the negative y coordinate
+                     "z": landmark.y * frame.shape[0]}
+                     for landmark in landmarks] if landmarks is not None else None
+        else:
+            landmarks = hand_landmarking_result.hand_landmarks[i]
+            right = [{"x": landmark.x * frame.shape[1],
+                      "y": -landmark.z * frame.shape[1],
+                      "z": landmark.y * frame.shape[0]}
+                      for landmark in landmarks] if landmarks is not None else None
+            
+    # determine depth of each hand
+    left_depth = float(depth[int(left[0]["z"]), int(left[0]["x"])]) if left is not None else None
+    right_depth = float(depth[int(right[0]["z"]), int(right[0]["x"])]) if right is not None else None
+
     if VISUALISE_INFERENCE_RESULTS:
-        scale = 3
-        vis_frame = cv2.resize(frame, (frame.shape[1] * scale, frame.shape[0] * scale),
-                               interpolation=cv2.INTER_NEAREST)
+        scale = 1
+        # vis_frame = cv2.resize(depth, (frame.shape[1] * scale, frame.shape[0] * scale),
+        #                        interpolation=cv2.INTER_NEAREST)
+        depth_clipped = np.clip(depth, 800, 1150)
+        vis_frame = cv2.normalize(depth_clipped, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+        vis_frame = cv2.cvtColor(vis_frame, cv2.COLOR_GRAY2BGR)
         # for detection in detections:
         #     bbox = detection.bounding_box
         #     x = int(bbox.origin_x * scale)
@@ -75,16 +109,17 @@ def inference_frame(hand_landmarker, frame):
         #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 1)
         #     cv2.putText(frame, detection.categories[0].category_name, (x, y-4),
         #                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
-        for landmarks in hand_landmarking_result.hand_landmarks:  # for each hand
-            for connection in HandLandmarksConnections.HAND_CONNECTIONS:
-                cv2.line(vis_frame, (int(landmarks[connection.start].x * vis_frame.shape[1]),
-                                     int(landmarks[connection.start].y * vis_frame.shape[0])),
-                         (int(landmarks[connection.end].x * vis_frame.shape[1]),
-                          int(landmarks[connection.end].y * vis_frame.shape[0])),
-                         (0, 255, 0), 1)
-            for landmark in landmarks:
-                cv2.circle(vis_frame, (int(landmark.x * vis_frame.shape[1]),
-                                       int(landmark.y * vis_frame.shape[0])), 3, (0, 255, 0), -1)
+        for landmarks, colour in ((left, (0, 255, 0)), (right, (0, 0, 255))):
+            if landmarks is not None:
+                for connection in HandLandmarksConnections.HAND_CONNECTIONS:
+                    cv2.line(vis_frame, (int(landmarks[connection.start]["x"]),
+                                         int(landmarks[connection.start]["z"])),
+                             (int(landmarks[connection.end]["x"]),
+                              int(landmarks[connection.end]["z"])),
+                             colour, 1)
+                for landmark in landmarks:
+                    cv2.circle(vis_frame, (int(landmark["x"]),
+                                           int(landmark["z"])), 3, colour, -1)
         cv2.imshow("Inference visualisation", vis_frame)
         cv2.waitKey(1)
 
@@ -93,22 +128,8 @@ def inference_frame(hand_landmarker, frame):
     #                      "y": detection.bounding_box.origin_y + detection.bounding_box.height / 2}
     #                     for detection in detections]}
 
-    left = None
-    right = None
-    for i, handedness in enumerate(hand_landmarking_result.handedness):  # iterates over each hand
-        if handedness[0].category_name == "Left":  # the [0] is ignoreable
-            left = hand_landmarking_result.hand_landmarks[i]
-        else:
-            right = hand_landmarking_result.hand_landmarks[i]
-
-    return {"hand_landmarks": {"left": [{"x": landmark.x * frame.shape[1],
-                                         "y": landmark.y * frame.shape[0],
-                                         "z": landmark.z * frame.shape[0]}  # assuming frame is square
-                                         for landmark in left] if left is not None else None,
-                              "right": [{"x": landmark.x * frame.shape[1],
-                                         "y": landmark.y * frame.shape[0],
-                                         "z": landmark.z * frame.shape[0]}
-                                         for landmark in right] if right is not None else None}}
+    return {"hand_landmarks": {"left": left, "right": right},
+            "hand_depth": {"left": left_depth, "right": right_depth}}
 
 
 def inference_connection(conn):
@@ -165,11 +186,13 @@ def inference_connection(conn):
                             continue
                     else:
                         # print("[inference_connection] Acquiring lock...")
-                        color_image_lock.acquire()
+                        image_lock.acquire()
                         frame = color_image.copy()
-                        color_image_lock.release()
-
-                    data = inference_frame(hand_landmarker, frame)
+                        depth = depth_image.copy()
+                        image_lock.release()
+                    
+                    with timer("inference_frame"):
+                        data = inference_frame(hand_landmarker, frame, depth)
                     data_json = json.dumps(data)
                     try:
                         conn.send(data_json.encode())
@@ -197,7 +220,7 @@ def inference_connection(conn):
 
 
 def image_connection(conn):
-    global stop_server
+    global stop_server, color_image, depth_image
     
     conn.setblocking(True)
     conn.settimeout(0.5)
@@ -208,7 +231,7 @@ def image_connection(conn):
             try:
                 # handle receiving message
                 # print("[image_connection] conn.recv()")
-                image_length = 256 * 256 * 4
+                image_length = 1080*1920*4 + 1080*1920*2  # 1920x1080 BGRA colour image + 1920x1080 2-bit depth image
                 message = conn.recv(image_length)
                 if message == b'':  # Empty string means client disconnected
                     print("[image_connection] Client disconnected, closing connection.")
@@ -231,11 +254,13 @@ def image_connection(conn):
                     # image = image[90:470, 370:870, :3]
                     # cv2.imwrite(f"{time.strftime("%Y-%m-%d_%H-%M-%S")}_{str(time.time())[11:14]}.png", image)
                     
+                    color = np.frombuffer(cumulative_message[:1080*1920*4], dtype=np.uint8).reshape(1080, 1920, 4)
+                    depth = np.frombuffer(cumulative_message[1080*1920*4:], dtype=np.uint16).reshape(1080, 1920)
                     # print("[image_connection] Acquiring lock...")
-                    color_image_lock.acquire()
-                    # print("[image_connection] Copying image.")
-                    np.copyto(color_image, np.frombuffer(cumulative_message, dtype=np.uint8).reshape(color_image.shape))
-                    color_image_lock.release()
+                    image_lock.acquire()
+                    color_image = color
+                    depth_image = depth
+                    image_lock.release()
                     cumulative_message = b''
                 
             except socket.timeout:
