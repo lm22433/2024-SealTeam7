@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4195251952092455746}
   - component: {fileID: 3022295029764522985}
   m_Layer: 0
-  m_Name: Soldier
+  m_Name: FastSoldier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,13 +50,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 20
+  moveSpeed: 40
   aimSpeed: 20
   attackRange: 50
   attackInterval: 1
   stopShootingThreshold: 20
   attackDamage: 1
-  killScore: 5
+  killScore: 10
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
@@ -70,11 +70,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9187c63d084cd6a09f2dc794cdcc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 20
+  gravityDefiance: 50
   defianceThreshold: 8
   sinkFactor: 10
   groundedOffset: 4
-  fallDeathVelocityY: 60
+  fallDeathVelocityY: 80
   self: {fileID: 8717828168720478181}
 --- !u!33 &3841694198046563008
 MeshFilter:
@@ -107,7 +107,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+  - {fileID: 2100000, guid: 90515b4a4f473fe4680719954c80bd69, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
