@@ -38,7 +38,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _VignetteDarkening: 1
-    - _VignetteRadius: 0.4
+    - _VignetteRadius: 1
     - _VignetteSoftness: 1
     m_Colors:
     - _Tint: {r: 1, g: 0, b: 0, a: 0}
