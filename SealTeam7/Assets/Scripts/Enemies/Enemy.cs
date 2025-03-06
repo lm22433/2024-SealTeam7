@@ -71,7 +71,7 @@ namespace Enemies
         
         private void UpdateState()
         {
-			if(State == EnemyState.Dying) return;
+			if (State == EnemyState.Dying) return;
             var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, transform.position.y, EnemyManager.godlyCore.transform.position.z);
             if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
             else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackHands;

@@ -14,14 +14,22 @@ namespace Enemies
 
         protected override void Attack(PlayerDamageable target)
         {
+            if (!gunEffects.isPlaying) gunEffects.Play();
             target?.TakeDamage(attackDamage);
         }
         
         protected override void EnemyUpdate()
         {
-            // gun rotation
-            // TargetRotation = Quaternion.Euler(Vector3.Angle(Target - gun.position, Vector3.right), 0f, 0f);
-            // gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
+            if (State == EnemyState.AttackHands)
+            {
+                // gun rotation
+                TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position - gun.position, gun.right), 0f, 0f);
+                gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);   
+            }
+            else
+            {
+                gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
+            }
             
             // turret rotation
             TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(Target.transform.position - turret.position).eulerAngles.y - transform.rotation.eulerAngles.y, 0f);
@@ -40,21 +48,24 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     //gunEffects.Stop();
-                    if(!dustTrail.isPlaying)
+
+                    if (Mathf.Abs(Vector3.Dot(transform.up, Vector3.up)) < 0.5f ||
+                        Rb.position.y > _mapManager.GetHeight(Rb.position.x, Rb.position.z))
                     {
-                        if (transform.position.y < _mapManager.GetHeight(transform.position.x, transform.position.z) + 1.0f) dustTrail.Play();
-                        else dustTrail.Stop();
+                        if (dustTrail.isPlaying) dustTrail.Stop();
                     }
-                    if (Mathf.Abs(Vector3.Dot(transform.forward, Vector3.up)) < 0.1f) break;
-                    Rb.MoveRotation(TargetRotation);
-                    Rb.AddForce(TargetDirection * (moveSpeed * 10f));
+                    else
+                    {
+                        if (!dustTrail.isPlaying) dustTrail.Play();
+                        Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime));
+                        Rb.AddForce(TargetDirection * (moveSpeed * 10f));   
+                    }
                     break;
                 }
                 case EnemyState.AttackCore:
                 {
                     if (_lastAttack > attackInterval)
                     {
-                        if(!gunEffects.isPlaying) gunEffects.Play();
                         Attack(EnemyManager.godlyCore);
                         _lastAttack = 0f;
                     }
@@ -64,7 +75,6 @@ namespace Enemies
                 {
                     if (_lastAttack < attackInterval)
                     {
-                        if(!gunEffects.isPlaying) gunEffects.Play();
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;
                     }
@@ -75,7 +85,7 @@ namespace Enemies
                     dustTrail.Stop();
 					var x = transform.position.x;
 					var z = transform.position.z;
-					transform.position = new Vector3(x, _mapManager.GetHeight(x, z)-buried, z);
+					transform.position = new Vector3(x, _mapManager.GetHeight(x, z) - buried, z);
                     break;
                 }
             }
