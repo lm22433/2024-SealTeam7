@@ -4914,9 +4914,8 @@ MonoBehaviour:
   sinkFactor: 2
   groundedOffset: 4
   fallDeathVelocityY: 60
-  fallDeathRequirement: 10
   self: {fileID: 8717828168720478181}
-  _sandFall: {fileID: 1388282805697331906}
+  sandFall: {fileID: 1388282805697331906}
 --- !u!33 &3841694198046563008
 MeshFilter:
   m_ObjectHideFlags: 0
