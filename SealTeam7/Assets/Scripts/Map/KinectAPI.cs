@@ -135,7 +135,7 @@ namespace Map
         
         private void GetCaptureTask()
         {
-            PythonManager2.Initialize();
+            PythonManager.Initialize();
             
             while (_running)
             {
@@ -150,7 +150,7 @@ namespace Map
                     Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
                     
                     stopwatch.Restart();
-                    var hl = PythonManager2.ProcessFrame(capture.Color);
+                    var hl = PythonManager.ProcessFrame(capture.Color);
                     stopwatch.Stop();
                     Debug.Log($"PythonManager2.ProcessFrame: {stopwatch.ElapsedMilliseconds} ms");
 
@@ -176,7 +176,7 @@ namespace Map
                 }
             }
             
-            PythonManager2.Dispose();
+            PythonManager.Dispose();
         }
 
         private void UpdateHeightMap(Image depthImage, HandLandmarks handLandmarks)
@@ -308,13 +308,13 @@ namespace Map
             const float wristYOffset = 0f;
             if (leftHandDepth.HasValue)
             {
-                offsetLeft = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetLeft = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - leftHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
             if (rightHandDepth.HasValue)
             {
-                offsetRight = new Vector3(PythonManager2.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
+                offsetRight = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
                     (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
