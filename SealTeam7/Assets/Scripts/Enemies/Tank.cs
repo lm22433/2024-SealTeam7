@@ -10,6 +10,7 @@ namespace Enemies
         [SerializeField] private ParticleSystem deathParticles;
         [SerializeField] private ParticleSystem dustTrail;
         [SerializeField] private ParticleSystem gunEffects;
+        [SerializeField] protected float groundedOffset;
         private float _lastAttack;      
 
         protected override void Attack(PlayerDamageable target)
@@ -50,7 +51,7 @@ namespace Enemies
                     //gunEffects.Stop();
 
                     if (Mathf.Abs(Vector3.Dot(transform.up, Vector3.up)) < 0.5f ||
-                        Rb.position.y > _mapManager.GetHeight(Rb.position.x, Rb.position.z))
+                        Rb.position.y > _mapManager.GetHeight(Rb.position.x, Rb.position.z) + groundedOffset)
                     {
                         if (dustTrail.isPlaying) dustTrail.Stop();
                     }

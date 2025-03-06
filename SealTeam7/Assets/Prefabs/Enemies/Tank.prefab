@@ -5151,6 +5151,7 @@ MonoBehaviour:
   deathParticles: {fileID: 6796803004105206313}
   dustTrail: {fileID: 4942188895188102580}
   gunEffects: {fileID: 3513696125289255072}
+  groundedOffset: 4
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5168,9 +5169,8 @@ MonoBehaviour:
   sinkFactor: 2
   groundedOffset: 4
   fallDeathVelocityY: 60
-  fallDeathRequirement: 10
   self: {fileID: 3925053475800111628}
-  _sandFall: {fileID: 9040119461683094764}
+  sandFall: {fileID: 9040119461683094764}
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5333,13 +5333,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5075452764042430786}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.5}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.1, z: -0.5}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2013928995460809366}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &4942188895188102580
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -5476,7 +5476,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 50
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -5971,7 +5971,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 0
+    type: 12
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -6054,11 +6054,11 @@ ParticleSystem:
     m_TextureColorAffectsParticles: 1
     m_TextureAlphaAffectsParticles: 1
     m_TextureBilinearFiltering: 0
-    randomDirectionAmount: 0
+    randomDirectionAmount: 0.25
     sphericalDirectionAmount: 0
-    randomPositionAmount: 0
+    randomPositionAmount: 5
     radius:
-      value: 5
+      value: 30
       mode: 0
       spread: 0
       speed:
@@ -6177,7 +6177,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 50
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -15006,7 +15006,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0.4}
   m_LocalScale: {x: 0.2, y: 0.3, z: 0.8}
   m_ConstrainProportionsScale: 0
-  m_Children: [{fileID: 1273295235709606502}]
+  m_Children:
+  - {fileID: 1273295235709606502}
   m_Father: {fileID: 4181902386754096974}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4308544609974287824

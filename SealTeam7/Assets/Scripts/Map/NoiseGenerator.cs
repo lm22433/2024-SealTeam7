@@ -54,7 +54,7 @@ namespace Map
                     {
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
-                        _heightMap[y * (_size + 1) + x] = _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        _heightMap[y * (_size + 1) + x] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
                     }
                 }
             }

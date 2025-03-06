@@ -10004,7 +10004,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8925953362471047749}
   - component: {fileID: 5097925248953323347}
-  - component: {fileID: 4741480198539129464}
   - component: {fileID: 6172217153580324171}
   m_Layer: 0
   m_Name: KamikazePlane
