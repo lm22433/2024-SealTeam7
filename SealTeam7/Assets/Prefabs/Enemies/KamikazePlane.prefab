@@ -10058,25 +10058,6 @@ MonoBehaviour:
   trail: {fileID: 1909296849060166712}
   smokeTrail: {fileID: 5142695930952748652}
   chargeParticles: {fileID: 3731027767439547899}
---- !u!114 &4741480198539129464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6364100127909003597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3f4d845692d6e646b1a134212347ef1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gravityDefiance: 1
-  defianceThreshold: 1
-  sinkFactor: 1
-  groundedOffset: 0
-  fallDeathVelocityY: 0
-  self: {fileID: 5097925248953323347}
-  sandFall: {fileID: 0}
 --- !u!54 &6172217153580324171
 Rigidbody:
   m_ObjectHideFlags: 0
