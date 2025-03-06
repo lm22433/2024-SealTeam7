@@ -21,6 +21,7 @@ namespace Map
         public int VertexSideCount;
         public Vector3[] Vertices;
         public int[] Triangles;
+        public Vector2[] UVs;
     }
 
     public class Chunk : MonoBehaviour
@@ -105,6 +106,7 @@ namespace Map
             _meshData.Vertices = vertices;
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
+            _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
             
             _colliderMeshData.Vertices = colliderVertices;
@@ -121,6 +123,7 @@ namespace Map
             var numberOfTriangles = (_meshData.VertexSideCount - 1) * (_meshData.VertexSideCount - 1) * 6;
             var vertices = new Vector3[numberOfVertices];
             var triangles = new int[numberOfTriangles];
+            var uvs = new Vector2[numberOfVertices];
             
             var colliderNumberOfVertices = _colliderMeshData.VertexSideCount * _colliderMeshData.VertexSideCount;
             var colliderNumberOfTriangles = (_colliderMeshData.VertexSideCount - 1) * (_colliderMeshData.VertexSideCount - 1) * 6;
@@ -136,6 +139,7 @@ namespace Map
                 var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
                 vertices[i] = new Vector3(x * _settings.Spacing,
                     _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], z * _settings.Spacing);
+                uvs[i] = new Vector2((float) x / _meshData.VertexSideCount, (float) z / _meshData.VertexSideCount);
             }
             
             for (int i = 0; i < colliderNumberOfVertices; i++)
@@ -171,13 +175,16 @@ namespace Map
 
             _meshData.Vertices = vertices;
             _meshData.Triangles = triangles;
+            _meshData.UVs = uvs;
             _colliderMeshData.Vertices = colliderVertices;
             _colliderMeshData.Triangles = colliderTriangles;
             
             _mesh.Clear();
             _mesh.SetVertices(vertices);
             _mesh.SetTriangles(triangles, 0);
+            _mesh.SetUVs(0, uvs);
             _mesh.RecalculateNormals();
+            _mesh.RecalculateTangents();
             
             _colliderMesh.Clear();
             _colliderMesh.SetVertices(colliderVertices);

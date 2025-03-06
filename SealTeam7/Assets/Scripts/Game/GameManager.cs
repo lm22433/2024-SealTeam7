@@ -120,8 +120,8 @@ namespace Game
 
             if (_isGameOver) {return;}
 
-            _score += completionBonusScore;
-            Debug.Log($"Completion Bonus! +{completionBonusScore} points");
+            _score += _health;
+            Debug.Log($"Completion Bonus! +{_health} points");
             
             GameActive = false;
             _isGameOver = true;
