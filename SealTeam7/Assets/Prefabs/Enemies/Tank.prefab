@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8117107157652521572}
   - component: {fileID: 575344634740789747}
   - component: {fileID: 8354212037788116390}
-  - component: {fileID: 8779318191773112135}
   m_Layer: 0
   m_Name: Wheels
   m_TagString: Untagged
@@ -87,27 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8779318191773112135
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 657222987561277803}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.020000007, y: 0.11275299, z: 0.071958244}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &858161197960073387
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,12 +149,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1725528738992958285}
   serializedVersion: 2
-  m_LocalRotation: {x: 1, y: -1.1102234e-16, z: 1.1102232e-16, w: 0.0000000754979}
-  m_LocalPosition: {x: 0, y: 0.52673274, z: 1.3911328}
-  m_LocalScale: {x: -15.134063, y: -13.190392, z: -13.190392}
+  m_LocalRotation: {x: 0.7071068, y: -1.570093e-16, z: -3.3087228e-23, w: -0.7071068}
+  m_LocalPosition: {x: 0, y: -0.036620047, z: 0.00041022975}
+  m_LocalScale: {x: -0.51605326, y: -0.51605314, z: -0.43579903}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 9057879788992930245}
+  m_Father: {fileID: 3715524712139545896}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8364035874536090563
 MeshFilter:
@@ -251,7 +229,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.028534867, y: 0.028534867, z: 0.135834}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0, z: 0.01}
 --- !u!1 &1978898577249346478
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,7 +241,6 @@ GameObject:
   - component: {fileID: 3715524712139545896}
   - component: {fileID: 5534882358659218001}
   - component: {fileID: 917700002700714649}
-  - component: {fileID: 4434136232819604640}
   m_Layer: 0
   m_Name: Barrel Cube
   m_TagString: Untagged
@@ -283,7 +260,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.5162471, z: 0.28274852}
   m_LocalScale: {x: 29.326551, y: 30.267143, z: 25.56014}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3857096993399556680}
   m_Father: {fileID: 9057879788992930245}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5534882358659218001
@@ -339,27 +317,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4434136232819604640
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1978898577249346478}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.019999998, y: 0.025474042, z: 0.019999996}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2772852043545815630
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,8 +371,7 @@ MonoBehaviour:
   stopShootingThreshold: 20
   attackDamage: 2
   killScore: 10
-  turret: {fileID: 9057879788992930245}
-  gun: {fileID: 3857096993399556680}
+  gun: {fileID: 3715524712139545896}
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,7 +428,6 @@ GameObject:
   - component: {fileID: 3020369744833093641}
   - component: {fileID: 8699135270637755172}
   - component: {fileID: 6999978139653271424}
-  - component: {fileID: 2267627313962837422}
   m_Layer: 0
   m_Name: Wheels Background
   m_TagString: Untagged
@@ -548,27 +503,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &2267627313962837422
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3860991068415625870}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.20111917, y: 0.43580696, z: 0.077707805}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4184953480507848545
 GameObject:
   m_ObjectHideFlags: 0
@@ -580,7 +514,6 @@ GameObject:
   - component: {fileID: 4905351747079400291}
   - component: {fileID: 2232557130660322548}
   - component: {fileID: 2898975001272477496}
-  - component: {fileID: 5782283352110532210}
   m_Layer: 0
   m_Name: Barrel Body
   m_TagString: Untagged
@@ -656,27 +589,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5782283352110532210
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4184953480507848545}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.02, y: 0.06777369, z: 0.019999996}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6742601858451500846
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,7 +600,7 @@ GameObject:
   - component: {fileID: 1029896221390409508}
   - component: {fileID: 7543171868222509600}
   - component: {fileID: 6568812852816399791}
-  - component: {fileID: 296879901486627797}
+  - component: {fileID: 3833079565149894671}
   m_Layer: 0
   m_Name: Tank Body
   m_TagString: Untagged
@@ -764,7 +676,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &296879901486627797
+--- !u!65 &3833079565149894671
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -783,8 +695,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.02, y: 0.09075123, z: 0.021494796}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.02, y: 0.08088831, z: 0.049543776}
+  m_Center: {x: 0, y: 0.040307295, z: -0.009008893}
 --- !u!1 &6809366579983345650
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,7 +706,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9057879788992930245}
-  - component: {fileID: 4810236724567970644}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -815,32 +726,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3857096993399556680}
   - {fileID: 4905351747079400291}
   - {fileID: 3715524712139545896}
   m_Father: {fileID: 45913116891892241}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4810236724567970644
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809366579983345650}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9055642625676811103
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,7 +741,6 @@ GameObject:
   - component: {fileID: 6973633886240890719}
   - component: {fileID: 1250883337621811802}
   - component: {fileID: 3047685627753068406}
-  - component: {fileID: 823118304725393035}
   m_Layer: 0
   m_Name: Wheels Belt
   m_TagString: Untagged
@@ -928,24 +816,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &823118304725393035
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9055642625676811103}
-  m_Material: {fileID: 13400000, guid: d223a85fd2b6d2155bb00a5e846146d1, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.21366347, y: 0.47457257, z: 0.11642052}
-  m_Center: {x: 0, y: 0.081314035, z: -0.048035488}
