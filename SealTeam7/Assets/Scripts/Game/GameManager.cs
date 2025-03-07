@@ -23,9 +23,9 @@ namespace Game
         [SerializeField] private int maxHealth = 1000;
         
         [Header("Score Settings")]
-        [SerializeField] private int completionBonusScore = 1000;
+        [SerializeField] private int completionBonusScore = 500;
         [SerializeField] private float survivalBonusInterval = 30f;
-        [SerializeField] private int survivalBonusScore = 500;
+        [SerializeField] private int survivalBonusScore = 250;
 
         [Header("UI objects")]
         [SerializeField] private TMP_Text scoreText;
@@ -118,15 +118,11 @@ namespace Game
         {
             if (!GameActive) throw new Exception("Game has not started yet, how can it end dummy?");
 
-            if (_isGameOver) {return;}
-
-            _score += _health;
-
-            if (_health >= maxHealth - 25) {
-                _score += completionBonusScore;
-            }
-
-            Debug.Log("Completion Bonus! +1000 points");
+            if (_isGameOver) return;
+            
+            int completionBonus = (_health / maxHealth) * completionBonusScore;
+            _score += completionBonus;
+            Debug.Log($"Completion Bonus! +{completionBonus} points");
             
             GameActive = false;
             _isGameOver = true;
