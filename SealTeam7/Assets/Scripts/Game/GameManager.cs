@@ -35,6 +35,7 @@ namespace Game
         [SerializeField] private TMP_Text gameoverText;
 
         private static GameManager _instance;
+        
         public bool GameActive {get; set;}
         private float _timer;
 		private int _totalKills;
@@ -164,14 +165,15 @@ namespace Game
             }
         }
 
-        public void RegisterKill(int score)
+        public void RegisterKill(int basePoints, float multiplier = 1.0f)
         {
             if (!GameActive) throw new Exception("Game has not started yet, how have you killed something dummy?");
             
-            Debug.Log($"Killed something! +{score} points");
-
-			_totalKills++;
-			_score += score;
+            int points = Mathf.RoundToInt(basePoints * multiplier);
+            _score += points;
+            _totalKills++;
+            
+            Debug.Log($"Killed something! +{points} points");
         }
 
         public void SetDifficulty(Difficulty[] difficulties) => _difficulties = difficulties;

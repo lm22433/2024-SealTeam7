@@ -4510,9 +4510,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameDuration: 120
   maxHealth: 1000
-  completionBonusScore: 1000
+  completionBonusScore: 500
   survivalBonusInterval: 30
-  survivalBonusScore: 500
+  survivalBonusScore: 250
   scoreText: {fileID: 1129775591}
   timerText: {fileID: 689466560}
   healthBar: {fileID: 363072743}
