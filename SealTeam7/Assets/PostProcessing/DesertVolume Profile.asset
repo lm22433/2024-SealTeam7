@@ -43,13 +43,13 @@ MonoBehaviour:
   active: 1
   redOutRedIn:
     m_OverrideState: 1
-    m_Value: 60
+    m_Value: 100
   redOutGreenIn:
     m_OverrideState: 0
     m_Value: 0
   redOutBlueIn:
     m_OverrideState: 1
-    m_Value: -30
+    m_Value: -50
   greenOutRedIn:
     m_OverrideState: 0
     m_Value: 0
@@ -190,7 +190,7 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 1.8
+    m_Value: 1.25
   intensity:
     m_OverrideState: 1
     m_Value: 20

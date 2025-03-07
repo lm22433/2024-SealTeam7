@@ -53,7 +53,7 @@ Material:
     m_Ints: []
     m_Floats:
     - FRESNEL: 1
-    - _Fresnel_Strength: 0.609
+    - _Fresnel_Strength: 0.434
     - _Smoothness: 1
     m_Colors:
     - _Tint: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 0.31764707}
