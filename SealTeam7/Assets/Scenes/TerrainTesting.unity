@@ -1560,7 +1560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.07
+  noiseSpeed: 0.04
   noiseScale: 0.005
   width: 520
   height: 520
@@ -3833,7 +3833,7 @@ PrefabInstance:
       objectReference: {fileID: 366592715}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].name
@@ -3845,7 +3845,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[5].name
-      value: Kamikaze
+      value: Snipers
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[0].difficulties.Array.size
@@ -4006,7 +4006,7 @@ PrefabInstance:
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[5].difficulties.Array.data[0].enemies.Array.data[0].prefab
       value: 
-      objectReference: {fileID: 6364100127909003597, guid: a61f570ffbb401a4a9b4862d49f7721a, type: 3}
+      objectReference: {fileID: 3438950281418470787, guid: 9c5e568ef16f06f4bbbf59b737d9d5da, type: 3}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].groupSize
       value: 1
