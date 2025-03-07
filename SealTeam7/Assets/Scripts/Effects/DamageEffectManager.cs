@@ -34,7 +34,7 @@ namespace Effects
 
         private IEnumerator ScreenDamage(float intensity)
         {
-            float targetRadius = Remap(intensity, 0, 1, 0.4f, -0.1f);
+            float targetRadius = Remap(intensity, 0, 1, 0.2f, 0.0f);
             float curRadius = 1.0f;
             for(float t = 0; curRadius != targetRadius; t += Time.deltaTime)
             {
