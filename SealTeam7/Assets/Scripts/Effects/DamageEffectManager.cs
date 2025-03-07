@@ -5,6 +5,8 @@ namespace Effects
 {
     public class DamageEffectManager : MonoBehaviour
     {
+        private static readonly int VignetteRadius = Shader.PropertyToID("_VignetteRadius");
+        
         [Header("References")]
         [SerializeField] private Material screenDamageMaterial;
         
@@ -15,6 +17,13 @@ namespace Effects
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
+            
+            screenDamageMaterial.SetFloat(VignetteRadius, 1f);
+        }
+
+        private void OnApplicationQuit()
+        {
+            screenDamageMaterial.SetFloat(VignetteRadius, 1f);
         }
 
         public void ScreenDamageEffect(float intensity)
@@ -25,18 +34,18 @@ namespace Effects
 
         private IEnumerator ScreenDamage(float intensity)
         {
-            var targetRadius = Remap(intensity, 0, 1, 0.4f, -0.1f);
-            var curRadius = 1f;
+            float targetRadius = Remap(intensity, 0, 1, 0.4f, -0.1f);
+            float curRadius = 1.0f;
             for(float t = 0; curRadius != targetRadius; t += Time.deltaTime)
             {
                 curRadius = Mathf.Clamp(Mathf.Lerp(1, targetRadius, t), 1, targetRadius);
-                screenDamageMaterial.SetFloat("_VignetteRadius", curRadius);
+                screenDamageMaterial.SetFloat(VignetteRadius, curRadius);
                 yield return null;
             }
             for(float t = 0; curRadius < 1; t += Time.deltaTime)
             {
                 curRadius = Mathf.Lerp(targetRadius, 1, t);
-                screenDamageMaterial.SetFloat("_VignetteRadius", curRadius);
+                screenDamageMaterial.SetFloat(VignetteRadius, curRadius);
                 yield return null;
             }
         }

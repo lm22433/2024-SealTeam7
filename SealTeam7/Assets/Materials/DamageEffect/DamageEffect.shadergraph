@@ -331,6 +331,20 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
+                    "m_Id": "aced41b41a2b4549893bca816588ce92"
+                },
+                "m_SlotId": 3
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "d35ce6f997fa41a7883eb3ff07709f2a"
+                },
+                "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
                     "m_Id": "b3e636b25d814d62abd218230b93fa55"
                 },
                 "m_SlotId": 2
@@ -2190,7 +2204,7 @@
     "m_ObjectId": "a5467e610c5d471fa767a892662d5ac1",
     "m_Version": 0,
     "m_fullscreenMode": 0,
-    "m_BlendMode": 0,
+    "m_BlendMode": 1,
     "m_SrcColorBlendMode": 0,
     "m_DstColorBlendMode": 1,
     "m_ColorBlendOperation": 0,
@@ -2784,7 +2798,7 @@
     "m_ObjectId": "e3cb138621fb470bbcd7baf00bfe800b",
     "m_Title": "Vignette",
     "m_Position": {
-        "x": -3249.000244140625,
+        "x": -3249.0,
         "y": -154.0
     }
 }
