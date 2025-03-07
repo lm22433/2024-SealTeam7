@@ -37,7 +37,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _VignetteDarkening: 0.75
+    - _VignetteDarkening: 1
     - _VignetteRadius: 1
     - _VignetteSoftness: 1.5
     m_Colors:
