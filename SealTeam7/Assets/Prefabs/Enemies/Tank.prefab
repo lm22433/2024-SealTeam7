@@ -741,7 +741,8 @@ GameObject:
   - component: {fileID: 6973633886240890719}
   - component: {fileID: 1250883337621811802}
   - component: {fileID: 3047685627753068406}
-  - component: {fileID: 3174437961432995741}
+  - component: {fileID: 6977639684121355166}
+  - component: {fileID: 5839226843833337679}
   m_Layer: 0
   m_Name: Wheels Belt
   m_TagString: Untagged
@@ -817,14 +818,14 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3174437961432995741
-BoxCollider:
+--- !u!136 &6977639684121355166
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9055642625676811103}
-  m_Material: {fileID: 13400000, guid: d223a85fd2b6d2155bb00a5e846146d1, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -835,6 +836,31 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.21366347, y: 0.47457257, z: 0.11642052}
-  m_Center: {x: 0, y: 0.081314035, z: -0.048035488}
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Height: 0.47457257
+  m_Direction: 1
+  m_Center: {x: 0.075, y: 0.081314035, z: -0.048035488}
+--- !u!136 &5839226843833337679
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9055642625676811103}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Height: 0.47457257
+  m_Direction: 1
+  m_Center: {x: -0.075, y: 0.081314035, z: -0.048035488}

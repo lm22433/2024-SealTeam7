@@ -4081,6 +4081,10 @@ PrefabInstance:
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[0].spawnChance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[0].spawnChance
       value: 1
       objectReference: {fileID: 0}
@@ -4775,7 +4779,7 @@ MonoBehaviour:
   - {fileID: 2136277956}
   - {fileID: 553266628}
   - {fileID: 393166120}
-  maxEnemyCount: 200
+  maxEnemyCount: 1000
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
