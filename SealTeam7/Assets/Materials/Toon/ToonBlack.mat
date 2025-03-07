@@ -29,9 +29,9 @@ Material:
     m_Floats:
     - _Fresnel_Strength: 0.645
     - _QueueControl: 0
-    - _Smoothness: 8
+    - _Smoothness: 0.34
     m_Colors:
-    - _Tint: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 0}
+    - _Tint: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &5805058784032740904

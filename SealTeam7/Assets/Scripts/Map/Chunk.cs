@@ -1,6 +1,7 @@
 using System;
 using Game;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Map
 {
@@ -54,7 +55,7 @@ namespace Map
             
             _heightMap = heightMap;
 
-            _mesh = new Mesh { name = "Generated Mesh" };
+            _mesh = new Mesh { name = "Generated Mesh", indexFormat = IndexFormat.UInt32 };
             _mesh.MarkDynamic();
             
             _colliderMesh = new Mesh { name = "Generated Collider Mesh" };

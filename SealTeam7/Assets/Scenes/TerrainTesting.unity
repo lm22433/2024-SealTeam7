@@ -1561,7 +1561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseSpeed: 0.01
-  noiseScale: 0.005
+  noiseScale: 0.01
   width: 520
   height: 520
   xOffsetStart: 680
