@@ -8,50 +8,47 @@ namespace Enemies.Utils
 {
     public struct Node : IEquatable<Node>
     {
-        public readonly int Index;
-        public readonly float WorldX;
-        public float WorldY;
-        public readonly float WorldZ;
+        public float GScore;
+        public float HScore;
+        public float FScore => GScore + HScore;
+        
+        public readonly int X;
+        public readonly int Z;
+        public Vector3 WorldPos;
         public readonly Dictionary<int, float> Neighbours;
 
-        public Node(int index, float worldX, float worldY, float worldZ, Dictionary<int, float> neighbours)
+        public Node(int x, int z, Vector3 worldPos, Dictionary<int, float> neighbours)
         {
-            Index = index;
-            WorldX = worldX;
-            WorldY = worldY;
-            WorldZ = worldZ;
+            X = x;
+            Z = z;
+            WorldPos = worldPos;
             Neighbours = neighbours;
         }
 
         public bool Equals(Node other)
         {
-            return Index == other.Index;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Node other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return Index;
+            return X == other.X && Z == other.Z;
         }
     }
     
-    public class AStar
+    public class PathFinder
     {
-        public HashSet<Node> Map;
+        private readonly int _size;
+        private readonly float _mapSpacing;
+        private readonly Node[,] _map;
         
-        public AStar(int size, float mapSpacing)
+        public PathFinder(int size, float mapSpacing)
         {
-            Map = CreateMap(size, mapSpacing);
+            _size = size;
+            _mapSpacing = mapSpacing;
+            
+            _map = CreateMap(size, mapSpacing);
         }
 
-        private HashSet<Node> CreateMap(int size, float mapSpacing)
+        private static Node[,] CreateMap(int size, float mapSpacing)
         {
             var length = (size + 1) * (size + 1);
-            var map = new HashSet<Node>(length);
+            var map = new Node[size + 1, size + 1];
             for (int z = 0; z < size + 1; z++)
             {
                 for (int x = 0; x < size + 1; x++)
@@ -68,27 +65,16 @@ namespace Enemies.Utils
                     if (index - size - 2 >= 0)     neighbours.Add(index - size - 2, mapSpacing * math.SQRT2);
                     if (index - 1 >= 0)            neighbours.Add(index - 1, mapSpacing);
                     
-                    map.Add(new Node(index, x * mapSpacing, 0f, z * mapSpacing, neighbours));
+                    map[z, x] = new Node(x, z, new Vector3(x * mapSpacing, 0f, z * mapSpacing), neighbours);
                 }
             }
 
             return map;
         }
-        
-        public void UpdateMap(float[] heights)
-        {
-            foreach (var node in Map.ToList())
-            {
-                var newNode = node;
-                newNode.WorldY = heights[node.Index];
-                Debug.Assert(Map.Remove(node));
-                Map.Add(newNode);
-            }
-        }
 
         private static float Heuristic(Node current, Node goal)
         {
-            return Math.Abs(current.WorldX - goal.WorldX) + Math.Abs(current.WorldZ - goal.WorldZ);// + current.WorldY - goal.WorldY;
+            return Math.Abs(current.WorldPos.x - goal.WorldPos.x) + Math.Abs(current.WorldPos.z - goal.WorldPos.z);// + current.WorldY - goal.WorldY;
         }
         
         private static List<Node> ReconstructPath(Dictionary<int, Node> from, Node current)
@@ -104,8 +90,41 @@ namespace Enemies.Utils
             path.Reverse();
             return path;
         }
+        
+        public void UpdateMap(float[,] heights)
+        {
+            for (int z = 0; z < heights.GetLength(0); z++)
+            {
+                for (int x = 0; x < heights.GetLength(1); x++)
+                {
+                    _map[z, x].WorldPos.y = heights[z, x];
+                }
+            }
+        }
 
-        public List<Node> FindPath(Node start, Node goal)
+        private Node NodeFromWorldPos(Vector3 worldPos)
+        {
+            return _map[Mathf.RoundToInt(worldPos.z / _mapSpacing), Mathf.RoundToInt(worldPos.x / _mapSpacing)];
+        }
+        
+        public Vector3[] FindPath(Vector3 start, Vector3 goal)
+        {
+            var startNode = NodeFromWorldPos(start);
+            var goalNode = NodeFromWorldPos(goal);
+            
+            var nodePath = FindPath(startNode, goalNode);
+            
+            var vecPath = new Vector3[nodePath.Count];
+            var index = 0;
+            foreach (var node in nodePath)
+            {
+                vecPath[index++] = node.WorldPos;
+            }
+            
+            return vecPath;
+        }
+
+        private List<Node> FindPath(Node start, Node goal)
         {
             var openSet = new List<Node> { start };
             var closedSet = new HashSet<Node>();
@@ -117,15 +136,16 @@ namespace Enemies.Utils
 
             while (openSet.Count > 0)
             {
-                var current = openSet.OrderBy(node => gScore[node.Index] + hScore[node.Index]).First();
-                if (current.Equals(goal)) return ReconstructPath(from, current);
+                var current = openSet.OrderBy(node => node.FScore).First();
 
                 openSet.Remove(current);
                 closedSet.Add(current);
+                
+                if (current.Equals(goal)) return ReconstructPath(from, current);
 
                 foreach (var neighbourIndex in current.Neighbours.Keys)
                 {
-                    var neighbour = Map.FirstOrDefault(node => node.Index == neighbourIndex);
+                    var neighbour = _map.FirstOrDefault(node => node.Index == neighbourIndex);
                     if (neighbour.Equals(null) || closedSet.Contains(neighbour)) continue;
                     
                     var tentativeGScore = gScore[current.Index] + current.Neighbours[neighbourIndex];

@@ -10,12 +10,6 @@ namespace Enemies
         AttackCore,
         AttackHands
     }
-
-    public enum Target
-    {
-        Core,
-        Hands
-    }
     
     public abstract class Enemy : MonoBehaviour
     {

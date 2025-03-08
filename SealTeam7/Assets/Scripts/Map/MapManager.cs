@@ -70,9 +70,8 @@ namespace Map
 
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
-        private AStar _aStar;
-        private float[] _heightMap;
-        private Node[] _map;
+        private PathFinder _pathFinder;
+        private float[,] _heightMap;
         private List<Chunk> _chunks;
         private float _mapSpacing;
 
@@ -85,7 +84,7 @@ namespace Map
 
             _mapSpacing = (float)mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
-            _heightMap = new float[(int)(mapSize / _mapSpacing + 1) * (int)(mapSize / _mapSpacing + 1)];
+            _heightMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
 
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
@@ -109,8 +108,8 @@ namespace Map
                 _noiseGenerator = new NoiseGenerator((int)(mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale,
                     ref _heightMap);
 
-            _aStar = new AStar(mapSize, _mapSpacing);
-            _aStar.UpdateMap(_heightMap);
+            _pathFinder = new PathFinder(mapSize, _mapSpacing);
+            _pathFinder.UpdateMap(_heightMap);
 
             for (int z = 0; z < chunkRow; z++)
             {
@@ -137,21 +136,7 @@ namespace Map
 
         public Vector3[] FindPath(Vector3 start, Vector3 end)
         {
-            var startNode =
-                _aStar.Map.FirstOrDefault(node => node.Index == Mathf.FloorToInt(start.z / _mapSpacing) * (int) (mapSize / _mapSpacing) + Mathf.FloorToInt(start.x / _mapSpacing));
-            var endNode =
-                _aStar.Map.FirstOrDefault(node => node.Index == Mathf.FloorToInt(end.z / _mapSpacing) * (int) (mapSize / _mapSpacing) + Mathf.FloorToInt(end.x / _mapSpacing));
-
-            var nodePath = _aStar.FindPath(startNode, endNode);
-
-            var vecPath = new Vector3[nodePath.Count];
-            var index = 0;
-            foreach (var node in nodePath)
-            {
-                vecPath[index++] = new Vector3(node.WorldX, node.WorldY, node.WorldZ);
-            }
-
-            return vecPath;
+            return _pathFinder.FindPath(start, end);
         }
 
         public float GetHeight(float worldX, float worldZ)
@@ -162,10 +147,10 @@ namespace Map
 
             //TODO: [fix] interpolate between heights at each step to get true height
             var lower = _heightMap[
-                Mathf.FloorToInt(worldZ / _mapSpacing) * (int)(mapSize / _mapSpacing + 1) +
+                Mathf.FloorToInt(worldZ / _mapSpacing),
                 Mathf.FloorToInt(worldX / _mapSpacing)];
             var upper = _heightMap[
-                Mathf.CeilToInt(worldZ / _mapSpacing) * (int)(mapSize / _mapSpacing + 1) +
+                Mathf.CeilToInt(worldZ / _mapSpacing),
                 Mathf.CeilToInt(worldX / _mapSpacing)];
 
             var lerp = Mathf.Lerp(lower, upper, worldZ / _mapSpacing - Mathf.FloorToInt(worldZ / _mapSpacing));
@@ -208,7 +193,7 @@ namespace Map
 
             if (updatePath)
             {
-                _aStar.UpdateMap(_heightMap);
+                _pathFinder.UpdateMap(_heightMap);
                 updatePath = false;
             }
         }
