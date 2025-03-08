@@ -27,10 +27,12 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Fresnel_Strength: 0.6
+    - _FresnelThreshold: 0.729
+    - _Fresnel_Strength: 0.431
     - _QueueControl: 0
+    - _Smoothness: 4
     m_Colors:
-    - _Tint: {r: 0.45783117, g: 2.8301888, b: 0, a: 0}
+    - _Tint: {r: 0.22891559, g: 1.4150944, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1232231527794284808

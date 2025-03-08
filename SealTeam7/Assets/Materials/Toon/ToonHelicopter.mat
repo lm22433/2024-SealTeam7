@@ -44,10 +44,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Fresnel_Strength: 0.542
+    - _FresnelThreshold: 0.646
+    - _Fresnel_Strength: 0.435
     - _QueueControl: 0
     - _Smoothness: 8
     m_Colors:
-    - _Tint: {r: 4, g: 0.37623763, b: 0, a: 0}
+    - _AmbientColour: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 0}
+    - _Tint: {r: 0.7490196, g: 0.02932754, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
