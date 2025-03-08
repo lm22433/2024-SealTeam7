@@ -79,7 +79,7 @@ namespace Game
             {
                 _score += survivalBonusScore;
                 _lastSurvivalBonusTime = Time.time;
-                Debug.Log("Survival Bonus! +500 points");
+                Debug.Log($"Survival Bonus! +{survivalBonusScore} points");
             }
             
             if (_timer <= 0) EndGame();
