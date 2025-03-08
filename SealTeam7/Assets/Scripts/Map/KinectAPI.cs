@@ -16,7 +16,7 @@ namespace Map
         private readonly Device _kinect;
         private readonly Transformation _transformation;
         private Image _transformedDepthImage;
-        private float[] _heightMap;
+        private float[,] _heightMap;
         
         /*
          * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
@@ -49,7 +49,7 @@ namespace Map
         private Task _getCaptureTask;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, int kernelSize, float gaussianStrength)
         {
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;
@@ -184,10 +184,10 @@ namespace Map
                         _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
                         if (y == 0 || y == _height || x == 0 || x == _width) {
-                            _heightMap[y * (_width + 1) + x] = 0;
+                            _heightMap[y, x] = 0;
                             
                         } else {
-                            _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
+                            _heightMap[y, x] = Mathf.Lerp(_heightMap[y, x], 
                                 _tmpImage1.Data[y, x, 0] * _heightScale, _lerpFactor);
                         }
                         // Debug.Log(_lerpFactor);

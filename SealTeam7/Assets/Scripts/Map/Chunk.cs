@@ -26,7 +26,7 @@ namespace Map
     public class Chunk : MonoBehaviour
     {
         private ChunkSettings _settings;
-        private float[] _heightMap;
+        private float[,] _heightMap;
         
         private Mesh _mesh;
         private Mesh _colliderMesh;
@@ -35,7 +35,7 @@ namespace Map
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
 
-        public void Setup(ChunkSettings s, ref float[] heightMap)
+        public void Setup(ChunkSettings s, ref float[,] heightMap)
         {
             _settings = s;
             
@@ -92,14 +92,14 @@ namespace Map
             {
                 var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
                 var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
-                vertices[i].y = _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)];
+                vertices[i].y = _heightMap[z + zChunkOffset, xChunkOffset + x];
             }
             
             for (int i = 0; i < colliderNumberOfVertices; i++)
             {
                 var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
                 var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                colliderVertices[i].y = _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)];
+                colliderVertices[i].y = _heightMap[z + zChunkOffset, xChunkOffset + x];
             }
 
             _meshData.Vertices = vertices;
@@ -135,7 +135,7 @@ namespace Map
                 var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
                 var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
                 vertices[i] = new Vector3(x * _settings.Spacing,
-                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], z * _settings.Spacing);
+                    _heightMap[z + zChunkOffset, xChunkOffset + x], z * _settings.Spacing);
             }
             
             for (int i = 0; i < colliderNumberOfVertices; i++)
@@ -144,7 +144,7 @@ namespace Map
                 var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
                 
                 colliderVertices[i] = new Vector3(x * _settings.Spacing,
-                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)], z * _settings.Spacing);
+                    _heightMap[z + zChunkOffset, xChunkOffset + x], z * _settings.Spacing);
             }
 
             for (int i = 0; i < numberOfTriangles; i++)

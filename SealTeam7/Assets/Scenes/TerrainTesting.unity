@@ -310,7 +310,7 @@ Transform:
   m_GameObject: {fileID: 332022278}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40, y: 50, z: 50}
+  m_LocalPosition: {x: 40, y: 100, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -347,7 +347,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 594167917}
+  m_Father: {fileID: 1695711131}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &393166121
 MonoBehaviour:
@@ -571,8 +571,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 393166120}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &594167918
@@ -587,8 +586,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.01
-  noiseScale: 0.001
+  noiseSpeed: 0
+  noiseScale: 0.01
   width: 480
   height: 480
   xOffsetStart: 690
@@ -605,7 +604,7 @@ MonoBehaviour:
   mapSize: 480
   chunkRow: 2
   chunkSize: 240
-  heightScale: 300
+  heightScale: 150
   lerpFactor: 0.1
   lodInfo:
     lod: 1
@@ -613,7 +612,6 @@ MonoBehaviour:
   isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
-  updatePath: 0
   takeSnapshot: 0
   texture: {fileID: 0}
 --- !u!114 &689466560 stripped
@@ -1350,6 +1348,7 @@ Transform:
   - {fileID: 207832236}
   - {fileID: 2136277956}
   - {fileID: 553266628}
+  - {fileID: 393166120}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1884077985
@@ -1378,7 +1377,7 @@ Transform:
   m_GameObject: {fileID: 1884077985}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 91.29, y: 50, z: 110.2}
+  m_LocalPosition: {x: 240, y: 50, z: 240}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1534,6 +1533,8 @@ MonoBehaviour:
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
+  mapUpdateInterval: 2
+  pathingDepth: 1000
   sqrMaxEnemyDistance: 500
 --- !u!1 &2136277955
 GameObject:
@@ -1585,10 +1586,10 @@ SceneRoots:
   m_Roots:
   - {fileID: 584457526}
   - {fileID: 1013185063}
-  - {fileID: 2004182967}
-  - {fileID: 594167917}
-  - {fileID: 2085838829}
   - {fileID: 1695711131}
   - {fileID: 332022280}
   - {fileID: 1884077986}
   - {fileID: 1334753106}
+  - {fileID: 594167917}
+  - {fileID: 2085838829}
+  - {fileID: 2004182967}

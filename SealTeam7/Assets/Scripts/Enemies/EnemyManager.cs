@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Enemies.Utils;
 using Game;
 using Map;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Enemies
@@ -28,12 +30,19 @@ namespace Enemies
         [SerializeField] public PlayerCore godlyCore;
         [SerializeField] public PlayerHands godlyHands;
         
+        [Header("Pathing Settings")]
+        [SerializeField] private float mapUpdateInterval;
+        [SerializeField] private int pathingDepth;
+
         [HideInInspector] public float sqrMaxEnemyDistance;
         
         private float _lastSpawn;
+        private float _lastMapUpdate;
         private int _enemyCount;
         private float _spawnInterval;
-        private Node[] _map;
+        private PathFinder _pathFinder;
+        private int _mapSize;
+        private float _mapSpacing;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
 
@@ -43,7 +52,9 @@ namespace Enemies
             else Destroy(gameObject);
             
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
-            SetDifficulty(GameManager.GetInstance().GetInitialDifficulty());
+            _mapSize = MapManager.GetInstance().GetMapSize();
+            _mapSpacing = MapManager.GetInstance().GetMapSpacing();
+            _pathFinder = new PathFinder(_mapSize, _mapSpacing);
         }
 
         public void Kill(Enemy enemy)
@@ -51,8 +62,6 @@ namespace Enemies
             _enemyCount--;
             enemy.Die();
         }
-        
-        public static EnemyManager GetInstance() => _instance;
 
         public void SetDifficulty(Difficulty difficulty)
         {
@@ -60,9 +69,9 @@ namespace Enemies
             _enemyTypes = difficulty.enemies;
         }
 
-        public Vector3[] GetPath(Vector3 position, Vector3 target)
+        public Vector3[] FindPath(Vector3 start, Vector3 end)
         {
-            return MapManager.GetInstance().FindPath(position, target);
+            return _pathFinder.FindPath(start, end, pathingDepth);
         }
 
         private void SpawnEnemies()
@@ -93,11 +102,20 @@ namespace Enemies
             if (!GameManager.GetInstance().IsGameActive()) return;
             
             _lastSpawn += Time.deltaTime;
+            if (_lastSpawn > _spawnInterval)
+            {
+                _lastSpawn = 0;
+                SpawnEnemies();
+            }
             
-            if (_lastSpawn < _spawnInterval) return;
-            
-            _lastSpawn = 0;
-            SpawnEnemies();
+            _lastMapUpdate += Time.deltaTime;
+            if (_lastMapUpdate > mapUpdateInterval)
+            {
+                _lastMapUpdate = 0;
+                _pathFinder.UpdateMap(ref MapManager.GetInstance().GetHeightMap());
+            }
         }
+        
+        public static EnemyManager GetInstance() => _instance;
     }
 }

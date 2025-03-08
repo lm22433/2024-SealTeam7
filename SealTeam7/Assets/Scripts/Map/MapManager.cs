@@ -64,13 +64,11 @@ namespace Map
         private bool colliderEnabled;
 
         [SerializeField] private bool paused;
-        [SerializeField] private bool updatePath;
         [SerializeField] private bool takeSnapshot;
         [SerializeField] private Texture2D texture;
 
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
-        private PathFinder _pathFinder;
         private float[,] _heightMap;
         private List<Chunk> _chunks;
         private float _mapSpacing;
@@ -82,7 +80,7 @@ namespace Map
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
 
-            _mapSpacing = (float)mapSize / chunkRow / chunkSize;
+            _mapSpacing = (float) mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
             _heightMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
 
@@ -108,9 +106,6 @@ namespace Map
                 _noiseGenerator = new NoiseGenerator((int)(mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale,
                     ref _heightMap);
 
-            _pathFinder = new PathFinder(mapSize, _mapSpacing);
-            _pathFinder.UpdateMap(_heightMap);
-
             for (int z = 0; z < chunkRow; z++)
             {
                 for (int x = 0; x < chunkRow; x++)
@@ -130,13 +125,6 @@ namespace Map
         {
             if (isKinectPresent) _kinect.StopKinect();
             else _noiseGenerator.Stop();
-        }
-
-        public static MapManager GetInstance() => _instance;
-
-        public Vector3[] FindPath(Vector3 start, Vector3 end)
-        {
-            return _pathFinder.FindPath(start, end);
         }
 
         public float GetHeight(float worldX, float worldZ)
@@ -164,17 +152,18 @@ namespace Map
             {
 
                 Color32[] col = new Color32[_heightMap.Length];
-                for (int i = 0; i < _heightMap.Length; i++)
+                var i = 0;
+                foreach (var height in _heightMap)
                 {
                     try
                     {
-                        col[i] = new Color32(Convert.ToByte(Mathf.Min(255, _heightMap[i] / heightScale * 255)), 0, 0,
+                        col[i++] = new Color32(Convert.ToByte(Mathf.Min(255, height / heightScale * 255)), 0, 0,
                             Convert.ToByte(255));
                     }
                     catch (OverflowException e)
                     {
                         Debug.LogWarning(e.Message);
-                        col[i] = new Color32();
+                        col[i++] = new Color32();
                     }
                 }
 
@@ -190,12 +179,11 @@ namespace Map
             {
                 _noiseGenerator.AdvanceTime(Time.deltaTime);
             }
-
-            if (updatePath)
-            {
-                _pathFinder.UpdateMap(_heightMap);
-                updatePath = false;
-            }
         }
+        
+        public static MapManager GetInstance() => _instance;
+        public ref float[,] GetHeightMap() => ref _heightMap;
+        public int GetMapSize() => mapSize;
+        public float GetMapSpacing() => _mapSpacing;
     }
 }

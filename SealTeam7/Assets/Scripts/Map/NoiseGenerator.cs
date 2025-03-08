@@ -14,12 +14,12 @@ namespace Map
         private readonly float _noiseScale;
         private readonly float _heightScale;
         
-        private float[] _heightMap;
+        private float[,] _heightMap;
         
         private bool _running;
         private float _time;
 
-        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref float[] heightMap)
+        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref float[,] heightMap)
         {
             _size = size;
             _speed = speed;
@@ -54,7 +54,7 @@ namespace Map
                     {
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
-                        _heightMap[y * (_size + 1) + x] = _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        _heightMap[y, x] = _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
                     }
                 }
             }

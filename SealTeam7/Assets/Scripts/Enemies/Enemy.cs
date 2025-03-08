@@ -1,3 +1,4 @@
+using System;
 using Game;
 using Player;
 using UnityEngine;
@@ -37,13 +38,10 @@ namespace Enemies
 
             SqrAttackRange = attackRange * attackRange;
             State = EnemyState.Moving;
-            // Target = transform.position + transform.forward;
+            Path = Array.Empty<Vector3>();
             Target = EnemyManager.godlyCore;
             TargetRotation = transform.rotation;
             TargetDirection = transform.forward;
-            
-            
-            PathFind();
         }
 
         public void Die()
@@ -95,7 +93,7 @@ namespace Enemies
 
         private void PathFind()
         {
-            Path = EnemyManager.GetPath(transform.position, Target.transform.position);
+            Path = EnemyManager.FindPath(transform.position, Target.transform.position);
             PathIndex = 0;
         }
 
@@ -108,11 +106,18 @@ namespace Enemies
             {
                 EnemyManager.Kill(this);
             }
+
+            if (Path.Length > 0 && PathIndex < Path.Length - 1)
+            {
+                var pathPosition = new Vector3(Mathf.RoundToInt(transform.position.x), Path[PathIndex].y, Mathf.RoundToInt(transform.position.z));
+                if (pathPosition == Path[PathIndex]) PathIndex++;
+                TargetDirection = Path[PathIndex] - pathPosition;                
+            }
             
             UpdateState();
             UpdateTarget();
             LimitSpeed();
-            // PathFind();
+            PathFind();
             
             EnemyUpdate();
         }

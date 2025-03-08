@@ -48,13 +48,15 @@ namespace Game
         private float _lastDamageTime;
         private float _lastDifficultyIncrease;
         
-        private void Awake()
+        private void Start()
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
 
             _difficulty = difficulties[0];
             _health = maxHealth;
+            
+            EnemyManager.GetInstance().SetDifficulty(_difficulty);
 
             StartGame();
         }
@@ -160,6 +162,5 @@ namespace Game
         public bool IsGameActive() => _gameActive;
         public float GetTimer() => _timer;
         public int GetScore() => _score;
-        public Difficulty GetInitialDifficulty() => difficulties[0];
     }
 }
