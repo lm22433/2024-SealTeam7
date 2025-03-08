@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Map
 {
@@ -92,7 +90,7 @@ namespace Map
             {
                 Size = chunkSize,
                 MapSize = mapSize,
-                Spacing = _mapSpacing,
+                MapSpacing = _mapSpacing,
                 LODInfo = lodInfo,
                 ColliderEnabled = colliderEnabled
             };

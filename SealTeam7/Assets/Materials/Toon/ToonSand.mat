@@ -24,7 +24,8 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 790a08c8a75b2144683dcb8b2fd8f95f, type: 3}
   m_Parent: {fileID: -876546973899608171, guid: 790a08c8a75b2144683dcb8b2fd8f95f, type: 3}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - FRESNEL_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -51,14 +52,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - FRESNEL: 0
+    - FRESNEL: 1
     - _AmbientAmount: 0.04
     - _FresnelThreshold: 0.311
-    - _Fresnel_Strength: 0.089
+    - _Fresnel_Strength: 0.66
     - _NormalBoundary: 0
     - _NormalOffset: 0
     - _QueueControl: 0
-    - _Smoothness: 1
+    - _Smoothness: 1.5
     m_Colors:
     - _AmbientColour: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 0}
     - _FresnelColour: {r: 0.735849, g: 0.735849, b: 0.735849, a: 0}

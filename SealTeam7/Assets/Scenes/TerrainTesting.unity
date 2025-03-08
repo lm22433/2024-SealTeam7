@@ -1581,7 +1581,7 @@ MonoBehaviour:
   heightScale: 300
   lerpFactor: 0.1
   lodInfo:
-    lod: 1
+    lod: 0
     colliderLod: 2
   isKinectPresent: 0
   colliderEnabled: 1
