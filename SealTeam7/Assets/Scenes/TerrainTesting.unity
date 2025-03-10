@@ -4641,7 +4641,7 @@ MonoBehaviour:
     groupSpacing: 1.2
     spawnChance: 0
   - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-    groupSize: 1
+    groupSize: 2
     groupSpacing: 5
     spawnChance: 0
   - prefab: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}

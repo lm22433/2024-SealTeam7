@@ -108,7 +108,7 @@ namespace Enemies
                         _enemyCount++;
                     }
                     
-                    Debug.Log("Spawned enemy group");
+                    Debug.Log($"Spawned enemy group with {finalGroupSize} enemies of type {chosenEnemy.prefab.name}.");
 
                     yield return new WaitForSeconds(spawnDelay);
                     if (Time.time - waveStartTime >= waveTimeLimit) break;
