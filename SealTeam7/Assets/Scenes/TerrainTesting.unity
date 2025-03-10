@@ -4409,6 +4409,7 @@ MonoBehaviour:
   completionBonusScore: 500
   survivalBonusInterval: 30
   survivalBonusScore: 250
+  waveClearedEarlyBonusScore: 750
   scoreText: {fileID: 1129775591}
   timerText: {fileID: 689466560}
   healthBar: {fileID: 363072743}
@@ -4630,6 +4631,23 @@ MonoBehaviour:
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
+  enemyTypes:
+  - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
+    groupSize: 5
+    groupSpacing: 2
+    spawnChance: 0
+  - prefab: {fileID: 3438950281418470787, guid: 686713a87e5f9ae41bc31365cb21d88e, type: 3}
+    groupSize: 3
+    groupSpacing: 1.2
+    spawnChance: 0
+  - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
+    groupSize: 1
+    groupSpacing: 5
+    spawnChance: 0
+  - prefab: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
+    groupSize: 1
+    groupSpacing: 10
+    spawnChance: 0
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped
 MonoBehaviour:

@@ -107,10 +107,14 @@ namespace Enemies
                         Instantiate(chosenEnemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);
                         _enemyCount++;
                     }
+                    
+                    Debug.Log("Spawned enemy group");
 
                     yield return new WaitForSeconds(spawnDelay);
                     if (Time.time - waveStartTime >= waveTimeLimit) break;
                 }
+                
+                Debug.Log("Spawned whole wave. Waiting for wave to end...");
                 
                 while (_enemyCount > 0 && (Time.time - waveStartTime) < waveTimeLimit)
                 {
@@ -122,6 +126,7 @@ namespace Enemies
                     GameManager.GetInstance().ApplyWaveClearedEarlyBonus();
                     yield return new WaitForSeconds(1f);
                 }
+                Debug.Log("Spawning next wave.");
             }
         }
     }
