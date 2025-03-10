@@ -26,11 +26,11 @@ namespace Game
         public float spawnDelayMultiplier;
         public float waveTimeLimitMultiplier;
 
-        public int GetWaveEnemyGroups(int wave) => Mathf.CeilToInt(baseEnemyGroupCount * Mathf.Pow(enemyGroupCountMultiplier, wave - 1));
+        public int GetWaveEnemyGroups(int wave) => Mathf.FloorToInt(baseEnemyGroupCount * Mathf.Pow(enemyGroupCountMultiplier, wave - 1));
         public float GetWaveSpawnDelay(int wave) => baseSpawnDelay * Mathf.Pow(spawnDelayMultiplier, wave - 1);
         public float GetWaveTimeLimit(int wave) => baseWaveTimeLimit * Mathf.Pow(waveTimeLimitMultiplier, wave - 1);
         
-        public int GetWaveGroupSize(int baseSize, int wave) => Mathf.CeilToInt(baseSize * Mathf.Pow(enemyGroupSizeMultiplier, wave - 1));
+        public int GetWaveGroupSize(int baseSize, int wave) => Mathf.FloorToInt(baseSize * Mathf.Pow(enemyGroupSizeMultiplier, wave - 1));
     }
 
     public static class DifficultySettings
@@ -46,7 +46,7 @@ namespace Game
                         enemyGroupCountMultiplier = 1.2f,
                         baseSpawnDelay = 2.0f,
                         spawnDelayMultiplier = 0.95f,
-                        baseWaveTimeLimit = 40f,
+                        baseWaveTimeLimit = 30f,
                         waveTimeLimitMultiplier = 1.05f,
                         enemyGroupSizeMultiplier = 1.1f
                     };
@@ -57,7 +57,7 @@ namespace Game
                         enemyGroupCountMultiplier = 1.5f,
                         baseSpawnDelay = 1.5f,
                         spawnDelayMultiplier = 0.9f,
-                        baseWaveTimeLimit = 35f,
+                        baseWaveTimeLimit = 20f,
                         waveTimeLimitMultiplier = 1.03f,
                         enemyGroupSizeMultiplier = 1.2f
                     };
@@ -68,7 +68,7 @@ namespace Game
                         enemyGroupCountMultiplier = 1.8f,
                         baseSpawnDelay = 1.0f,
                         spawnDelayMultiplier = 0.85f,
-                        baseWaveTimeLimit = 30f,
+                        baseWaveTimeLimit = 15f,
                         waveTimeLimitMultiplier = 1.02f,
                         enemyGroupSizeMultiplier = 1.3f
                     };
@@ -79,7 +79,7 @@ namespace Game
                         enemyGroupCountMultiplier = 2.5f,
                         baseSpawnDelay = 0.8f,
                         spawnDelayMultiplier = 0.75f,
-                        baseWaveTimeLimit = 25f,
+                        baseWaveTimeLimit = 10f,
                         waveTimeLimitMultiplier = 1.01f,
                         enemyGroupSizeMultiplier = 1.5f
                     };

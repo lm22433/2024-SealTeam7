@@ -70,6 +70,8 @@ namespace Enemies
 
         private IEnumerator SpawnWaves()
         {
+            yield return new WaitForSeconds(2f); // Wait for player to get ready.
+            
             while (GameManager.GetInstance().GameActive)
             {
                 _currentWave++;
