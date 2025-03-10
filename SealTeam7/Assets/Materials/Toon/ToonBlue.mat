@@ -34,7 +34,7 @@ Material:
     - _Smoothness: 8
     m_Colors:
     - _FresnelColour: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}
-    - _Tint: {r: 0.03365249, g: 0.54716986, b: 0, a: 0}
+    - _Tint: {r: 0, g: 0.41810587, b: 1.0980393, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1232231527794284808

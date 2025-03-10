@@ -75,7 +75,6 @@ MonoBehaviour:
   sinkFactor: 10
   groundedOffset: 4
   fallDeathVelocityY: 40
-  self: {fileID: 8717828168720478181}
 --- !u!54 &4195251952092455746
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -279,11 +278,11 @@ PrefabInstance:
     - target: {fileID: -6652725513331149018, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+      objectReference: {fileID: 2100000, guid: e3976a5da2abd8444ab845508f46dff7, type: 2}
     - target: {fileID: -4345101707792037284, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+      objectReference: {fileID: 2100000, guid: e3976a5da2abd8444ab845508f46dff7, type: 2}
     - target: {fileID: -4157524182732408741, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

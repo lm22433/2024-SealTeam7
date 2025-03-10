@@ -54,6 +54,7 @@ Material:
     m_Floats:
     - FRESNEL: 1
     - _Fresnel_Strength: 0.21
+    - _QueueControl: 0
     - _Smoothness: 0
     m_Colors:
     - _Tint: {r: 0.7764706, g: 0.5254902, b: 0.25882354, a: 0}

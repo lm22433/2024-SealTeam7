@@ -24,8 +24,7 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 790a08c8a75b2144683dcb8b2fd8f95f, type: 3}
   m_Parent: {fileID: -876546973899608171, guid: 790a08c8a75b2144683dcb8b2fd8f95f, type: 3}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - FRESNEL_ON
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -43,7 +42,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Lighting_Ramp:
-        m_Texture: {fileID: 2800000, guid: ede22ad64b20be7478ffb3a5ff4faf17, type: 3}
+        m_Texture: {fileID: 2800000, guid: 650238d2acfb3da45b82d58ee2b34c0e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Normal_Map:
@@ -52,18 +51,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - FRESNEL: 1
+    - FRESNEL: 0
     - _AmbientAmount: 0.04
     - _FresnelThreshold: 0.311
-    - _Fresnel_Strength: 0.66
+    - _Fresnel_Strength: 0.626
     - _NormalBoundary: 0
     - _NormalOffset: 0
     - _QueueControl: 0
     - _Smoothness: 1.5
     m_Colors:
-    - _AmbientColour: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 0}
+    - _AmbientColour: {r: 0.4528302, g: 0.4506942, b: 0.4506942, a: 0}
     - _FresnelColour: {r: 0.735849, g: 0.735849, b: 0.735849, a: 0}
-    - _SpecularColour: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}
-    - _Tint: {r: 0.24528301, g: 0.16849159, b: 0.12842648, a: 0}
+    - _SpecularColour: {r: 0.4433962, g: 0.4433962, b: 0.4433962, a: 0}
+    - _Tint: {r: 0.6603774, g: 0.2803489, b: 0.09033466, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

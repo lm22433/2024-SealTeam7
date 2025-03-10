@@ -295,7 +295,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a64903a0c554449f38f959b807134ef1, type: 2}
+  - {fileID: 2100000, guid: 7021492ca31919c4b911daf37ff51ef8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -390,7 +390,6 @@ MonoBehaviour:
   sinkFactor: 10
   groundedOffset: 4
   fallDeathVelocityY: 40
-  self: {fileID: 3925053475800111628}
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -482,7 +481,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a64903a0c554449f38f959b807134ef1, type: 2}
+  - {fileID: 2100000, guid: 7021492ca31919c4b911daf37ff51ef8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -655,7 +654,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a64903a0c554449f38f959b807134ef1, type: 2}
+  - {fileID: 2100000, guid: 7021492ca31919c4b911daf37ff51ef8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
