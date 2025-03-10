@@ -309,6 +309,10 @@ MonoBehaviour:
   killScore: 10
   turret: {fileID: 8827629184883852959}
   gun: {fileID: 4181902386754096974}
+  gunFireSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: ca1dfeb612c3e19448f17f5744805fcc, type: 2}
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
