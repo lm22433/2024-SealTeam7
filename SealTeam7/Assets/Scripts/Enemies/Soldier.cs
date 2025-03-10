@@ -1,4 +1,6 @@
-﻿using Player;
+﻿using System;
+using Map;
+using Player;
 using UnityEngine;
 
 namespace Enemies
@@ -38,11 +40,11 @@ namespace Enemies
                 {
                     TargetRotation = Quaternion.LookRotation(Target.transform.position - gun.position);
                     gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position), aimSpeed * Time.deltaTime);
+                    float targetY = Math.Min(Target.transform.position.y + 24.0f, 3.0f + _mapManager.GetHeight(Target.transform.position.x, Target.transform.position.z));
+                    TargetRotation = Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(new Vector3(Target.transform.position.x, targetY, Target.transform.position.z) - transform.position), aimSpeed * Time.deltaTime);
                     break;
                 }
             }
-            
             TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
             
             _lastAttack += Time.deltaTime;
