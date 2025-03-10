@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ToonBlue
+  m_Name: ToonDarkGreen
   m_Shader: {fileID: -6465566751694194690, guid: 95257030020785e4199a57b445d93653, type: 3}
-  m_Parent: {fileID: -876546973899608171, guid: 95257030020785e4199a57b445d93653, type: 3}
+  m_Parent: {fileID: 2100000, guid: 6aba316668900af499fe129d0fb0b078, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - FRESNEL_ON
@@ -27,14 +27,9 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - FRESNEL: 1
-    - _FresnelThreshold: 0.722
-    - _Fresnel_Strength: 0.391
-    - _QueueControl: 0
-    - _Smoothness: 8
+    - _Fresnel_Strength: 0.25
     m_Colors:
-    - _FresnelColour: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}
-    - _Tint: {r: 0.03365249, g: 0.54716986, b: 0, a: 0}
+    - _Tint: {r: 0.028614448, g: 0.1768868, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1232231527794284808

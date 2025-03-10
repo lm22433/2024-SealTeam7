@@ -1860,6 +1860,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4957578726440732668, guid: 26e5c3c42dfbcf14fb07a7da9eb22581, type: 3}
   m_PrefabInstance: {fileID: 1586844376}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &967754380
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 967754382}
+  - component: {fileID: 967754381}
+  m_Layer: 0
+  m_Name: EffectManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &967754381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967754380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e746d00372bea404090f2c6db1bcc099, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  screenDamageMaterial: {fileID: 2100000, guid: cd5ac930165bf44b7b47162a9a7a65d4, type: 2}
+--- !u!4 &967754382
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967754380}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &992146620
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4036,6 +4081,10 @@ PrefabInstance:
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[0].spawnChance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[0].spawnChance
       value: 1
       objectReference: {fileID: 0}
@@ -4730,7 +4779,7 @@ MonoBehaviour:
   - {fileID: 2136277956}
   - {fileID: 553266628}
   - {fileID: 393166120}
-  maxEnemyCount: 200
+  maxEnemyCount: 1000
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
@@ -4801,6 +4850,7 @@ SceneRoots:
   - {fileID: 2004182967}
   - {fileID: 594167917}
   - {fileID: 2085838829}
+  - {fileID: 967754382}
   - {fileID: 1695711131}
   - {fileID: 332022280}
   - {fileID: 1884077986}

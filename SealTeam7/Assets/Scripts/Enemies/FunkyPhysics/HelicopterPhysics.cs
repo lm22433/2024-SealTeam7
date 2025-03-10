@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
-using Map;
 
 namespace Enemies.FunkyPhysics
 {
     public class HelicopterPhysics : BasePhysics
     {
-        [SerializeField] GameObject mainPropeller;
-        [SerializeField] GameObject subPropeller;
-        [SerializeField] float propellerSpeed;
+        [SerializeField] private Transform mainPropeller;
+        [SerializeField] private Transform subPropeller;
+        [SerializeField] private float propellerSpeed;
 
         protected override void Update()
         {
             base.Update();
-            
-            mainPropeller.transform.Rotate(new Vector3(0, propellerSpeed, 0) * Time.deltaTime);
-            subPropeller.transform.Rotate(new Vector3(0, 0, propellerSpeed) * Time.deltaTime);
+            mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
+            subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
         }
         
         private void OnTriggerEnter(Collider collider)
