@@ -54,7 +54,7 @@ MonoBehaviour:
   attackInterval: 2
   stopShootingThreshold: 20
   attackDamage: 8
-  killScore: 20
+  killScore: 500
   flyHeight: 165
 --- !u!54 &7202123808863129688
 Rigidbody:

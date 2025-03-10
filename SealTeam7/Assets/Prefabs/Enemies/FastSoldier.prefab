@@ -56,7 +56,7 @@ MonoBehaviour:
   attackInterval: 1
   stopShootingThreshold: 20
   attackDamage: 1
-  killScore: 10
+  killScore: 200
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
