@@ -5,7 +5,6 @@ namespace Enemies
 {
     public class Tank : Enemy
     {
-        [SerializeField] private Transform turret;
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem deathParticles;
         [SerializeField] private ParticleSystem[] dustTrails;
@@ -25,16 +24,12 @@ namespace Enemies
             {
                 // gun rotation
                 TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position - gun.position, gun.right), 0f, 0f);
-                gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);   
+                gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);   
             }
             else
             {
-                gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
+                gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
             }
-            
-            // turret rotation
-            TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(Target.transform.position - turret.position).eulerAngles.y - transform.rotation.eulerAngles.y, 0f);
-            turret.localRotation = Quaternion.Slerp(turret.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
             
             TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
             TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;

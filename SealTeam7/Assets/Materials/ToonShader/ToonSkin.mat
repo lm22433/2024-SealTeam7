@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ToonWall
+  m_Name: ToonSkin
   m_Shader: {fileID: -6465566751694194690, guid: 95257030020785e4199a57b445d93653, type: 3}
   m_Parent: {fileID: 2100000, guid: 6aba316668900af499fe129d0fb0b078, type: 2}
   m_ModifiedSerializedProperties: 0
@@ -39,23 +39,23 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Albedo:
-        m_Texture: {fileID: 2800000, guid: 1f2ae50e89c793d4cac5076880ddeba2, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Lighting_Ramp:
-        m_Texture: {fileID: 2800000, guid: ede22ad64b20be7478ffb3a5ff4faf17, type: 3}
+        m_Texture: {fileID: 2800000, guid: c31110c729efb7d4c9fac4ee4fc848ce, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Normal_Map:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - FRESNEL: 1
-    - _Fresnel_Strength: 0.434
-    - _Smoothness: 1
+    - _Fresnel_Strength: 0.21
+    - _Smoothness: 0
     m_Colors:
-    - _Tint: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 0.31764707}
+    - _Tint: {r: 0.7764706, g: 0.5254902, b: 0.25882354, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
