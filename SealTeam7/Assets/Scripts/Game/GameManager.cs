@@ -18,6 +18,7 @@ namespace Game
         [SerializeField] private int completionBonusScore = 500;
         [SerializeField] private float survivalBonusInterval = 30f;
         [SerializeField] private int survivalBonusScore = 250;
+        [SerializeField] private int waveClearedEarlyBonusScore = 750;
 
         [Header("UI objects")]
         [SerializeField] private TMP_Text scoreText;
@@ -39,7 +40,6 @@ namespace Game
         
         private float _lastSurvivalBonusTime;
         private float _lastDamageTime;
-        private float _lastDifficultyIncrease;
         private bool _isGameOver = false; 
         
         private void Awake()
@@ -89,7 +89,8 @@ namespace Game
             _health = maxHealth;
 
             _lastSurvivalBonusTime = Time.time;
-            _lastDifficultyIncrease = Time.time;
+
+            EnemyManager.GetInstance().StartSpawning();
 
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(false);
             
@@ -130,6 +131,14 @@ namespace Game
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
 
             EnemyManager.GetInstance().KillAllEnemies();
+        }
+
+        public void ApplyWaveClearedEarlyBonus()
+        {
+            if (!GameActive) throw new Exception("Game has not started yet, how can you clear a wave dummy?");
+
+            _score += waveClearedEarlyBonusScore;
+            Debug.Log($"Wave cleared early! +{waveClearedEarlyBonusScore} points");
         }
         
         public void TakeDamage(int damage)

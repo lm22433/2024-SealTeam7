@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 namespace UI
 {
-
     [Serializable]
     public struct DifficultyProfile
     {
@@ -24,7 +23,7 @@ namespace UI
         [SerializeField, Range(0f, 600f)] private int maxGameDuration = 600;
         [SerializeField] private int currentDuration = 180;
 
-        [Header("UI containers")]
+        [Header("UI Containers")]
         [SerializeField] private GameObject settingsMenu;
         [SerializeField] private GameObject mainMenu;
         [SerializeField] private GameObject scoreUI;
@@ -36,7 +35,6 @@ namespace UI
         private bool _isGameRunning = false;
 
         private void Awake() {
-
             mainMenu.SetActive(true);
             settingsMenu.SetActive(false);
         }
