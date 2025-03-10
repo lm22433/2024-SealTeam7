@@ -3873,264 +3873,68 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: scoreUI
+      value: 
+      objectReference: {fileID: 366592715}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: _scoreUI
       value: 
       objectReference: {fileID: 366592715}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: mainMenu
+      value: 
+      objectReference: {fileID: 1752941133}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: settingsMenu
+      value: 
+      objectReference: {fileID: 1752941134}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: durationSlider
+      value: 
+      objectReference: {fileID: 1752941131}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: currentDifficulty
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficultyDropdown
+      value: 
+      objectReference: {fileID: 1752941132}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: durationSliderText
+      value: 
+      objectReference: {fileID: 1752941130}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.size
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[0].name
+      value: Easy
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[1].name
+      value: Standard
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficulties.Array.data[2].name
+      value: Hard
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].name
-      value: Helicopter
+      value: IMPOSSIBLE
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.size
+      propertyPath: difficulties.Array.data[1].difficultyLevel
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].index
+      propertyPath: difficulties.Array.data[2].difficultyLevel
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].index
+      propertyPath: difficulties.Array.data[3].difficultyLevel
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].index
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].spawnInterval
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].spawnInterval
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].spawnInterval
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[0].durationPercentage
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].durationPercentage
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].durationPercentage
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].durationPercentage
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].prefab
-      value: 
-      objectReference: {fileID: 3438950281418470787, guid: 686713a87e5f9ae41bc31365cb21d88e, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.data[2].prefab
-      value: 
-      objectReference: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[0].prefab
-      value: 
-      objectReference: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[1].prefab
-      value: 
-      objectReference: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[2].prefab
-      value: 
-      objectReference: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[0].prefab
-      value: 
-      objectReference: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[1].prefab
-      value: 
-      objectReference: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[2].prefab
-      value: 
-      objectReference: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[0].prefab
-      value: 
-      objectReference: {fileID: 3438950281418470787, guid: 686713a87e5f9ae41bc31365cb21d88e, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[0].prefab
-      value: 
-      objectReference: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[1].prefab
-      value: 
-      objectReference: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].groupSize
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.data[2].groupSize
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[0].groupSize
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[1].groupSize
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[2].groupSize
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[0].groupSize
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[1].groupSize
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[2].groupSize
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[0].groupSize
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[1].groupSize
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[0].groupSize
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[1].groupSize
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[1].spawnChance
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].spawnChance
-      value: 0.33
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.data[2].spawnChance
-      value: 0.07
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[0].spawnChance
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[1].spawnChance
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[2].spawnChance
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[0].spawnChance
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[1].spawnChance
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[2].spawnChance
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[1].difficulties.Array.data[0].enemies.Array.data[0].spawnChance
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[0].spawnChance
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[1].spawnChance
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[1].enemies.Array.data[2].groupSpacing
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[2].enemies.Array.data[2].groupSpacing
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[0].groupSpacing
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[1].groupSpacing
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[3].enemies.Array.data[2].groupSpacing
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[0].groupSpacing
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[1].groupSpacing
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0].difficulties.Array.data[4].enemies.Array.data[2].groupSpacing
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[0].groupSpacing
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3].difficulties.Array.data[0].enemies.Array.data[1].groupSpacing
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5291816572976963037, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4397,6 +4201,49 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+--- !u!114 &1752941130 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5279576163568979249, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1752941131 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2972326472664544281, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1752941132 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1635809900923867297, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1752941133 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8561574992264673166, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1752941134 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1882065354379447099, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1778816574
 PrefabInstance:
   m_ObjectHideFlags: 0

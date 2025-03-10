@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Game;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Game
+namespace UI
 {
 
     [Serializable]
     public struct DifficultyProfile
     {
-        public String name;
-        public Difficulty[] difficulties;
+        public string name;
+        public DifficultyLevel difficultyLevel;
     }
 
     public class MenuHandler : MonoBehaviour
@@ -24,20 +25,20 @@ namespace Game
         [SerializeField] private int currentDuration = 180;
 
         [Header("UI containers")]
-        [SerializeField] private GameObject _settingsMenu;
-        [SerializeField] private GameObject _mainMenu;
-        [SerializeField] private GameObject _scoreUI;
-        [SerializeField] private TMP_Dropdown _difficultyDropdown;
-        [SerializeField] private Slider _durationSlider;
-        [SerializeField] private TMP_Text _durationSliderText;
+        [SerializeField] private GameObject settingsMenu;
+        [SerializeField] private GameObject mainMenu;
+        [SerializeField] private GameObject scoreUI;
+        [SerializeField] private TMP_Dropdown difficultyDropdown;
+        [SerializeField] private Slider durationSlider;
+        [SerializeField] private TMP_Text durationSliderText;
 
         private bool _paused;
         private bool _isGameRunning = false;
 
         private void Awake() {
 
-            _mainMenu.SetActive(true);
-            _settingsMenu.SetActive(false);
+            mainMenu.SetActive(true);
+            settingsMenu.SetActive(false);
         }
 
         void Update()
@@ -56,42 +57,36 @@ namespace Game
             GameManager.GetInstance().GameActive = !_paused;
             Time.timeScale = (_paused) ? 0 : 1;
             
-            _scoreUI.SetActive(!_paused);
+            scoreUI.SetActive(!_paused);
             if (_paused) {
                 OnSettingButtonClicked();
             } else{
-                _settingsMenu.SetActive(false);
+                settingsMenu.SetActive(false);
             }
                 
         }
         
         private void InitialiseSettings() {
-            List<String> difficultyNames = new List<string>();
+            List<string> difficultyNames = difficulties.Select(diff => diff.name).ToList();
 
-            foreach(DifficultyProfile diff in difficulties) {
-                difficultyNames.Add(diff.name);
-            }
+            difficultyDropdown.ClearOptions();
+            difficultyDropdown.AddOptions(difficultyNames);
+            difficultyDropdown.value = currentDifficulty;
+            difficultyDropdown.RefreshShownValue();
 
-            _difficultyDropdown.ClearOptions();
-
-            _difficultyDropdown.AddOptions(difficultyNames);
-            _difficultyDropdown.value = currentDifficulty;
-
-            _difficultyDropdown.RefreshShownValue();
-
-            _difficultyDropdown.onValueChanged.AddListener(evt =>
+            difficultyDropdown.onValueChanged.AddListener(_ =>
             {
-                currentDifficulty = _difficultyDropdown.value;
+                currentDifficulty = difficultyDropdown.value;
             });
 
-            _durationSlider.maxValue = maxGameDuration;
-            _durationSlider.value = currentDuration;
-            _durationSlider.onValueChanged.AddListener(evt =>
+            durationSlider.maxValue = maxGameDuration;
+            durationSlider.value = currentDuration;
+            durationSlider.onValueChanged.AddListener(_ =>
             {
-                currentDuration = (int) _durationSlider.value;
+                currentDuration = (int) durationSlider.value;
 
-                var seconds = (currentDuration % 60 < 10) ? $"0{(int) (currentDuration % 60)}" : $"{(int) (currentDuration % 60)}";
-                _durationSliderText.SetText($"{(int) currentDuration / 60}:{seconds}");
+                var seconds = (currentDuration % 60 < 10) ? $"0{currentDuration % 60}" : $"{currentDuration % 60}";
+                durationSliderText.SetText($"{currentDuration / 60}:{seconds}");
                 
                 GameManager.GetInstance().SetGameDuration(currentDuration);
             });
@@ -99,21 +94,21 @@ namespace Game
         }
 
         public void OnPlayButtonClicked() {
-            GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficulties);
+            GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficultyLevel);
             GameManager.GetInstance().SetGameDuration(currentDuration);
 
             GameManager.GetInstance().StartGame();
 
-            _mainMenu.SetActive(false);
-            _scoreUI.SetActive(true);
+            mainMenu.SetActive(false);
+            scoreUI.SetActive(true);
 
             _isGameRunning = true;
 
         }
 
         public void OnSettingButtonClicked() {
-            _mainMenu.SetActive(false);
-            _settingsMenu.SetActive(true);
+            mainMenu.SetActive(false);
+            settingsMenu.SetActive(true);
 
             InitialiseSettings();
         }
@@ -123,8 +118,8 @@ namespace Game
                 PauseGame();
 
             } else {
-                _mainMenu.SetActive(true);
-                _settingsMenu.SetActive(false);
+                mainMenu.SetActive(true);
+                settingsMenu.SetActive(false);
             }
 
         }

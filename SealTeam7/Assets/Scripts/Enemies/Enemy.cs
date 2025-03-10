@@ -25,7 +25,7 @@ namespace Enemies
         [SerializeField] protected float attackInterval;
         [SerializeField] protected float stopShootingThreshold;
         [SerializeField] protected int attackDamage;
-        [SerializeField] protected int killScore;
+        [SerializeField] protected internal int killScore;
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
@@ -49,7 +49,6 @@ namespace Enemies
 
         public void Die()
         {
-            GameManager.GetInstance().RegisterKill(killScore);
             Destroy(gameObject);
         }
 

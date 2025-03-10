@@ -45,6 +45,7 @@ namespace Enemies
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
+            GameManager.GetInstance().RegisterKill(enemy.killScore);
             enemy.Die();
         }
         
@@ -52,8 +53,6 @@ namespace Enemies
 
         public void SetDifficulty(Difficulty difficulty)
         {
-            _spawnInterval = difficulty.spawnInterval;
-            _enemyTypes = difficulty.enemies;
         }
 
         public void KillAllEnemies()

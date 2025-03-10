@@ -6,15 +6,6 @@ using UnityEngine;
 
 namespace Game
 {
-    [Serializable]
-    public struct Difficulty
-    {
-        public int index;
-        [Range(0f, 1f)] public float durationPercentage;
-        public float spawnInterval;
-        public EnemyData[] enemies;
-    }
-    
     public class GameManager : MonoBehaviour
     {
         [Header("Game Settings")] 
@@ -42,8 +33,9 @@ namespace Game
 		private int _totalKills;
         private int _score;
         private int _health;
+
+        private DifficultyLevel _difficultyLevel;
         private Difficulty _difficulty;
-        private Difficulty[] _difficulties;
         
         private float _lastSurvivalBonusTime;
         private float _lastDamageTime;
@@ -63,17 +55,6 @@ namespace Game
             if (!GameActive) return;
             
             _timer -= Time.deltaTime;
-
-            if (Time.time - _lastDifficultyIncrease >= _difficulty.durationPercentage * gameDuration)
-            {
-                if (_difficulty.index < _difficulties.Length - 1)
-                {
-                    _difficulty = _difficulties[_difficulty.index + 1];
-                    EnemyManager.GetInstance().SetDifficulty(_difficulty);
-                    _lastDifficultyIncrease = Time.time;
-                    Debug.Log($"Difficulty increased! Current difficulty: {_difficulty.index}");   
-                }
-            }
             
             if (Time.time - _lastSurvivalBonusTime >= survivalBonusInterval)
             {
@@ -100,7 +81,6 @@ namespace Game
         {
             _isGameOver = false;
             EnemyManager.GetInstance().KillAllEnemies();
-            _difficulty = _difficulties[0];
             EnemyManager.GetInstance().SetDifficulty(_difficulty);
             
             GameActive = true;
@@ -178,7 +158,11 @@ namespace Game
             Debug.Log($"Killed something! +{points} points");
         }
 
-        public void SetDifficulty(Difficulty[] difficulties) => _difficulties = difficulties;
+        public void SetDifficulty(DifficultyLevel difficultyLevel)
+        {
+            _difficultyLevel = difficultyLevel;
+            _difficulty = DifficultySettings.GetDifficulty(_difficultyLevel);
+        }
         public void SetGameDuration(int time) => gameDuration = time;
         
         public static GameManager GetInstance() => _instance;
