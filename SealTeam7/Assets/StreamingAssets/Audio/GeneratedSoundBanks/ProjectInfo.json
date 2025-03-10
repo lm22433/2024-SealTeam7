@@ -1,0 +1,29 @@
+{
+ "ProjectInfo": {
+  "Project": {
+   "Name": "SealTeam7",
+   "GUID": "{66026174-D1A5-40A3-AB72-869601940A5B}",
+   "Generator": "2024.1.2.8726"
+  },
+  "CacheRoot": "../../../../WiseIntergration/.cache",
+  "Platforms": [
+   {
+    "Name": "Windows",
+    "GUID": "{2371F3FC-14B0-4746-AEC0-1887B35DB229}",
+    "BasePlatform": "Windows",
+    "BasePlatformGUID": "{6E0CB257-C6C8-4C5C-8366-2740DFC441EB}",
+    "Path": "../../../../WiseIntergration/GeneratedSoundBanks/Windows"
+   }
+  ],
+  "Languages": [
+   {
+    "Name": "English(US)",
+    "Id": "684519430",
+    "GUID": "{9DDB0333-252D-45DE-A1ED-4987D2A1EBFD}",
+    "Default": "true",
+    "UseAsStandIn": "true"
+   }
+  ],
+  "FileHash": "{949F356F-1839-E922-A84D-8AE0E7EEA6CA}"
+ }
+}

@@ -7,6 +7,7 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
         private float _lastAttack;
+        [SerializeField] private AK.Wwise.Event gunFireSound;
         
         protected override void Attack(PlayerDamageable target)
         {
@@ -53,6 +54,7 @@ namespace Enemies
                 {
                     if (_lastAttack > attackInterval)
                     {
+                        gunFireSound.Post(gameObject);
                         Attack(EnemyManager.godlyCore);
                         _lastAttack = 0f;
                     }
@@ -62,6 +64,7 @@ namespace Enemies
                 {
                     if (_lastAttack > attackInterval)
                     {
+                        gunFireSound.Post(gameObject);
                         Attack(EnemyManager.godlyHands);
                         _lastAttack = 0f;
                     }

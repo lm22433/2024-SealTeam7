@@ -1,0 +1,10 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1988800053	Play_Solider_Gunfire			\Default Work Unit\Play_Solider_Gunfire	
+	3624895801	Play_Tank_Gunfire			\Default Work Unit\Play_Tank_Gunfire	
+	3643602477	Play_DesertAmbiance			\Default Work Unit\Play_DesertAmbiance	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	429045206	Pistol 2	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\74\{745CAA50-CFE0-837C-D5CA-704AA9D0A62D}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Solider Gunfire\Pistol 2		397788
+	668002209	DesertWind	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\AA\{AAFE09DF-50D0-CE78-BA3C-C7C0EE4D5EC5}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\DesertWind\DesertWind		10135392
+	840879273	Gun Sounds	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\FC\{FC4BF945-6612-3DCE-4292-0F6AB8F22069}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Tank Gunfire\Gun Sounds		2490360
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{E39C913E-3A7F-4E4B-B021-AAF40F66A207}" SchemaVersion="123">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{E39C913E-3A7F-4E4B-B021-AAF40F66A207}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Play_Solider_Gunfire" ID="{D6D31185-9808-4672-BFD6-F4892BDDC093}">
+					<ChildrenList>
+						<Action Name="" ID="{075B3DCA-FBA1-4D65-8F42-3FB56C1A35D0}" ShortID="37403762">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="60"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Solider Gunfire" ID="{46D5CA04-9FC3-4BD6-8D93-1AADF04EB029}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Tank_Gunfire" ID="{E8D017D2-2CA8-4271-8F03-442494A10FFE}">
+					<ChildrenList>
+						<Action Name="" ID="{6CE7F391-D102-44AD-83AE-85B0CAB58BA4}" ShortID="121630765">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Tank Gunfire" ID="{D68102D8-CB2C-4993-849A-6A3AD0A8D775}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_DesertAmbiance" ID="{85FAA578-4DB0-473E-916F-016DB8FDCEFD}">
+					<ChildrenList>
+						<Action Name="" ID="{2D9375FA-2749-49E5-B8C4-94C9E44C3BA8}" ShortID="576903299">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="DesertWind" ID="{9DD95D44-29F5-470A-9890-B3DD71BB7025}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{B49471E8-B1E5-480A-859D-9AD401481795}" ShortID="302986187">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="50"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="DesertAmbiance" ID="{5216A548-4286-4CBC-B200-ACAA7A6CCD22}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

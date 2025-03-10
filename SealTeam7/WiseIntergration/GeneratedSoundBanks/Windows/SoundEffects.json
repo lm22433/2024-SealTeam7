@@ -1,0 +1,91 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "3898083304",
+    "Type": "User",
+    "GUID": "{B94DA0AB-228D-465F-9C82-287D3D575D75}",
+    "Language": "SFX",
+    "Hash": "{F99352E7-1393-0FD7-DFF2-F4C180613F13}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
+    "ShortName": "SoundEffects",
+    "Path": "SoundEffects.bnk",
+    "Media": [
+     {
+      "Id": "429045206",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Pistol 2.wav",
+      "CachePath": "74/{745CAA50-CFE0-837C-D5CA-704AA9D0A62D}.wem"
+     },
+     {
+      "Id": "668002209",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "DesertWind.wav",
+      "CachePath": "AA/{AAFE09DF-50D0-CE78-BA3C-C7C0EE4D5EC5}.wem"
+     },
+     {
+      "Id": "840879273",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Gun Sounds.wav",
+      "CachePath": "FC/{FC4BF945-6612-3DCE-4292-0F6AB8F22069}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3643602477",
+      "Name": "Play_DesertAmbiance",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_DesertAmbiance",
+      "GUID": "{85FAA578-4DB0-473E-916F-016DB8FDCEFD}",
+      "DurationType": "OneShot",
+      "DurationMin": "105.576",
+      "DurationMax": "105.576",
+      "MediaRefs": [
+       {
+        "Id": "668002209"
+       }
+      ]
+     },
+     {
+      "Id": "1988800053",
+      "Name": "Play_Solider_Gunfire",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Solider_Gunfire",
+      "GUID": "{D6D31185-9808-4672-BFD6-F4892BDDC093}",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "2.0818489",
+      "MediaRefs": [
+       {
+        "Id": "429045206"
+       }
+      ]
+     },
+     {
+      "Id": "3624895801",
+      "Name": "Play_Tank_Gunfire",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Tank_Gunfire",
+      "GUID": "{E8D017D2-2CA8-4271-8F03-442494A10FFE}",
+      "DurationType": "OneShot",
+      "DurationMin": "12.969792",
+      "DurationMax": "12.969792",
+      "MediaRefs": [
+       {
+        "Id": "840879273"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{0A7C7588-7F0B-A2A5-D960-64C10E73C274}"
+ }
+}
