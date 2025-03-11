@@ -145,6 +145,22 @@ namespace Map
             // from wikipedia
             return 1f / ((x2 - x1) * (z2 - z1)) * math.mul(math.mul(new float2(x2 - x, x - x1), new float2x2(new float2(Q11, Q21), new float2(Q12, Q22))), new float2(z2 - z, z - z1));
         }
+
+        // Only gets nearest vertex normal
+        public Vector3 GetNormal(Vector3 position)
+        {
+            var normals = _chunks[0].GetNormals();
+            
+            var percentX = position.x / (mapSize * _mapSpacing);
+            var percentZ = position.z / (mapSize * _mapSpacing);
+            percentX = Mathf.Clamp01(percentX);
+            percentZ = Mathf.Clamp01(percentZ);
+            
+            var x = Mathf.FloorToInt(percentX * mapSize);
+            var z = Mathf.FloorToInt(percentZ * mapSize);
+
+            return normals[z * (mapSize + 1) + x];
+        }
         
         private void Update()
         {

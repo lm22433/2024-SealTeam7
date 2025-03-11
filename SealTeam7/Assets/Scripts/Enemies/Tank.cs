@@ -15,8 +15,8 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-            DisallowMovement = Vector3.Dot(transform.up, Vector3.up) < 0.7f;
-            DisallowShooting = Vector3.Dot(transform.forward, Target.transform.position - transform.position) < 0.7f;
+            DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.8f;
+            DisallowShooting = Vector3.Dot(transform.forward, Target.transform.position - transform.position) < 0.8f;
             
             // gun rotation
             switch (State)
@@ -46,8 +46,9 @@ namespace Enemies
                 }
             }
             
-            TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
-            TargetDirection = (new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position).normalized;
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.eulerAngles.z);
+            // TargetDirection = (new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position).normalized;
+            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
     }
 }

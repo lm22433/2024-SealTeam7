@@ -19,8 +19,9 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-            TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
-            TargetDirection = (new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position).normalized;
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.eulerAngles.z);
+            // TargetDirection = (new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position).normalized;
+            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
 
         protected override void EnemyFixedUpdate()

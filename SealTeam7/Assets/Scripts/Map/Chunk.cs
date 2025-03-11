@@ -16,6 +16,13 @@ namespace Map
         public bool ColliderEnabled;
     }
 
+    public struct SavedMeshData
+    {
+        public Vector3[] Vertices;
+        public Vector3[] Normals;
+        public Vector3[] ColliderVertices;
+    }
+
     public class Chunk : MonoBehaviour
     {
         private ChunkSettings _settings;
@@ -23,6 +30,7 @@ namespace Map
         
         private Mesh _mesh;
         private Mesh _colliderMesh;
+        private SavedMeshData _savedMesh;
         private int _lodFactor;
         private int _vertexSideCount;
         private int _colliderLodFactor;
@@ -34,6 +42,8 @@ namespace Map
         {
             _settings = s;
 
+            _savedMesh = new SavedMeshData();
+            
             _lodFactor = _settings.LODInfo.lod == 0 ? 1 : _settings.LODInfo.lod * 2;
             _vertexSideCount = _settings.Size / _lodFactor + 1;
 
@@ -61,6 +71,8 @@ namespace Map
             StartCoroutine(RecalcTangents());
         }
 
+        public Vector3[] GetNormals() => _savedMesh.Normals;
+
         private void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
@@ -68,20 +80,23 @@ namespace Map
             UpdateHeights();
         }
 
+        // TODO: make this run on a separate thread somehow
         private IEnumerator RecalcTangents()
         {
-            // TODO: make this run on a separate thread somehow
-            yield return new WaitForSeconds(2f);
-            _mesh.RecalculateTangents();
+            while (true)
+            {
+                yield return new WaitForSeconds(2f);
+                _mesh.RecalculateTangents();   
+            }
         }
 
         private void UpdateHeights()
         {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var vertices = _mesh.vertices;
+            var vertices = _savedMesh.Vertices;
             
             var colliderNumberOfVertices = _colliderVertexSideCount * _colliderVertexSideCount;
-            var colliderVertices = _colliderMesh.vertices;
+            var colliderVertices = _savedMesh.ColliderVertices;
 
             int zChunkOffset = _settings.Z * _settings.Size;
             int xChunkOffset = _settings.X * _settings.Size;
@@ -110,6 +125,10 @@ namespace Map
 
             _colliderMesh.SetVertices(colliderVertices);
             _colliderMesh.RecalculateBounds();
+            
+            _savedMesh.Vertices = vertices;
+            _savedMesh.Normals = _mesh.normals;
+            _savedMesh.ColliderVertices = colliderVertices;
             
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _colliderMesh;
         }
@@ -184,6 +203,10 @@ namespace Map
             _colliderMesh.Clear();
             _colliderMesh.SetVertices(colliderVertices);
             _colliderMesh.SetTriangles(colliderTriangles, 0);
+            
+            _savedMesh.Vertices = vertices;
+            _savedMesh.Normals = _mesh.normals;
+            _savedMesh.ColliderVertices = colliderVertices;
         }
     }
 }

@@ -56,7 +56,6 @@ MonoBehaviour:
   stopShootingThreshold: 20
   attackDamage: 8
   killScore: 20
-  DisallowMovement: 0
   flyHeight: 165
 --- !u!54 &7202123808863129688
 Rigidbody:
@@ -100,7 +99,7 @@ MonoBehaviour:
   gravityDefiance: 0
   defianceThreshold: 0
   sinkFactor: 10
-  groundedOffset: 3
+  groundedOffset: -1
   fallDeathVelocityY: 60
   mainPropeller: {fileID: 5474418017215342941}
   subPropeller: {fileID: 3727117144722257347}

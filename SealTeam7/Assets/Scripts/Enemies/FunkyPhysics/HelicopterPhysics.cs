@@ -8,9 +8,8 @@ namespace Enemies.FunkyPhysics
         [SerializeField] private Transform subPropeller;
         [SerializeField] private float propellerSpeed;
 
-        protected override void Update()
+        protected override void EnemyUpdate()
         {
-            base.Update();
             mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
             subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
         }

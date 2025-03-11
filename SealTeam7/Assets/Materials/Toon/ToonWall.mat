@@ -39,7 +39,7 @@ Material:
     m_TexEnvs:
     - _Albedo:
         m_Texture: {fileID: 2800000, guid: 1f2ae50e89c793d4cac5076880ddeba2, type: 3}
-        m_Scale: {x: 4, y: 4}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _Lighting_Ramp:
         m_Texture: {fileID: 2800000, guid: ede22ad64b20be7478ffb3a5ff4faf17, type: 3}

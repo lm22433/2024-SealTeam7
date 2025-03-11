@@ -44,7 +44,8 @@ namespace Enemies
             }
             
             TargetRotation = Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position);
-            TargetDirection = (new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position).normalized;
+            // TargetDirection = (new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position).normalized;
+            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
     }
 }
