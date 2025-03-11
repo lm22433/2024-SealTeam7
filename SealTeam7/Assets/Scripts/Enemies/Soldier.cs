@@ -25,13 +25,19 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
-                    TargetRotation = Quaternion.LookRotation(new Vector3(Target.transform.position.x, MapManager.GetInstance().GetHeight(Target.transform.position), Target.transform.position.z) - transform.position);
+                    var xAngle = Quaternion.LookRotation(new Vector3(
+                            Target.transform.position.x,
+                            MapManager.GetInstance().GetHeight(Target.transform.position),
+                            Target.transform.position.z
+                        ) - gun.position)
+                        .eulerAngles.x;
+                    TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
                     break;
                 }
                 case EnemyState.AttackHands:
                 {
-                    TargetRotation = Quaternion.LookRotation(Target.transform.position - gun.position);
+                    TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position - gun.position, gun.right), 0f, 0f);
                     gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
                     break;
                 }

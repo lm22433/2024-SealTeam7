@@ -50,13 +50,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 40
+  acceleration: 20
   aimSpeed: 20
   attackRange: 50
   attackInterval: 1
   stopShootingThreshold: 20
   attackDamage: 1
   killScore: 10
-  State: 0
+  DisallowMovement: 0
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:

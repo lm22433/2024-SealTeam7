@@ -1,3 +1,4 @@
+using System.Collections;
 using Game;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -56,6 +57,8 @@ namespace Map
             _meshCollider.sharedMesh = _colliderMesh;
             
             if (!_settings.ColliderEnabled) _meshCollider.enabled = false;
+
+            StartCoroutine(RecalcTangents());
         }
 
         private void Update()
@@ -63,6 +66,13 @@ namespace Map
             if (!GameManager.GetInstance().IsGameActive()) return;
             
             UpdateHeights();
+        }
+
+        private IEnumerator RecalcTangents()
+        {
+            // TODO: make this run on a separate thread somehow
+            yield return new WaitForSeconds(2f);
+            _mesh.RecalculateTangents();
         }
 
         private void UpdateHeights()
@@ -96,7 +106,6 @@ namespace Map
             
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
-            //_mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
 
             _colliderMesh.SetVertices(colliderVertices);

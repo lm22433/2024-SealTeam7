@@ -15,6 +15,9 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
+            DisallowMovement = Vector3.Dot(transform.up, Vector3.up) < 0.7f;
+            DisallowShooting = Vector3.Dot(transform.forward, Target.transform.position - transform.position) < 0.7f;
+            
             // gun rotation
             switch (State)
             {
@@ -25,7 +28,13 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
-                    TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position + Vector3.up * (MapManager.GetInstance().GetHeight(Target.transform.position) - Target.transform.position.y) - gun.position, gun.right), 0f, 0f);
+                    var xAngle = Quaternion.LookRotation(new Vector3(
+                            Target.transform.position.x,
+                            MapManager.GetInstance().GetHeight(Target.transform.position),
+                            Target.transform.position.z
+                        ) - gun.position)
+                        .eulerAngles.x - transform.eulerAngles.x;
+                    TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
                     break;
                 }
@@ -39,11 +48,6 @@ namespace Enemies
             
             TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
             TargetDirection = (new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position).normalized;
-        }
-
-        protected override void EnemyFixedUpdate()
-        {
-            DisallowMovement = Vector3.Dot(transform.up, Vector3.up) < 0.5f;
         }
     }
 }

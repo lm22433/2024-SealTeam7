@@ -14,6 +14,7 @@ namespace Enemies
     public abstract class Enemy : MonoBehaviour
     {
         [SerializeField] protected float moveSpeed;
+        [SerializeField] protected float acceleration;
         [SerializeField] protected float aimSpeed;
         [SerializeField] protected float attackRange;
         [SerializeField] protected float attackInterval;
@@ -24,7 +25,8 @@ namespace Enemies
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb; 
         protected EnemyState State;
-        [SerializeField] protected bool DisallowMovement;
+        protected bool DisallowMovement;
+        protected bool DisallowShooting;
         protected PlayerDamageable Target;
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;
@@ -56,9 +58,10 @@ namespace Enemies
         private void UpdateState()
         {
             var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, transform.position.y, EnemyManager.godlyCore.transform.position.z);
-            if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
-            else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackHands;
+            if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackCore;
+            else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackHands;
             else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
+            else State = EnemyState.Moving;
         }
 
         private void UpdateTarget()
@@ -119,12 +122,12 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
-                    if (!DisallowMovement) Rb.AddForce(TargetDirection * (moveSpeed * 10f));
+                    if (!DisallowMovement) Rb.AddForce(TargetDirection * (acceleration * 10f));
                     break;
                 }
                 case EnemyState.AttackCore:
                 {
-                    if (LastAttack > attackInterval)
+                    if (LastAttack > attackInterval && !DisallowShooting)
                     {
                         Attack(EnemyManager.godlyCore);
                         LastAttack = 0f;
@@ -133,7 +136,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
-                    if (LastAttack > attackInterval)
+                    if (LastAttack > attackInterval && !DisallowShooting)
                     {
                         Attack(EnemyManager.godlyHands);
                         LastAttack = 0f;
@@ -143,12 +146,6 @@ namespace Enemies
             }
             
             EnemyFixedUpdate();
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, transform.position + TargetDirection * 10f);
         }
     }
 }
