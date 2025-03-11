@@ -14800,7 +14800,7 @@ Transform:
   - {fileID: 8530385386723807346}
   - {fileID: 6830327269556584354}
   - {fileID: 45913116891892241}
-  - {fileID: 38609256637981435}
+  - {fileID: 8403761681634788734}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3925053475800111628
@@ -14823,7 +14823,7 @@ MonoBehaviour:
   stopShootingThreshold: 20
   attackDamage: 2
   killScore: 10
-  deathParticles: {fileID: 7799954348283169897}
+  deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 45913116891892241}
   buried: 0
   buriedAmount: 0.5
@@ -20157,7 +20157,7 @@ CapsuleCollider:
   m_Height: 0.47457257
   m_Direction: 1
   m_Center: {x: -0.075, y: 0.081314035, z: -0.048035488}
---- !u!1001 &7314908449442294788
+--- !u!1001 &1273045529044028289
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -20214,13 +20214,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f13b5f4a84133814eb35699234c59251, type: 3}
---- !u!4 &38609256637981435 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
-  m_PrefabInstance: {fileID: 7314908449442294788}
-  m_PrefabAsset: {fileID: 0}
---- !u!2083052967 &7799954348283169897 stripped
+--- !u!2083052967 &1735578503178218476 stripped
 VisualEffect:
   m_CorrespondingSourceObject: {fileID: 701654848171171949, guid: f13b5f4a84133814eb35699234c59251, type: 3}
-  m_PrefabInstance: {fileID: 7314908449442294788}
+  m_PrefabInstance: {fileID: 1273045529044028289}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8403761681634788734 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
+  m_PrefabInstance: {fileID: 1273045529044028289}
   m_PrefabAsset: {fileID: 0}
