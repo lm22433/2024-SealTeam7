@@ -15,6 +15,16 @@
 								</Reference>
 							</ReferenceList>
 						</Action>
+						<Action Name="" ID="{E2B4281C-AC3E-4B34-A682-D01DC6321E00}" ShortID="803674533">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="3"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Gun SoundsFX" ID="{2128451B-BD60-412C-A478-A1299C2E4264}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
 					</ChildrenList>
 				</Event>
 				<Event Name="Play_Tank_Gunfire" ID="{E8D017D2-2CA8-4271-8F03-442494A10FFE}">
@@ -37,13 +47,39 @@
 								</Reference>
 							</ReferenceList>
 						</Action>
-						<Action Name="" ID="{B49471E8-B1E5-480A-859D-9AD401481795}" ShortID="302986187">
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_MainMenuMusic" ID="{3ACF7174-567D-4D3C-895E-94FEF2EA7D0C}">
+					<ChildrenList>
+						<Action Name="" ID="{69978072-7270-48EC-A4FF-F41384EDCA54}" ShortID="652516934">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="MainMenuMusic" ID="{2073A278-E8CF-429F-8A97-26DA1F00DC5D}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_GameIntroTrack" ID="{2466550F-4D7B-4A4F-AFEF-5C5D506AD9C5}">
+					<ChildrenList>
+						<Action Name="" ID="{DDA8630D-275F-4FC2-AD90-01DB9BF04173}" ShortID="284319001">
 							<PropertyList>
-								<Property Name="Probability" Type="Real64" Value="50"/>
+								<Property Name="FadeInCurve" Type="int16" Value="5"/>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="DesertAmbiance" ID="{5216A548-4286-4CBC-B200-ACAA7A6CCD22}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+									<ObjectRef Name="GameIntroTrack" ID="{26EE6D90-A557-48F5-83E8-B1B6F2B63B67}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Helicopter_Sound" ID="{9A2C6923-A903-4022-8422-F895D27F1356}">
+					<ChildrenList>
+						<Action Name="" ID="{85AB39D2-FCE9-487A-A64C-18EB1F573DE6}" ShortID="521791264">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Helicopter Sound" ID="{E97CA25D-A7B4-4105-B4DE-0446D3921F9E}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

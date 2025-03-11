@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AK.Wwise;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -31,6 +32,11 @@ namespace Game
         [SerializeField] private Slider _durationSlider;
         [SerializeField] private TMP_Text _durationSliderText;
 
+        [Header("Music Settings")]
+        [SerializeField] private AK.Wwise.Event mainMenuMusic;
+        [SerializeField] private AK.Wwise.Event introMusic;
+        [SerializeField] private AK.Wwise.Event gameAmbience;
+
         private bool _paused;
         private bool _isGameRunning = false;
 
@@ -38,6 +44,22 @@ namespace Game
 
             _mainMenu.SetActive(true);
             _settingsMenu.SetActive(false);
+        }
+
+        private void Start() {
+            mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
+        }
+
+        void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (!_isGameRunning) {
+                mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_MusicSyncBar, MainMenuMusicCallback);
+            }
+        }
+
+        void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (!_isGameRunning) {
+                gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_MusicSyncBar, AmbienceMusicCallback);
+            }
         }
 
         void Update()
@@ -99,6 +121,10 @@ namespace Game
         }
 
         public void OnPlayButtonClicked() {
+            mainMenuMusic.Stop(gameObject, 200, AkCurveInterpolation.AkCurveInterpolation_Exp1);
+            introMusic.Post(gameObject);
+            gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
+
             GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficulties);
             GameManager.GetInstance().SetGameDuration(currentDuration);
 

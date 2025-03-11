@@ -5,7 +5,11 @@
 			<ChildrenList>
 				<SoundBank Name="SoundEffects" ID="{B94DA0AB-228D-465F-9C82-287D3D575D75}">
 					<ObjectInclusionList>
+						<ObjectRef Name="Helicopter Sound" ID="{E97CA25D-A7B4-4105-B4DE-0446D3921F9E}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Gun SoundsFX" ID="{2128451B-BD60-412C-A478-A1299C2E4264}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="MainMenuMusic" ID="{2073A278-E8CF-429F-8A97-26DA1F00DC5D}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="DesertWind" ID="{9DD95D44-29F5-470A-9890-B3DD71BB7025}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="GameIntroTrack" ID="{26EE6D90-A557-48F5-83E8-B1B6F2B63B67}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Tank Gunfire" ID="{D68102D8-CB2C-4993-849A-6A3AD0A8D775}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Solider Gunfire" ID="{46D5CA04-9FC3-4BD6-8D93-1AADF04EB029}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>

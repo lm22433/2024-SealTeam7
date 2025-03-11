@@ -14,6 +14,9 @@ namespace AK
     namespace EVENTS
     {
         static const AkUniqueID PLAY_DESERTAMBIANCE = 3643602477U;
+        static const AkUniqueID PLAY_GAMEINTROTRACK = 2853397551U;
+        static const AkUniqueID PLAY_HELICOPTER_SOUND = 3013451977U;
+        static const AkUniqueID PLAY_MAINMENUMUSIC = 667425441U;
         static const AkUniqueID PLAY_SOLIDER_GUNFIRE = 1988800053U;
         static const AkUniqueID PLAY_TANK_GUNFIRE = 3624895801U;
     } // namespace EVENTS
