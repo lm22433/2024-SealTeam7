@@ -28,6 +28,8 @@ namespace Enemies
         [SerializeField] protected float stopShootingThreshold;
         [SerializeField] protected int attackDamage;
         [SerializeField] protected int killScore;
+        [SerializeField] private ParticleSystem deathParticles;
+        [SerializeField] private Transform model;
         protected MapManager _mapManager;
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
@@ -62,6 +64,8 @@ namespace Enemies
 
 		public virtual void SetupDeath()
 		{
+            deathParticles.Play();
+            model.gameObject.SetActive(false);
 			State = EnemyState.Dying;
 		}
 

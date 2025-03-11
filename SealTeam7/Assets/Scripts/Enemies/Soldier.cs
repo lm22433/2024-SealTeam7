@@ -9,7 +9,6 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem gunEffects;
-        [SerializeField] private ParticleSystem deathParticles;
         private float _lastAttack;
 
 		protected override void Start()
@@ -88,18 +87,6 @@ namespace Enemies
                     break;
                 }
             }
-        }
-
-		public override void SetupDeath()
-		{
-			State = EnemyState.Dying;
-			deathParticles.Play();
-		}
-
-        public override void Die()
-        {
-            deathParticles.Play();
-            base.Die();
         }
     }
 }

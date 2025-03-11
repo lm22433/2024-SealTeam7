@@ -39,11 +39,12 @@ namespace Enemies.FunkyPhysics
             }
         }
         
+        /*
         private void OnTriggerEnter(Collider collider) {
             if (collider.gameObject.tag == "Ground") {
                 GetComponent<Helicopter>().Die();
             }
             
-        }
+        }*/
     }
 }
