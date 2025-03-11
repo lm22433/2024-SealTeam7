@@ -37,6 +37,7 @@ namespace Map
         private int _colliderVertexSideCount;
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
+        private bool _recalcedTangents;
 
         public void Setup(ChunkSettings s, ref float[] heightMap)
         {
@@ -67,27 +68,20 @@ namespace Map
             _meshCollider.sharedMesh = _colliderMesh;
             
             if (!_settings.ColliderEnabled) _meshCollider.enabled = false;
-
-            StartCoroutine(RecalcTangents());
         }
 
         public Vector3[] GetNormals() => _savedMesh.Normals;
 
         private void Update()
         {
-            if (!GameManager.GetInstance().IsGameActive()) return;
+            if (!GameManager.GetInstance().IsGameActive())
+            {
+                _recalcedTangents = false;
+                return;
+            }
             
             UpdateHeights();
-        }
-
-        // TODO: make this run on a separate thread somehow
-        private IEnumerator RecalcTangents()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(2f);
-                _mesh.RecalculateTangents();   
-            }
+            _recalcedTangents = true;
         }
 
         private void UpdateHeights()
@@ -121,6 +115,7 @@ namespace Map
             
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
+            if (!_recalcedTangents) _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
 
             _colliderMesh.SetVertices(colliderVertices);
