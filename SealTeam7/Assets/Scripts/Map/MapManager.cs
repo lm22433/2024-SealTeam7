@@ -117,7 +117,7 @@ namespace Map
             else _noiseGenerator.Stop();
         }
 
-        public float GetInterpolatedHeight(Vector3 position)
+        public float GetHeight(Vector3 position)
         {
             var percentX = position.x / (mapSize * _mapSpacing);
             var percentZ = position.z / (mapSize * _mapSpacing);

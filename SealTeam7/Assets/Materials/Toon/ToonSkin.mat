@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: ToonSkin
   m_Shader: {fileID: -6465566751694194690, guid: 95257030020785e4199a57b445d93653, type: 3}
-  m_Parent: {fileID: 2100000, guid: 6aba316668900af499fe129d0fb0b078, type: 2}
+  m_Parent: {fileID: -876546973899608171, guid: 95257030020785e4199a57b445d93653, type: 3}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - FRESNEL_ON
@@ -53,7 +53,8 @@ Material:
     m_Ints: []
     m_Floats:
     - FRESNEL: 1
-    - _Fresnel_Strength: 0.21
+    - _FresnelThreshold: 0.545
+    - _Fresnel_Strength: 0.378
     - _QueueControl: 0
     - _Smoothness: 0
     m_Colors:

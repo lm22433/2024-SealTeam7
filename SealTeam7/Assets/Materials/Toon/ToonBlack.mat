@@ -28,11 +28,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _FresnelThreshold: 0.698
-    - _Fresnel_Strength: 0.701
+    - _Fresnel_Strength: 0.57
     - _QueueControl: 0
     - _Smoothness: 10
     m_Colors:
-    - _Tint: {r: 0.028301895, g: 0.028301895, b: 0.028301895, a: 0}
+    - _Tint: {r: 0.018867925, g: 0.018867925, b: 0.018867925, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &5805058784032740904

@@ -68,10 +68,10 @@ namespace Map
         private void UpdateHeights()
         {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
-            var vertices = _mesh.vertices;//new Vector3[numberOfVertices];
+            var vertices = _mesh.vertices;
             
             var colliderNumberOfVertices = _colliderVertexSideCount * _colliderVertexSideCount;
-            var colliderVertices = _colliderMesh.vertices;//new Vector3[colliderNumberOfVertices];
+            var colliderVertices = _colliderMesh.vertices;
 
             int zChunkOffset = _settings.Z * _settings.Size;
             int xChunkOffset = _settings.X * _settings.Size;

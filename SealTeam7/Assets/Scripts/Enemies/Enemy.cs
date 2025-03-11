@@ -22,12 +22,13 @@ namespace Enemies
         [SerializeField] protected int killScore;
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
-        protected Rigidbody Rb;
-        [Header("Debug")]
-        [SerializeField] protected EnemyState State;
+        protected Rigidbody Rb; 
+        protected EnemyState State;
+        [SerializeField] protected bool DisallowMovement;
         protected PlayerDamageable Target;
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;
+        protected float LastAttack;
 
         protected virtual void Start()
         {
@@ -103,6 +104,8 @@ namespace Enemies
             UpdateTarget();
             LimitSpeed();
             
+            LastAttack += Time.deltaTime;
+            
             EnemyUpdate();
         }
 
@@ -110,7 +113,42 @@ namespace Enemies
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
+            if (!DisallowMovement) Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime));
+            
+            switch (State)
+            {
+                case EnemyState.Moving:
+                {
+                    if (!DisallowMovement) Rb.AddForce(TargetDirection * (moveSpeed * 10f));
+                    break;
+                }
+                case EnemyState.AttackCore:
+                {
+                    if (LastAttack > attackInterval)
+                    {
+                        Attack(EnemyManager.godlyCore);
+                        LastAttack = 0f;
+                    }
+                    break;
+                }
+                case EnemyState.AttackHands:
+                {
+                    if (LastAttack > attackInterval)
+                    {
+                        Attack(EnemyManager.godlyHands);
+                        LastAttack = 0f;
+                    }
+                    break;
+                }
+            }
+            
             EnemyFixedUpdate();
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, transform.position + TargetDirection * 10f);
         }
     }
 }

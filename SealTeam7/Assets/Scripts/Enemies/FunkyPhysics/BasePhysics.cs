@@ -27,17 +27,17 @@ namespace Enemies.FunkyPhysics
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
-            if (transform.position.y < MapManager.GetInstance().GetInterpolatedHeight(transform.position) - sinkFactor)
+            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor)
             {
                 //WOULD DIE BURIED
                 EnemyManager.GetInstance().Kill(Self);
             }
-            else if (Rb.linearVelocity.y > defianceThreshold && transform.position.y < MapManager.GetInstance().GetInterpolatedHeight(transform.position) + groundedOffset)
+            else if (Rb.linearVelocity.y > defianceThreshold && transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
             {
                 Physics.Raycast(transform.position, Vector3.down, out var hit, groundedOffset * 2.0f);
                 Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
             }
-            else if (-Rb.linearVelocity.y >= fallDeathVelocityY && transform.position.y < MapManager.GetInstance().GetInterpolatedHeight(transform.position) + groundedOffset)
+            else if (-Rb.linearVelocity.y >= fallDeathVelocityY && transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
             {
                 //WOULD DIE FALL DMG
                 EnemyManager.GetInstance().Kill(Self);
