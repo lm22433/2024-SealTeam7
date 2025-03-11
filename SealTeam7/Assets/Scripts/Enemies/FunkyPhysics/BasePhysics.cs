@@ -11,7 +11,6 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float sinkFactor;
         [SerializeField] protected float groundedOffset;
         [SerializeField] protected float fallDeathVelocityY;
-        [SerializeField] protected ParticleSystem sandFall;
         protected Enemy Self;
         protected Rigidbody Rb;
         protected bool Grounded;
@@ -48,7 +47,6 @@ namespace Enemies.FunkyPhysics
             {
                 Physics.Raycast(transform.position, Vector3.down, out var hit, groundedOffset * 2.0f);
                 Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
-                sandFall.Play();
             }
             
             EnemyFixedUpdate();

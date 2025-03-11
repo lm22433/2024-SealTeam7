@@ -37,7 +37,7 @@ namespace Enemies
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;
 		protected float DeathDuration = 3.0f;
-		public float buried = 0.0f;
+        public float buried;
 		public float buriedAmount = 0.5f;
 
         protected virtual void Start()
@@ -116,10 +116,13 @@ namespace Enemies
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
 
-			if (State == EnemyState.Dying) {
-				
+			if (State == EnemyState.Dying)
+            {
+                var x = transform.position.x;
+                var z = transform.position.z;
+                transform.position = new Vector3(x, MapManager.GetInstance().GetHeight(transform.position) - buried, z);
 				DeathDuration -= Time.deltaTime;
-				if (DeathDuration <= 0.0f) this.Die();
+				if (DeathDuration <= 0.0f) Die();
 			}
 
             if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude >

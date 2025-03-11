@@ -6,35 +6,29 @@ namespace Enemies.FunkyPhysics
 {
     public class KamikazePhysics : BasePhysics
     {
-        private bool _exploded = false;
+        private bool _exploded;
 
-
-        protected override void Start()
-        {
-            EnemyManager = FindFirstObjectByType<EnemyManager>();
-            MapManager = FindFirstObjectByType<MapManager>();
-            return;
-        }
-
-        protected override void Update()
+        protected override void EnemyUpdate()
         {  
             if (!GameManager.GetInstance().IsGameActive()) return;
 
-            if (transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z))
-            {
-                EnemyManager.Kill(self);
-            }
+            if (Grounded) EnemyManager.GetInstance().Kill(Self);
 
-            if(self.IsDying() && !_exploded) {
+            if (Self.IsDying() && !_exploded)
+            {
 				RaycastHit[] objs = Physics.SphereCastAll(transform.position, 50.0f, transform.forward, 1.0f);
                 foreach (var item in objs)
                 {
-                    if(item.rigidbody != null)item.rigidbody.AddForce((item.point-transform.position + (5.0f * Vector3.up)).normalized * 25.0f, ForceMode.Impulse);
+                    if (item.rigidbody) item.rigidbody.AddForce((item.point - transform.position + 5.0f * Vector3.up).normalized * 25.0f, ForceMode.Impulse);
                 }
                 _exploded = true;
 			}
-
-            return;
+        }
+        
+        private void OnTriggerEnter(Collider c)
+        {
+            if (!c.gameObject.CompareTag($"Ground")) return;
+            EnemyManager.GetInstance().Kill(Self);
         }
     }
 }
