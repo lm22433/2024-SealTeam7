@@ -1,12 +1,13 @@
-﻿namespace Enemies.FunkyPhysics
+﻿using Map;
+using UnityEngine;
+
+namespace Enemies.FunkyPhysics
 {
     public class TankPhysics : BasePhysics
     {
-        protected override void Start()
+        protected override void EnemyUpdate()
         {
-            base.Start();
-            
-            Rb.freezeRotation = false;
+            if (Grounded && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f) EnemyManager.GetInstance().Kill(Self);
         }
     }
 }

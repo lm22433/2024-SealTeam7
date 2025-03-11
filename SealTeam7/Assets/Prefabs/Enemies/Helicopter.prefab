@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 15
+  acceleration: 20
   aimSpeed: 20
   attackRange: 90
   attackInterval: 2
@@ -98,9 +99,8 @@ MonoBehaviour:
   gravityDefiance: 0
   defianceThreshold: 0
   sinkFactor: 10
-  groundedOffset: 3
+  groundedOffset: -1
   fallDeathVelocityY: 60
-  self: {fileID: 3557171694228446854}
   mainPropeller: {fileID: 5474418017215342941}
   subPropeller: {fileID: 3727117144722257347}
   propellerSpeed: 1000
@@ -208,7 +208,7 @@ PrefabInstance:
     - target: {fileID: -4683669308469848369, guid: bdfaab65c519f4107870e85cd4bf4eb6, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+      objectReference: {fileID: 2100000, guid: e3976a5da2abd8444ab845508f46dff7, type: 2}
     - target: {fileID: -1806680513116206669, guid: bdfaab65c519f4107870e85cd4bf4eb6, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -224,7 +224,7 @@ PrefabInstance:
     - target: {fileID: -1461304994638716399, guid: bdfaab65c519f4107870e85cd4bf4eb6, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 8d2f1773bcf58a54f83509f565560ed4, type: 2}
+      objectReference: {fileID: 2100000, guid: e3976a5da2abd8444ab845508f46dff7, type: 2}
     - target: {fileID: -804731622281664130, guid: bdfaab65c519f4107870e85cd4bf4eb6, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -232,7 +232,7 @@ PrefabInstance:
     - target: {fileID: -678588488315902003, guid: bdfaab65c519f4107870e85cd4bf4eb6, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 8d2f1773bcf58a54f83509f565560ed4, type: 2}
+      objectReference: {fileID: 2100000, guid: e3976a5da2abd8444ab845508f46dff7, type: 2}
     - target: {fileID: -516098083770646512, guid: bdfaab65c519f4107870e85cd4bf4eb6, type: 3}
       propertyPath: m_Name
       value: Fin 1

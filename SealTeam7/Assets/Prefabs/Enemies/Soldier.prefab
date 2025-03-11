@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 20
+  acceleration: 40
   aimSpeed: 20
   attackRange: 50
   attackInterval: 1
@@ -69,12 +70,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9187c63d084cd6a09f2dc794cdcc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 20
-  defianceThreshold: 8
+  gravityDefiance: 10
+  defianceThreshold: 10
   sinkFactor: 10
   groundedOffset: 4
-  fallDeathVelocityY: 60
-  self: {fileID: 8717828168720478181}
+  fallDeathVelocityY: 40
+  Grounded: 0
 --- !u!54 &4195251952092455746
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -278,11 +279,11 @@ PrefabInstance:
     - target: {fileID: -6652725513331149018, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+      objectReference: {fileID: 2100000, guid: e3976a5da2abd8444ab845508f46dff7, type: 2}
     - target: {fileID: -4345101707792037284, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 4648713fb4caada4e9ecba16c29fea88, type: 2}
+      objectReference: {fileID: 2100000, guid: e3976a5da2abd8444ab845508f46dff7, type: 2}
     - target: {fileID: -4157524182732408741, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

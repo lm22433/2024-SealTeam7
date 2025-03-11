@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:SealTeam7/Assets/Materials/Toon/ToonHelicopter.mat.meta
+guid: 7021492ca31919c4b911daf37ff51ef8
+========
 guid: a64903a0c554449f38f959b807134ef1
+>>>>>>>> dev:SealTeam7/Assets/Shaders/Toon/ToonDarkGreen.mat.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000

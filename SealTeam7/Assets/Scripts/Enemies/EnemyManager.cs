@@ -60,7 +60,7 @@ namespace Enemies
         {
             foreach (Transform child in transform)
             {
-                Destroy(child.gameObject);
+                if (child.TryGetComponent<Enemy>(out var enemy)) Destroy(enemy.gameObject);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Enemies
                 for (int i = 0; i < enemy.groupSize; i++)
                 {
                     var spawnOffset2D = Random.insideUnitCircle.normalized * enemy.groupSpacing;
-                    var spawnOffset = new Vector3(spawnOffset2D.x, 0f, spawnOffset2D.y);
+                    var spawnOffset = new Vector3(spawnOffset2D.x, 4f, spawnOffset2D.y);
                     
                     if (_enemyCount >= maxEnemyCount) continue;
                     Instantiate(enemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);

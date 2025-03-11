@@ -133,7 +133,6 @@ GameObject:
   - component: {fileID: 3857096993399556680}
   - component: {fileID: 8364035874536090563}
   - component: {fileID: 3510042106784056766}
-  - component: {fileID: 3802179035401866260}
   m_Layer: 0
   m_Name: Barrel
   m_TagString: Untagged
@@ -209,27 +208,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3802179035401866260
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1725528738992958285}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.028534867, y: 0.028534867, z: 0.135834}
-  m_Center: {x: 0, y: 0, z: 0.01}
 --- !u!1 &1978898577249346478
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,7 +273,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a64903a0c554449f38f959b807134ef1, type: 2}
+  - {fileID: 2100000, guid: 7021492ca31919c4b911daf37ff51ef8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -364,9 +342,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc6c0171c084d7cb202329c32b1c168, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 20
-  aimSpeed: 20
-  attackRange: 40
+  moveSpeed: 15
+  acceleration: 100
+  aimSpeed: 1
+  attackRange: 120
   attackInterval: 4
   stopShootingThreshold: 20
   attackDamage: 2
@@ -384,12 +363,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7004c134e7a4de2a0ec47e7f6165bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 20
-  defianceThreshold: 8
+  gravityDefiance: 5
+  defianceThreshold: 20
   sinkFactor: 10
-  groundedOffset: 4
-  fallDeathVelocityY: 60
-  self: {fileID: 3925053475800111628}
+  groundedOffset: 7
+  fallDeathVelocityY: 40
+  Grounded: 0
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -400,8 +379,8 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 10
   m_Drag: 0
-  m_AngularDrag: 5
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_AngularDrag: 10
+  m_CenterOfMass: {x: 0, y: -5, z: 5}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -481,7 +460,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a64903a0c554449f38f959b807134ef1, type: 2}
+  - {fileID: 2100000, guid: 7021492ca31919c4b911daf37ff51ef8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -654,7 +633,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a64903a0c554449f38f959b807134ef1, type: 2}
+  - {fileID: 2100000, guid: 7021492ca31919c4b911daf37ff51ef8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -695,8 +674,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.02, y: 0.08088831, z: 0.024626436}
-  m_Center: {x: 0, y: 0.04030732, z: 0.003449764}
+  m_Size: {x: 0.02, y: 0.07779671, z: 0.024626436}
+  m_Center: {x: 0, y: 0.041853152, z: 0.0034497643}
 --- !u!1 &6809366579983345650
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,4 @@
 ﻿namespace Enemies.FunkyPhysics
 {
-    public class SoldierPhysics : BasePhysics
-    {
-    }
+    public class SoldierPhysics : BasePhysics {}
 }
