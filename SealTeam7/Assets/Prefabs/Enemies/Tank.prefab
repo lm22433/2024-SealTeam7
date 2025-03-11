@@ -10014,7 +10014,7 @@ MonoBehaviour:
   stopShootingThreshold: 20
   attackDamage: 2
   killScore: 10
-  deathParticles: {fileID: 244772345962454407}
+  deathParticles: {fileID: 7799954348283169897}
   model: {fileID: 45913116891892241}
   buried: 0
   buriedAmount: 0.5
@@ -19919,6 +19919,7 @@ GameObject:
   - component: {fileID: 38609256637981435}
   - component: {fileID: 7799954348283169897}
   - component: {fileID: 8381743523179842388}
+  - component: {fileID: 719798307722928528}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
@@ -19935,7 +19936,7 @@ Transform:
   m_GameObject: {fileID: 4590259560159814406}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20022,6 +20023,18 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &719798307722928528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4590259560159814406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed2bcae8d9c848778cf672a51e02ce15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5412313519984899604
 GameObject:
   m_ObjectHideFlags: 0
@@ -30191,10 +30204,5 @@ PrefabInstance:
 --- !u!4 &119553635404659577 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4388947112716342, guid: e1b08032bec16ba4eb1ae23cbd572664, type: 3}
-  m_PrefabInstance: {fileID: 119111041684722511}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &244772345962454407 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 198917022394846920, guid: e1b08032bec16ba4eb1ae23cbd572664, type: 3}
   m_PrefabInstance: {fileID: 119111041684722511}
   m_PrefabAsset: {fileID: 0}

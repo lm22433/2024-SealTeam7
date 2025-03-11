@@ -2,6 +2,7 @@ using Game;
 using Map;
 using Player;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Enemies
 {
@@ -28,7 +29,7 @@ namespace Enemies
         [SerializeField] protected float stopShootingThreshold;
         [SerializeField] protected int attackDamage;
         [SerializeField] protected int killScore;
-        [SerializeField] private ParticleSystem deathParticles;
+        [SerializeField] private VisualEffect deathParticles;
         [SerializeField] private Transform model;
         protected MapManager _mapManager;
         protected float SqrAttackRange;
@@ -38,7 +39,7 @@ namespace Enemies
         protected PlayerDamageable Target;
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;
-		protected float deathDuration = 2.0f;
+		protected float deathDuration = 3.0f;
 		public float buried = 0.0f;
 		public float buriedAmount = 0.5f;
 
@@ -47,6 +48,8 @@ namespace Enemies
             EnemyManager = EnemyManager.GetInstance();
 			_mapManager = FindFirstObjectByType<MapManager>();
             Rb = GetComponent<Rigidbody>();
+            
+            deathParticles.Stop();
 
             SqrAttackRange = attackRange * attackRange;
             State = EnemyState.Moving;
@@ -63,9 +66,10 @@ namespace Enemies
         }
 
 		public virtual void SetupDeath()
-		{
-            deathParticles.Play();
+        {
+            transform.position = new Vector3(transform.position.x, _mapManager.GetHeight(transform.position.x, transform.position.z), transform.position.z);
             model.gameObject.SetActive(false);
+            deathParticles.Play();
 			State = EnemyState.Dying;
 		}
 
