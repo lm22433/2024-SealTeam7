@@ -3909,6 +3909,22 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'difficulties.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 56ddbcfd438354956822f2ccc98c0b9d, type: 2}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'difficulties.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: a0c59461ebefa4ef49d1eea75c4e00a4, type: 2}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'difficulties.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 407dc5d3de3ec4fb0a953ee65e70ada2, type: 2}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'difficulties.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 9a1d2f5961a384b7e98107e560110632, type: 2}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[0].name
       value: Easy
       objectReference: {fileID: 0}
@@ -4634,11 +4650,11 @@ MonoBehaviour:
   enemyTypes:
   - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
     groupSize: 5
-    groupSpacing: 2
+    groupSpacing: 1.2
     spawnChance: 0
   - prefab: {fileID: 3438950281418470787, guid: 686713a87e5f9ae41bc31365cb21d88e, type: 3}
     groupSize: 3
-    groupSpacing: 1.2
+    groupSpacing: 2
     spawnChance: 0
   - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
     groupSize: 2
@@ -4646,7 +4662,7 @@ MonoBehaviour:
     spawnChance: 0
   - prefab: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
     groupSize: 1
-    groupSpacing: 10
+    groupSpacing: 5
     spawnChance: 0
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped

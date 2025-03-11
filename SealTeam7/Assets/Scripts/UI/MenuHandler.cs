@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game;
@@ -8,17 +7,10 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    [Serializable]
-    public struct DifficultyProfile
-    {
-        public string name;
-        public DifficultyLevel difficultyLevel;
-    }
-
     public class MenuHandler : MonoBehaviour
     {
         [Header("Game Settings")]
-        [SerializeField] private DifficultyProfile[] difficulties;
+        [SerializeField] private Difficulty[] difficulties;
         [SerializeField] private int currentDifficulty;
         [SerializeField, Range(0f, 600f)] private int maxGameDuration = 600;
         [SerializeField] private int currentDuration = 180;
@@ -92,7 +84,7 @@ namespace UI
         }
 
         public void OnPlayButtonClicked() {
-            GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficultyLevel);
+            GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty]);
             GameManager.GetInstance().SetGameDuration(currentDuration);
 
             GameManager.GetInstance().StartGame();

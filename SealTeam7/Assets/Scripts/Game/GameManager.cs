@@ -35,7 +35,6 @@ namespace Game
         private int _score;
         private int _health;
 
-        private DifficultyLevel _difficultyLevel;
         private Difficulty _difficulty;
         
         private float _lastSurvivalBonusTime;
@@ -167,11 +166,7 @@ namespace Game
             Debug.Log($"Killed something! +{points} points");
         }
 
-        public void SetDifficulty(DifficultyLevel difficultyLevel)
-        {
-            _difficultyLevel = difficultyLevel;
-            _difficulty = DifficultySettings.GetDifficulty(_difficultyLevel);
-        }
+        public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
         public void SetGameDuration(int time) => gameDuration = time;
         
         public static GameManager GetInstance() => _instance;
