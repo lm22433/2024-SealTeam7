@@ -1,26 +1,22 @@
-﻿using UnityEngine;
+using Map;
+using UnityEngine;
 
 namespace Enemies.FunkyPhysics
 {
     public class TankPhysics : BasePhysics
     {
-		private bool _exploded = false;
+		private bool _exploded;
 
-        protected override void Start()
+        protected override void EnemyUpdate()
         {
-            base.Start();
-            
-            Rb.freezeRotation = false;
-        }
+            if (Grounded && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f) EnemyManager.GetInstance().Kill(Self);
 
-		protected override void Update()
-		{
-			base.Update();
-			if(self.IsDying() && !_exploded) {
+			if (Self.IsDying() && !_exploded)
+			{
 				RaycastHit[] objs = Physics.SphereCastAll(transform.position, 50.0f, transform.forward, 1.0f);
                 foreach (var item in objs)
                 {
-                    if(item.rigidbody != null)item.rigidbody.AddForce((item.point-transform.position + (5.0f * Vector3.up)).normalized * 25.0f, ForceMode.Impulse);
+                    if (item.rigidbody) item.rigidbody.AddForce((item.point-transform.position + (5.0f * Vector3.up)).normalized * 25.0f, ForceMode.Impulse);
                 }
                 _exploded = true;
 			}

@@ -13,16 +13,11 @@ namespace Enemies
         AttackHands,
         Dying
     }
-
-    public enum Target
-    {
-        Core,
-        Hands
-    }
     
     public abstract class Enemy : MonoBehaviour
     {
         [SerializeField] protected float moveSpeed;
+        [SerializeField] protected float acceleration;
         [SerializeField] protected float aimSpeed;
         [SerializeField] protected float attackRange;
         [SerializeField] protected float attackInterval;
@@ -31,22 +26,23 @@ namespace Enemies
         [SerializeField] protected int killScore;
         [SerializeField] private VisualEffect deathParticles;
         [SerializeField] private Transform model;
-        protected MapManager _mapManager;
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
         protected EnemyState State;
+        protected bool DisallowMovement;
+        protected bool DisallowShooting;
+        protected float LastAttack;
         protected PlayerDamageable Target;
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;
-		protected float deathDuration = 3.0f;
+		protected float DeathDuration = 3.0f;
 		public float buried = 0.0f;
 		public float buriedAmount = 0.5f;
 
         protected virtual void Start()
         {
             EnemyManager = EnemyManager.GetInstance();
-			_mapManager = FindFirstObjectByType<MapManager>();
             Rb = GetComponent<Rigidbody>();
             
             deathParticles.Stop();
@@ -67,7 +63,7 @@ namespace Enemies
 
 		public virtual void SetupDeath()
         {
-            transform.position = new Vector3(transform.position.x, _mapManager.GetHeight(transform.position.x, transform.position.z), transform.position.z);
+            transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
             model.gameObject.SetActive(false);
             deathParticles.Play();
 			State = EnemyState.Dying;
@@ -81,9 +77,10 @@ namespace Enemies
         {
 			if (State == EnemyState.Dying) return;
             var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, transform.position.y, EnemyManager.godlyCore.transform.position.z);
-            if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackCore;
-            else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange) State = EnemyState.AttackHands;
+            if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackCore;
+            else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackHands;
             else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
+            else State = EnemyState.Moving;
         }
 
         private void UpdateTarget()
@@ -121,8 +118,8 @@ namespace Enemies
 
 			if (State == EnemyState.Dying) {
 				
-				deathDuration -= Time.deltaTime;
-				if (deathDuration <= 0.0f) this.Die();
+				DeathDuration -= Time.deltaTime;
+				if (DeathDuration <= 0.0f) this.Die();
 			}
 
             if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude >
@@ -135,6 +132,8 @@ namespace Enemies
             UpdateTarget();
             LimitSpeed();
             
+            LastAttack += Time.deltaTime;
+            
             EnemyUpdate();
 
         }
@@ -143,12 +142,38 @@ namespace Enemies
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
+            if (!DisallowMovement) Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime));
+            
+            switch (State)
+            {
+                case EnemyState.Moving:
+                {
+                    if (!DisallowMovement) Rb.AddForce(TargetDirection * (acceleration * 10f));
+                    break;
+                }
+                case EnemyState.AttackCore:
+                {
+                    if (LastAttack > attackInterval && !DisallowShooting)
+                    {
+                        Attack(EnemyManager.godlyCore);
+                        LastAttack = 0f;
+                    }
+                    break;
+                }
+                case EnemyState.AttackHands:
+                {
+                    if (LastAttack > attackInterval && !DisallowShooting)
+                    {
+                        Attack(EnemyManager.godlyHands);
+                        LastAttack = 0f;
+                    }
+                    break;
+                }
+            }
+            
             EnemyFixedUpdate();
         }
 
-		public bool IsDying()
-		{
-			return State == EnemyState.Dying;
-		}
+		public bool IsDying() => State == EnemyState.Dying;
     }
 }

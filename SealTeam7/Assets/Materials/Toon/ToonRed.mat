@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5751973772934658666
+--- !u!114 &-3822108458097024842
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,9 +20,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ToonSkin
+  m_Name: ToonRed
   m_Shader: {fileID: -6465566751694194690, guid: 95257030020785e4199a57b445d93653, type: 3}
-  m_Parent: {fileID: 2100000, guid: 6aba316668900af499fe129d0fb0b078, type: 2}
+  m_Parent: {fileID: -876546973899608171, guid: 95257030020785e4199a57b445d93653, type: 3}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - FRESNEL_ON
@@ -37,25 +37,15 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _Albedo:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Lighting_Ramp:
-        m_Texture: {fileID: 2800000, guid: c31110c729efb7d4c9fac4ee4fc848ce, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Normal_Map:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 2, y: 2}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: []
     m_Ints: []
     m_Floats:
     - FRESNEL: 1
-    - _Fresnel_Strength: 0.21
-    - _Smoothness: 0
+    - _FresnelThreshold: 0.398
+    - _Fresnel_Strength: 0.578
+    - _QueueControl: 0
+    - _Smoothness: 0.5
     m_Colors:
-    - _Tint: {r: 0.7764706, g: 0.5254902, b: 0.25882354, a: 0}
+    - _Tint: {r: 0.7490196, g: 0.052885268, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
