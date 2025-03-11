@@ -1,5 +1,4 @@
-﻿using System;
-using Game;
+﻿using Game;
 using Map;
 using UnityEngine;
 

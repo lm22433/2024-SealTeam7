@@ -6,7 +6,6 @@ namespace Enemies
     public class Kamikaze : Enemy
     {
         [SerializeField] float flyHeight;
-        [SerializeField] private ParticleSystem deathParticles;
         [SerializeField] private ParticleSystem trail;
         [SerializeField] private ParticleSystem smokeTrail;
         [SerializeField] private ParticleSystem chargeParticles;
@@ -29,7 +28,7 @@ namespace Enemies
             TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
             
             if (State == EnemyState.AttackCore || State == EnemyState.AttackHands) _charge += Time.deltaTime;
-            if(!(State == EnemyState.Dying)) transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
+            if(State != EnemyState.Dying) transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
 
         protected override void EnemyFixedUpdate()
@@ -70,7 +69,7 @@ namespace Enemies
                     {
                         Attack(EnemyManager.godlyHands);
                         killScore = 0;
-                        this.SetupDeath();
+                        SetupDeath();
                     }
                     break;
                 }
@@ -79,9 +78,8 @@ namespace Enemies
 
         public override void SetupDeath()
 		{
-			deathParticles.Play();
+			base.SetupDeath();
             smokeTrail.Stop();
-			State = EnemyState.Dying;
 		}
     }
 }

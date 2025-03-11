@@ -6,7 +6,6 @@ namespace Enemies
     public class Tank : Enemy
     {
         [SerializeField] private Transform gun;
-        [SerializeField] private ParticleSystem deathParticles;
         [SerializeField] private ParticleSystem[] dustTrails;
         [SerializeField] private ParticleSystem gunEffects;
         [SerializeField] protected float groundedOffset;
@@ -85,17 +84,6 @@ namespace Enemies
                     break;
                 }
             }
-        }
-
-		public override void SetupDeath()
-		{
-			deathParticles.Play();
-			State = EnemyState.Dying;
-		}
-
-        public override void Die()
-        {
-			base.Die();
         }
     }
 }

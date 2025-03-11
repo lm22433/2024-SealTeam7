@@ -7,7 +7,6 @@ namespace Enemies
     {
         [SerializeField] float flyHeight;
         [SerializeField] private ParticleSystem gunEffects;
-        [SerializeField] private ParticleSystem deathParticles;
         private float _lastAttack;
 
         private void Awake() {
@@ -69,17 +68,6 @@ namespace Enemies
                     break;
                 }
             }
-        }
-
-        public override void SetupDeath()
-		{
-			deathParticles.Play();
-			State = EnemyState.Dying;
-		}
-
-        public override void Die()
-        {
-			base.Die();
         }
     }
 }
