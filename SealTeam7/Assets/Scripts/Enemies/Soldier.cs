@@ -1,4 +1,4 @@
-﻿using Map;
+using Map;
 using Player;
 using UnityEngine;
 
@@ -7,9 +7,18 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
+        [SerializeField] private ParticleSystem gunEffects;
+
+		protected override void Start()
+		{
+			base.Start();
+			DeathDuration = 0.5f;
+			buriedAmount = 0.25f;
+		}
         
         protected override void Attack(PlayerDamageable target)
         {
+            if (!gunEffects.isPlaying) gunEffects.Play();
             target?.TakeDamage(attackDamage);
         }
 

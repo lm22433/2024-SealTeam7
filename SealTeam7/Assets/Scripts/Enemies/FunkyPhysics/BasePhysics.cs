@@ -1,8 +1,6 @@
-﻿using System;
-using Game;
+﻿using Game;
 using Map;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Enemies.FunkyPhysics
 {
@@ -30,7 +28,11 @@ namespace Enemies.FunkyPhysics
             Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
             
             //WOULD DIE BURIED
-            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor) EnemyManager.GetInstance().Kill(Self);
+            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor)
+            {
+                Self.buried = Self.buriedAmount;
+                EnemyManager.GetInstance().Kill(Self);
+            }
             //WOULD DIE FALL DMG
             if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded) EnemyManager.GetInstance().Kill(Self);
 

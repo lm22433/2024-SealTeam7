@@ -6,6 +6,7 @@ namespace Enemies
     public class Helicopter : Enemy
     {
         [SerializeField] float flyHeight;
+        [SerializeField] private ParticleSystem gunEffects;
 
         private void Awake()
         {
@@ -14,6 +15,7 @@ namespace Enemies
         
         protected override void Attack(PlayerDamageable target)
         {
+            if (!gunEffects.isPlaying) gunEffects.Play();
             target?.TakeDamage(attackDamage);
         }
         

@@ -45,7 +45,7 @@ namespace Enemies
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
-            enemy.Die();
+            enemy.SetupDeath();
         }
         
         public static EnemyManager GetInstance() => _instance;

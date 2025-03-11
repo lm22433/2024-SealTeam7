@@ -7,9 +7,13 @@ namespace Enemies
     public class Tank : Enemy
     {
         [SerializeField] private Transform gun;
-        
+        [SerializeField] private ParticleSystem[] dustTrails;
+        [SerializeField] private ParticleSystem gunEffects;
+        [SerializeField] protected float groundedOffset;
+
         protected override void Attack(PlayerDamageable target)
         {
+            if (!gunEffects.isPlaying) gunEffects.Play();
             target?.TakeDamage(attackDamage);
         }
         
@@ -24,6 +28,16 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
+                    if (DisallowMovement || Rb.position.y > MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
+                    {
+                        foreach (var dustTrail in dustTrails)
+                            if (dustTrail.isPlaying) dustTrail.Stop();
+                    }
+                    else
+                    {
+                        foreach (var dustTrail in dustTrails)
+                            if (!dustTrail.isPlaying) dustTrail.Play();
+                    }
                     break;
                 }
                 case EnemyState.AttackCore:
@@ -42,6 +56,11 @@ namespace Enemies
                 {
                     TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position - gun.position, gun.right), 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
+                    break;
+                }
+                case EnemyState.Dying:
+                {
+                    foreach (var dustTrail in dustTrails) dustTrail.Stop();
                     break;
                 }
             }
