@@ -62,12 +62,23 @@ hand_landmarker_options = HandLandmarkerOptions(
     min_hand_presence_confidence=0.5,
     min_tracking_confidence=0.5)
 
-left_wrist_history = []
-right_wrist_history = []
-projected_left_wrist = np.array([0, 0, 0])
-projected_right_wrist = np.array([0, 0, 0])
+# Replace hand history with numpy arrays - shape: (history_size, 21, 3) for each hand
+left_hand_history = []  # Will store numpy arrays of shape (21, 3)
+right_hand_history = []  # Will store numpy arrays of shape (21, 3)
+projected_left_hand = np.zeros((21, 3))  # Project all landmarks
+projected_right_hand = np.zeros((21, 3))  # Project all landmarks
+
 left_hand_absent_count = 0
 right_hand_absent_count = 0
+
+def landmarks_to_array(landmarks):
+    """Convert MediaPipe landmarks to numpy array with shape (21, 3)"""
+    if landmarks is None:
+        return None
+    arr = np.array([[landmark.x * COLOUR_IMAGE_FULL_WIDTH,
+                     -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
+                     landmark.y * COLOUR_IMAGE_FULL_HEIGHT] for landmark in landmarks])
+    return arr
 
 with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmarker:
     print("Ready.")
@@ -96,6 +107,8 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
 
             # determine handedness and scale to pixel coordinates
             with timer("Processing results"):
+                using_projected_hands = False
+
                 if len(hand_landmarking_result.hand_landmarks) == 0:
                     left = None
                     right = None
@@ -104,46 +117,32 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
 
                     # Fill in missing hands with projected positions if absent for <= 2 frames
                     if left_hand_absent_count <= 2:
-                        left = [{"x": projected_left_wrist[0],
-                               "y": projected_left_wrist[1],
-                               "z": projected_left_wrist[2]}] * 21  # Replicate wrist position for all landmarks
+                        left = projected_left_hand
+                        using_projected_hands = True
                     if right_hand_absent_count <= 2:
-                        right = [{"x": projected_right_wrist[0],
-                                "y": projected_right_wrist[1],
-                                "z": projected_right_wrist[2]}] * 21
-                
+                        right = projected_right_hand
+                        using_projected_hands = True
+                        
                 elif len(hand_landmarking_result.hand_landmarks) <= 1:
                     left = None
                     right = None
-                    for i, handedness in enumerate(hand_landmarking_result.handedness):  # iterates over each hand
-                        if handedness[0].category_name == "Left":  # the [0] is ignoreable
-                            landmarks = hand_landmarking_result.hand_landmarks[i]
-                            left = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
-                                        "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,  # z is depth so it's the negative y coordinate
-                                        "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
-                                    for landmark in landmarks] if landmarks is not None else None
+                    for i, handedness in enumerate(hand_landmarking_result.handedness):
+                        if handedness[0].category_name == "Left":
+                            left = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
                             right_hand_absent_count += 1
                             left_hand_absent_count = 0
                         else:
-                            landmarks = hand_landmarking_result.hand_landmarks[i]
-                            right = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
-                                        "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
-                                        "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
-                                        for landmark in landmarks] if landmarks is not None else None
+                            right = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
                             left_hand_absent_count += 1
                             right_hand_absent_count = 0
                     
                     # Fill in missing hands with projected positions if absent for <= 2 frames
                     if left is None and left_hand_absent_count <= 2:
-                        left = [{"x": projected_left_wrist[0],
-                               "y": projected_left_wrist[1],
-                               "z": projected_left_wrist[2]}] * 21  # Replicate wrist position for all landmarks
+                        left = projected_left_hand
+                        using_projected_hands = True
                     if right is None and right_hand_absent_count <= 2:
-                        right = [{"x": projected_right_wrist[0],
-                                "y": projected_right_wrist[1],
-                                "z": projected_right_wrist[2]}] * 21
-                    
-                    print("len=1, left=", left, "right=", right)
+                        right = projected_right_hand
+                        using_projected_hands = True
 
                 elif len(hand_landmarking_result.hand_landmarks) == 2:
                     left_hand_absent_count = 0
@@ -155,54 +154,28 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                         right = None
                         for i, landmarks in enumerate(hand_landmarking_result.hand_landmarks):
                             real_wrist = np.array([landmarks[0].x, landmarks[0].y, landmarks[0].z])
-                            if (np.linalg.norm(real_wrist - projected_left_wrist) < np.linalg.norm(real_wrist - projected_right_wrist) and \
+                            if (np.linalg.norm(real_wrist - projected_left_hand[0]) < np.linalg.norm(real_wrist - projected_right_hand[0]) and \
                                     left is None) or right is not None:
-                                left = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
-                                            "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
-                                            "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
-                                        for landmark in landmarks] if landmarks is not None else None
+                                left = landmarks_to_array(landmarks)
                             else:
-                                right = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
-                                            "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
-                                            "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
-                                            for landmark in landmarks] if landmarks is not None else None
-                        print("len=2, manual handedness, left=", left, "right=", right)
-
+                                right = landmarks_to_array(landmarks)
                     else:
                         left = None
                         right = None
                         for i, handedness in enumerate(hand_landmarking_result.handedness):
                             if handedness[0].category_name == "Left":
-                                landmarks = hand_landmarking_result.hand_landmarks[i]
-                                left = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
-                                            "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
-                                            "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
-                                        for landmark in landmarks] if landmarks is not None else None
+                                left = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
                             else:
-                                landmarks = hand_landmarking_result.hand_landmarks[i]
-                                right = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
-                                            "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
-                                            "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
-                                            for landmark in landmarks] if landmarks is not None else None
-                        print("len=2, auto handedness, left=", left, "right=", right)
+                                right = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
                 else:
                     print("Warning: More than 2 hands detected.")
                     left = None
                     right = None
                     for i, handedness in enumerate(hand_landmarking_result.handedness):
                         if handedness[0].category_name == "Left":
-                            landmarks = hand_landmarking_result.hand_landmarks[i]
-                            left = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
-                                        "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
-                                        "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
-                                    for landmark in landmarks] if landmarks is not None else None
+                            left = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
                         else:
-                            landmarks = hand_landmarking_result.hand_landmarks[i]
-                            right = [{"x": landmark.x * COLOUR_IMAGE_FULL_WIDTH,
-                                        "y": -landmark.z * COLOUR_IMAGE_FULL_WIDTH,
-                                        "z": landmark.y * COLOUR_IMAGE_FULL_HEIGHT}
-                                        for landmark in landmarks] if landmarks is not None else None
-                    print("len>2, left=", left, "right=", right)
+                            right = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
 
             if VISUALISE_INFERENCE_RESULTS:
                 with timer("Visualising results"):
@@ -211,20 +184,20 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                     for landmarks, colour in ((left, (0, 255, 0)), (right, (0, 0, 255))):
                         if landmarks is not None:
                             for connection in HandLandmarksConnections.HAND_CONNECTIONS:
-                                cv2.line(vis_frame, (int(landmarks[connection.start]["x"]),
-                                                        int(landmarks[connection.start]["z"])),
-                                            (int(landmarks[connection.end]["x"]),
-                                            int(landmarks[connection.end]["z"])),
-                                            colour, 1)
+                                cv2.line(vis_frame, 
+                                       (int(landmarks[connection.start, 0]),
+                                        int(landmarks[connection.start, 2])),
+                                       (int(landmarks[connection.end, 0]),
+                                        int(landmarks[connection.end, 2])),
+                                       colour, 1)
                             for landmark in landmarks:
-                                cv2.circle(vis_frame, (int(landmark["x"]),
-                                                        int(landmark["z"])), 3, colour, -1)
-                    for points in left_wrist_history:
-                        cv2.circle(vis_frame, (int(points[0]), int(points[2])), 3, (255, 0, 0), -1)
-                    for points in right_wrist_history:
-                        cv2.circle(vis_frame, (int(points[0]), int(points[2])), 3, (255, 0, 0), -1)
-                    if "projected_left_wrist" in vars(): cv2.circle(vis_frame, (int(projected_left_wrist[0]), int(projected_left_wrist[2])), 3, (255, 0, 255), -1)
-                    if "projected_right_wrist" in vars(): cv2.circle(vis_frame, (int(projected_right_wrist[0]), int(projected_right_wrist[2])), 3, (255, 0, 255), -1)
+                                cv2.circle(vis_frame, 
+                                         (int(landmark[0]), int(landmark[2])), 
+                                         3, colour, -1)
+                    for landmarks in left_hand_history:
+                        cv2.circle(vis_frame, (int(landmarks[0, 0]), int(landmarks[0, 2])), 3, (255, 0, 0), -1)
+                    for landmarks in right_hand_history:
+                        cv2.circle(vis_frame, (int(landmarks[0, 0]), int(landmarks[0, 2])), 3, (255, 0, 0), -1)
                     cv2.imshow("Inference visualisation", vis_frame)
                     key = cv2.waitKey(1)
                     # Check if window close button was clicked or window was closed
@@ -233,32 +206,40 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                         VISUALISE_INFERENCE_RESULTS = False
 
             # Keep track of previous results
-            if len(left_wrist_history) >= 2:
-                left_wrist_history.pop(0)
-                right_wrist_history.pop(0)
-            left_wrist_history.append(np.array([left[0]["x"], left[0]["y"], left[0]["z"]]) if left is not None else np.array([0, 0, 0]))
-            right_wrist_history.append(np.array([right[0]["x"], right[0]["y"], right[0]["z"]]) if right is not None else np.array([0, 0, 0]))
+            if len(left_hand_history) >= 2:
+                left_hand_history.pop(0)
+                right_hand_history.pop(0)
+            left_hand_history.append(left if left is not None else np.zeros((21, 3)))
+            right_hand_history.append(right if right is not None else np.zeros((21, 3)))
             
             # Calculate projection to fill in gaps where model doesn't find hands
-            if len(left_wrist_history) == 1:
-                # use previous location of wrist
-                projected_left_wrist = left_wrist_history[0]
-                projected_right_wrist = right_wrist_history[0]
+            if len(left_hand_history) == 1:
+                # use previous location of hands
+                projected_left_hand = left_hand_history[0]
+                projected_right_hand = right_hand_history[0]
             else:
-                # extrapolate wrist location
-                projected_left_wrist = left_wrist_history[-1] + (left_wrist_history[-1] - left_wrist_history[-2])
-                projected_right_wrist = right_wrist_history[-1] + (right_wrist_history[-1] - right_wrist_history[-2])
+                # extrapolate all landmark locations using numpy operations
+                last_left = left_hand_history[-1]
+                prev_left = left_hand_history[-2]
+                projected_left_hand = last_left + (last_left - prev_left)
+
+                last_right = right_hand_history[-1]
+                prev_right = right_hand_history[-2]
+                projected_right_hand = last_right + (last_right - prev_right)
 
             # Write the hand landmarks
             with timer("Writing results"):
                 hand_landmarks_buffer.seek(0)
                 for i, hand in enumerate((left, right)):
                     if hand is None:
+                        zeros = np.zeros((21, 3))
                         for j in range(21):
-                            struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4, 0, 0, 0)
+                            struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4, 
+                                           zeros[j, 0], zeros[j, 1], zeros[j, 2])
                     else:
-                        for j, landmark in enumerate(hand):
-                            struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4, landmark["x"], landmark["y"], landmark["z"])
+                        for j in range(21):
+                            struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4,
+                                           hand[j, 0], hand[j, 1], hand[j, 2])
 
             if not shutdown_flag:
                 win32event.SetEvent(done_event)
