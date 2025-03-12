@@ -26,8 +26,6 @@
 						<Property Name="paramBand2Enabled" Type="bool" Value="False"/>
 						<Property Name="paramBand3Enabled" Type="bool" Value="False"/>
 						<Property Name="paramBand4Enabled" Type="bool" Value="False"/>
-						<Property Name="paramBand5Enabled" Type="bool" Value="False"/>
-						<Property Name="paramBand6Enabled" Type="bool" Value="False"/>
 						<Property Name="paramEqNumBands" Type="int32" Value="6"/>
 					</PropertyList>
 					<PluginData/>

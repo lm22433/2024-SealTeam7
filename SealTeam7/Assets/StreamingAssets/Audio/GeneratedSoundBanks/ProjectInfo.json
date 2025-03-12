@@ -8,6 +8,20 @@
   "CacheRoot": "../../../../WiseIntergration/.cache",
   "Platforms": [
    {
+    "Name": "Linux",
+    "GUID": "{C4A10FF3-AF48-40D4-96B2-6B163FF83CD5}",
+    "BasePlatform": "Linux",
+    "BasePlatformGUID": "{BD0BDF13-3125-454F-8BFD-319537169F81}",
+    "Path": "../../../../WiseIntergration/GeneratedSoundBanks/Linux"
+   },
+   {
+    "Name": "Mac",
+    "GUID": "{18D284AD-4818-443A-B17E-4D4A8E4AFDB4}",
+    "BasePlatform": "Mac",
+    "BasePlatformGUID": "{9C6217D5-DD11-4795-87C1-6CE02853C540}",
+    "Path": "../../../../WiseIntergration/GeneratedSoundBanks/Mac"
+   },
+   {
     "Name": "Windows",
     "GUID": "{2371F3FC-14B0-4746-AEC0-1887B35DB229}",
     "BasePlatform": "Windows",
@@ -24,6 +38,6 @@
     "UseAsStandIn": "true"
    }
   ],
-  "FileHash": "{949F356F-1839-E922-A84D-8AE0E7EEA6CA}"
+  "FileHash": "{A224FCF1-CC88-55B5-7EB2-36491353DADF}"
  }
 }
