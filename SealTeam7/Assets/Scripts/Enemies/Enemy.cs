@@ -25,6 +25,7 @@ namespace Enemies
         [SerializeField] protected int attackDamage;
         [SerializeField] protected int killScore;
         [SerializeField] private VisualEffect deathParticles;
+        [SerializeField] private AK.Wwise.Event gunFireSound;
         [SerializeField] private Transform model;
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
@@ -158,6 +159,7 @@ namespace Enemies
                 {
                     if (LastAttack > attackInterval && !DisallowShooting)
                     {
+                        gunFireSound.Post(gameObject);
                         Attack(EnemyManager.godlyCore);
                         LastAttack = 0f;
                     }
@@ -167,6 +169,7 @@ namespace Enemies
                 {
                     if (LastAttack > attackInterval && !DisallowShooting)
                     {
+                        gunFireSound.Post(gameObject);
                         Attack(EnemyManager.godlyHands);
                         LastAttack = 0f;
                     }

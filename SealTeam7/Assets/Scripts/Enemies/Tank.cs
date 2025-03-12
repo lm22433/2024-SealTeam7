@@ -7,9 +7,6 @@ namespace Enemies
     public class Tank : Enemy
     {
         [SerializeField] private Transform gun;
-        [SerializeField] private AK.Wwise.Event gunFireSound;
-        private float _lastAttack;
-        
         [SerializeField] private ParticleSystem[] dustTrails;
         [SerializeField] private ParticleSystem gunEffects;
         [SerializeField] protected float groundedOffset;
@@ -45,12 +42,6 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
-                    if (_lastAttack > attackInterval)
-                    {
-                        gunFireSound.Post(gameObject);
-                        Attack(EnemyManager.godlyCore);
-                        _lastAttack = 0f;
-                    }
                     var xAngle = Quaternion.LookRotation(new Vector3(
                             Target.transform.position.x,
                             MapManager.GetInstance().GetHeight(Target.transform.position),
@@ -63,12 +54,6 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
-                    if (_lastAttack < attackInterval)
-                    {
-                        gunFireSound.Post(gameObject);
-                        Attack(EnemyManager.godlyHands);
-                        _lastAttack = 0f;
-                    }
                     TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position - gun.position, gun.right), 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
                     break;

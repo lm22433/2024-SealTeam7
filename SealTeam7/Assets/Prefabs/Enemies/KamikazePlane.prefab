@@ -10054,6 +10054,10 @@ MonoBehaviour:
   attackDamage: 50
   killScore: 25
   deathParticles: {fileID: 7215728415125685304}
+  gunFireSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: ca1dfeb612c3e19448f17f5744805fcc, type: 2}
   model: {fileID: 215798221103486408}
   buried: 0
   buriedAmount: 0.5

@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584599071725755806
+    m_lastTime: -8584598940190801661
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,7 +359,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584599071725673048
+    m_lastTime: -8584598940198188496
     List:
     - name: Play_DesertAmbiance
       guid: 78a5fa85b04d3e47916f016db8fdcefd
@@ -393,8 +393,25 @@ MonoBehaviour:
         guid: 0f5566247b4d4f4aafef5c5d506ad9c5
       Path: Events\Default Work Unit\Play_GameIntroTrack
       maxAttenuation: 0
-      maxDuration: 46.249504
-      minDuration: 46.249504
+      maxDuration: 16.991709
+      minDuration: 16.991709
+    - name: Play_Helicopter_Sound
+      guid: 23692c9a03a922408422f895d27f1356
+      id: 3013451977
+      PathAndIcons:
+      - ElementName: Events
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: 3e919ce37f3a4b4eb021aaf40f66a207
+      - ElementName: Play_Helicopter_Sound
+        ObjectType: 3
+        guid: 23692c9a03a922408422f895d27f1356
+      Path: Events\Default Work Unit\Play_Helicopter_Sound
+      maxAttenuation: 0
+      maxDuration: 16.5
+      minDuration: 16.5
     - name: Play_MainMenuMusic
       guid: 7471cf3a7d563c4d895e94fef2ea7d0c
       id: 667425441
@@ -690,7 +707,7 @@ MonoBehaviour:
     m_lastTime: -8584599837341522741
     List: []
   ExpandedFileSystemItemIds: 
-  ExpandedWaapiItemIds: 010000000500000006000000070000000a0000000b0000000c0000000d0000000f0000001000000013000000140000006e0000006f0000008e0000008f0000009300000094000000ff00000000010000010100001601000017010000
+  ExpandedWaapiItemIds: 010000000500000006000000070000000a0000000b0000000c0000000d0000000f00000010000000110000001200000013000000140000006e0000006f0000008e0000008f0000009300000094000000ff00000000010000010100001601000017010000
   AutoSyncSelection: 0
   autoPopulateEnabled: 1
   currentDataSource: 0

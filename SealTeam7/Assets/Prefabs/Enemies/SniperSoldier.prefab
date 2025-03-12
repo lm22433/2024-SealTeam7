@@ -63,6 +63,10 @@ MonoBehaviour:
   buried: 0
   buriedAmount: 1
   gun: {fileID: 4797994724752532913}
+  gunFireSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 7bc4b69af44bb3849ab50f6da32645d1, type: 2}
   gunEffects: {fileID: 8443428507468699435}
 --- !u!114 &3518766936964173033
 MonoBehaviour:

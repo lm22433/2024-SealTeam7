@@ -14828,6 +14828,10 @@ MonoBehaviour:
   buried: 0
   buriedAmount: 0.5
   gun: {fileID: 3715524712139545896}
+  gunFireSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: ca1dfeb612c3e19448f17f5744805fcc, type: 2}
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
