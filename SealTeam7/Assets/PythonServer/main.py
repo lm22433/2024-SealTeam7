@@ -58,15 +58,14 @@ hand_landmarker_options = HandLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=HAND_LANDMARKING_MODEL_PATH),
     running_mode=RunningMode.VIDEO,
     num_hands=3,  # temporarily > 2 to help tune confidence thresholds
-    min_hand_detection_confidence=0.1,
+    min_hand_detection_confidence=0.05,
     min_hand_presence_confidence=0.5,
     min_tracking_confidence=0.5)
 
-# Replace hand history with numpy arrays - shape: (history_size, 21, 3) for each hand
 left_hand_history = []  # Will store numpy arrays of shape (21, 3)
-right_hand_history = []  # Will store numpy arrays of shape (21, 3)
-projected_left_hand = np.zeros((21, 3))  # Project all landmarks
-projected_right_hand = np.zeros((21, 3))  # Project all landmarks
+right_hand_history = []
+projected_left_hand = np.zeros((21, 3))
+projected_right_hand = np.zeros((21, 3))
 
 left_hand_absent_count = 0
 right_hand_absent_count = 0
@@ -107,7 +106,8 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
 
             # determine handedness and scale to pixel coordinates
             with timer("Processing results"):
-                using_projected_hands = False
+                using_left_projected_hand = False
+                using_right_projected_hand = False
 
                 if len(hand_landmarking_result.hand_landmarks) == 0:
                     left = None
@@ -118,10 +118,10 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                     # Fill in missing hands with projected positions if absent for <= 2 frames
                     if left_hand_absent_count <= 2:
                         left = projected_left_hand
-                        using_projected_hands = True
+                        using_left_projected_hand = True
                     if right_hand_absent_count <= 2:
                         right = projected_right_hand
-                        using_projected_hands = True
+                        using_right_projected_hand = True
                         
                 elif len(hand_landmarking_result.hand_landmarks) <= 1:
                     left = None
@@ -139,10 +139,10 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                     # Fill in missing hands with projected positions if absent for <= 2 frames
                     if left is None and left_hand_absent_count <= 2:
                         left = projected_left_hand
-                        using_projected_hands = True
+                        using_left_projected_hand = True
                     if right is None and right_hand_absent_count <= 2:
                         right = projected_right_hand
-                        using_projected_hands = True
+                        using_right_projected_hand = True
 
                 elif len(hand_landmarking_result.hand_landmarks) == 2:
                     left_hand_absent_count = 0
@@ -152,13 +152,16 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                         # both hands have same handedness -> determine handedness manually
                         left = None
                         right = None
-                        for i, landmarks in enumerate(hand_landmarking_result.hand_landmarks):
-                            real_wrist = np.array([landmarks[0].x, landmarks[0].y, landmarks[0].z])
-                            if (np.linalg.norm(real_wrist - projected_left_hand[0]) < np.linalg.norm(real_wrist - projected_right_hand[0]) and \
+                        for i, hand_landmarks in enumerate(hand_landmarking_result.hand_landmarks):
+                            landmarks = landmarks_to_array(hand_landmarks)
+                            real_wrist = landmarks[0]
+                            projected_left_wrist = projected_left_hand[0]
+                            projected_right_wrist = projected_right_hand[0]
+                            if (np.linalg.norm(real_wrist - projected_left_wrist) < np.linalg.norm(real_wrist - projected_right_wrist) and \
                                     left is None) or right is not None:
-                                left = landmarks_to_array(landmarks)
+                                left = landmarks
                             else:
-                                right = landmarks_to_array(landmarks)
+                                right = landmarks
                     else:
                         left = None
                         right = None
@@ -183,6 +186,13 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                     vis_frame = cv2.cvtColor(colour_image_data, cv2.COLOR_RGB2BGR)
                     for landmarks, colour in ((left, (0, 255, 0)), (right, (0, 0, 255))):
                         if landmarks is not None:
+                            # If using projected hand, draw it in magenta
+                            if (landmarks == projected_left_hand).all():
+                                colour = (255, 0, 255)
+                            elif (landmarks == projected_right_hand).all():
+                                colour = (255, 0, 255)
+
+                            # Draw current connections
                             for connection in HandLandmarksConnections.HAND_CONNECTIONS:
                                 cv2.line(vis_frame, 
                                        (int(landmarks[connection.start, 0]),
@@ -190,17 +200,25 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                                        (int(landmarks[connection.end, 0]),
                                         int(landmarks[connection.end, 2])),
                                        colour, 1)
+
+                            # Draw current landmarks
                             for landmark in landmarks:
                                 cv2.circle(vis_frame, 
                                          (int(landmark[0]), int(landmark[2])), 
                                          3, colour, -1)
+
+                    # Draw previous wrist points
                     for landmarks in left_hand_history:
                         cv2.circle(vis_frame, (int(landmarks[0, 0]), int(landmarks[0, 2])), 3, (255, 0, 0), -1)
                     for landmarks in right_hand_history:
                         cv2.circle(vis_frame, (int(landmarks[0, 0]), int(landmarks[0, 2])), 3, (255, 0, 0), -1)
+
+                    # Draw projected wrist points
+                    cv2.circle(vis_frame, (int(projected_left_hand[0, 0]), int(projected_left_hand[0, 2])), 3, (255, 0, 255), -1)
+                    cv2.circle(vis_frame, (int(projected_right_hand[0, 0]), int(projected_right_hand[0, 2])), 3, (255, 0, 255), -1)
+                    
                     cv2.imshow("Inference visualisation", vis_frame)
                     key = cv2.waitKey(1)
-                    # Check if window close button was clicked or window was closed
                     if key == 27:
                         cv2.destroyWindow("Inference visualisation")
                         VISUALISE_INFERENCE_RESULTS = False
@@ -215,17 +233,19 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
             # Calculate projection to fill in gaps where model doesn't find hands
             if len(left_hand_history) == 1:
                 # use previous location of hands
-                projected_left_hand = left_hand_history[0]
-                projected_right_hand = right_hand_history[0]
+                projected_left_hand = left_hand_history[-1]
+                projected_right_hand = right_hand_history[-1]
             else:
                 # extrapolate all landmark locations using numpy operations
-                last_left = left_hand_history[-1]
-                prev_left = left_hand_history[-2]
-                projected_left_hand = last_left + (last_left - prev_left)
+                last_wrist = left_hand_history[-1][0]
+                prev_wrist = left_hand_history[-2][0]
+                delta = last_wrist - prev_wrist
+                projected_left_hand = left_hand_history[-1] + delta
 
-                last_right = right_hand_history[-1]
-                prev_right = right_hand_history[-2]
-                projected_right_hand = last_right + (last_right - prev_right)
+                last_right = right_hand_history[-1][0]
+                prev_right = right_hand_history[-2][0]
+                delta = last_right - prev_right
+                projected_right_hand = right_hand_history[-1] + delta
 
             # Write the hand landmarks
             with timer("Writing results"):
