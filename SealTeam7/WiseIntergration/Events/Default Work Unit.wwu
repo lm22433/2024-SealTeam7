@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{E39C913E-3A7F-4E4B-B021-AAF40F66A207}" SchemaVersion="123">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{E39C913E-3A7F-4E4B-B021-AAF40F66A207}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Play_Solider_Gunfire" ID="{D6D31185-9808-4672-BFD6-F4892BDDC093}">
+					<ChildrenList>
+						<Action Name="" ID="{075B3DCA-FBA1-4D65-8F42-3FB56C1A35D0}" ShortID="37403762">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="60"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Solider Gunfire" ID="{46D5CA04-9FC3-4BD6-8D93-1AADF04EB029}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{E2B4281C-AC3E-4B34-A682-D01DC6321E00}" ShortID="803674533">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="3"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Gun SoundsFX" ID="{2128451B-BD60-412C-A478-A1299C2E4264}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Tank_Gunfire" ID="{E8D017D2-2CA8-4271-8F03-442494A10FFE}">
+					<ChildrenList>
+						<Action Name="" ID="{6CE7F391-D102-44AD-83AE-85B0CAB58BA4}" ShortID="121630765">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Tank Gunfire" ID="{D68102D8-CB2C-4993-849A-6A3AD0A8D775}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_DesertAmbiance" ID="{85FAA578-4DB0-473E-916F-016DB8FDCEFD}">
+					<ChildrenList>
+						<Action Name="" ID="{2D9375FA-2749-49E5-B8C4-94C9E44C3BA8}" ShortID="576903299">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="DesertWind" ID="{9DD95D44-29F5-470A-9890-B3DD71BB7025}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_MainMenuMusic" ID="{3ACF7174-567D-4D3C-895E-94FEF2EA7D0C}">
+					<ChildrenList>
+						<Action Name="" ID="{69978072-7270-48EC-A4FF-F41384EDCA54}" ShortID="652516934">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="MainMenuMusic" ID="{2073A278-E8CF-429F-8A97-26DA1F00DC5D}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_GameIntroTrack" ID="{2466550F-4D7B-4A4F-AFEF-5C5D506AD9C5}">
+					<ChildrenList>
+						<Action Name="" ID="{DDA8630D-275F-4FC2-AD90-01DB9BF04173}" ShortID="284319001">
+							<PropertyList>
+								<Property Name="FadeInCurve" Type="int16" Value="5"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="GameIntroTrack" ID="{26EE6D90-A557-48F5-83E8-B1B6F2B63B67}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Helicopter_Sound" ID="{9A2C6923-A903-4022-8422-F895D27F1356}">
+					<ChildrenList>
+						<Action Name="" ID="{85AB39D2-FCE9-487A-A64C-18EB1F573DE6}" ShortID="521791264">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Helicopter Sound" ID="{E97CA25D-A7B4-4105-B4DE-0446D3921F9E}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_SoliderScream" ID="{B220BA90-D0DA-4A17-A04D-6B32C4A389E4}">
+					<ChildrenList>
+						<Action Name="" ID="{85522AFA-AC61-4F1A-98E3-DE4E9E795426}" ShortID="106576009">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="10"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="SoliderScream" ID="{104379BC-74FA-4003-941B-C3C8B66DE810}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{3E9C7A0F-6B90-4070-8A46-EA9029689038}" ShortID="545155336">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="SoliderScream2" ID="{95733926-90AD-4AE7-B9F5-760C577E3AEA}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Explosion" ID="{9559A078-E99F-4AA3-8FFF-F3C4DB50CEE8}">
+					<ChildrenList>
+						<Action Name="" ID="{62B32B81-6CBB-4C1F-A398-FB549B14111D}" ShortID="177167647">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Explosion" ID="{6023DF7D-9BA0-43A8-B8CE-679D5B619304}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>
