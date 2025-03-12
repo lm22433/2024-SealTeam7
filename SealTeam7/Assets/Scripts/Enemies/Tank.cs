@@ -1,4 +1,5 @@
-﻿using Map;
+﻿using Enemies.Utils;
+using Map;
 using Player;
 using UnityEngine;
 
@@ -8,13 +9,18 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem[] dustTrails;
-        [SerializeField] private ParticleSystem gunEffects;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
         [SerializeField] protected float groundedOffset;
 
-        protected override void Attack(PlayerDamageable target)
+        protected override void Attack(PlayerDamageable toDamage)
         {
-            if (!gunEffects.isPlaying) gunEffects.Play();
-            target?.TakeDamage(attackDamage);
+            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position)).TryGetComponent(out Projectile proj);
+            proj.Target = TargetPosition;
+            proj.ToDamage = toDamage;
+            proj.Damage = attackDamage;
+            
+            Destroy(proj.gameObject, 2f);
         }
         
         protected override void EnemyUpdate()

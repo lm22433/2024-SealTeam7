@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ToonLaser
+  m_Name: ToonThruster
   m_Shader: {fileID: -6465566751694194690, guid: 95257030020785e4199a57b445d93653, type: 3}
   m_Parent: {fileID: -876546973899608171, guid: 95257030020785e4199a57b445d93653, type: 3}
   m_ModifiedSerializedProperties: 0
@@ -27,17 +27,16 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - FRESNEL: 1
-    - _FresnelThreshold: 0.722
-    - _Fresnel_Strength: 0.391
+    - _FresnelThreshold: 0
+    - _Fresnel_Strength: 0.57
     - _QueueControl: 0
-    - _Smoothness: 8
+    - _Smoothness: 10
     m_Colors:
-    - _FresnelColour: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}
-    - _Tint: {r: 0, g: 10.1428385, b: 17.568626, a: 0}
+    - _AmbientColour: {r: 0.5849056, g: 0.5545567, b: 0.5545567, a: 0}
+    - _Tint: {r: 2, g: 0.53934586, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &1232231527794284808
+--- !u!114 &5805058784032740904
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

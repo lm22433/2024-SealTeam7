@@ -39,16 +39,11 @@ namespace Enemies
                     break;
                 }
                 case EnemyState.AttackCore:
+                case EnemyState.AttackHands:
                 {
                     var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
                     TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
-                    break;
-                }
-                case EnemyState.AttackHands:
-                {
-                    TargetRotation = Quaternion.Euler(Vector3.Angle(TargetPosition - gun.position, gun.right), 0f, 0f);
-                    gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
                     break;
                 }
             }

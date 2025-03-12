@@ -56,7 +56,7 @@ MonoBehaviour:
   attackRange: 200
   attackInterval: 6
   stopShootingThreshold: 150
-  coreTargetHeightOffset: 2
+  coreTargetHeightOffset: 4
   attackDamage: 10
   killScore: 10
   deathParticles: {fileID: 173710646619886202}
