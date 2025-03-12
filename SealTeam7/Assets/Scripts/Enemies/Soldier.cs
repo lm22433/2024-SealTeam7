@@ -1,4 +1,6 @@
-﻿using Player;
+using Enemies.Utils;
+using Map;
+using Player;
 using UnityEngine;
 
 namespace Enemies
@@ -6,48 +8,48 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
-        private float _lastAttack;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
+
+		protected override void Start()
+		{
+			base.Start();
+			DeathDuration = 0.5f;
+			buriedAmount = 0.25f;
+		}
         
-        protected override void Attack(PlayerDamageable target)
+        protected override void Attack(PlayerDamageable toDamage)
         {
-            target?.TakeDamage(attackDamage);
+            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position)).TryGetComponent(out Projectile proj);
+            proj.Target = TargetPosition;
+            proj.ToDamage = toDamage;
+            proj.Damage = attackDamage;
+            
+            Destroy(proj.gameObject, 2f);
         }
 
         protected override void EnemyUpdate()
         {
-            if (State is EnemyState.AttackHands)
-            {
-                TargetRotation = Quaternion.LookRotation(Target.transform.position - gun.position);
-                gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
-            }
-            
-            TargetRotation = Quaternion.LookRotation(new Vector3(TargetDirection.x, 0f, TargetDirection.z));
-            
-            _lastAttack += Time.deltaTime;
-        }
-
-        protected override void EnemyFixedUpdate()
-        {
-            Rb.MoveRotation(TargetRotation);
-                        
+            // gun rotation
             switch (State)
             {
                 case EnemyState.Moving:
                 {
-                    Rb.AddForce(TargetDirection * (moveSpeed * 10f));
+                    gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
                     break;
                 }
                 case EnemyState.AttackCore:
                 case EnemyState.AttackHands:
                 {
-                    if (_lastAttack > attackInterval)
-                    {
-                        Attack(State is EnemyState.AttackCore ? EnemyManager.godlyCore : EnemyManager.godlyHands);
-                        _lastAttack = 0f;
-                    }
+                    var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
+                    TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
+                    gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
                     break;
                 }
             }
+            
+            TargetRotation = Quaternion.LookRotation(new Vector3(TargetPosition.x, transform.position.y, TargetPosition.z) - transform.position);
+            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
     }
 }

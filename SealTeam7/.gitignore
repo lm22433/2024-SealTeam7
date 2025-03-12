@@ -79,3 +79,8 @@ crashlytics-build.properties
 /[Aa]ssets/PythonServer/venv*
 /[Aa]ssets/PythonServer/.venv*
 
+.cache
+*.akd
+*.prof
+*.validationcache
+*/Assets/Wwise/Editor/ProjectData/AkWwiseProjectData.asset*

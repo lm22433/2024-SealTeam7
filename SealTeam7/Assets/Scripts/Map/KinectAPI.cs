@@ -47,6 +47,8 @@ namespace Map
 
         private bool _running;
         private Task _getCaptureTask;
+        private int _kernelSize;
+        private float _gaussianStrength;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, int kernelSize, float gaussianStrength)
@@ -62,6 +64,8 @@ namespace Map
             _yOffsetStart = yOffsetStart;
             _yOffsetEnd = yOffsetEnd;
             _heightMap = heightMap;
+            _kernelSize = kernelSize;
+            _gaussianStrength = gaussianStrength;
             
             _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
@@ -175,6 +179,8 @@ namespace Map
             CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1, 
                 BorderType.Default, _scalarOne);
 
+            CvInvoke.GaussianBlur(_tmpImage1, _tmpImage2, new System.Drawing.Size(_kernelSize, _kernelSize), _gaussianStrength);
+
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
@@ -188,7 +194,7 @@ namespace Map
                             
                         } else {
                             _heightMap[y, x] = Mathf.Lerp(_heightMap[y, x], 
-                                _tmpImage1.Data[y, x, 0] * _heightScale, _lerpFactor);
+                                _tmpImage2.Data[y, x, 0] * _heightScale, _lerpFactor);
                         }
                         // Debug.Log(_lerpFactor);
                         // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;

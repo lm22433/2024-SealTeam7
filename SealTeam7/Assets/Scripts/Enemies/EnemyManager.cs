@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Linq;
-using Enemies.Utils;
 using Game;
 using Map;
 using Player;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Enemies
@@ -15,6 +12,7 @@ namespace Enemies
     {
         public GameObject prefab;
         public int groupSize;
+        public float groupSpacing;
         [Range(0, 1)] public float spawnChance;
     }
 
@@ -22,7 +20,6 @@ namespace Enemies
     {
         [Header("Spawn Settings")]
         [SerializeField] private Transform[] spawnPoints;
-        [SerializeField] private float spawnGroupSpacing;
         [SerializeField] private int maxEnemyCount;
         [SerializeField] private float maxEnemyDistance;
 
@@ -60,7 +57,7 @@ namespace Enemies
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
-            enemy.Die();
+            enemy.SetupDeath();
         }
 
         public void SetDifficulty(Difficulty difficulty)
@@ -74,13 +71,18 @@ namespace Enemies
             return _pathFinder.FindPath(start, end, pathingDepth);
         }
 
+        public void KillAllEnemies()
+        {
+            foreach (Transform child in transform)
+            {
+                if (child.TryGetComponent<Enemy>(out var enemy)) Destroy(enemy.gameObject);
+            }
+        }
+
         private void SpawnEnemies()
         {
             // choose random spawn point
             var spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
-
-            var spawnOffset = Random.onUnitSphere * spawnGroupSpacing;
-            spawnOffset.y = 0f;
             
             foreach (var enemy in _enemyTypes)
             {
@@ -88,6 +90,9 @@ namespace Enemies
 
                 for (int i = 0; i < enemy.groupSize; i++)
                 {
+                    var spawnOffset2D = Random.insideUnitCircle.normalized * enemy.groupSpacing;
+                    var spawnOffset = new Vector3(spawnOffset2D.x, 4f, spawnOffset2D.y);
+                    
                     if (_enemyCount >= maxEnemyCount) continue;
                     Instantiate(enemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);
                     _enemyCount++;

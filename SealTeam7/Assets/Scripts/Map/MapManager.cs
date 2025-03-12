@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using System.Linq;
 using Enemies.Utils;
 using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Map
 {
@@ -17,52 +17,53 @@ namespace Map
 
     public class MapManager : MonoBehaviour
     {
-        [Header("Noise Settings")] [Header("")] [SerializeField]
-        private float noiseSpeed;
-
+        [Header("Noise Settings")]
+        [Header("")]
+        [SerializeField] private float noiseSpeed;
         [SerializeField] private float noiseScale;
-
-        [Header("")] [Header("Kinect Settings")] [Header("")] [SerializeField]
-        private int width;
-
+        
+        [Header("")]
+        [Header("Kinect Settings")]
+        [Header("")]
+        [SerializeField] private int width;
         [SerializeField] private int height;
         [SerializeField, Range(0f, 1920f)] private int xOffsetStart;
         [SerializeField, Range(0f, 1920f)] private int xOffsetEnd;
         [SerializeField, Range(0f, 1080f)] private int yOffsetStart;
         [SerializeField, Range(0f, 1080f)] private int yOffsetEnd;
-
-        [Header("")] [SerializeField, Range(300f, 2000f)]
-        private ushort minimumSandDepth;
-
+        [Header("")]
+        [SerializeField, Range(300f, 2000f)] private ushort minimumSandDepth;
         [SerializeField, Range(600f, 2000f)] private ushort maximumSandDepth;
+        [Header("")]
+        [SerializeField, Range(0, 255f)] private int irThreshold;
+        [Header("")]
+        [SerializeField, Range(0.5f, 1f)] private float similarityThreshold;
 
-        [Header("")] [SerializeField, Range(0, 255f)]
-        private int irThreshold;
-
-        [Header("")] [SerializeField, Range(0.5f, 1f)]
-        private float similarityThreshold;
-
-        [Header("")] [Header("Blur Settings")] [Header("")] [SerializeField]
-        private int kernelSize;
-
+        [Header("")]
+        [Header("Blur Settings")]
+        [Header("")]
+        [SerializeField] private int kernelSize;
         [SerializeField] private float gaussianStrength;
 
-        [Header("")] [Header("Map Settings")] [Header("")] [SerializeField]
-        private GameObject chunkPrefab;
-
+        [Header("")]
+        [Header("Map Settings")]
+        [Header("")]
+        [SerializeField] private GameObject chunkPrefab;
         [SerializeField] private int mapSize;
         [SerializeField] private int chunkRow;
         [SerializeField] private int chunkSize;
         [SerializeField] private float heightScale;
         [SerializeField] private float lerpFactor;
         [SerializeField] private LODInfo lodInfo;
-
-        [Header("")] [Header("Environment Settings")] [Header("")] [SerializeField]
-        private bool isKinectPresent;
-
-        [Header("")] [Header("Debug")] [Header("")] [SerializeField]
-        private bool colliderEnabled;
-
+        
+        [Header("")]
+        [Header("Environment Settings")]
+        [Header("")]
+        [SerializeField] private bool isKinectPresent;
+        [Header("")]
+        [Header("Debug")]
+        [Header("")]
+        [SerializeField] private bool colliderEnabled;
         [SerializeField] private bool paused;
         [SerializeField] private bool takeSnapshot;
         [SerializeField] private Texture2D texture;
@@ -86,33 +87,25 @@ namespace Map
 
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
-            texture = new Texture2D((int)(mapSize / _mapSpacing + 1), (int)(mapSize / _mapSpacing + 1),
-                TextureFormat.RGBA32, false);
-
+            texture = new Texture2D((int) (mapSize / _mapSpacing + 1), (int) (mapSize / _mapSpacing + 1), TextureFormat.RGBA32, false);
+            
             ChunkSettings chunkSettings = new ChunkSettings
             {
                 Size = chunkSize,
                 MapSize = mapSize,
-                Spacing = _mapSpacing,
+                MapSpacing = _mapSpacing,
                 LODInfo = lodInfo,
                 ColliderEnabled = colliderEnabled
             };
-
-            if (isKinectPresent)
-                _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold,
-                    similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd,
-                    ref _heightMap, kernelSize, gaussianStrength);
-            else
-                _noiseGenerator = new NoiseGenerator((int)(mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale,
-                    ref _heightMap);
+            
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
+            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
             for (int z = 0; z < chunkRow; z++)
             {
                 for (int x = 0; x < chunkRow; x++)
                 {
-                    var chunk = Instantiate(chunkPrefab,
-                        new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing), Quaternion.identity,
-                        chunkParent.transform).GetComponent<Chunk>();
+                    var chunk = Instantiate(chunkPrefab, new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
                     chunkSettings.X = x;
                     chunkSettings.Z = z;
                     chunk.Setup(chunkSettings, ref _heightMap);
@@ -127,25 +120,51 @@ namespace Map
             else _noiseGenerator.Stop();
         }
 
-        public float GetHeight(float worldX, float worldZ)
+        public float GetHeight(Vector3 position)
         {
-            // just to be safe
-            worldX = Mathf.Clamp(worldX, 0, mapSize);
-            worldZ = Mathf.Clamp(worldZ, 0, mapSize);
+            var percentX = position.x / (mapSize * _mapSpacing);
+            var percentZ = position.z / (mapSize * _mapSpacing);
+            percentX = Mathf.Clamp01(percentX);
+            percentZ = Mathf.Clamp01(percentZ);
+            
+            var x = percentX * mapSize;
+            var z = percentZ * mapSize;
+            
+            // BILINEAR INTERPOLATION
+            
+            // get corners of square
+            var x1 = Mathf.FloorToInt(percentX * mapSize);
+            var z1 = Mathf.FloorToInt(percentZ * mapSize);
+            var x2 = Mathf.CeilToInt(percentX * mapSize);
+            var z2 = Mathf.CeilToInt(percentZ * mapSize);
+            var Q11 = _heightMap[z1, x1];
+            var Q21 = _heightMap[z2, x1];
+            var Q12 = _heightMap[z1, x2];
+            var Q22 = _heightMap[z2, x2];
 
-            //TODO: [fix] interpolate between heights at each step to get true height
-            var lower = _heightMap[
-                Mathf.FloorToInt(worldZ / _mapSpacing),
-                Mathf.FloorToInt(worldX / _mapSpacing)];
-            var upper = _heightMap[
-                Mathf.CeilToInt(worldZ / _mapSpacing),
-                Mathf.CeilToInt(worldX / _mapSpacing)];
-
-            var lerp = Mathf.Lerp(lower, upper, worldZ / _mapSpacing - Mathf.FloorToInt(worldZ / _mapSpacing));
-
-            return lerp;
+            // if one axis is an integer use normal linear interpolation
+            if (x1 == x2) return Mathf.Lerp(Q12, Q11, z2 - z);
+            if (z1 == z2) return Mathf.Lerp(Q22, Q12, z2 - z);
+            // from wikipedia
+            return 1f / ((x2 - x1) * (z2 - z1)) * math.mul(math.mul(new float2(x2 - x, x - x1), new float2x2(new float2(Q11, Q21), new float2(Q12, Q22))), new float2(z2 - z, z - z1));
         }
 
+        // Only gets nearest vertex normal
+        public Vector3 GetNormal(Vector3 position)
+        {
+            var normals = _chunks[0].GetNormals();
+            
+            var percentX = position.x / (mapSize * _mapSpacing);
+            var percentZ = position.z / (mapSize * _mapSpacing);
+            percentX = Mathf.Clamp01(percentX);
+            percentZ = Mathf.Clamp01(percentZ);
+            
+            var x = Mathf.FloorToInt(percentX * mapSize);
+            var z = Mathf.FloorToInt(percentZ * mapSize);
+
+            return normals[z * (mapSize + 1) + x];
+        }
+        
         private void Update()
         {
             if (takeSnapshot)
@@ -153,12 +172,11 @@ namespace Map
 
                 Color32[] col = new Color32[_heightMap.Length];
                 var i = 0;
-                foreach (var height in _heightMap)
+                foreach (var h in _heightMap)
                 {
                     try
                     {
-                        col[i++] = new Color32(Convert.ToByte(Mathf.Min(255, height / heightScale * 255)), 0, 0,
-                            Convert.ToByte(255));
+                        col[i++] = new Color32(Convert.ToByte(Mathf.Min(255, h / heightScale * 255)), 0, 0, Convert.ToByte(255));
                     }
                     catch (OverflowException e)
                     {
@@ -174,7 +192,7 @@ namespace Map
 
                 takeSnapshot = false;
             }
-
+            
             if (!paused && !isKinectPresent)
             {
                 _noiseGenerator.AdvanceTime(Time.deltaTime);
