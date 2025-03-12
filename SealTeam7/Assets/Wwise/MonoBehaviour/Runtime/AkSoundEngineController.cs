@@ -84,6 +84,8 @@ public class AkSoundEngineController
 		AkCallbackManager.PostCallbacks();
 #if !(AK_WWISE_ADDRESSABLES && UNITY_ADDRESSABLES)
 		AkBankManager.DoUnloadBanks();
+#else
+		AkAddressableBankManager.Instance.DoUnloadBank();
 #endif
 #if UNITY_WEBGL && !UNITY_EDITOR
 		AkUnitySoundEngine.PerformStreamMgrIO();

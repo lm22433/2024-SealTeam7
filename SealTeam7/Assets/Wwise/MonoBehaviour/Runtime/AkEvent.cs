@@ -164,10 +164,11 @@ public class AkEvent : AkDragDropTriggerHandler
 
 		data.Post(gameObj);
 	}
-	
-	protected void OnDisable()
+
+	protected new void OnDestroy()
 	{
-		if (stopSoundOnDestroy)
+		var akGameObj = gameObject.GetComponent<AkGameObj>();
+		if (stopSoundOnDestroy && akGameObj != null && akGameObj.GameObjIsRegistered())
 		{
 			var gameObj = useOtherObject && otherGameObject != null ? otherGameObject : gameObject;
 			data.ExecuteAction(gameObj, AkActionOnEventType.AkActionOnEventType_Stop, (int)transitionDuration * 1000, curveInterpolation);

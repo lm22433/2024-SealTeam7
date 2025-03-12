@@ -217,6 +217,11 @@ namespace AK.Wwise
 			{
 
 #if AK_WWISE_ADDRESSABLES && UNITY_ADDRESSABLES
+				if (!gameObject)
+				{
+					UnityEngine.Debug.LogWarning($"Execute action is called on null gameobject. Returning");
+					return;
+				}
 				var args = new object[] { gameObject, actionOnEventType, transitionDuration, curveInterpolation };
 				var argTypes = new System.Type[] { gameObject.GetType(), actionOnEventType.GetType(), transitionDuration.GetType(), curveInterpolation.GetType() };
 				if (!AkAddressableBankManager.Instance.LoadedBankContainsEvent(Name, Id, this, "ExecuteAction", argTypes, args))

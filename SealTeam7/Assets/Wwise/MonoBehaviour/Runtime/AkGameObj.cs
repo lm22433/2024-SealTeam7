@@ -86,6 +86,11 @@ public class AkGameObj : UnityEngine.MonoBehaviour
 
 	private bool isRegistered = false;
 
+	public bool GameObjIsRegistered()
+	{
+		return isRegistered;
+	}
+
 	internal void AddListener(AkAudioListener listener)
 	{
 		m_listeners.Add(listener);

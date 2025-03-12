@@ -45,6 +45,8 @@ public class AkBank : AkTriggerHandler
 	protected override void Awake()
 	{
 #if UNITY_EDITOR
+		AkUnitySoundEngineInitialization.Instance.initializationDelegate += HandleEvent;
+
 		if (UnityEditor.BuildPipeline.isBuildingPlayer || AkUtilities.IsMigrating)
 		{
 			return;
@@ -57,7 +59,6 @@ public class AkBank : AkTriggerHandler
 			data.ObjectReference = reference;
 			AkWwiseTypes.DragAndDropObjectReference = null;
 		}
-		AkUnitySoundEngineInitialization.Instance.initializationDelegate += HandleEvent;
 #endif
 
 		base.Awake();
@@ -130,11 +131,12 @@ public class AkBank : AkTriggerHandler
 	protected override void OnDestroy()
 	{
 #if UNITY_EDITOR
+		AkUnitySoundEngineInitialization.Instance.initializationDelegate -= HandleEvent;
+
 		if (UnityEditor.BuildPipeline.isBuildingPlayer || AkUtilities.IsMigrating)
 		{
 			return;
 		}
-		AkUnitySoundEngineInitialization.Instance.initializationDelegate -= HandleEvent;
 #endif
 
 		base.OnDestroy();

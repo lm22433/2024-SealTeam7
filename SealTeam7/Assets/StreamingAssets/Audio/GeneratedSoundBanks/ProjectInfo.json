@@ -3,7 +3,7 @@
   "Project": {
    "Name": "SealTeam7",
    "GUID": "{66026174-D1A5-40A3-AB72-869601940A5B}",
-   "Generator": "2024.1.2.8726"
+   "Generator": "2024.1.3.8749"
   },
   "CacheRoot": "../../../../WiseIntergration/.cache",
   "Platforms": [
@@ -38,6 +38,6 @@
     "UseAsStandIn": "true"
    }
   ],
-  "FileHash": "{A224FCF1-CC88-55B5-7EB2-36491353DADF}"
+  "FileHash": "{84FEE3BB-C059-742C-5A64-F6EB3EA7D694}"
  }
 }

@@ -143,8 +143,14 @@ public class AkAmbient : AkEvent
 				AkUnitySoundEngine.SetMultiplePositions(eventPosList.list[0].gameObject, positionArray, (ushort) positionArray.Count, MultiPositionType);
 			}
 		}
-        
-        base.OnDisable();
+	}
+	
+	protected new void OnDestroy()
+	{
+		if (multiPositionTypeLabel != MultiPositionTypeLabel.MultiPosition_Mode)
+		{
+			base.OnDestroy();
+		}
 	}
 
 	public override void HandleEvent(UnityEngine.GameObject in_gameObject)

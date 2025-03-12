@@ -677,6 +677,7 @@ public class AkWwiseInitializationSettings : AkCommonPlatformSettings
 			base.OnDeactivate();
 			if(Instance.ActiveSettingsHaveChanged)
 			{
+				WwiseProjectDatabase.SetCurrentLanguage(AkWwiseInitializationSettings.ActivePlatformSettings.InitialLanguage);
 				if (AkWwiseEditorSettings.Instance.LoadSoundEngineInEditMode && !AkUnitySoundEngine.IsInitialized())
 				{
 					AkUnitySoundEngineInitialization.Instance.ResetSoundEngine();
