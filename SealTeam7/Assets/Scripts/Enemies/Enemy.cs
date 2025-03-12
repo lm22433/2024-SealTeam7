@@ -64,7 +64,12 @@ namespace Enemies
 
 		public virtual void SetupDeath()
         {
-            transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
+            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
+            {
+                transform.position = new Vector3(transform.position.x,
+                    MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
+            }
+
             model.gameObject.SetActive(false);
             deathParticles.Play();
 			State = EnemyState.Dying;
@@ -125,7 +130,10 @@ namespace Enemies
             {
                 var x = transform.position.x;
                 var z = transform.position.z;
-                transform.position = new Vector3(x, MapManager.GetInstance().GetHeight(transform.position) - buried, z);
+                if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
+                {
+                    transform.position = new Vector3(x, MapManager.GetInstance().GetHeight(transform.position) - buried, z);
+                }
 				DeathDuration -= Time.deltaTime;
 				if (DeathDuration <= 0.0f) Die();
 			}
