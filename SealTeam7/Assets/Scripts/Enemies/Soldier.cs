@@ -34,6 +34,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
+
                     var xAngle = Quaternion.LookRotation(new Vector3(
                             Target.transform.position.x,
                             MapManager.GetInstance().GetHeight(Target.transform.position),

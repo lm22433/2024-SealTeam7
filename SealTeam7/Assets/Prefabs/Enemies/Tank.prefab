@@ -14825,6 +14825,14 @@ MonoBehaviour:
   killScore: 10
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 45913116891892241}
+  gunFireSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: ca1dfeb612c3e19448f17f5744805fcc, type: 2}
+  deathSoundEffect:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
   buried: 0
   buriedAmount: 0.5
   gun: {fileID: 3715524712139545896}

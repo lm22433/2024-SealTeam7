@@ -26,6 +26,10 @@ namespace Enemies
         [SerializeField] protected int killScore;
         [SerializeField] private VisualEffect deathParticles;
         [SerializeField] private Transform model;
+
+        [Header("Sound Effects")]
+        [SerializeField] private AK.Wwise.Event gunFireSound;
+        [SerializeField] private AK.Wwise.Event deathSoundEffect;
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
@@ -63,8 +67,13 @@ namespace Enemies
 
 		public virtual void SetupDeath()
         {
+            if (State == EnemyState.Dying) { 
+                return;
+            }
+            
             transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
             model.gameObject.SetActive(false);
+            deathSoundEffect.Post(gameObject);
             deathParticles.Play();
 			State = EnemyState.Dying;
 		}
@@ -158,6 +167,7 @@ namespace Enemies
                 {
                     if (LastAttack > attackInterval && !DisallowShooting)
                     {
+                        gunFireSound.Post(gameObject);
                         Attack(EnemyManager.godlyCore);
                         LastAttack = 0f;
                     }
@@ -167,6 +177,7 @@ namespace Enemies
                 {
                     if (LastAttack > attackInterval && !DisallowShooting)
                     {
+                        gunFireSound.Post(gameObject);
                         Attack(EnemyManager.godlyHands);
                         LastAttack = 0f;
                     }
