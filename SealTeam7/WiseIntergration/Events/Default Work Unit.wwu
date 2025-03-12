@@ -85,6 +85,41 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Play_SoliderScream" ID="{B220BA90-D0DA-4A17-A04D-6B32C4A389E4}">
+					<ChildrenList>
+						<Action Name="" ID="{85522AFA-AC61-4F1A-98E3-DE4E9E795426}" ShortID="106576009">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="10"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="SoliderScream" ID="{104379BC-74FA-4003-941B-C3C8B66DE810}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{3E9C7A0F-6B90-4070-8A46-EA9029689038}" ShortID="545155336">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="SoliderScream2" ID="{95733926-90AD-4AE7-B9F5-760C577E3AEA}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Explosion" ID="{9559A078-E99F-4AA3-8FFF-F3C4DB50CEE8}">
+					<ChildrenList>
+						<Action Name="" ID="{62B32B81-6CBB-4C1F-A398-FB549B14111D}" ShortID="177167647">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Explosion" ID="{6023DF7D-9BA0-43A8-B8CE-679D5B619304}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

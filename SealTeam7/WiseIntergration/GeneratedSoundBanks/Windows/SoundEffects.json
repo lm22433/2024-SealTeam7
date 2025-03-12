@@ -10,11 +10,19 @@
     "Type": "User",
     "GUID": "{B94DA0AB-228D-465F-9C82-287D3D575D75}",
     "Language": "SFX",
-    "Hash": "{90B4D131-C8AF-F83B-2D17-E6E611AE5254}",
+    "Hash": "{4C9D5D3A-00A3-C249-D6B4-0FAEF0E99C53}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
     "ShortName": "SoundEffects",
     "Path": "SoundEffects.bnk",
     "Media": [
+     {
+      "Id": "131038067",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "explosion-312361.wav",
+      "CachePath": "B1/{B161CD91-5699-9BBA-220C-E67A91D6C5A7}.wem"
+     },
      {
       "Id": "164042640",
       "Language": "SFX",
@@ -40,12 +48,28 @@
       "CachePath": "28/{285E28A1-BCAA-7DD0-4E0F-58DDD5AF5F0B}.wem"
      },
      {
+      "Id": "315071779",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "wilhelm-splash-14579.wav",
+      "CachePath": "D1/{D1EA2545-DE22-119D-EE7D-A83E1A88D250}.wem"
+     },
+     {
       "Id": "326758480",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "helicopter-sound-effect-241421.wav",
       "CachePath": "B0/{B09C25CE-4003-1CC7-BD02-FD8B57D67B57}.wem"
+     },
+     {
+      "Id": "331440713",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "scream-85294.wav",
+      "CachePath": "57/{57B00845-652B-1355-49EE-17FE145370F5}.wem"
      },
      {
       "Id": "429045206",
@@ -83,6 +107,30 @@
     "Plugins": {
      "Custom": [
       {
+       "Id": "46213127",
+       "Name": "Parametric EQ (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion\\[Effect Slot [1]: (Parametric EQ)]\\Parametric EQ (Custom)",
+       "GUID": "{D6B61490-AF78-436E-81B7-A457C3427AB6}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      },
+      {
+       "Id": "300353365",
+       "Name": "Gain (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion\\[Effect Slot [0]: (Gain)]\\Gain (Custom)",
+       "GUID": "{77A67DF9-9B6C-49D7-B6B0-088A6196F80F}",
+       "LibName": "Wwise Gain",
+       "LibId": "9109507"
+      },
+      {
+       "Id": "915072423",
+       "Name": "Pitch Shifter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\SoliderScream\\[Effect Slot [0]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
+       "GUID": "{6ADDE648-408D-4898-9BA7-530B8ACF6325}",
+       "LibName": "Wwise Pitch Shifter",
+       "LibId": "8912899"
+      },
+      {
        "Id": "1061489957",
        "Name": "Pitch Shifter (Custom)",
        "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Tank Gunfire\\[Effect Slot [0]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
@@ -109,6 +157,30 @@
         "Id": "668002209"
        }
       ]
+     },
+     {
+      "Id": "4030404899",
+      "Name": "Play_Explosion",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Explosion",
+      "GUID": "{9559A078-E99F-4AA3-8FFF-F3C4DB50CEE8}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.5",
+      "DurationMax": "1.5",
+      "MediaRefs": [
+       {
+        "Id": "131038067"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "46213127"
+        },
+        {
+         "Id": "300353365"
+        }
+       ]
+      }
      },
      {
       "Id": "2853397551",
@@ -170,6 +242,30 @@
       ]
      },
      {
+      "Id": "2568326629",
+      "Name": "Play_SoliderScream",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_SoliderScream",
+      "GUID": "{B220BA90-D0DA-4A17-A04D-6B32C4A389E4}",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "6.48",
+      "MediaRefs": [
+       {
+        "Id": "315071779"
+       },
+       {
+        "Id": "331440713"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "915072423"
+        }
+       ]
+      }
+     },
+     {
       "Id": "3624895801",
       "Name": "Play_Tank_Gunfire",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Tank_Gunfire",
@@ -193,6 +289,6 @@
     ]
    }
   ],
-  "FileHash": "{6F157790-E5C3-4A59-D6BA-65FDCD32E921}"
+  "FileHash": "{BC5AD265-7DC7-28E1-3466-733200202EEB}"
  }
 }

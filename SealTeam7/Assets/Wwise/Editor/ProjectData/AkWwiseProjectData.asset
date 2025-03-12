@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584598940190801661
+    m_lastTime: -8584598304410417856
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,7 +359,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584598940198188496
+    m_lastTime: -8584598305851086008
     List:
     - name: Play_DesertAmbiance
       guid: 78a5fa85b04d3e47916f016db8fdcefd
@@ -378,6 +378,23 @@ MonoBehaviour:
       maxAttenuation: 0
       maxDuration: 211.47435
       minDuration: 211.47435
+    - name: Play_Explosion
+      guid: 78a059959fe9a34a8ffff3c4db50cee8
+      id: 4030404899
+      PathAndIcons:
+      - ElementName: Events
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: 3e919ce37f3a4b4eb021aaf40f66a207
+      - ElementName: Play_Explosion
+        ObjectType: 3
+        guid: 78a059959fe9a34a8ffff3c4db50cee8
+      Path: Events\Default Work Unit\Play_Explosion
+      maxAttenuation: 0
+      maxDuration: 1.5
+      minDuration: 1.5
     - name: Play_GameIntroTrack
       guid: 0f5566247b4d4f4aafef5c5d506ad9c5
       id: 2853397551
@@ -445,6 +462,23 @@ MonoBehaviour:
       Path: Events\Default Work Unit\Play_Solider_Gunfire
       maxAttenuation: 0
       maxDuration: 2.0818489
+      minDuration: 0
+    - name: Play_SoliderScream
+      guid: 90ba20b2dad0174aa04d6b32c4a389e4
+      id: 2568326629
+      PathAndIcons:
+      - ElementName: Events
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: 3e919ce37f3a4b4eb021aaf40f66a207
+      - ElementName: Play_SoliderScream
+        ObjectType: 3
+        guid: 90ba20b2dad0174aa04d6b32c4a389e4
+      Path: Events\Default Work Unit\Play_SoliderScream
+      maxAttenuation: 0
+      maxDuration: 6.48
       minDuration: 0
     - name: Play_Tank_Gunfire
       guid: d217d0e8a82c71428f03442494a10ffe
@@ -707,7 +741,7 @@ MonoBehaviour:
     m_lastTime: -8584599837341522741
     List: []
   ExpandedFileSystemItemIds: 
-  ExpandedWaapiItemIds: 010000000500000006000000070000000a0000000b0000000c0000000d0000000f00000010000000110000001200000013000000140000006e0000006f0000008e0000008f0000009300000094000000ff00000000010000010100001601000017010000
+  ExpandedWaapiItemIds: 010000000500000006000000070000000a0000000b0000000c0000000d0000000f00000010000000110000001200000013000000140000006e0000006f000000780000008e0000008f0000009300000094000000ff00000000010000010100001601000017010000
   AutoSyncSelection: 0
   autoPopulateEnabled: 1
   currentDataSource: 0
