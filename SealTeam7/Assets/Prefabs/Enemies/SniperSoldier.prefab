@@ -56,6 +56,7 @@ MonoBehaviour:
   attackRange: 200
   attackInterval: 6
   stopShootingThreshold: 150
+  coreTargetHeightOffset: 4
   attackDamage: 10
   killScore: 10
   deathParticles: {fileID: 173710646619886202}
@@ -71,7 +72,8 @@ MonoBehaviour:
   buried: 0
   buriedAmount: 1
   gun: {fileID: 4797994724752532913}
-  gunEffects: {fileID: 8443428507468699435}
+  muzzle: {fileID: 4631428408017700467}
+  projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,7 +87,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityDefiance: 10
-  defianceThreshold: 10
+  defianceThreshold: 20
   sinkFactor: 10
   groundedOffset: 4
   fallDeathVelocityY: 40
@@ -171,7 +173,8 @@ Transform:
   m_LocalPosition: {x: 0.5, y: 0.15, z: 0.45}
   m_LocalScale: {x: 0.1, y: 0.3, z: 0.6}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4631428408017700467}
   m_Father: {fileID: 2009848768158169250}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5869765654115437350
@@ -5028,6 +5031,37 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &7854111755679890242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4631428408017700467}
+  m_Layer: 0
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4631428408017700467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7854111755679890242}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.49499997}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4797994724752532913}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &852838067853537815
 PrefabInstance:
   m_ObjectHideFlags: 0
