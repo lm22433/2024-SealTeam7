@@ -54,7 +54,7 @@ namespace Enemies
         {
             _enemyCount--;
             GameManager.GetInstance().RegisterKill(enemy.killScore);
-            enemy.Die();
+            enemy.SetupDeath();
         }
 
         public void StartSpawning() => StartCoroutine(SpawnWaves());
@@ -67,7 +67,7 @@ namespace Enemies
         {
             foreach (Transform child in transform)
             {
-                Destroy(child.gameObject);
+                if (child.TryGetComponent<Enemy>(out var enemy)) Destroy(enemy.gameObject);
             }
         }
 
@@ -102,8 +102,8 @@ namespace Enemies
                     
                     for (int j = 0; j < finalGroupSize; j++)
                     {
-                        Vector2 offset2D = Random.insideUnitCircle.normalized * chosenEnemy.groupSpacing;
-                        Vector3 spawnOffset = new Vector3(offset2D.x, 0f, offset2D.y);
+                        Vector2 spawnOffset2D = Random.insideUnitCircle.normalized * chosenEnemy.groupSpacing;
+                        Vector3 spawnOffset = new Vector3(spawnOffset2D.x, 4f, spawnOffset2D.y);
                         Instantiate(chosenEnemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);
                         _enemyCount++;
                     }

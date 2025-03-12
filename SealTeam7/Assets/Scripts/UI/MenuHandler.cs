@@ -23,12 +23,33 @@ namespace UI
         [SerializeField] private Slider durationSlider;
         [SerializeField] private TMP_Text durationSliderText;
 
+        [Header("Music Settings")]
+        [SerializeField] private AK.Wwise.Event mainMenuMusic;
+        [SerializeField] private AK.Wwise.Event introMusic;
+        [SerializeField] private AK.Wwise.Event gameAmbience;
+
         private bool _paused;
         private bool _isGameRunning = false;
 
         private void Awake() {
             mainMenu.SetActive(true);
             settingsMenu.SetActive(false);
+        }
+
+        private void Start() {
+            mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
+        }
+
+        void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (!_isGameRunning) {
+                mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_MusicSyncBar, MainMenuMusicCallback);
+            }
+        }
+
+        void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (!_isGameRunning) {
+                gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_MusicSyncBar, AmbienceMusicCallback);
+            }
         }
 
         void Update()
@@ -57,7 +78,7 @@ namespace UI
         }
         
         private void InitialiseSettings() {
-            List<string> difficultyNames = difficulties.Select(diff => diff.name).ToList();
+            List<string> difficultyNames = difficulties.Select(diff => diff.difficultyName).ToList();
 
             difficultyDropdown.ClearOptions();
             difficultyDropdown.AddOptions(difficultyNames);
@@ -84,6 +105,10 @@ namespace UI
         }
 
         public void OnPlayButtonClicked() {
+            mainMenuMusic.Stop(gameObject, 200, AkCurveInterpolation.AkCurveInterpolation_Exp1);
+            introMusic.Post(gameObject);
+            gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
+
             GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty]);
             GameManager.GetInstance().SetGameDuration(currentDuration);
 
