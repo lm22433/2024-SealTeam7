@@ -79,7 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityDefiance: 10
-  defianceThreshold: 10
+  defianceThreshold: 20
   sinkFactor: 10
   groundedOffset: 4
   fallDeathVelocityY: 40
