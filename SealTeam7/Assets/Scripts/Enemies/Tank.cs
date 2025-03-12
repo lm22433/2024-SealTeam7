@@ -9,19 +9,7 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem[] dustTrails;
-        [SerializeField] private Transform muzzle;
-        [SerializeField] private GameObject projectile;
         [SerializeField] protected float groundedOffset;
-
-        protected override void Attack(PlayerDamageable toDamage)
-        {
-            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position)).TryGetComponent(out Projectile proj);
-            proj.Target = TargetPosition;
-            proj.ToDamage = toDamage;
-            proj.Damage = attackDamage;
-            
-            Destroy(proj.gameObject, 2f);
-        }
         
         protected override void EnemyUpdate()
         {

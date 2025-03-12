@@ -1,3 +1,4 @@
+using Enemies.Utils;
 using Game;
 using Map;
 using Player;
@@ -25,8 +26,12 @@ namespace Enemies
         [SerializeField] protected float coreTargetHeightOffset;
         [SerializeField] protected int attackDamage;
         [SerializeField] protected internal int killScore;
+        
+        [Header("Visual Effects")]
         [SerializeField] private VisualEffect deathParticles;
         [SerializeField] private Transform model;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
 
         [Header("Sound Effects")]
         [SerializeField] private AK.Wwise.Event gunFireSound;
@@ -81,7 +86,15 @@ namespace Enemies
 			State = EnemyState.Dying;
 		}
 
-        protected abstract void Attack(PlayerDamageable target);
+        protected virtual void Attack(PlayerDamageable toDamage)
+        {
+            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position), EnemyManager.GetInstance().transform).TryGetComponent(out Projectile proj);
+            proj.TargetPosition = TargetPosition;
+            proj.ToDamage = toDamage;
+            proj.Damage = attackDamage;
+            
+            Destroy(proj.gameObject, 2f);
+        }
         protected virtual void EnemyUpdate() {}
         protected virtual void EnemyFixedUpdate() {}
         
