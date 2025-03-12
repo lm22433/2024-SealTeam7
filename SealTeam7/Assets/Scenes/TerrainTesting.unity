@@ -4091,9 +4091,6 @@ PrefabInstance:
       propertyPath: difficulties.Array.data[4].name
       value: Kamikaze
       objectReference: {fileID: 0}
-      propertyPath: introMusic.WwiseObjectReference
-      value: 
-      objectReference: {fileID: 11400000, guid: 33eef5f4c3296e545b8134e23a75596b, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: gameAmbience.WwiseObjectReference
       value: 

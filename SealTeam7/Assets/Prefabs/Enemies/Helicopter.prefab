@@ -122,7 +122,7 @@ MonoBehaviour:
   gravityDefiance: 0
   defianceThreshold: 0
   sinkFactor: 0
-  groundedOffset: -8
+  groundedOffset: 5
   fallDeathVelocityY: 60
   mainPropeller: {fileID: 5474418017215342941}
   subPropeller: {fileID: 3727117144722257347}

@@ -68,7 +68,6 @@ namespace Enemies
 
 		public virtual void SetupDeath()
         {
-
             if (State == EnemyState.Dying) return;
             
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))

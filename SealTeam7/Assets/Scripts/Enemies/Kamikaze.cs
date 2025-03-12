@@ -9,9 +9,7 @@ namespace Enemies
         [SerializeField] private ParticleSystem trail;
         [SerializeField] private ParticleSystem smokeTrail;
         [SerializeField] private ParticleSystem chargeParticles;
-
-        private float _charge;
-
+        
         private void Awake()
         {
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
@@ -20,6 +18,8 @@ namespace Enemies
         protected override void Attack(PlayerDamageable target)
         {
             target?.TakeDamage(attackDamage);
+            killScore = 0;
+            SetupDeath();
         }
         
         protected override void EnemyUpdate()
@@ -27,8 +27,6 @@ namespace Enemies
 
             TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
             TargetDirection = TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
-            
-            if (State == EnemyState.AttackCore || State == EnemyState.AttackHands) _charge += Time.deltaTime;
         }
 
         protected override void EnemyFixedUpdate()
@@ -40,40 +38,23 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
-                    if(!trail.isPlaying) trail.Play();
-                    if(!smokeTrail.isPlaying) smokeTrail.Play();
+                    if (!trail.isPlaying) trail.Play();
+                    if (!smokeTrail.isPlaying) smokeTrail.Play();
                     chargeParticles.Stop();
-                    Rb.MoveRotation(TargetRotation);
-                    Rb.AddForce(TargetDirection * (moveSpeed * 10f));
-
                     break;
                 }
                 case EnemyState.AttackCore:
                 {
-                    //trail.Stop();
                     if(!chargeParticles.isPlaying) chargeParticles.Play();
                     smokeTrail.Stop();
                     Rb.linearVelocity = new Vector3 (0,0,0);
-                    if (_charge > attackInterval)
-                    {
-                        Attack(EnemyManager.godlyCore);
-                        killScore = 0;
-                        this.SetupDeath();
-                    }
                     break;
                 }
                 case EnemyState.AttackHands:
                 {
-                    //trail.Stop();
-                    if(!chargeParticles.isPlaying) chargeParticles.Play();
+                    if (!chargeParticles.isPlaying) chargeParticles.Play();
                     smokeTrail.Stop();
                     Rb.linearVelocity = new Vector3 (0,0,0);
-                    if (_charge > attackInterval)
-                    {
-                        Attack(EnemyManager.godlyHands);
-                        killScore = 0;
-                        SetupDeath();
-                    }
                     break;
                 }
             }
@@ -82,6 +63,7 @@ namespace Enemies
         public override void SetupDeath()
 		{
 			base.SetupDeath();
+            trail.Stop();
             smokeTrail.Stop();
 		}
     }

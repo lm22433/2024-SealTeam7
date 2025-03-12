@@ -117,8 +117,8 @@ MonoBehaviour:
       serializedVersion: 2
       x: -563
       y: 0
-      width: 476
-      height: 2735
+      width: 474
+      height: 2711
     contents:
     - model: {fileID: 8926484042661615815}
       id: 0
@@ -137,7 +137,7 @@ MonoBehaviour:
   uiBounds:
     serializedVersion: 2
     x: -563
-    y: -0
+    y: 0
     width: 3478
     height: 3567
 --- !u!114 &114350483966674976
@@ -937,7 +937,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1.5
+      m_SerializableObject: 3
     m_Space: -1
   m_Property:
     name: LoopDuration
@@ -3859,7 +3859,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1.5
+      m_SerializableObject: 3
     m_Space: -1
   m_Property:
     name: LoopDuration
@@ -12142,7 +12142,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1.5
+      m_SerializableObject: 3
     m_Space: -1
   m_Property:
     name: LoopDuration
@@ -15054,7 +15054,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1.5
+      m_SerializableObject: 3
     m_Space: -1
   m_Property:
     name: LoopDuration
