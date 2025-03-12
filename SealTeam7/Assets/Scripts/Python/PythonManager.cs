@@ -150,6 +150,7 @@ namespace Python
             _handLandmarksMemory.Dispose();
             _readyEvent.Dispose();
             _doneEvent.Dispose();
+            Debug.Log("Disposed of memory mapped files and events");
         }
     }
 }
