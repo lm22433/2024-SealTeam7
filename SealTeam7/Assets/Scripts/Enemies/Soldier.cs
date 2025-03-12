@@ -1,3 +1,4 @@
+using Enemies.Utils;
 using Map;
 using Player;
 using UnityEngine;
@@ -7,7 +8,8 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
-        [SerializeField] private ParticleSystem gunEffects;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
 
 		protected override void Start()
 		{
@@ -16,10 +18,14 @@ namespace Enemies
 			buriedAmount = 0.25f;
 		}
         
-        protected override void Attack(PlayerDamageable target)
+        protected override void Attack(PlayerDamageable toDamage)
         {
-            if (!gunEffects.isPlaying) gunEffects.Play();
-            target?.TakeDamage(attackDamage);
+            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position)).TryGetComponent(out Projectile proj);
+            proj.Target = TargetPosition;
+            proj.ToDamage = toDamage;
+            proj.Damage = attackDamage;
+            
+            Destroy(proj.gameObject, 2f);
         }
 
         protected override void EnemyUpdate()
@@ -34,26 +40,20 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
-                    var xAngle = Quaternion.LookRotation(new Vector3(
-                            Target.transform.position.x,
-                            MapManager.GetInstance().GetHeight(Target.transform.position),
-                            Target.transform.position.z
-                        ) - gun.position)
-                        .eulerAngles.x;
+                    var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
                     TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
                     break;
                 }
                 case EnemyState.AttackHands:
                 {
-                    TargetRotation = Quaternion.Euler(Vector3.Angle(Target.transform.position - gun.position, gun.right), 0f, 0f);
+                    TargetRotation = Quaternion.Euler(Vector3.Angle(TargetPosition - gun.position, gun.right), 0f, 0f);
                     gun.rotation = Quaternion.Slerp(gun.rotation, TargetRotation, aimSpeed * Time.deltaTime);
                     break;
                 }
             }
             
-            TargetRotation = Quaternion.LookRotation(new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position);
-            // TargetDirection = (new Vector3(Target.transform.position.x, transform.position.y, Target.transform.position.z) - transform.position).normalized;
+            TargetRotation = Quaternion.LookRotation(new Vector3(TargetPosition.x, transform.position.y, TargetPosition.z) - transform.position);
             TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
     }

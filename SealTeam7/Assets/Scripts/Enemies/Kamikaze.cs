@@ -12,7 +12,8 @@ namespace Enemies
 
         private float _charge;
 
-        private void Awake() {
+        private void Awake()
+        {
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
         
@@ -24,15 +25,17 @@ namespace Enemies
         protected override void EnemyUpdate()
         {
 
-            TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
-            TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
+            TargetDirection = TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
             
             if (State == EnemyState.AttackCore || State == EnemyState.AttackHands) _charge += Time.deltaTime;
-            if(State != EnemyState.Dying) transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
 
         protected override void EnemyFixedUpdate()
         {
+            if (Rb.position.y > flyHeight && State != EnemyState.Dying) Rb.AddForce(Vector3.down, ForceMode.Impulse);
+            if (Rb.position.y < flyHeight && State != EnemyState.Dying) Rb.AddForce(Vector3.up, ForceMode.Impulse);
+            
             switch (State)
             {
                 case EnemyState.Moving:

@@ -22,6 +22,7 @@ namespace Enemies
         [SerializeField] protected float attackRange;
         [SerializeField] protected float attackInterval;
         [SerializeField] protected float stopShootingThreshold;
+        [SerializeField] protected float coreTargetHeightOffset;
         [SerializeField] protected int attackDamage;
         [SerializeField] protected int killScore;
         [SerializeField] private VisualEffect deathParticles;
@@ -33,7 +34,7 @@ namespace Enemies
         protected bool DisallowMovement;
         protected bool DisallowShooting;
         protected float LastAttack;
-        protected PlayerDamageable Target;
+        protected Vector3 TargetPosition;
         protected Quaternion TargetRotation;
         protected Vector3 TargetDirection;
 		protected float DeathDuration = 3.0f;
@@ -50,7 +51,7 @@ namespace Enemies
             SqrAttackRange = attackRange * attackRange;
             State = EnemyState.Moving;
             // Target = transform.position + transform.forward;
-            Target = EnemyManager.godlyCore;
+            TargetPosition = EnemyManager.godlyCore.transform.position;
             TargetRotation = transform.rotation;
             TargetDirection = transform.forward;
         }
@@ -90,12 +91,16 @@ namespace Enemies
                 case EnemyState.Moving:
                 case EnemyState.AttackCore:
                 {
-                    Target = EnemyManager.godlyCore;
+                    TargetPosition = new Vector3(
+                        EnemyManager.godlyCore.transform.position.x,
+                        MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset,
+                        EnemyManager.godlyCore.transform.position.z
+                    );
                     break;
                 }
                 case EnemyState.AttackHands:
                 {
-                    Target = EnemyManager.godlyHands;
+                    TargetPosition = EnemyManager.godlyHands.transform.position;
                     break;
                 }
             }

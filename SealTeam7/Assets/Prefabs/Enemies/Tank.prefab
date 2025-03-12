@@ -14821,6 +14821,7 @@ MonoBehaviour:
   attackRange: 100
   attackInterval: 4
   stopShootingThreshold: 20
+  coreTargetHeightOffset: 2
   attackDamage: 2
   killScore: 10
   deathParticles: {fileID: 1735578503178218476}
@@ -15077,7 +15078,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -1, y: 1.1102236e-16, z: -1.1102232e-16, w: 0.00000008940697}
   m_LocalPosition: {x: 0, y: -0.009607949, z: -0.049364183}
-  m_LocalScale: {x: -0.013215222, y: -0.015162552, z: -0.01516255}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3857096993399556680}

@@ -56,6 +56,7 @@ MonoBehaviour:
   attackRange: 50
   attackInterval: 1
   stopShootingThreshold: 20
+  coreTargetHeightOffset: 2
   attackDamage: 1
   killScore: 10
   deathParticles: {fileID: 800979439519608610}
@@ -63,7 +64,8 @@ MonoBehaviour:
   buried: 0
   buriedAmount: 0.5
   gun: {fileID: 8504172332382226243}
-  gunEffects: {fileID: 9185895167031479839}
+  muzzle: {fileID: 2415730568844001834}
+  projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,6 +133,37 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &6873680355776206596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2415730568844001834}
+  m_Layer: 0
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2415730568844001834
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6873680355776206596}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.49499997}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8504172332382226243}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8995765152636253557
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,7 +196,8 @@ Transform:
   m_LocalPosition: {x: 0.5, y: 0.15, z: 0.45}
   m_LocalScale: {x: 0.099999994, y: 0.3, z: 0.6}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2415730568844001834}
   m_Father: {fileID: 2009848768158169250}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2579535534237893623
