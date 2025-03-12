@@ -21,7 +21,8 @@ namespace Enemies
 
     public class EnemyManager : MonoBehaviour
     {
-        [Header("Spawn Settings")]
+        [Header("Spawn Settings")] 
+        [SerializeField] private float initialStartDelay = 10f;
         [SerializeField] private Transform[] spawnPoints;
         [SerializeField] private int maxEnemyCount;
         [SerializeField] private float maxEnemyDistance;
@@ -72,7 +73,7 @@ namespace Enemies
 
         private IEnumerator SpawnWaves()
         {
-            yield return new WaitForSeconds(2f); // Wait for player to get ready.
+            yield return new WaitForSeconds(initialStartDelay);
             
             while (GameManager.GetInstance().GameActive)
             {
