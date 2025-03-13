@@ -1703,6 +1703,7 @@ MonoBehaviour:
   lodInfo:
     lod: 0
     colliderLod: 2
+    pathingLod: 2
   isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
@@ -5034,9 +5035,9 @@ MonoBehaviour:
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
-  mapUpdateInterval: 2
+  mapUpdateInterval: 5
   pathingDepth: 50
-  pathFindInterval: 2
+  pathFindInterval: 5
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped
 MonoBehaviour:

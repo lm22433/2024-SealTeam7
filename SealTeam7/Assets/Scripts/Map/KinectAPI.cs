@@ -7,6 +7,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
 using Python;
+using Unity.Mathematics;
 
 namespace Map
 {
@@ -17,7 +18,7 @@ namespace Map
         private readonly Transformation _transformation;
         private Image _transformedDepthImage;
         private float[,] _heightMap;
-        private float[,] _gradientMap;
+        private float2[,] _gradientMap;
         
         /*
          * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
@@ -53,7 +54,7 @@ namespace Map
         private float _gaussianStrength;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float[,] gradientMap, int kernelSize, float gaussianStrength)
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int kernelSize, float gaussianStrength)
         {
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;

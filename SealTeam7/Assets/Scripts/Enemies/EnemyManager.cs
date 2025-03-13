@@ -40,8 +40,6 @@ namespace Enemies
         private int _enemyCount;
         private float _spawnInterval;
         private PathFinder _pathFinder;
-        private int _mapSize;
-        private float _mapSpacing;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
 
@@ -51,9 +49,7 @@ namespace Enemies
             else Destroy(gameObject);
             
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
-            _mapSize = MapManager.GetInstance().GetMapSize();
-            _mapSpacing = MapManager.GetInstance().GetMapSpacing();
-            _pathFinder = new PathFinder(_mapSize, _mapSpacing);
+            _pathFinder = new PathFinder(MapManager.GetInstance().GetMapSize(), MapManager.GetInstance().GetMapSpacing(), MapManager.GetInstance().GetPathingLodFactor());
         }
 
         public void Kill(Enemy enemy)
@@ -120,6 +116,7 @@ namespace Enemies
             {
                 _lastMapUpdate = 0;
                 _pathFinder.UpdateMap(ref MapManager.GetInstance().GetHeightMap());
+                _pathFinder.UpdateGradient(ref MapManager.GetInstance().GetGradientMap());
             }
         }
         

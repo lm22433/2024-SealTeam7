@@ -66,8 +66,7 @@ namespace Enemies
                 }
             }
             
-            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
-            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetDirection).eulerAngles.y, transform.eulerAngles.z);
         }
     }
 }

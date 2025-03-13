@@ -13,6 +13,7 @@ namespace Map
     {
         public int lod;
         public int colliderLod;
+        public int pathingLod;
     }
 
     public class MapManager : MonoBehaviour
@@ -71,7 +72,7 @@ namespace Map
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
         private float[,] _heightMap;
-        private float[,] _gradientMap;
+        private float2[,] _gradientMap;
         private List<Chunk> _chunks;
         private float _mapSpacing;
 
@@ -85,7 +86,7 @@ namespace Map
             _mapSpacing = (float) mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
             _heightMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
-            _gradientMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
+            _gradientMap = new float2[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
 
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
@@ -101,7 +102,7 @@ namespace Map
             };
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, ref _gradientMap, kernelSize, gaussianStrength);
-            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
+            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, ref _gradientMap);
 
             for (int z = 0; z < chunkRow; z++)
             {
@@ -178,19 +179,19 @@ namespace Map
                 {
                     try
                     {
-                        col[i++] = new Color32(Convert.ToByte(Mathf.Min(255, h / heightScale * 255)), 0, 0, Convert.ToByte(255));
+                        col[i] = new Color32(Convert.ToByte(Mathf.Abs(Mathf.Min(255, h / heightScale * 255))), 0, 0, Convert.ToByte(255));
+                        i++;
                     }
                     catch (OverflowException e)
                     {
                         Debug.LogWarning(e.Message);
-                        col[i++] = new Color32();
+                        col[i] = new Color32();
+                        i++;
                     }
                 }
 
                 texture.SetPixels32(col);
                 texture.Apply();
-                Debug.Log(_heightMap.Length);
-                Debug.Log("Applied Texture");
 
                 takeSnapshot = false;
             }
@@ -203,7 +204,9 @@ namespace Map
         
         public static MapManager GetInstance() => _instance;
         public ref float[,] GetHeightMap() => ref _heightMap;
+        public ref float2[,] GetGradientMap() => ref _gradientMap;
         public int GetMapSize() => mapSize;
         public float GetMapSpacing() => _mapSpacing;
+        public int GetPathingLodFactor() => lodInfo.pathingLod == 0 ? 1 : lodInfo.pathingLod * 2;
     }
 }

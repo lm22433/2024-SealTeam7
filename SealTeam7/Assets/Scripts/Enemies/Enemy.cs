@@ -65,7 +65,8 @@ namespace Enemies
             TargetRotation = transform.rotation;
             TargetDirection = transform.forward;
             PathFindInterval = EnemyManager.pathFindInterval;
-            LastPathFind = Time.time;
+            LastAttack = attackInterval;    
+            LastPathFind = PathFindInterval;
         }
 
         public virtual void Die()
@@ -164,23 +165,23 @@ namespace Enemies
             {
                 EnemyManager.Kill(this);
             }
-
-            if (Path.Length > 0 && PathIndex < Path.Length - 1)
-            {
-                var pathPosition = new Vector3(Mathf.RoundToInt(transform.position.x), Path[PathIndex].y, Mathf.RoundToInt(transform.position.z));
-                if (pathPosition == Path[PathIndex]) PathIndex++;
-                TargetDirection = Path[PathIndex] - pathPosition;
-            }
             
             UpdateState();
             UpdateTarget();
             LimitSpeed();
 
 
-            if (LastPathFind - Time.time > PathFindInterval)
+            if (LastPathFind >= PathFindInterval)
             {
-                LastPathFind = Time.time;
+                LastPathFind = 0;
                 PathFind();
+            }
+            
+            if (Path.Length > 0 && PathIndex < Path.Length - 1)
+            {
+                var pathPosition = new Vector3(Mathf.RoundToInt(transform.position.x), Path[PathIndex].y, Mathf.RoundToInt(transform.position.z));
+                if (pathPosition == Path[PathIndex]) PathIndex++;
+                TargetDirection = Vector3.ProjectOnPlane(Path[PathIndex] - transform.position, Vector3.up).normalized;
             }
             
             LastAttack += Time.deltaTime;
@@ -204,7 +205,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackCore:
                 {
-                    if (LastAttack > attackInterval && !DisallowShooting)
+                    if (LastAttack >= attackInterval && !DisallowShooting)
                     {
                         gunFireSound.Post(gameObject);
                         Attack(EnemyManager.godlyCore);
@@ -214,7 +215,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
-                    if (LastAttack > attackInterval && !DisallowShooting)
+                    if (LastAttack >= attackInterval && !DisallowShooting)
                     {
                         gunFireSound.Post(gameObject);
                         Attack(EnemyManager.godlyHands);
@@ -226,7 +227,21 @@ namespace Enemies
             
             EnemyFixedUpdate();
         }
+        
+        public void OnDrawGizmos()
+        {
+            Debug.Log(Path.Length);
+            var prevWaypoint = Path[0];
+            foreach (var waypoint in Path)
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(prevWaypoint, waypoint);
+                Gizmos.color = Color.red;
+                Gizmos.DrawCube(waypoint, Vector3.one);
+                prevWaypoint = waypoint;
+            }
+        }
 
-		public bool IsDying() => State == EnemyState.Dying;
+        public bool IsDying() => State == EnemyState.Dying;
     }
 }

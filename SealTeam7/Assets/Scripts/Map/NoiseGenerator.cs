@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using System;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Game;
+using Unity.Mathematics;
 
 namespace Map
 {
@@ -17,12 +19,17 @@ namespace Map
         private readonly float _heightScale;
         
         private float[,] _heightMap;
-        private Image<Gray, float> _tmpImage1;
+        private float2[,] _gradientMap;
+        private Image<Gray, float> _heightImage;
+        private Image<Gray, float> _gradientX;
+        private Image<Gray, float> _gradientY;
+        private Image<Gray, float> _squareGradient;
+        private Image<Gray, float> _gradientMagnitude;
         
         private bool _running;
         private float _time;
 
-        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref float[,] heightMap)
+        public NoiseGenerator(int size, float speed, float noiseScale, float heightScale, ref float[,] heightMap, ref float2[,] gradientMap)
         {
             _size = size;
             _speed = speed;
@@ -31,7 +38,12 @@ namespace Map
             _time = 0f;
             
             _heightMap = heightMap;
-            _tmpImage1 = new Image<Gray, float>(size + 1, size + 1);
+            _gradientMap = gradientMap;
+            _heightImage = new Image<Gray, float>(size + 1, size + 1);
+            _gradientX = new Image<Gray, float>(size + 1, size + 1);
+            _gradientY = new Image<Gray, float>(size + 1, size + 1);
+            _squareGradient = new Image<Gray, float>(size + 1, size + 1);
+            _gradientMagnitude = new Image<Gray, float>(size + 1, size + 1);
             
             _running = true;
             
@@ -58,9 +70,22 @@ namespace Map
                     {
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
-                        _heightMap[y, x] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
-                        _tmpImage1.Data[y, x, 0] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
-                        _heightMap = _tmpImage1[0].Mat
+                        _heightImage.Data[y, x, 0] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                    }
+                }
+                
+                CvInvoke.Sobel(_heightImage, _gradientX, DepthType.Default, 1, 0);
+                CvInvoke.Sobel(_heightImage, _gradientY, DepthType.Default, 0, 1);
+                // CvInvoke.AccumulateSquare(_gradientX, _squareGradient);
+                // CvInvoke.AccumulateSquare(_gradientY, _squareGradient);
+                // CvInvoke.Sqrt(_squareGradient, _gradientMagnitude);
+                
+                for (int y = 0; y < _size + 1; y++)
+                {
+                    for (int x = 0; x < _size + 1; x++)
+                    {
+                        _heightMap[y, x] = _heightImage.Data[y, x, 0];
+                        _gradientMap[y, x] = new float2(_gradientY.Data[y, x, 0], _gradientX.Data[y, x, 0]);
                     }
                 }
             }

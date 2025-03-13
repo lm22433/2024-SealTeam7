@@ -44,12 +44,10 @@ namespace Enemies
                     var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
                     TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
+                    TargetRotation = Quaternion.LookRotation(TargetPosition - transform.position);
                     break;
                 }
             }
-            
-            TargetRotation = Quaternion.LookRotation(new Vector3(TargetPosition.x, transform.position.y, TargetPosition.z) - transform.position);
-            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
     }
 }
