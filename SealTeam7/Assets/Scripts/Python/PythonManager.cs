@@ -14,26 +14,32 @@ namespace Python
         public static bool FlipX { get; set; } = true;
         public static bool FlipHandedness { get; set; } = false;
         public static HandLandmarks HandLandmarks => _handLandmarks;
+        public static Gestures Gestures => _gestures;
         
         private const int PythonImageWidth = 1920;
         private const int PythonImageHeight = 1080;
         private const string ColourImageFileName = "colour_image";
         private const string HandLandmarksFileName = "hand_landmarks";
+        private const string GesturesFileName = "gestures";
         private const string ReadyEventName = "SealTeam7ColourImageReady";
         private const string DoneEventName = "SealTeam7HandLandmarksDone";
 
         private static MemoryMappedFile _colourImageMemory;
         private static MemoryMappedFile _handLandmarksMemory;
+        private static MemoryMappedFile _gesturesMemory;
         private static MemoryMappedViewAccessor _colourImageViewAccessor;
         private static SafeMemoryMappedViewHandle _colourImageViewHandle;
         private static MemoryMappedViewAccessor _handLandmarksViewAccessor;
         private static SafeMemoryMappedViewHandle _handLandmarksViewHandle;
+        private static MemoryMappedViewAccessor _gesturesViewAccessor;
+        private static SafeMemoryMappedViewHandle _gesturesViewHandle;
         private static EventWaitHandle _readyEvent;
         private static EventWaitHandle _doneEvent;
         private static HandLandmarks _handLandmarks;  // Sometimes has a reference to _left/rightHandLandmarks
         private static Vector3[] _leftHandLandmarks;
         private static Vector3[] _rightHandLandmarks;
         private static Vector3[] _handLandmarksBuffer;  // Temporary buffer for reading hand landmarks
+        private static Gestures _gestures;
 
         public static void Initialize()
         {
@@ -51,16 +57,20 @@ namespace Python
                 // Then try with MemoryMappedFile with size parameter set to 0
                 _colourImageMemory = MemoryMappedFile.OpenExisting(ColourImageFileName, MemoryMappedFileRights.Write);
                 _handLandmarksMemory = MemoryMappedFile.OpenExisting(HandLandmarksFileName, MemoryMappedFileRights.Read);
+                _gesturesMemory = MemoryMappedFile.OpenExisting(GesturesFileName, MemoryMappedFileRights.Read);
                 _colourImageViewAccessor = _colourImageMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Write);
                 _colourImageViewHandle = _colourImageViewAccessor.SafeMemoryMappedViewHandle;
                 _handLandmarksViewAccessor = _handLandmarksMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
                 _handLandmarksViewHandle = _handLandmarksViewAccessor.SafeMemoryMappedViewHandle;
+                _gesturesViewAccessor = _gesturesMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
+                _gesturesViewHandle = _gesturesViewAccessor.SafeMemoryMappedViewHandle;
                 _readyEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ReadyEventName);
                 _doneEvent = new EventWaitHandle(false, EventResetMode.AutoReset, DoneEventName);
                 _handLandmarks = new HandLandmarks();
                 _leftHandLandmarks = new Vector3[21];
                 _rightHandLandmarks = new Vector3[21];
                 _handLandmarksBuffer = new Vector3[21];
+                _gestures = new Gestures();
             }
             catch (Exception ex) {
                 Debug.LogError($"{ex.GetType().Name}: {ex.Message}");
@@ -134,8 +144,15 @@ namespace Python
                 }
                 _handLandmarks.Right = _rightHandLandmarks;
             }
+
+            // Read gestures
+            var gestureBuffer = new int[2];
+            _gesturesViewHandle.ReadArray(0, gestureBuffer, 0, 2);
+            _gestures.Left = gestureBuffer[0];
+            _gestures.Right = gestureBuffer[1];
+
             stopwatch.Stop();
-            Debug.Log($"Reading hand landmarks from memory mapped file: {stopwatch.ElapsedMilliseconds} ms");
+            Debug.Log($"Reading hand landmarks and gestures from memory mapped file: {stopwatch.ElapsedMilliseconds} ms");
 
             return _handLandmarks;
         }
@@ -146,8 +163,11 @@ namespace Python
             _colourImageViewAccessor.Dispose();
             _handLandmarksViewHandle.Dispose();
             _handLandmarksViewAccessor.Dispose();
+            _gesturesViewHandle.Dispose();
+            _gesturesViewAccessor.Dispose();
             _colourImageMemory.Dispose();
             _handLandmarksMemory.Dispose();
+            _gesturesMemory.Dispose();
             _readyEvent.Dispose();
             _doneEvent.Dispose();
             Debug.Log("Disposed of memory mapped files and events");

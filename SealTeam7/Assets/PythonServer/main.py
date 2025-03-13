@@ -21,11 +21,11 @@ COLOUR_IMAGE_FULL_SIZE = COLOUR_IMAGE_FULL_WIDTH * COLOUR_IMAGE_FULL_HEIGHT * CO
 COLOUR_IMAGE_FILE_NAME = "colour_image"
 HAND_LANDMARKS_SIZE = 21 * 3 * 2 * 4  # 21 landmarks, 3 coordinates per landmark, 2 hands, 4 bytes per float
 HAND_LANDMARKS_FILE_NAME = "hand_landmarks"
+GESTURES_SIZE = 2 * 4  # 2 hands, 4 bytes per int
+GESTURES_FILE_NAME = "gestures"
 READY_EVENT_NAME = "SealTeam7ColourImageReady"
 DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
-
-OBJECT_DETECTION_MODEL_PATH = 'object_detection_model.tflite'
-HAND_LANDMARKING_MODEL_PATH = 'hand_landmarking_model.task'
+GESTURE_RECOGNITION_MODEL_PATH = 'gesture_recognition_model.task'
 VISUALISE_INFERENCE_RESULTS = True
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
@@ -53,11 +53,12 @@ done_event = win32event.CreateEvent(None, 0, 0, DONE_EVENT_NAME)
 # Initialise the mapping
 colour_image_buffer = mmap.mmap(-1, COLOUR_IMAGE_FULL_SIZE, access=mmap.ACCESS_WRITE, tagname=COLOUR_IMAGE_FILE_NAME)
 hand_landmarks_buffer = mmap.mmap(-1, HAND_LANDMARKS_SIZE, access=mmap.ACCESS_WRITE, tagname=HAND_LANDMARKS_FILE_NAME)
+gestures_buffer = mmap.mmap(-1, GESTURES_SIZE, access=mmap.ACCESS_WRITE, tagname=GESTURES_FILE_NAME)
 
-hand_landmarker_options = HandLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path=HAND_LANDMARKING_MODEL_PATH),
+gesture_recognizer_options = GestureRecognizerOptions(
+    base_options=BaseOptions(model_asset_path=GESTURE_RECOGNITION_MODEL_PATH),
     running_mode=RunningMode.VIDEO,
-    num_hands=3,  # temporarily > 2 to help tune confidence thresholds
+    num_hands=3,
     min_hand_detection_confidence=0.05,
     min_hand_presence_confidence=0.5,
     min_tracking_confidence=0.5)
@@ -70,6 +71,23 @@ projected_right_hand = np.zeros((21, 3))
 left_hand_absent_count = 0
 right_hand_absent_count = 0
 
+# Gesture mapping
+GESTURE_MAP = {
+    "None": 0,
+    "Closed_Fist": 1,
+    "Open_Palm": 2,
+    "Pointing_Up": 3,
+    "Thumb_Down": 4,
+    "Thumb_Up": 5,
+    "Victory": 6,
+    "Spock": 7,
+    "Calling": 8,
+    "ILoveYou": 9
+}
+
+def gesture_to_int(gesture_name):
+    return GESTURE_MAP.get(gesture_name, 0)  # Default to 0 (None) if gesture not found
+
 def landmarks_to_array(landmarks):
     """Convert MediaPipe landmarks to numpy array with shape (21, 3)"""
     if landmarks is None:
@@ -79,7 +97,7 @@ def landmarks_to_array(landmarks):
                      landmark.y * COLOUR_IMAGE_FULL_HEIGHT] for landmark in landmarks])
     return arr
 
-with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmarker:
+with GestureRecognizer.create_from_options(gesture_recognizer_options) as gesture_recognizer:
     print("Ready.")
 
     try:
@@ -98,18 +116,18 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                 colour_image_data = np.frombuffer(colour_image_buffer, dtype=np.uint8).reshape(
                     (COLOUR_IMAGE_FULL_HEIGHT, COLOUR_IMAGE_FULL_WIDTH, COLOUR_IMAGE_NUM_CHANNELS))
 
-            # Perform hand landmarking
+            # Perform hand landmarking and gesture recognition
             with timer("Creating mp image"):
                 mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=colour_image_data)
-            with timer("Hand landmarking"):
-                hand_landmarking_result = hand_landmarker.detect_for_video(mp_image, int(time.monotonic()*1000))
+            with timer("Gesture recognition"):
+                gesture_recognizer_result = gesture_recognizer.recognize_for_video(mp_image, int(time.monotonic()*1000))
 
             # determine handedness and scale to pixel coordinates
             with timer("Processing results"):
                 using_left_projected_hand = False
                 using_right_projected_hand = False
 
-                if len(hand_landmarking_result.hand_landmarks) == 0:
+                if len(gesture_recognizer_result.hand_landmarks) == 0:
                     left = None
                     right = None
                     left_hand_absent_count += 1
@@ -123,16 +141,16 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                         right = projected_right_hand
                         using_right_projected_hand = True
                         
-                elif len(hand_landmarking_result.hand_landmarks) <= 1:
+                elif len(gesture_recognizer_result.hand_landmarks) <= 1:
                     left = None
                     right = None
-                    for i, handedness in enumerate(hand_landmarking_result.handedness):
+                    for i, handedness in enumerate(gesture_recognizer_result.handedness):
                         if handedness[0].category_name == "Left":
-                            left = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
+                            left = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
                             right_hand_absent_count += 1
                             left_hand_absent_count = 0
                         else:
-                            right = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
+                            right = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
                             left_hand_absent_count += 1
                             right_hand_absent_count = 0
                     
@@ -144,15 +162,15 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                         right = projected_right_hand
                         using_right_projected_hand = True
 
-                elif len(hand_landmarking_result.hand_landmarks) == 2:
+                elif len(gesture_recognizer_result.hand_landmarks) == 2:
                     left_hand_absent_count = 0
                     right_hand_absent_count = 0
                     
-                    if hand_landmarking_result.handedness[0][0].category_name == hand_landmarking_result.handedness[1][0].category_name:
+                    if gesture_recognizer_result.handedness[0][0].category_name == gesture_recognizer_result.handedness[1][0].category_name:
                         # both hands have same handedness -> determine handedness manually
                         left = None
                         right = None
-                        for i, hand_landmarks in enumerate(hand_landmarking_result.hand_landmarks):
+                        for i, hand_landmarks in enumerate(gesture_recognizer_result.hand_landmarks):
                             landmarks = landmarks_to_array(hand_landmarks)
                             real_wrist = landmarks[0]
                             projected_left_wrist = projected_left_hand[0]
@@ -165,20 +183,31 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                     else:
                         left = None
                         right = None
-                        for i, handedness in enumerate(hand_landmarking_result.handedness):
+                        for i, handedness in enumerate(gesture_recognizer_result.handedness):
                             if handedness[0].category_name == "Left":
-                                left = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
+                                left = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
                             else:
-                                right = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
+                                right = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
                 else:
                     print("Warning: More than 2 hands detected.")
                     left = None
                     right = None
-                    for i, handedness in enumerate(hand_landmarking_result.handedness):
+                    for i, handedness in enumerate(gesture_recognizer_result.handedness):
                         if handedness[0].category_name == "Left":
-                            left = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
+                            left = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
                         else:
-                            right = landmarks_to_array(hand_landmarking_result.hand_landmarks[i])
+                            right = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
+
+            # Process gestures
+            left_gesture = 0  # Default to None
+            right_gesture = 0  # Default to None
+            
+            if gesture_recognizer_result.gestures:
+                for i, gesture in enumerate(gesture_recognizer_result.gestures):
+                    if gesture_recognizer_result.handedness[i][0].category_name == "Left":
+                        left_gesture = gesture_to_int(gesture[0].category_name)
+                    else:
+                        right_gesture = gesture_to_int(gesture[0].category_name)
 
             if VISUALISE_INFERENCE_RESULTS:
                 with timer("Visualising results"):
@@ -217,6 +246,14 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                     cv2.circle(vis_frame, (int(projected_left_hand[0, 0]), int(projected_left_hand[0, 2])), 3, (255, 0, 255), -1)
                     cv2.circle(vis_frame, (int(projected_right_hand[0, 0]), int(projected_right_hand[0, 2])), 3, (255, 0, 255), -1)
                     
+                    # Draw gestures
+                    if left_gesture > 0:
+                        cv2.putText(vis_frame, f"Left: {list(GESTURE_MAP.keys())[list(GESTURE_MAP.values()).index(left_gesture)]}", 
+                                  (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    if right_gesture > 0:
+                        cv2.putText(vis_frame, f"Right: {list(GESTURE_MAP.keys())[list(GESTURE_MAP.values()).index(right_gesture)]}", 
+                                  (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                    
                     cv2.imshow("Inference visualisation", vis_frame)
                     key = cv2.waitKey(1)
                     if key == 27:
@@ -247,8 +284,9 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                 delta = last_right - prev_right
                 projected_right_hand = right_hand_history[-1] + delta
 
-            # Write the hand landmarks
+            # Write the hand landmarks and gestures
             with timer("Writing results"):
+                # Write hand landmarks
                 hand_landmarks_buffer.seek(0)
                 for i, hand in enumerate((left, right)):
                     if hand is None:
@@ -260,6 +298,10 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
                         for j in range(21):
                             struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4,
                                            hand[j, 0], hand[j, 1], hand[j, 2])
+                
+                # Write gestures
+                gestures_buffer.seek(0)
+                struct.pack_into("<ii", gestures_buffer, 0, left_gesture, right_gesture)
 
             if not shutdown_flag:
                 win32event.SetEvent(done_event)
@@ -271,3 +313,4 @@ with HandLandmarker.create_from_options(hand_landmarker_options) as hand_landmar
         del colour_image_data
         colour_image_buffer.close()
         hand_landmarks_buffer.close()
+        gestures_buffer.close()
