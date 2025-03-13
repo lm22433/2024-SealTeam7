@@ -44,6 +44,8 @@ namespace Enemies
         protected Vector3 TargetDirection;
         protected Vector3[] Path;
         protected int PathIndex;
+        protected float PathFindInterval;
+        protected float LastPathFind;
 		protected float DeathDuration = 3.0f;
         public float buried;
 		public float buriedAmount = 0.5f;
@@ -62,6 +64,8 @@ namespace Enemies
             TargetPosition = EnemyManager.godlyCore.transform.position;
             TargetRotation = transform.rotation;
             TargetDirection = transform.forward;
+            PathFindInterval = EnemyManager.pathFindInterval;
+            LastPathFind = Time.time;
         }
 
         public virtual void Die()
@@ -165,15 +169,22 @@ namespace Enemies
             {
                 var pathPosition = new Vector3(Mathf.RoundToInt(transform.position.x), Path[PathIndex].y, Mathf.RoundToInt(transform.position.z));
                 if (pathPosition == Path[PathIndex]) PathIndex++;
-                TargetDirection = Path[PathIndex] - pathPosition;                
+                TargetDirection = Path[PathIndex] - pathPosition;
             }
             
             UpdateState();
             UpdateTarget();
             LimitSpeed();
-            PathFind();
+
+
+            if (LastPathFind - Time.time > PathFindInterval)
+            {
+                LastPathFind = Time.time;
+                PathFind();
+            }
             
             LastAttack += Time.deltaTime;
+            LastPathFind += Time.deltaTime;
             
             EnemyUpdate();
         }

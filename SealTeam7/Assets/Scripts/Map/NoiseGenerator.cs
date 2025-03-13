@@ -3,6 +3,8 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Profiling;
 using System;
+using Emgu.CV;
+using Emgu.CV.Structure;
 using Game;
 
 namespace Map
@@ -15,6 +17,7 @@ namespace Map
         private readonly float _heightScale;
         
         private float[,] _heightMap;
+        private Image<Gray, float> _tmpImage1;
         
         private bool _running;
         private float _time;
@@ -28,6 +31,7 @@ namespace Map
             _time = 0f;
             
             _heightMap = heightMap;
+            _tmpImage1 = new Image<Gray, float>(size + 1, size + 1);
             
             _running = true;
             
@@ -55,6 +59,8 @@ namespace Map
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
                         _heightMap[y, x] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        _tmpImage1.Data[y, x, 0] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        _heightMap = _tmpImage1[0].Mat
                     }
                 }
             }

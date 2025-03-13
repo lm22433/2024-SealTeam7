@@ -1680,8 +1680,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.05
-  noiseScale: 0.005
+  noiseSpeed: 0
+  noiseScale: 0.01
   width: 520
   height: 520
   xOffsetStart: 680
@@ -5034,6 +5034,9 @@ MonoBehaviour:
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
+  mapUpdateInterval: 2
+  pathingDepth: 50
+  pathFindInterval: 2
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped
 MonoBehaviour:

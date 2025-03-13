@@ -71,6 +71,7 @@ namespace Map
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
         private float[,] _heightMap;
+        private float[,] _gradientMap;
         private List<Chunk> _chunks;
         private float _mapSpacing;
 
@@ -84,6 +85,7 @@ namespace Map
             _mapSpacing = (float) mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
             _heightMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
+            _gradientMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
 
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
@@ -98,7 +100,7 @@ namespace Map
                 ColliderEnabled = colliderEnabled
             };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, ref _gradientMap, kernelSize, gaussianStrength);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
             for (int z = 0; z < chunkRow; z++)

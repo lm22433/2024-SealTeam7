@@ -1,4 +1,5 @@
 ﻿using System;
+using Enemies.Utils;
 using Game;
 using Map;
 using Player;
@@ -30,6 +31,7 @@ namespace Enemies
         [Header("Pathing Settings")]
         [SerializeField] private float mapUpdateInterval;
         [SerializeField] private int pathingDepth;
+        [SerializeField] public float pathFindInterval;
 
         [HideInInspector] public float sqrMaxEnemyDistance;
         
