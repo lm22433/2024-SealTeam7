@@ -30,6 +30,7 @@ namespace UI
 
         private bool _paused;
         private bool _isGameRunning = false;
+        private bool _isGracefulShutdown = false;
 
         private void Awake() {
             mainMenu.SetActive(true);
@@ -40,15 +41,23 @@ namespace UI
             mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
         }
 
+        private void OnApplicationQuit() {
+            _isGracefulShutdown = true;
+
+            mainMenuMusic.Stop(gameObject);
+            introMusic.Stop(gameObject);
+            gameAmbience.Stop(gameObject);
+        }
+
         void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
-            if (!_isGameRunning) {
-                mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_MusicSyncBar, MainMenuMusicCallback);
+            if (!_isGameRunning && !_isGracefulShutdown) {
+                mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
             }
         }
 
         void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
-            if (!_isGameRunning) {
-                gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_MusicSyncBar, AmbienceMusicCallback);
+            if (_isGameRunning && !_isGracefulShutdown) {
+                gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
             }
         }
 

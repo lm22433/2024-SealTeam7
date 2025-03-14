@@ -63,6 +63,6 @@ Material:
     - _AmbientColour: {r: 0.4528302, g: 0.4506942, b: 0.4506942, a: 0}
     - _FresnelColour: {r: 0.735849, g: 0.735849, b: 0.735849, a: 0}
     - _SpecularColour: {r: 0.4433962, g: 0.4433962, b: 0.4433962, a: 0}
-    - _Tint: {r: 0.6226415, g: 0.31482488, b: 0.1321645, a: 0}
+    - _Tint: {r: 0.6528301, g: 0.5117603, b: 0.20570305, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
