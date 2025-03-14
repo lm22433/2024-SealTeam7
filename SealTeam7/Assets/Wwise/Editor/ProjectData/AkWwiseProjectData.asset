@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584598255870765585
+    m_lastTime: -8584596348838019461
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,7 +359,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584598255903161238
+    m_lastTime: -8584596341227215935
     List:
     - name: Play_DesertAmbiance
       guid: 78a5fa85b04d3e47916f016db8fdcefd
@@ -394,7 +394,7 @@ MonoBehaviour:
       Path: Events\Default Work Unit\Play_Explosion
       maxAttenuation: 0
       maxDuration: 1.5
-      minDuration: 1.5
+      minDuration: 0
     - name: Play_GameIntroTrack
       guid: 0f5566247b4d4f4aafef5c5d506ad9c5
       id: 2853397551
@@ -429,6 +429,23 @@ MonoBehaviour:
       maxAttenuation: 0
       maxDuration: 16.5
       minDuration: 16.5
+    - name: Play_HelicopterMissile
+      guid: 41121ff67ded6243964180b72401ecb8
+      id: 2723016199
+      PathAndIcons:
+      - ElementName: Events
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: 3e919ce37f3a4b4eb021aaf40f66a207
+      - ElementName: Play_HelicopterMissile
+        ObjectType: 3
+        guid: 41121ff67ded6243964180b72401ecb8
+      Path: Events\Default Work Unit\Play_HelicopterMissile
+      maxAttenuation: 0
+      maxDuration: 2.25
+      minDuration: 2.25
     - name: Play_MainMenuMusic
       guid: 7471cf3a7d563c4d895e94fef2ea7d0c
       id: 667425441
@@ -676,7 +693,7 @@ MonoBehaviour:
     ParentPath: States\Default Work Unit
     guid: 03586206aeda5e44b44c482f9b18344d
     GuidInternal: 
-    m_lastTime: -8584598255870725588
+    m_lastTime: -8584596429421153868
     List:
     - name: SoundEffectStates
       guid: 2de3c5b5b40367479020adc5ea53ae72
@@ -741,8 +758,8 @@ MonoBehaviour:
     m_lastTime: -8584598255870666753
     List: []
   ExpandedFileSystemItemIds: 
-  ExpandedWaapiItemIds: 0600000007000000
-  AutoSyncSelection: 0
+  ExpandedWaapiItemIds: 010000000600000007000000
+  AutoSyncSelection: 1
   autoPopulateEnabled: 1
   currentDataSource: 0
   CurrentPluginConfig: 

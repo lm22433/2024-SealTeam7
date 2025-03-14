@@ -15,6 +15,7 @@
 						<ObjectRef Name="Tank Gunfire" ID="{D68102D8-CB2C-4993-849A-6A3AD0A8D775}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="SoliderScream2" ID="{95733926-90AD-4AE7-B9F5-760C577E3AEA}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Solider Gunfire" ID="{46D5CA04-9FC3-4BD6-8D93-1AADF04EB029}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="HelicopterMissile" ID="{B8168F35-12E8-4FEE-A9B8-29A87B66F7C3}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>

@@ -2,6 +2,7 @@ Event	ID	Name			Wwise Object Path	Notes
 	667425441	Play_MainMenuMusic			\Default Work Unit\Play_MainMenuMusic	
 	1988800053	Play_Solider_Gunfire			\Default Work Unit\Play_Solider_Gunfire	
 	2568326629	Play_SoliderScream			\Default Work Unit\Play_SoliderScream	
+	2723016199	Play_HelicopterMissile			\Default Work Unit\Play_HelicopterMissile	
 	2853397551	Play_GameIntroTrack			\Default Work Unit\Play_GameIntroTrack	
 	3013451977	Play_Helicopter_Sound			\Default Work Unit\Play_Helicopter_Sound	
 	3624895801	Play_Tank_Gunfire			\Default Work Unit\Play_Tank_Gunfire	
@@ -11,10 +12,12 @@ Event	ID	Name			Wwise Object Path	Notes
 Effect plug-ins	ID	Name	Type				Notes
 	46213127	Parametric EQ (Custom)	Wwise Parametric EQ			
 	300353365	Gain (Custom)	Wwise Gain			
+	332356152	Pitch Shifter (Custom)	Wwise Pitch Shifter			
 	915072423	Pitch Shifter (Custom)	Wwise Pitch Shifter			
 	1061489957	Pitch Shifter (Custom)	Wwise Pitch Shifter			
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	130871781	missile-explosion-168600	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\59\{59F6AF7A-2BAF-682A-2DC7-0FECF4F3305C}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\HelicopterMissile\missile-explosion-168600		1064544
 	131038067	explosion-312361	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\B1\{B161CD91-5699-9BBA-220C-E67A91D6C5A7}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Explosion\explosion-312361		212064
 	164042640	MainMenuMusic	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\AD\{AD075ACF-119C-91C4-5C06-7AB0161BD0AC}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\MainMenuMusic\MainMenuMusic		34264668
 	222821284	DesertAmbiance	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\AB\{AB4ECF3D-92FB-D0B4-7B1F-2F6A39B78195}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\DesertWind\DesertAmbiance		7582560

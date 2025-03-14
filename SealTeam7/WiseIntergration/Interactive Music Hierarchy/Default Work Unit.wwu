@@ -968,6 +968,21 @@
 										</Local>
 									</Reference>
 								</ObjectList>
+								<ObjectList Name="Effects">
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{7748D372-8DFA-49E7-9DFA-3EC07409B525}" ShortID="198262802">
+												<ReferenceList>
+													<Reference Name="Effect">
+														<Custom>
+															<Effect Name="Pitch Shifter (Custom)" ID="{6BAEE42C-3ABD-4284-A34F-4A921E7B442A}" ShortID="332356152" PluginName="Wwise Pitch Shifter" CompanyID="0" PluginID="136" PluginType="3"/>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
 							</ObjectLists>
 						</MusicSegment>
 						<MusicSegment Name="GameIntroTrack" ID="{26EE6D90-A557-48F5-83E8-B1B6F2B63B67}" ShortID="577768979">
@@ -1893,6 +1908,542 @@
 													</Reference>
 												</ReferenceList>
 											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicSegment>
+						<MusicSegment Name="Explosion_01" ID="{A8FFD18E-8221-4E07-A8B4-96C8A63EC191}" ShortID="28190461">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>5</Value>
+									</ValueList>
+								</Property>
+								<Property Name="PlaybackSpeed" Type="Real64">
+									<ValueList>
+										<Value>0.8</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{79C862A5-A501-43AC-AE28-5C843C36FA5A}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{4A85014A-3441-48A7-A243-656B4EA7B322}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="explosion-312361" ID="{A01DA79E-8E76-4320-95D3-F018D59A2E14}" ShortID="401875051">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{4A85014A-3441-48A7-A243-656B4EA7B322}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{E589F4A0-0BCB-4BD1-9444-37AB57A97777}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="explosion-312361" ID="{83A1254E-390D-4B1D-AC68-1BD56143AF0E}">
+											<Language>SFX</Language>
+											<AudioFile>explosion-312361.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="131038067"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{AF349B05-F159-488E-A874-CD1E3ED56C56}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="explosion-312361" ID="{88458559-ABB8-43E8-BF7A-A99B44F9466A}">
+																			<PropertyList>
+																				<Property Name="BeginTrimOffset" Type="Real64" Value="125"/>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="1625"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																				<Property Name="PlayAt" Type="Real64" Value="-125"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="explosion-312361" ID="{83A1254E-390D-4B1D-AC68-1BD56143AF0E}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Highpass">
+																					<Curve Name="" ID="{D8762A6F-DC2F-4099-A101-A348D2C5FCCB}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.125</XPos>
+																								<YPos>-56.58589</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>0.37077</XPos>
+																								<YPos>-23.94016</YPos>
+																								<Flags>0</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>1.625</XPos>
+																								<YPos>-73.99695</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Lowpass">
+																					<Curve Name="" ID="{F263C0A8-C18F-4F92-A0A5-66137B189C18}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.125</XPos>
+																								<YPos>-19.58752</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>0.33686</XPos>
+																								<YPos>5.82812</YPos>
+																								<Flags>0</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>1.625</XPos>
+																								<YPos>-58.76226</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{FE6684F3-DD41-4A53-81A2-6742057DBB9F}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.125</XPos>
+																								<YPos>-2.37689</YPos>
+																								<Flags>5</Flags>
+																								<SegmentShape>SCurve</SegmentShape>
+																							</Point>
+																							<Point>
+																								<XPos>0.23617</XPos>
+																								<YPos>0</YPos>
+																								<Flags>0</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>1.625</XPos>
+																								<YPos>-7.6941</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Cues">
+									<Reference>
+										<Local>
+											<MusicCue Name="Entry Cue" ID="{D53992AA-DF6B-43CB-86C9-0178B8C2AB84}"/>
+										</Local>
+									</Reference>
+									<Reference>
+										<Local>
+											<MusicCue Name="Exit Cue" ID="{AEC79C83-1BEE-4BD0-BB28-2E3A344064F5}">
+												<PropertyList>
+													<Property Name="CueType" Type="int16" Value="1"/>
+													<Property Name="TimeMs" Type="Real64" Value="1500"/>
+												</PropertyList>
+											</MusicCue>
+										</Local>
+									</Reference>
+								</ObjectList>
+								<ObjectList Name="Effects">
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{568B167B-FA48-4A41-A48F-46B408957C06}" ShortID="158064159">
+												<ReferenceList>
+													<Reference Name="Effect">
+														<Custom>
+															<Effect Name="Gain (Custom)" ID="{64A254A1-E851-4A12-80E5-0B830DBC9436}" ShortID="1042662446" PluginName="Wwise Gain" CompanyID="0" PluginID="139" PluginType="3">
+																<PropertyList>
+																	<Property Name="FullBandGain" Type="Real32" Value="1"/>
+																	<Property Name="LFEGain" Type="Real32" Value="2"/>
+																</PropertyList>
+															</Effect>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{1175605A-AE96-4CF5-A304-0C3BD40CD51F}" ShortID="185923217">
+												<ReferenceList>
+													<Reference Name="Effect">
+														<Custom>
+															<Effect Name="Parametric EQ (Custom)" ID="{CB51F10D-6C6C-4B35-A949-86A1EADA720C}" ShortID="683578907" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+																<PropertyList>
+																	<Property Name="GainBand2" Type="Real32" Value="1"/>
+																</PropertyList>
+															</Effect>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{8AE1425E-1C28-4DA8-855A-A1BFA7C3467F}" ShortID="810738947">
+												<ReferenceList>
+													<Reference Name="Effect">
+														<Custom>
+															<Effect Name="Pitch Shifter (Custom)" ID="{2ACBAEC8-5DF0-422F-92E4-FA1D9FFC6748}" ShortID="702897530" PluginName="Wwise Pitch Shifter" CompanyID="0" PluginID="136" PluginType="3">
+																<PropertyList>
+																	<Property Name="DryLevel" Type="Real32" Value="-19"/>
+																	<Property Name="Pitch" Type="Real32" Value="-100"/>
+																	<Property Name="WetLevel" Type="Real32" Value="5"/>
+																</PropertyList>
+															</Effect>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicSegment>
+						<MusicSegment Name="HelicopterMissile" ID="{B8168F35-12E8-4FEE-A9B8-29A87B66F7C3}" ShortID="1027291355">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="EndPosition" Type="Real64" Value="3125"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>5</Value>
+									</ValueList>
+								</Property>
+								<Property Name="PlaybackSpeed" Type="Real64">
+									<ValueList>
+										<Value>0.5</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{79C862A5-A501-43AC-AE28-5C843C36FA5A}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{4A85014A-3441-48A7-A243-656B4EA7B322}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="missile-explosion-168600" ID="{5521CA03-E960-4BBC-80BD-E0B3C185F1C8}" ShortID="852141926">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{4A85014A-3441-48A7-A243-656B4EA7B322}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{1328A7A5-4A7C-4020-87D8-F4C962E81B82}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="missile-explosion-168600" ID="{6E431EAE-84D3-4B71-A17A-3FC52AE27250}">
+											<Language>SFX</Language>
+											<AudioFile>missile-explosion-168600.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="130871781"/>
+											</MediaIDList>
+										</AudioFileSource>
+										<AudioFileSource Name="missile-explosion-168600_01" ID="{DD19ED0C-A18B-4600-8A09-8CAC385D00C3}">
+											<Language>SFX</Language>
+											<AudioFile>missile-explosion-168600.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="130871781"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{C45C10D2-FE06-45E6-9BB1-B7A9BA6B276B}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="missile-explosion-168600" ID="{C6539E58-0E97-47E4-82C1-F286525BF64A}">
+																			<PropertyList>
+																				<Property Name="BeginTrimOffset" Type="Real64" Value="875"/>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="2625"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																				<Property Name="PlayAt" Type="Real64" Value="-375"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="missile-explosion-168600" ID="{6E431EAE-84D3-4B71-A17A-3FC52AE27250}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Highpass">
+																					<Curve Name="" ID="{AD17E9A9-897B-4C48-AF25-1D480ED66371}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.875</XPos>
+																								<YPos>-23.9402</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>1.02195</XPos>
+																								<YPos>15.32882</YPos>
+																								<Flags>0</Flags>
+																								<SegmentShape>Log2</SegmentShape>
+																							</Point>
+																							<Point>
+																								<XPos>1.53571</XPos>
+																								<YPos>-77.82304</YPos>
+																								<Flags>0</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>2.625</XPos>
+																								<YPos>-91.40797</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Lowpass">
+																					<Curve Name="" ID="{F9339090-41F7-4400-A917-D5931BE6DE7D}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.875</XPos>
+																								<YPos>-15.23457</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>1.0211</XPos>
+																								<YPos>36.83091</YPos>
+																								<Flags>0</Flags>
+																								<SegmentShape>Log2</SegmentShape>
+																							</Point>
+																							<Point>
+																								<XPos>1.53571</XPos>
+																								<YPos>-74.18113</YPos>
+																								<Flags>0</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>2.625</XPos>
+																								<YPos>-76.17331</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{749ED23C-49C8-4C98-8D29-7D34E31F5911}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.875</XPos>
+																								<YPos>0</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>0.876</XPos>
+																								<YPos>-7.69413</YPos>
+																								<Flags>0</Flags>
+																								<SegmentShape>Exp1</SegmentShape>
+																							</Point>
+																							<Point>
+																								<XPos>1.01596</XPos>
+																								<YPos>-0</YPos>
+																								<Flags>0</Flags>
+																								<SegmentShape>Log2</SegmentShape>
+																							</Point>
+																							<Point>
+																								<XPos>1.53223</XPos>
+																								<YPos>-17.75287</YPos>
+																								<Flags>0</Flags>
+																								<SegmentShape>Exp2</SegmentShape>
+																							</Point>
+																							<Point>
+																								<XPos>2.625</XPos>
+																								<YPos>-20.28228</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+																<Reference>
+																	<Local>
+																		<MusicClip Name="missile-explosion-168600_01" ID="{0CA2F945-5B58-49F5-9EAC-B170CB16A59D}">
+																			<PropertyList>
+																				<Property Name="BeginTrimOffset" Type="Real64" Value="375"/>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="875"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="PlayAt" Type="Real64" Value="-375"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="missile-explosion-168600_01" ID="{DD19ED0C-A18B-4600-8A09-8CAC385D00C3}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Highpass">
+																					<Curve Name="" ID="{D35F3BF7-22EA-40C9-9CE5-0E99755934F9}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.375</XPos>
+																								<YPos>-82.70246</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>0.875</XPos>
+																								<YPos>-32.64566</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Lowpass">
+																					<Curve Name="" ID="{A48EEBCF-40E5-4128-A597-BC43F7FCDB31}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="1"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.375</XPos>
+																								<YPos>-54.4095</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>0.38241</XPos>
+																								<YPos>-80.63957</YPos>
+																								<Flags>0</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>0.875</XPos>
+																								<YPos>-41.35119</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{AAF421D9-00B8-4FBD-AB90-8386F8CC2ABB}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0.375</XPos>
+																								<YPos>-14.71038</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>0.875</XPos>
+																								<YPos>-6.61764</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Cues">
+									<Reference>
+										<Local>
+											<MusicCue Name="Entry Cue" ID="{9C0D8375-8E08-48D7-9E45-808C4353F8E0}"/>
+										</Local>
+									</Reference>
+									<Reference>
+										<Local>
+											<MusicCue Name="Exit Cue" ID="{3317D54E-EEA6-4247-AF27-77C29E32EC78}">
+												<PropertyList>
+													<Property Name="CueType" Type="int16" Value="1"/>
+													<Property Name="TimeMs" Type="Real64" Value="2250"/>
+												</PropertyList>
+											</MusicCue>
 										</Local>
 									</Reference>
 								</ObjectList>
