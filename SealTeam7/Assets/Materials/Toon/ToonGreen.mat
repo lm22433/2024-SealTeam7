@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: ToonGreen
   m_Shader: {fileID: -6465566751694194690, guid: 95257030020785e4199a57b445d93653, type: 3}
-  m_Parent: {fileID: -876546973899608171, guid: 95257030020785e4199a57b445d93653, type: 3}
+  m_Parent: {fileID: 2100000, guid: 2608a74af225e5a44ab941967222190d, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - FRESNEL_ON
