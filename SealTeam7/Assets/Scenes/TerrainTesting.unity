@@ -1680,7 +1680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0
+  noiseSpeed: 0.01
   noiseScale: 0.01
   width: 520
   height: 520
@@ -1703,7 +1703,7 @@ MonoBehaviour:
   lodInfo:
     lod: 0
     colliderLod: 2
-    pathingLod: 2
+    pathingLod: 4
   isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
@@ -5031,12 +5031,12 @@ MonoBehaviour:
   - {fileID: 2136277956}
   - {fileID: 553266628}
   - {fileID: 393166120}
-  maxEnemyCount: 1000
+  maxEnemyCount: 10
   maxEnemyDistance: 600
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
   mapUpdateInterval: 5
-  pathingDepth: 50
+  pathingDepth: 1000
   pathFindInterval: 5
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped

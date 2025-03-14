@@ -180,8 +180,12 @@ namespace Enemies
             if (Path.Length > 0 && PathIndex < Path.Length - 1)
             {
                 var pathPosition = new Vector3(Mathf.RoundToInt(transform.position.x), Path[PathIndex].y, Mathf.RoundToInt(transform.position.z));
-                if (pathPosition == Path[PathIndex]) PathIndex++;
+                if ((pathPosition - Path[PathIndex]).sqrMagnitude < 10f) PathIndex++;
                 TargetDirection = Vector3.ProjectOnPlane(Path[PathIndex] - transform.position, Vector3.up).normalized;
+            }
+            else
+            {
+                TargetDirection = Vector3.zero;
             }
             
             LastAttack += Time.deltaTime;
@@ -231,14 +235,14 @@ namespace Enemies
         public void OnDrawGizmos()
         {
             Debug.Log(Path.Length);
-            var prevWaypoint = Path[0];
-            foreach (var waypoint in Path)
+            Gizmos.color = Color.green;
+            Gizmos.DrawCube(Path[0], Vector3.one);
+            for (int i = 1; i < Path.Length; i++)
             {
                 Gizmos.color = Color.blue;
-                Gizmos.DrawLine(prevWaypoint, waypoint);
+                Gizmos.DrawLine(Path[i - 1], Path[i]);
                 Gizmos.color = Color.red;
-                Gizmos.DrawCube(waypoint, Vector3.one);
-                prevWaypoint = waypoint;
+                Gizmos.DrawCube(Path[i], Vector3.one);
             }
         }
 

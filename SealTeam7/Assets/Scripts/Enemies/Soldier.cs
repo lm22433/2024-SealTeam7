@@ -36,6 +36,7 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
+                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(TargetDirection).eulerAngles.y, 0f);
                     break;
                 }
                 case EnemyState.AttackCore:
@@ -44,7 +45,7 @@ namespace Enemies
                     var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
                     TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.LookRotation(TargetPosition - transform.position);
+                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, 0f);
                     break;
                 }
             }

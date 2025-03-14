@@ -73,8 +73,10 @@ namespace Enemies.Utils
 
         private static float Heuristic(Node current, Node goal)
         {
-            var angle = Vector3.Angle(Vector3.right, goal.WorldPos - current.WorldPos);
-            var gradientWeight = (current.GradientX * Mathf.Cos(angle) + current.GradientZ * Mathf.Sin(angle)) * 1000f;
+            var distance = goal.WorldPos - current.WorldPos;
+            var angle = Mathf.Atan2(distance.z, distance.x) * Mathf.Rad2Deg;
+            var gradientWeight = (current.GradientX * Mathf.Cos(angle) + current.GradientZ * Mathf.Sin(angle)) * 100f;
+            gradientWeight = (current.WorldPos.y - (current.Parent != null ? current.Parent.WorldPos.y : 0f)) * 100f;
             return (Math.Abs(current.WorldPos.x - goal.WorldPos.x) + Math.Abs(current.WorldPos.z - goal.WorldPos.z) + gradientWeight) * 10f;
         }
         
