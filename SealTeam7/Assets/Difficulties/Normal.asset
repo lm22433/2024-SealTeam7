@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: Normal
   m_EditorClassIdentifier: 
   difficultyName: Normal
-  baseEnemyGroupCount: 6
-  baseSpawnDelay: 1.5
-  baseWaveTimeLimit: 20
-  enemyGroupCountMultiplier: 1.5
-  enemyGroupSizeMultiplier: 1.2
-  spawnDelayMultiplier: 0.9
-  waveTimeLimitMultiplier: 1.03
+  initialGroupCount: 6
+  growthFactor: 1.1
+  exponent: 0.7
+  initialSpawnDelay: 1.2
+  minimumSpawnDelay: 0.4
+  decayFactor: 0.1
+  initialWaveTimeLimit: 25
+  minimumWaveTimeLimit: 12
+  timeReductionPerWave: 1
+  enemyData: []

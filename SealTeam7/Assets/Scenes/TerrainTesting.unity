@@ -5274,30 +5274,16 @@ MonoBehaviour:
   - {fileID: 2027198502}
   - {fileID: 1336062332}
   maxEnemyCount: 1000
-  maxEnemyDistance: 600
+  maxEnemyDistance: 900
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
-  enemyTypes:
-  - prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-    groupSize: 5
-    groupSpacing: 1.2
-    spawnWave: 1
-    spawnChance: 0
-  - prefab: {fileID: 3438950281418470787, guid: 02c645c2385d39a4e8e97e688e4a1232, type: 3}
-    groupSize: 3
-    groupSpacing: 2
-    spawnWave: 2
-    spawnChance: 0
-  - prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
-    groupSize: 2
-    groupSpacing: 5
-    spawnWave: 3
-    spawnChance: 0
-  - prefab: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
-    groupSize: 1
-    groupSpacing: 5
-    spawnWave: 4
-    spawnChance: 0
+  enemyData:
+  - {fileID: 11400000, guid: 48fcae14540e510498a8ca0e7911261c, type: 2}
+  - {fileID: 11400000, guid: 46cb815e1632b2d44a7f27e801930935, type: 2}
+  - {fileID: 11400000, guid: 8dac9d03a92f5b54d90f651c248933e8, type: 2}
+  - {fileID: 11400000, guid: d7aadd3a0f6d58d49919079d90613b3a, type: 2}
+  - {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
+  - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped
 MonoBehaviour:

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 using Game;
 using Player;
 using UnityEngine;
@@ -9,16 +6,6 @@ using Random = UnityEngine.Random;
 
 namespace Enemies
 {
-    [Serializable]
-    public struct EnemyData
-    {
-        public GameObject prefab;
-        public int groupSize;
-        public float groupSpacing;
-        public int spawnWave;
-        [Range(0, 1)] public float spawnChance;
-    }
-
     public class EnemyManager : MonoBehaviour
     {
         [Header("Spawn Settings")] 
@@ -32,7 +19,7 @@ namespace Enemies
         [SerializeField] public PlayerHands godlyHands;
         
         [Header("Enemies")]
-        [SerializeField] private EnemyData[] enemyTypes;
+        [SerializeField] private EnemyData[] enemyData;
             
         [HideInInspector] public float sqrMaxEnemyDistance;
         
@@ -79,26 +66,23 @@ namespace Enemies
             {
                 _currentWave++;
                 
-                int waveEnemyGroups = _difficulty.GetWaveEnemyGroups(_currentWave);
+                int waveEnemyGroups = _difficulty.GetWaveEnemyGroupCount(_currentWave);
                 float spawnDelay = _difficulty.GetWaveSpawnDelay(_currentWave);
                 float waveTimeLimit = _difficulty.GetWaveTimeLimit(_currentWave);
 
                 float waveStartTime = Time.time;
-
-                List<EnemyData> availableEnemies = enemyTypes.Where(data => data.spawnWave <= _currentWave).ToList();
                 
-                Debug.Log($"Wave {_currentWave} - Enemy Groups: {waveEnemyGroups}, Spawn Delay: {spawnDelay:F2}s, Time Limit: {waveTimeLimit:F2}s, Available Enemies: {string.Join(", ", availableEnemies.Select(data => data.prefab.name))}");
+                Debug.Log($"Wave {_currentWave} - Enemy Groups: {waveEnemyGroups}, Spawn Delay: {spawnDelay:F2}s, Time Limit: {waveTimeLimit:F2}s");
 
                 for (int i = 0; i < waveEnemyGroups; i++)
                 {
                     yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
                     
                     Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
-                    EnemyData chosenEnemy = availableEnemies[Random.Range(0, availableEnemies.Count)];
                     
-                    // We add 1 so that we do NOT get 0.
-                    int scaledGroupSize = _difficulty.GetWaveGroupSize(chosenEnemy.groupSize, _currentWave - chosenEnemy.spawnWave + 1);
-                    int finalGroupSize = Mathf.Min(scaledGroupSize, maxEnemyCount - _enemyCount);
+                    EnemyData chosenEnemy = _difficulty.GetRandomEnemy(enemyData, _currentWave);
+                    if (chosenEnemy == null) continue;
+                    int finalGroupSize = Mathf.Min(chosenEnemy.GetGroupSpawnSize(_difficulty, _currentWave), maxEnemyCount - _enemyCount);
                     
                     for (int j = 0; j < finalGroupSize; j++)
                     {

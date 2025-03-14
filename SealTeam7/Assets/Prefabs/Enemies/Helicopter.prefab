@@ -83,6 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309dac9d4c44f1b4fb414807a7fdbeaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 8
   moveSpeed: 15
   acceleration: 20
   aimSpeed: 20
@@ -94,6 +95,8 @@ MonoBehaviour:
   killScore: 500
   deathParticles: {fileID: 4793043602501896030}
   model: {fileID: 1150560966112247641}
+  muzzle: {fileID: 8302181914671201879}
+  projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
@@ -105,8 +108,6 @@ MonoBehaviour:
   buried: 0
   buriedAmount: 0.5
   flyHeight: 165
-  muzzle: {fileID: 8302181914671201879}
-  projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
 --- !u!114 &2280521706687957157
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10042,6 +10042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c99aece3fd099b4eb894cc02d757ead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 7
   moveSpeed: 25
   acceleration: 20
   aimSpeed: 20
@@ -10053,6 +10054,8 @@ MonoBehaviour:
   killScore: 450
   deathParticles: {fileID: 7215728415125685304}
   model: {fileID: 215798221103486408}
+  muzzle: {fileID: 0}
+  projectile: {fileID: 0}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 

@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 3
   moveSpeed: 15
   acceleration: 20
   aimSpeed: 20
@@ -61,6 +62,8 @@ MonoBehaviour:
   killScore: 250
   deathParticles: {fileID: 173710646619886202}
   model: {fileID: 4797994724752532913}
+  muzzle: {fileID: 4631428408017700467}
+  projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
@@ -72,8 +75,6 @@ MonoBehaviour:
   buried: 0
   buriedAmount: 1
   gun: {fileID: 4797994724752532913}
-  muzzle: {fileID: 4631428408017700467}
-  projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
   m_ObjectHideFlags: 0
