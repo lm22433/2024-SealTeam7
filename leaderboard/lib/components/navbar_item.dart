@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shifting_sands/utils/nav_utils.dart';
 
 class NavbarItem extends StatelessWidget {
   final String pageName;
@@ -11,7 +10,7 @@ class NavbarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => NavigationUtils.navigateToRoute(context, route),
+      onTap: () => Navigator.pushReplacementNamed(context, route),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

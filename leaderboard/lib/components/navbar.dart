@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shifting_sands/utils/nav_utils.dart';
 
 class Navbar extends StatelessWidget implements PreferredSizeWidget {
   const Navbar({super.key});
@@ -10,7 +9,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       title: GestureDetector(
-        onTap: () => NavigationUtils.navigateToRoute(context, '/'),
+        onTap: () => Navigator.pushReplacementNamed(context, '/'),
         child: Row(
           children: [
             Image.asset('assets/images/logo.png', height: 40),
@@ -47,7 +46,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
         spacing: 20, // Adjust spacing between buttons
         children: items.entries.map((item) {
           return GestureDetector(
-            onTap: () => NavigationUtils.navigateToRoute(context, item.value),
+            onTap: () => Navigator.pushReplacementNamed(context, item.value),
             child: Text(
               item.key,
               style: const TextStyle(
