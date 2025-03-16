@@ -14,6 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   font_awesome_flutter: ^10.8.0
+  web_smooth_scroll: ^2.0.0
 
 dev_dependencies:
   flutter_test:

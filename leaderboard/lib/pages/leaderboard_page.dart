@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shifting_sands/components/footer.dart';
 import 'package:shifting_sands/components/navbar.dart';
 import 'package:shifting_sands/models/game_result.dart';
 
@@ -123,9 +124,9 @@ class LeaderboardPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 24),
                   color: Colors.black87,
-                  child: const Column(
+                  child: Column(
                     children: [
-                      Text(
+                      const Text(
                         'TOP PERFORMERS',
                         style: TextStyle(
                           fontSize: 32,
@@ -134,8 +135,8 @@ class LeaderboardPage extends StatelessWidget {
                           letterSpacing: 1.5,
                         ),
                       ),
-                      SizedBox(height: 32),
-                      // topThree.isNotEmpty ? buildPodium(topThree) : const SizedBox.shrink(),
+                      const SizedBox(height: 32),
+                      topThree.isNotEmpty ? buildPodium(topThree) : const SizedBox.shrink(),
                     ],
                   ),
                 ),
@@ -268,49 +269,7 @@ class LeaderboardPage extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                // Footer
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-                  color: Colors.black,
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset('assets/images/logo.png', height: 40),
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(FontAwesomeIcons.envelope, color: Colors.white),
-                              ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(FontAwesomeIcons.discord, color: Colors.white),
-                              ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(FontAwesomeIcons.github, color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      const Divider(color: Colors.white24),
-                      const SizedBox(height: 24),
-                      const Text(
-                        '© 2025 Shifting Sands Team. All rights reserved. University of Bristol COMS30042 Team Project.',
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
+                const Footer(),
               ],
             ),
           );
@@ -532,6 +491,158 @@ class LeaderboardPage extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+
+  Widget buildPodium(List<GameResult> topThree) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // 2nd Place - Left
+        if (topThree.length >= 2)
+          _buildPodiumPlayer(
+            topThree[1],
+            160,
+            Colors.grey.shade300,
+            FontAwesomeIcons.medal,
+            '2',
+            CrossAxisAlignment.end,
+          ),
+
+        const SizedBox(width: 24),
+
+        // 1st Place - Center (taller)
+        if (topThree.isNotEmpty)
+          _buildPodiumPlayer(
+            topThree[0],
+            200,
+            primaryAccent,
+            FontAwesomeIcons.crown,
+            '1',
+            CrossAxisAlignment.center,
+          ),
+
+        const SizedBox(width: 24),
+
+        // 3rd Place - Right
+        if (topThree.length >= 3)
+          _buildPodiumPlayer(
+            topThree[2],
+            130,
+            Colors.brown.shade300,
+            FontAwesomeIcons.award,
+            '3',
+            CrossAxisAlignment.start,
+          ),
+      ],
+    );
+  }
+
+  Widget _buildPodiumPlayer(
+      GameResult player,
+      double height,
+      Color accentColor,
+      IconData trophyIcon,
+      String rankText,
+      CrossAxisAlignment alignment,
+      ) {
+    return Column(
+      crossAxisAlignment: alignment,
+      children: [
+        // Trophy/medal icon
+        Icon(
+          trophyIcon,
+          color: accentColor,
+          size: 36,
+        ),
+
+        const SizedBox(height: 16),
+
+        // Player avatar
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: cardBackground,
+            border: Border.all(color: accentColor, width: 3),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              player.playerName.substring(0, 1).toUpperCase(),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Player name
+        Text(
+          player.playerName,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // Player score
+        Text(
+          '${player.score} pts',
+          style: TextStyle(
+            color: accentColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Podium stand
+        Container(
+          width: 100,
+          height: height,
+          decoration: BoxDecoration(
+            color: accentColor.withOpacity(0.8),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(8),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              rankText,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
