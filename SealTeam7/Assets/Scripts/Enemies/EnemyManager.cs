@@ -87,10 +87,13 @@ namespace Enemies
             }
         }
 
-        public void SpawnerSpawn(Vector3 spawnPoint, GameObject spawnee)
+        public void SpawnerSpawn(Vector3 spawnPoint, GameObject spawnee, int spawnCount)
         {
-            _enemyCount++;
-            Instantiate(spawnee, spawnPoint, Quaternion.identity, transform);
+            for (int i = 0; i < spawnCount; i++)
+            {
+                _enemyCount++;
+                Instantiate(spawnee, spawnPoint, Quaternion.identity, transform);
+            }
         }
         
         private void Update()

@@ -11,10 +11,15 @@ namespace Enemies
         [SerializeField] private ParticleSystem[] dustTrails;
         [SerializeField] protected float groundedOffset;
 
+        protected override void Start()
+        {
+            base.Start();
+            LastAttack = attackInterval - 2.0f;
+        }
+
         protected override void Attack(PlayerDamageable player)
         {
-            EnemyManager.SpawnerSpawn(new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z - 2.0f), spawnee);
-            Debug.Log("Spawn Successful");
+            EnemyManager.SpawnerSpawn(new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z - 2.0f), spawnee, attackDamage);
         }
         
         protected override void EnemyUpdate()
