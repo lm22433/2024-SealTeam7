@@ -21,7 +21,7 @@ namespace Enemies.FunkyPhysics
             Self = GetComponent<Enemy>();
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
 
@@ -39,7 +39,7 @@ namespace Enemies.FunkyPhysics
             EnemyUpdate();
         }
 
-        private void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
