@@ -13,6 +13,7 @@ namespace AK
 {
     namespace EVENTS
     {
+        static const AkUniqueID PLAY_CELEBRATIONFANFARE = 1257416293U;
         static const AkUniqueID PLAY_DESERTAMBIANCE = 3643602477U;
         static const AkUniqueID PLAY_EXPLOSION = 4030404899U;
         static const AkUniqueID PLAY_GAMEINTROTRACK = 2853397551U;

@@ -358,6 +358,58 @@
 										</ObjectList>
 									</ObjectLists>
 								</MusicTrack>
+								<MusicTrack Name="fanfare-46385" ID="{B41C4DC0-0EDB-4A4F-96FF-ADF6CC2E2EC4}" ShortID="596842392">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{4A85014A-3441-48A7-A243-656B4EA7B322}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{BF0AD7F5-29D8-4799-958D-7DD1083BF9F8}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="fanfare-46385" ID="{E7AF3CBC-45D2-430A-AFE8-2595A4CB7CE3}">
+											<Language>SFX</Language>
+											<AudioFile>fanfare-46385.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="606358506"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{972D44A5-BDBB-475D-A183-29F31E651CA5}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="fanfare-46385" ID="{F0B03FDF-D502-4709-86EC-06348105C72D}">
+																			<PropertyList>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="2064"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="fanfare-46385" ID="{E7AF3CBC-45D2-430A-AFE8-2595A4CB7CE3}"/>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
 							</ChildrenList>
 							<ObjectLists>
 								<ObjectList Name="Cues">
@@ -2321,7 +2373,7 @@
 																							</Point>
 																							<Point>
 																								<XPos>1.01596</XPos>
-																								<YPos>-0</YPos>
+																								<YPos>0</YPos>
 																								<Flags>0</Flags>
 																								<SegmentShape>Log2</SegmentShape>
 																							</Point>
@@ -2442,6 +2494,110 @@
 												<PropertyList>
 													<Property Name="CueType" Type="int16" Value="1"/>
 													<Property Name="TimeMs" Type="Real64" Value="2250"/>
+												</PropertyList>
+											</MusicCue>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</MusicSegment>
+						<MusicSegment Name="CelebrationFanfare" ID="{85869B74-7530-4283-805C-75F60C7FB91B}" ShortID="505110627">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{79C862A5-A501-43AC-AE28-5C843C36FA5A}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{4A85014A-3441-48A7-A243-656B4EA7B322}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="fanfare-46385" ID="{EE265229-C5D0-4507-A20F-0C9759CB9F8E}" ShortID="928015505">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{4A85014A-3441-48A7-A243-656B4EA7B322}"/>
+										</Reference>
+										<Reference Name="TransitionRoot">
+											<Custom>
+												<MusicTransition Name="Root" ID="{77ED221B-9B3C-4903-A3B7-79348C80E444}">
+													<PropertyList>
+														<Property Name="IsFolder" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo/>
+												</MusicTransition>
+											</Custom>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="fanfare-46385" ID="{7314D89F-038F-44A5-BB0E-5D3E4E3B5DAA}">
+											<Language>SFX</Language>
+											<AudioFile>fanfare-46385.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="606358506"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Sequences">
+											<Reference>
+												<Local>
+													<MusicTrackSequence Name="" ID="{FFA640CB-19C2-4E0F-9543-BE57E889CE95}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<Reference>
+																	<Local>
+																		<MusicClip Name="fanfare-46385" ID="{8E7DE032-F123-48EC-B925-1E5B1DFB8813}">
+																			<PropertyList>
+																				<Property Name="EndTrimOffset" Type="Real64" Value="2064"/>
+																				<Property Name="FadeInMode" Type="int16" Value="0"/>
+																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																			</PropertyList>
+																			<AudioSourceRef Name="fanfare-46385" ID="{7314D89F-038F-44A5-BB0E-5D3E4E3B5DAA}"/>
+																			<PropertyCurveList>
+																				<PropertyCurve PropertyName="Volume">
+																					<Curve Name="" ID="{63E40FA4-2855-491D-AA32-9E358D74C035}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>-1.21544</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>2.064</XPos>
+																								<YPos>0</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</PropertyCurve>
+																			</PropertyCurveList>
+																		</MusicClip>
+																	</Local>
+																</Reference>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicTrack>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="Cues">
+									<Reference>
+										<Local>
+											<MusicCue Name="Entry Cue" ID="{0B4DA567-C5F8-420B-BB5E-5D1F827A0061}"/>
+										</Local>
+									</Reference>
+									<Reference>
+										<Local>
+											<MusicCue Name="Exit Cue" ID="{DB51239B-85EF-4E2E-A1E0-86A358BED296}">
+												<PropertyList>
+													<Property Name="CueType" Type="int16" Value="1"/>
+													<Property Name="TimeMs" Type="Real64" Value="2064"/>
 												</PropertyList>
 											</MusicCue>
 										</Local>

@@ -35,6 +35,9 @@ namespace Game
         [SerializeField] private TMP_Text gameoverScoreText;
         [SerializeField] private TMP_Text gameoverText;
 
+        [Header("Sound Options")]
+        [SerializeField] private AK.Wwise.Event celebrationFanfare;
+
         private static GameManager _instance;
         public bool GameActive {get; set;}
         private float _timer;
@@ -121,6 +124,7 @@ namespace Game
 
             if (_isGameOver) {return;}
 
+            celebrationFanfare.Post(gameObject);
             _score += _health;
 
             if (_health >= maxHealth - 25) {

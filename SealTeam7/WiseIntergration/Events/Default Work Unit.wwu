@@ -147,6 +147,17 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Play_CelebrationFanfare" ID="{8A30D27E-1319-4F64-89DD-FCB21E99F0EC}">
+					<ChildrenList>
+						<Action Name="" ID="{E6F98754-5A15-476D-BD99-634BDF7DD295}" ShortID="923304667">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="CelebrationFanfare" ID="{85869B74-7530-4283-805C-75F60C7FB91B}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

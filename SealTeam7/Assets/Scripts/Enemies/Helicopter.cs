@@ -9,10 +9,26 @@ namespace Enemies
         [SerializeField] float flyHeight;
         [SerializeField] private Transform muzzle;
         [SerializeField] private GameObject projectile;
+        [SerializeField] private AK.Wwise.Event helicopterSound;
+        private bool _isGracefulShutdown = false;
 
         private void Awake()
         {
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
+            helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
+        }
+
+        private void OnDestroy() {
+        
+            _isGracefulShutdown = true;
+
+            helicopterSound.Stop(gameObject);
+        }
+
+        void SoundEffectCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (!_isGracefulShutdown) {
+                helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
+            }
         }
         
         protected override void Attack(PlayerDamageable toDamage)
