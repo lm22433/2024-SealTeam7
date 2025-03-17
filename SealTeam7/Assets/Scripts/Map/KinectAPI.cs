@@ -256,50 +256,48 @@ namespace Map
                 BorderType.Default, _scalarOne);
             
             // Also mask using hand landmarks
-            if (handLandmarks != null) {
-                const float paddingHand = 20f;
-                const float paddingWrist = 50f;
-                var bboxLeftHand = new Rect();
-                var bboxRightHand = new Rect();
-                var bboxLeftWrist = new Rect();
-                var bboxRightWrist = new Rect();
-                if (handLandmarks.Left != null)
+            const float paddingHand = 20f;
+            const float paddingWrist = 50f;
+            var bboxLeftHand = new Rect();
+            var bboxRightHand = new Rect();
+            var bboxLeftWrist = new Rect();
+            var bboxRightWrist = new Rect();
+            if (handLandmarks.Left != null)
+            {
+                bboxLeftHand.xMin = handLandmarks.Left.Min(p => p.x) - paddingHand;
+                bboxLeftHand.xMax = handLandmarks.Left.Max(p => p.x) + paddingHand;
+                bboxLeftHand.yMin = handLandmarks.Left.Min(p => p.z) - paddingHand;
+                bboxLeftHand.yMax = handLandmarks.Left.Max(p => p.z) + paddingHand;
+                bboxLeftWrist.xMin = handLandmarks.Left[0].x - paddingWrist;
+                bboxLeftWrist.xMax = handLandmarks.Left[0].x + paddingWrist;
+                bboxLeftWrist.yMin = handLandmarks.Left[0].z - paddingWrist;
+                bboxLeftWrist.yMax = handLandmarks.Left[0].z + paddingWrist;
+                // Debug.Log($"Left hand bbox: {bboxLeft}");
+            }
+            if (handLandmarks.Right != null)
+            {
+                bboxRightHand.xMin = handLandmarks.Right.Min(p => p.x) - paddingHand;
+                bboxRightHand.xMax = handLandmarks.Right.Max(p => p.x) + paddingHand;
+                bboxRightHand.yMin = handLandmarks.Right.Min(p => p.z) - paddingHand;
+                bboxRightHand.yMax = handLandmarks.Right.Max(p => p.z) + paddingHand;
+                bboxRightWrist.xMin = handLandmarks.Right[0].x - paddingWrist;
+                bboxRightWrist.xMax = handLandmarks.Right[0].x + paddingWrist;
+                bboxRightWrist.yMin = handLandmarks.Right[0].z - paddingWrist;
+                bboxRightWrist.yMax = handLandmarks.Right[0].z + paddingWrist;
+                // Debug.Log($"Right hand bbox: {bboxRight}");
+            }
+            BboxLeft = bboxLeftHand;
+            BboxRight = bboxRightHand;
+            var vec2 = new Vector2();
+            for (int y = 0; y < _height + 1; y++)
+            {
+                for (int x = 0; x < _width + 1; x++)
                 {
-                    bboxLeftHand.xMin = handLandmarks.Left.Min(p => p.x) - paddingHand;
-                    bboxLeftHand.xMax = handLandmarks.Left.Max(p => p.x) + paddingHand;
-                    bboxLeftHand.yMin = handLandmarks.Left.Min(p => p.z) - paddingHand;
-                    bboxLeftHand.yMax = handLandmarks.Left.Max(p => p.z) + paddingHand;
-                    bboxLeftWrist.xMin = handLandmarks.Left[0].x - paddingWrist;
-                    bboxLeftWrist.xMax = handLandmarks.Left[0].x + paddingWrist;
-                    bboxLeftWrist.yMin = handLandmarks.Left[0].z - paddingWrist;
-                    bboxLeftWrist.yMax = handLandmarks.Left[0].z + paddingWrist;
-                    // Debug.Log($"Left hand bbox: {bboxLeft}");
-                }
-                if (handLandmarks.Right != null)
-                {
-                    bboxRightHand.xMin = handLandmarks.Right.Min(p => p.x) - paddingHand;
-                    bboxRightHand.xMax = handLandmarks.Right.Max(p => p.x) + paddingHand;
-                    bboxRightHand.yMin = handLandmarks.Right.Min(p => p.z) - paddingHand;
-                    bboxRightHand.yMax = handLandmarks.Right.Max(p => p.z) + paddingHand;
-                    bboxRightWrist.xMin = handLandmarks.Right[0].x - paddingWrist;
-                    bboxRightWrist.xMax = handLandmarks.Right[0].x + paddingWrist;
-                    bboxRightWrist.yMin = handLandmarks.Right[0].z - paddingWrist;
-                    bboxRightWrist.yMax = handLandmarks.Right[0].z + paddingWrist;
-                    // Debug.Log($"Right hand bbox: {bboxRight}");
-                }
-                BboxLeft = bboxLeftHand;
-                BboxRight = bboxRightHand;
-                var vec2 = new Vector2();
-                for (int y = 0; y < _height + 1; y++)
-                {
-                    for (int x = 0; x < _width + 1; x++)
+                    vec2.Set(x, y);
+                    if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
+                        (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
                     {
-                        vec2.Set(x, y);
-                        if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
-                            (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
-                        {
-                            _heightMask.Data[y, x, 0] = 1f;
-                        }
+                        _heightMask.Data[y, x, 0] = 1f;
                     }
                 }
             }
