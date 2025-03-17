@@ -15,6 +15,7 @@ namespace Python
         public static bool FlipHandedness { get; set; } = false;
         public static HandLandmarks HandLandmarks => _handLandmarks;
         public static Gestures Gestures => _gestures;
+        public static bool IsInitialized { get; private set; } = false;
         
         private const int PythonImageWidth = 1920;
         private const int PythonImageHeight = 1080;
@@ -41,7 +42,7 @@ namespace Python
         private static Vector3[] _handLandmarksBuffer;  // Temporary buffer for reading hand landmarks
         private static Gestures _gestures;
 
-        public static void Initialize()
+        public static bool Initialize()
         {
             // string filePath = Path.Combine(Application.dataPath, "PythonServer", ColourImageFileName);
             // Debug.Log($"File exists: {File.Exists(filePath)}");
@@ -71,15 +72,23 @@ namespace Python
                 _rightHandLandmarks = new Vector3[21];
                 _handLandmarksBuffer = new Vector3[21];
                 _gestures = new Gestures();
+                IsInitialized = true;
+                return true;
             }
             catch (Exception ex) {
-                Debug.LogError($"{ex.GetType().Name}: {ex.Message}");
-                Debug.LogError($"{ex.StackTrace}");
+                Debug.LogError($"Error initialising PythonManager: {ex.GetType().Name}: {ex.Message}");
+                // Debug.LogError($"{ex.StackTrace}");
+                return false;
             }
         }
 
         public static unsafe HandLandmarks ProcessFrame(Image colourImage)
         {
+            if (!IsInitialized) {
+                Debug.LogWarning("Cannot process frame: PythonManager not initialized");
+                return null;
+            }
+
             var kinectImage = colourImage.Memory.Span;
             
             // Write the colour image to the memory mapped file as RGB
@@ -159,6 +168,11 @@ namespace Python
         
         public static void Dispose()
         {
+            if (!IsInitialized) {
+                Debug.LogWarning("Cannot dispose of PythonManager: not initialized");
+                return;
+            }
+
             _colourImageViewHandle.Dispose();
             _colourImageViewAccessor.Dispose();
             _handLandmarksViewHandle.Dispose();
@@ -171,6 +185,7 @@ namespace Python
             _readyEvent.Dispose();
             _doneEvent.Dispose();
             Debug.Log("Disposed of memory mapped files and events");
+            IsInitialized = false;
         }
     }
 }

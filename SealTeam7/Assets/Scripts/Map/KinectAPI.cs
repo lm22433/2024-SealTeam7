@@ -178,40 +178,45 @@ namespace Map
                 
                 try
                 {
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
+                    // var stopwatch = new Stopwatch();
+                    // stopwatch.Start();
                     using Capture capture = _kinect.GetCapture();
-                    stopwatch.Stop();
-                    Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
-                    
-                    stopwatch.Restart();
-                    var hl = PythonManager.ProcessFrame(capture.Color);
-                    stopwatch.Stop();
-                    Debug.Log($"PythonManager2.ProcessFrame: {stopwatch.ElapsedMilliseconds} ms");
+                    // stopwatch.Stop();
+                    // Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
 
-                    // Skip frame if hand is absent, up to a few frames
-                    if (hl.Left == null) _leftHandAbsentCount++;
-                    else _leftHandAbsentCount = 0;
-                    if (hl.Right == null) _rightHandAbsentCount++;
-                    else _rightHandAbsentCount = 0;
-                    if (_leftHandAbsentCount is >= 1 and <= 2) continue;
-                    if (_rightHandAbsentCount is >= 1 and <= 2) continue;
-                    
                     _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
-                    // Saves adjusted hand landmarks to HandLandmarks
-                    UpdateHandLandmarks(hl, _transformedDepthImage);
                     
-                    stopwatch.Restart();
+                    if (PythonManager.IsInitialized) {
+                        // stopwatch.Restart();
+                        var hl = PythonManager.ProcessFrame(capture.Color);
+                        // stopwatch.Stop();
+                        // Debug.Log($"PythonManager2.ProcessFrame: {stopwatch.ElapsedMilliseconds} ms");
+
+                        // Skip frame if hand is absent, up to a few frames
+                        if (hl.Left == null) _leftHandAbsentCount++;
+                        else _leftHandAbsentCount = 0;
+                        if (hl.Right == null) _rightHandAbsentCount++;
+                        else _rightHandAbsentCount = 0;
+                        if (_leftHandAbsentCount is >= 1 and <= 2) continue;
+                        if (_rightHandAbsentCount is >= 1 and <= 2) continue;
+                        
+                        // Saves adjusted hand landmarks to HandLandmarks
+                        UpdateHandLandmarks(hl, _transformedDepthImage);
+                    }
+                    
+                    // stopwatch.Restart();
                     UpdateHeightMap(_transformedDepthImage, HandLandmarks);
-                    stopwatch.Stop();
-                    Debug.Log($"UpdateHeightMap: {stopwatch.ElapsedMilliseconds} ms");
+                    // stopwatch.Stop();
+                    // Debug.Log($"UpdateHeightMap: {stopwatch.ElapsedMilliseconds} ms");
                     
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
             }
             
-            PythonManager.Dispose();
+            if (PythonManager.IsInitialized) {
+                PythonManager.Dispose();
+            }
         }
 
         private void UpdateHeightMap(Image depthImage, HandLandmarks handLandmarks)
@@ -251,48 +256,50 @@ namespace Map
                 BorderType.Default, _scalarOne);
             
             // Also mask using hand landmarks
-            const float paddingHand = 20f;
-            const float paddingWrist = 50f;
-            var bboxLeftHand = new Rect();
-            var bboxRightHand = new Rect();
-            var bboxLeftWrist = new Rect();
-            var bboxRightWrist = new Rect();
-            if (handLandmarks.Left != null)
-            {
-                bboxLeftHand.xMin = handLandmarks.Left.Min(p => p.x) - paddingHand;
-                bboxLeftHand.xMax = handLandmarks.Left.Max(p => p.x) + paddingHand;
-                bboxLeftHand.yMin = handLandmarks.Left.Min(p => p.z) - paddingHand;
-                bboxLeftHand.yMax = handLandmarks.Left.Max(p => p.z) + paddingHand;
-                bboxLeftWrist.xMin = handLandmarks.Left[0].x - paddingWrist;
-                bboxLeftWrist.xMax = handLandmarks.Left[0].x + paddingWrist;
-                bboxLeftWrist.yMin = handLandmarks.Left[0].z - paddingWrist;
-                bboxLeftWrist.yMax = handLandmarks.Left[0].z + paddingWrist;
-                // Debug.Log($"Left hand bbox: {bboxLeft}");
-            }
-            if (handLandmarks.Right != null)
-            {
-                bboxRightHand.xMin = handLandmarks.Right.Min(p => p.x) - paddingHand;
-                bboxRightHand.xMax = handLandmarks.Right.Max(p => p.x) + paddingHand;
-                bboxRightHand.yMin = handLandmarks.Right.Min(p => p.z) - paddingHand;
-                bboxRightHand.yMax = handLandmarks.Right.Max(p => p.z) + paddingHand;
-                bboxRightWrist.xMin = handLandmarks.Right[0].x - paddingWrist;
-                bboxRightWrist.xMax = handLandmarks.Right[0].x + paddingWrist;
-                bboxRightWrist.yMin = handLandmarks.Right[0].z - paddingWrist;
-                bboxRightWrist.yMax = handLandmarks.Right[0].z + paddingWrist;
-                // Debug.Log($"Right hand bbox: {bboxRight}");
-            }
-            BboxLeft = bboxLeftHand;
-            BboxRight = bboxRightHand;
-            var vec2 = new Vector2();
-            for (int y = 0; y < _height + 1; y++)
-            {
-                for (int x = 0; x < _width + 1; x++)
+            if (handLandmarks != null) {
+                const float paddingHand = 20f;
+                const float paddingWrist = 50f;
+                var bboxLeftHand = new Rect();
+                var bboxRightHand = new Rect();
+                var bboxLeftWrist = new Rect();
+                var bboxRightWrist = new Rect();
+                if (handLandmarks.Left != null)
                 {
-                    vec2.Set(x, y);
-                    if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
-                        (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
+                    bboxLeftHand.xMin = handLandmarks.Left.Min(p => p.x) - paddingHand;
+                    bboxLeftHand.xMax = handLandmarks.Left.Max(p => p.x) + paddingHand;
+                    bboxLeftHand.yMin = handLandmarks.Left.Min(p => p.z) - paddingHand;
+                    bboxLeftHand.yMax = handLandmarks.Left.Max(p => p.z) + paddingHand;
+                    bboxLeftWrist.xMin = handLandmarks.Left[0].x - paddingWrist;
+                    bboxLeftWrist.xMax = handLandmarks.Left[0].x + paddingWrist;
+                    bboxLeftWrist.yMin = handLandmarks.Left[0].z - paddingWrist;
+                    bboxLeftWrist.yMax = handLandmarks.Left[0].z + paddingWrist;
+                    // Debug.Log($"Left hand bbox: {bboxLeft}");
+                }
+                if (handLandmarks.Right != null)
+                {
+                    bboxRightHand.xMin = handLandmarks.Right.Min(p => p.x) - paddingHand;
+                    bboxRightHand.xMax = handLandmarks.Right.Max(p => p.x) + paddingHand;
+                    bboxRightHand.yMin = handLandmarks.Right.Min(p => p.z) - paddingHand;
+                    bboxRightHand.yMax = handLandmarks.Right.Max(p => p.z) + paddingHand;
+                    bboxRightWrist.xMin = handLandmarks.Right[0].x - paddingWrist;
+                    bboxRightWrist.xMax = handLandmarks.Right[0].x + paddingWrist;
+                    bboxRightWrist.yMin = handLandmarks.Right[0].z - paddingWrist;
+                    bboxRightWrist.yMax = handLandmarks.Right[0].z + paddingWrist;
+                    // Debug.Log($"Right hand bbox: {bboxRight}");
+                }
+                BboxLeft = bboxLeftHand;
+                BboxRight = bboxRightHand;
+                var vec2 = new Vector2();
+                for (int y = 0; y < _height + 1; y++)
+                {
+                    for (int x = 0; x < _width + 1; x++)
                     {
-                        _heightMask.Data[y, x, 0] = 1f;
+                        vec2.Set(x, y);
+                        if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
+                            (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
+                        {
+                            _heightMask.Data[y, x, 0] = 1f;
+                        }
                     }
                 }
             }
