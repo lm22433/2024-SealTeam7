@@ -1,40 +1,36 @@
 ﻿using UnityEngine;
 using Map;
+using Game;
 
 namespace Enemies.FunkyPhysics
 {
     public class HelicopterPhysics : BasePhysics
     {
-        [SerializeField] GameObject mainPropeller;
-        [SerializeField] GameObject subPropeller;
-        [SerializeField] float propellerSpeed;
+        [SerializeField] private Transform mainPropeller;
+        [SerializeField] private Transform subPropeller;
+        [SerializeField] private float propellerSpeed;
+        private bool _exploded;
 
-        protected override void Start()
+        protected override void EnemyUpdate()
         {
-            EnemyManager = FindFirstObjectByType<EnemyManager>();
-            MapManager = FindFirstObjectByType<MapManager>();
-            return;
-        }
-
-        protected override void Update()
-        {   
-            mainPropeller.transform.Rotate(new Vector3(0, propellerSpeed, 0) * Time.deltaTime);
-            subPropeller.transform.Rotate(new Vector3(0, 0, propellerSpeed) * Time.deltaTime);
-
-            if (transform.position.y < MapManager.GetHeight(transform.position.x, transform.position.z))
+            mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
+            subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
+            
+            if (Self.IsDying() && !_exploded)
             {
-                EnemyManager.Kill(self);
+                RaycastHit[] objs = Physics.SphereCastAll(transform.position, 50.0f, transform.forward, 1.0f);
+                foreach (var item in objs)
+                {
+                    if (item.rigidbody) item.rigidbody.AddForce((item.point - transform.position + 5.0f * Vector3.up).normalized * 25.0f, ForceMode.Impulse);
+                }
+                _exploded = true;
             }
-
-            return;
         }
         
-        private void OnTriggerEnter(Collider collider) {
-            if (collider.gameObject.tag == "Ground") {
-                Debug.Log("collision");
-                GetComponent<Helicopter>().Die();
-            }
-            
+        private void OnTriggerEnter(Collider c)
+        {
+            if (!c.gameObject.CompareTag($"Ground")) return;
+            EnemyManager.GetInstance().Kill(Self);
         }
     }
 }

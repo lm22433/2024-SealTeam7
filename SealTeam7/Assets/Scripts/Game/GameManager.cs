@@ -1,4 +1,5 @@
 using System;
+using Effects;
 using Enemies;
 using TMPro;
 using UnityEngine;
@@ -159,6 +160,7 @@ namespace Game
             if (!GameActive) throw new Exception("Game has not started yet, how can you take damage dummy?");
             
             _health -= damage;
+            DamageEffectManager.GetInstance().ScreenDamageEffect(damage / 10.0f);
             Debug.Log($"Ouch! Took {damage} damage!");
             
             if (_health <= 0)

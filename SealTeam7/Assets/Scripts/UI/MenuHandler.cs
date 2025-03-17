@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AK.Wwise;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -31,13 +32,43 @@ namespace Game
         [SerializeField] private Slider _durationSlider;
         [SerializeField] private TMP_Text _durationSliderText;
 
+        [Header("Music Settings")]
+        [SerializeField] private AK.Wwise.Event mainMenuMusic;
+        [SerializeField] private AK.Wwise.Event introMusic;
+        [SerializeField] private AK.Wwise.Event gameAmbience;
+
         private bool _paused;
         private bool _isGameRunning = false;
+        private bool _isGracefulShutdown = false;
 
         private void Awake() {
 
             _mainMenu.SetActive(true);
             _settingsMenu.SetActive(false);
+        }
+
+        private void Start() {
+            mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
+        }
+
+        private void OnApplicationQuit() {
+            _isGracefulShutdown = true;
+
+            mainMenuMusic.Stop(gameObject);
+            introMusic.Stop(gameObject);
+            gameAmbience.Stop(gameObject);
+        }
+
+        void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (!_isGameRunning && !_isGracefulShutdown) {
+                mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
+            }
+        }
+
+        void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (_isGameRunning && !_isGracefulShutdown) {
+                gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
+            }
         }
 
         void Update()
@@ -99,6 +130,10 @@ namespace Game
         }
 
         public void OnPlayButtonClicked() {
+            mainMenuMusic.Stop(gameObject, 200, AkCurveInterpolation.AkCurveInterpolation_Exp1);
+            introMusic.Post(gameObject);
+            gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
+
             GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty].difficulties);
             GameManager.GetInstance().SetGameDuration(currentDuration);
 

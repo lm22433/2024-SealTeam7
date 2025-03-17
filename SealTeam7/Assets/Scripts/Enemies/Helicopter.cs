@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using Enemies.Utils;
+using Player;
 using UnityEngine;
 
 namespace Enemies
@@ -6,57 +7,35 @@ namespace Enemies
     public class Helicopter : Enemy
     {
         [SerializeField] float flyHeight;
-        private float _lastAttack;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
 
-        private void Awake() {
+        private void Awake()
+        {
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
         
-        protected override void Attack(PlayerDamageable target)
+        protected override void Attack(PlayerDamageable toDamage)
         {
-            target?.TakeDamage(attackDamage);
+            var target = new Vector3(TargetPosition.x, transform.position.y, TargetPosition.z);
+            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(target - muzzle.position)).TryGetComponent(out Projectile proj);
+            proj.Target = new Vector3(TargetPosition.x, transform.position.y, TargetPosition.z);
+            proj.ToDamage = toDamage;
+            proj.Damage = attackDamage;
+            
+            Destroy(proj.gameObject, 2f);
         }
         
         protected override void EnemyUpdate()
         {
-            TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
-            TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
-            
-            _lastAttack += Time.deltaTime;
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
+            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
 
         protected override void EnemyFixedUpdate()
         {
             if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
             if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
-            Rb.MoveRotation(TargetRotation);
-            
-            switch (State)
-            {
-                case EnemyState.Moving:
-                {
-                    Rb.AddForce(TargetDirection * (moveSpeed * 10f));
-                    break;
-                }
-                case EnemyState.AttackCore:
-                {
-                    if (_lastAttack > attackInterval)
-                    {
-                        Attack(EnemyManager.godlyCore);
-                        _lastAttack = 0f;
-                    }
-                    break;
-                }
-                case EnemyState.AttackHands:
-                {
-                    if (_lastAttack < attackInterval)
-                    {
-                        Attack(EnemyManager.godlyHands);
-                        _lastAttack = 0f;
-                    }
-                    break;
-                }
-            }
         }
     }
 }

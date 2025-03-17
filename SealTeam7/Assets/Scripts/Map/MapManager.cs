@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Unity.Collections;
+using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Map
 {
@@ -63,6 +62,8 @@ namespace Map
         [SerializeField] private bool takeSnapshot;
         [SerializeField] private Texture2D texture;
         
+        private static MapManager _instance;
+        
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
         private float[] _heightMap;
@@ -71,6 +72,9 @@ namespace Map
         
         private void Awake()
         {
+            if (_instance == null) _instance = this;
+            else Destroy(gameObject);
+            
             _mapSpacing = (float) mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
             _heightMap = new float[(int) (mapSize / _mapSpacing + 1) * (int) (mapSize / _mapSpacing + 1)];
@@ -83,7 +87,7 @@ namespace Map
             {
                 Size = chunkSize,
                 MapSize = mapSize,
-                Spacing = _mapSpacing,
+                MapSpacing = _mapSpacing,
                 LODInfo = lodInfo,
                 ColliderEnabled = colliderEnabled
             };
@@ -111,7 +115,7 @@ namespace Map
             if (isKinectPresent) _kinect.StopKinect();
             else _noiseGenerator.Stop();
         }
-
+        
         public Vector3[] GetHandPositions(int hand) {
             if (isKinectPresent) {
                 return _kinect.GetHandPositions(hand);
@@ -121,19 +125,49 @@ namespace Map
 
         }
 
-        public float GetHeight(float worldX, float worldZ)
+        public float GetHeight(Vector3 position)
         {
-            // just to be safe
-            worldX = Mathf.Clamp(worldX, 0, mapSize);
-            worldZ = Mathf.Clamp(worldZ, 0, mapSize);
+            var percentX = position.x / (mapSize * _mapSpacing);
+            var percentZ = position.z / (mapSize * _mapSpacing);
+            percentX = Mathf.Clamp01(percentX);
+            percentZ = Mathf.Clamp01(percentZ);
             
-            //TODO: [fix] interpolate between heights at each step to get true height
-            var lower = _heightMap[Mathf.FloorToInt(worldZ / _mapSpacing) * (int) (mapSize / _mapSpacing + 1) + Mathf.FloorToInt(worldX / _mapSpacing)];
-            var upper = _heightMap[Mathf.CeilToInt(worldZ / _mapSpacing) * (int) (mapSize / _mapSpacing + 1) + Mathf.CeilToInt(worldX / _mapSpacing)];
+            var x = percentX * mapSize;
+            var z = percentZ * mapSize;
+            
+            // BILINEAR INTERPOLATION
+            
+            // get corners of square
+            var x1 = Mathf.FloorToInt(percentX * mapSize);
+            var z1 = Mathf.FloorToInt(percentZ * mapSize);
+            var x2 = Mathf.CeilToInt(percentX * mapSize);
+            var z2 = Mathf.CeilToInt(percentZ * mapSize);
+            var Q11 = _heightMap[z1 * (mapSize + 1) + x1];
+            var Q21 = _heightMap[z2 * (mapSize + 1) + x1];
+            var Q12 = _heightMap[z1 * (mapSize + 1) + x2];
+            var Q22 = _heightMap[z2 * (mapSize + 1) + x2];
 
-            var lerp = Mathf.Lerp(lower, upper, worldZ / _mapSpacing - Mathf.FloorToInt(worldZ / _mapSpacing));
+            // if one axis is an integer use normal linear interpolation
+            if (x1 == x2) return Mathf.Lerp(Q12, Q11, z2 - z);
+            if (z1 == z2) return Mathf.Lerp(Q22, Q12, z2 - z);
+            // from wikipedia
+            return 1f / ((x2 - x1) * (z2 - z1)) * math.mul(math.mul(new float2(x2 - x, x - x1), new float2x2(new float2(Q11, Q21), new float2(Q12, Q22))), new float2(z2 - z, z - z1));
+        }
+
+        // Only gets nearest vertex normal
+        public Vector3 GetNormal(Vector3 position)
+        {
+            var normals = _chunks[0].GetNormals();
             
-            return lerp;
+            var percentX = position.x / (mapSize * _mapSpacing);
+            var percentZ = position.z / (mapSize * _mapSpacing);
+            percentX = Mathf.Clamp01(percentX);
+            percentZ = Mathf.Clamp01(percentZ);
+            
+            var x = Mathf.FloorToInt(percentX * mapSize);
+            var z = Mathf.FloorToInt(percentZ * mapSize);
+
+            return normals[z * (mapSize + 1) + x];
         }
         
         private void Update()
@@ -168,6 +202,8 @@ namespace Map
                 _noiseGenerator.AdvanceTime(Time.deltaTime);                
             }
         }
+        
+        public static MapManager GetInstance() => _instance;
         
         private void OnDrawGizmos()
         {
