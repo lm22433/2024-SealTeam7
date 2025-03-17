@@ -58,7 +58,7 @@ gestures_buffer = mmap.mmap(-1, GESTURES_SIZE, access=mmap.ACCESS_WRITE, tagname
 gesture_recognizer_options = GestureRecognizerOptions(
     base_options=BaseOptions(model_asset_path=GESTURE_RECOGNITION_MODEL_PATH),
     running_mode=RunningMode.VIDEO,
-    num_hands=3,
+    num_hands=2,
     min_hand_detection_confidence=0.05,
     min_hand_presence_confidence=0.5,
     min_tracking_confidence=0.5)
