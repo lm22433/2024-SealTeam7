@@ -133,13 +133,13 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                     left_hand_absent_count += 1
                     right_hand_absent_count += 1
 
-                    # Fill in missing hands with projected positions if absent for <= 2 frames
-                    if left_hand_absent_count <= 2:
-                        left = projected_left_hand
-                        using_left_projected_hand = True
-                    if right_hand_absent_count <= 2:
-                        right = projected_right_hand
-                        using_right_projected_hand = True
+                    # # Fill in missing hands with projected positions if absent for <= 2 frames
+                    # if left_hand_absent_count <= 2:
+                    #     left = projected_left_hand
+                    #     using_left_projected_hand = True
+                    # if right_hand_absent_count <= 2:
+                    #     right = projected_right_hand
+                    #     using_right_projected_hand = True
                         
                 elif len(gesture_recognizer_result.hand_landmarks) <= 1:
                     left = None
@@ -154,13 +154,13 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                             left_hand_absent_count += 1
                             right_hand_absent_count = 0
                     
-                    # Fill in missing hands with projected positions if absent for <= 2 frames
-                    if left is None and left_hand_absent_count <= 2:
-                        left = projected_left_hand
-                        using_left_projected_hand = True
-                    if right is None and right_hand_absent_count <= 2:
-                        right = projected_right_hand
-                        using_right_projected_hand = True
+                    # # Fill in missing hands with projected positions if absent for <= 2 frames
+                    # if left is None and left_hand_absent_count <= 2:
+                    #     left = projected_left_hand
+                    #     using_left_projected_hand = True
+                    # if right is None and right_hand_absent_count <= 2:
+                    #     right = projected_right_hand
+                    #     using_right_projected_hand = True
 
                 elif len(gesture_recognizer_result.hand_landmarks) == 2:
                     left_hand_absent_count = 0
