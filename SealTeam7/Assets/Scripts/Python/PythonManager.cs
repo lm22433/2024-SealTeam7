@@ -86,7 +86,7 @@ namespace Python
         {
             if (!IsInitialized) {
                 Debug.LogWarning("Cannot process frame: PythonManager not initialized");
-                return HandLandmarks;
+                return _handLandmarks;
             }
 
             var kinectImage = colourImage.Memory.Span;
