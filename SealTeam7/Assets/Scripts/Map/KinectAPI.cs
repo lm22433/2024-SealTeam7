@@ -123,17 +123,13 @@ namespace Map
             Vector3[] positions;
 
             if (hand == 0) {
-                if (_rightHandAbsentCount != 1) {
-                    return null;
-                }
-
-                positions = HandLandmarks!.Right;
+                positions = HandLandmarks.Right;
             } else {
-                if (_leftHandAbsentCount != 1) {
-                    return null;
-                }
+                positions = HandLandmarks.Left;
+            }
 
-                positions = HandLandmarks!.Left;
+            if (positions == null) {
+                return null;
             }
 
             if (positions[9].z >= _yOffsetStart && positions[9].z <= _yOffsetEnd &&
