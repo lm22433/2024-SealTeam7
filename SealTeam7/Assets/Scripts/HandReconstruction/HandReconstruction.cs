@@ -60,7 +60,7 @@ public class HandReconstruction : MonoBehaviour
 
      private void OnDrawGizmos()
     {
-
+        return;
         Vector3 targetDir = positions[17] - positions[5];
 
         Gizmos.color = Color.blue;

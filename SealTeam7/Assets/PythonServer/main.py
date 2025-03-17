@@ -25,7 +25,7 @@ GESTURES_SIZE = 2 * 4  # 2 hands, 4 bytes per int
 GESTURES_FILE_NAME = "gestures"
 READY_EVENT_NAME = "SealTeam7ColourImageReady"
 DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
-GESTURE_RECOGNITION_MODEL_PATH = 'SealTeam7/Assets/PythonServer/gesture_recognition_model.task'
+GESTURE_RECOGNITION_MODEL_PATH = 'gesture_recognition_model.task'
 VISUALISE_INFERENCE_RESULTS = True
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
