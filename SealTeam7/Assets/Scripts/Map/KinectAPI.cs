@@ -123,13 +123,17 @@ namespace Map
             Vector3[] positions;
 
             if (hand == 0) {
-                positions = PythonManager.HandLandmarks.Right;
-            } else {
-                positions = PythonManager.HandLandmarks.Left;
-            }
+                if (_rightHandAbsentCount != 1) {
+                    return null;
+                }
 
-            if (positions == null) {
-                return null;
+                positions = HandLandmarks!.Right;
+            } else {
+                if (_leftHandAbsentCount != 1) {
+                    return null;
+                }
+
+                positions = HandLandmarks!.Left;
             }
 
             if (positions[9].z >= _yOffsetStart && positions[9].z <= _yOffsetEnd &&

@@ -11,7 +11,7 @@ namespace Python
 {
     public static class PythonManager
     {
-        public static bool FlipX { get; set; } = true;
+        public static bool FlipX { get; set; } = false;
         public static bool FlipHandedness { get; set; } = false;
         public static HandLandmarks HandLandmarks => _handLandmarks;
         public static Gestures Gestures => _gestures;
@@ -86,7 +86,7 @@ namespace Python
         {
             if (!IsInitialized) {
                 Debug.LogWarning("Cannot process frame: PythonManager not initialized");
-                return null;
+                return HandLandmarks;
             }
 
             var kinectImage = colourImage.Memory.Span;
