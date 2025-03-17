@@ -172,14 +172,13 @@ namespace Map
         {
             if (takeSnapshot)
             {
-
-                Color32[] col = new Color32[_heightMap.Length];
+                Color32[] col = new Color32[_gradientMap.Length];
                 var i = 0;
-                foreach (var h in _heightMap)
+                foreach (var h in _gradientMap)
                 {
                     try
                     {
-                        col[i] = new Color32(Convert.ToByte(Mathf.Abs(Mathf.Min(255, h / heightScale * 255))), 0, 0, Convert.ToByte(255));
+                        col[i] = new Color32(Convert.ToByte((Mathf.Atan2(h.x, h.y) * Mathf.Rad2Deg + 90f) / 180f * 255f), 0, 0, Convert.ToByte(255));
                         i++;
                     }
                     catch (OverflowException e)

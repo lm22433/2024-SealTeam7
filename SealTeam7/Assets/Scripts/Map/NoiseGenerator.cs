@@ -22,7 +22,7 @@ namespace Map
         private float2[,] _gradientMap;
         private Image<Gray, float> _heightImage;
         private Image<Gray, float> _gradientX;
-        private Image<Gray, float> _gradientY;
+        private Image<Gray, float> _gradientZ;
         private Image<Gray, float> _squareGradient;
         private Image<Gray, float> _gradientMagnitude;
         
@@ -41,7 +41,7 @@ namespace Map
             _gradientMap = gradientMap;
             _heightImage = new Image<Gray, float>(size + 1, size + 1);
             _gradientX = new Image<Gray, float>(size + 1, size + 1);
-            _gradientY = new Image<Gray, float>(size + 1, size + 1);
+            _gradientZ = new Image<Gray, float>(size + 1, size + 1);
             _squareGradient = new Image<Gray, float>(size + 1, size + 1);
             _gradientMagnitude = new Image<Gray, float>(size + 1, size + 1);
             
@@ -75,7 +75,7 @@ namespace Map
                 }
                 
                 CvInvoke.Sobel(_heightImage, _gradientX, DepthType.Default, 1, 0);
-                CvInvoke.Sobel(_heightImage, _gradientY, DepthType.Default, 0, 1);
+                CvInvoke.Sobel(_heightImage, _gradientZ, DepthType.Default, 0, 1);
                 // CvInvoke.AccumulateSquare(_gradientX, _squareGradient);
                 // CvInvoke.AccumulateSquare(_gradientY, _squareGradient);
                 // CvInvoke.Sqrt(_squareGradient, _gradientMagnitude);
@@ -85,7 +85,7 @@ namespace Map
                     for (int x = 0; x < _size + 1; x++)
                     {
                         _heightMap[y, x] = _heightImage.Data[y, x, 0];
-                        _gradientMap[y, x] = new float2(_gradientY.Data[y, x, 0], _gradientX.Data[y, x, 0]);
+                        _gradientMap[y, x] = new float2(_gradientZ.Data[y, x, 0], _gradientX.Data[y, x, 0]);
                     }
                 }
             }

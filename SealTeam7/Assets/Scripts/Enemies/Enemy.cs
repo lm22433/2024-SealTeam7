@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Game;
 using Map;
 using Player;
@@ -12,6 +13,7 @@ namespace Enemies
         Moving,
         AttackCore,
         AttackHands,
+        Idle,
         Dying
     }
     
@@ -19,6 +21,7 @@ namespace Enemies
     {
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float acceleration;
+        [SerializeField] protected float flyHeight;
         [SerializeField] protected float aimSpeed;
         [SerializeField] protected float attackRange;
         [SerializeField] protected float attackInterval;
@@ -32,6 +35,7 @@ namespace Enemies
         [Header("Sound Effects")]
         [SerializeField] private AK.Wwise.Event gunFireSound;
         [SerializeField] private AK.Wwise.Event deathSoundEffect;
+        
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
@@ -60,12 +64,11 @@ namespace Enemies
             SqrAttackRange = attackRange * attackRange;
             State = EnemyState.Moving;
             Path = Array.Empty<Vector3>();
-            // Target = transform.position + transform.forward;
             TargetPosition = EnemyManager.godlyCore.transform.position;
-            TargetRotation = transform.rotation;
-            TargetDirection = transform.forward;
+            TargetRotation = Quaternion.identity;
+            TargetDirection = Vector3.zero;
             PathFindInterval = EnemyManager.pathFindInterval;
-            LastAttack = attackInterval;    
+            LastAttack = attackInterval;
             LastPathFind = PathFindInterval;
         }
 
@@ -97,8 +100,8 @@ namespace Enemies
         
         private void UpdateState()
         {
-			if (State == EnemyState.Dying) return;
-            var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, transform.position.y, EnemyManager.godlyCore.transform.position.z);
+			if (State is EnemyState.Dying or EnemyState.Idle) return;
+            var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset, EnemyManager.godlyCore.transform.position.z);
             if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackCore;
             else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackHands;
             else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
@@ -129,19 +132,44 @@ namespace Enemies
 
         private void LimitSpeed()
         {
-            Vector3 vel = new Vector3(Rb.linearVelocity.x, 0f, Rb.linearVelocity.z);
+            var vel = new Vector3(Rb.linearVelocity.x, 0f, Rb.linearVelocity.z);
             // limit velocity if needed
-            if (vel.magnitude > moveSpeed)
+            if (!(vel.magnitude > moveSpeed)) return;
+            var newVel = vel.normalized * moveSpeed;
+            Rb.linearVelocity = new Vector3(newVel.x, Rb.linearVelocity.y, newVel.z);
+        }
+        
+        private void FollowPath()
+        {
+            if (Path.Length > 0 && PathIndex < Path.Length - 1)
             {
-                Vector3 newVel = vel.normalized * moveSpeed;
-                Rb.linearVelocity = new Vector3(newVel.x, Rb.linearVelocity.y, newVel.z);
+                if (LastPathFind >= PathFindInterval)
+                {
+                    LastPathFind = 0;
+                    RequestPath();
+                }
+                var pathPosition = new Vector3(Mathf.RoundToInt(transform.position.x), Path[PathIndex].y, Mathf.RoundToInt(transform.position.z));
+                if ((pathPosition - Path[PathIndex]).sqrMagnitude < 100f) PathIndex++;
+                TargetDirection = Vector3.ProjectOnPlane(Path[PathIndex] - transform.position, Vector3.up).normalized;
+            }
+            else if (State is EnemyState.Moving)
+            {
+                TargetDirection = Vector3.zero;
+                RequestPath();
+                State = EnemyState.Idle;
             }
         }
 
-        private void PathFind()
+        private void RequestPath()
         {
-            Path = EnemyManager.FindPath(transform.position, TargetPosition);
+            EnemyManager.RequestPath(transform.position, TargetPosition, flyHeight, SetPath);
+        }
+
+        private void SetPath(Vector3[] path)
+        {
+            Path = path;
             PathIndex = 0;
+            if (State is EnemyState.Idle) State = EnemyState.Moving;
         }
 
         private void Update()
@@ -160,8 +188,7 @@ namespace Enemies
 				if (DeathDuration <= 0.0f) Die();
 			}
 
-            if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude >
-                EnemyManager.sqrMaxEnemyDistance)
+            if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance)
             {
                 EnemyManager.Kill(this);
             }
@@ -169,24 +196,7 @@ namespace Enemies
             UpdateState();
             UpdateTarget();
             LimitSpeed();
-
-
-            if (LastPathFind >= PathFindInterval)
-            {
-                LastPathFind = 0;
-                PathFind();
-            }
-            
-            if (Path.Length > 0 && PathIndex < Path.Length - 1)
-            {
-                var pathPosition = new Vector3(Mathf.RoundToInt(transform.position.x), Path[PathIndex].y, Mathf.RoundToInt(transform.position.z));
-                if ((pathPosition - Path[PathIndex]).sqrMagnitude < 10f) PathIndex++;
-                TargetDirection = Vector3.ProjectOnPlane(Path[PathIndex] - transform.position, Vector3.up).normalized;
-            }
-            else
-            {
-                TargetDirection = Vector3.zero;
-            }
+            FollowPath();
             
             LastAttack += Time.deltaTime;
             LastPathFind += Time.deltaTime;
@@ -234,10 +244,9 @@ namespace Enemies
         
         public void OnDrawGizmos()
         {
-            Debug.Log(Path.Length);
             Gizmos.color = Color.green;
-            Gizmos.DrawCube(Path[0], Vector3.one);
-            for (int i = 1; i < Path.Length; i++)
+            if (Path.Length > 0) Gizmos.DrawCube(Path[PathIndex], Vector3.one);
+            for (int i = PathIndex + 1; i < Path.Length; i++)
             {
                 Gizmos.color = Color.blue;
                 Gizmos.DrawLine(Path[i - 1], Path[i]);

@@ -6,7 +6,6 @@ namespace Enemies
 {
     public class Helicopter : Enemy
     {
-        [SerializeField] float flyHeight;
         [SerializeField] private Transform muzzle;
         [SerializeField] private GameObject projectile;
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Enemies.Utils;
 using Game;
 using Map;
@@ -15,6 +17,22 @@ namespace Enemies
         public int groupSize;
         public float groupSpacing;
         [Range(0, 1)] public float spawnChance;
+    }
+    
+    public struct PathRequest
+    {
+        public Vector3 Start;
+        public Vector3 End;
+        public float FlyHeight;
+        public Action<Vector3[]> Callback;
+
+        public PathRequest(Vector3 start, Vector3 end, float flyHeight, Action<Vector3[]> callback)
+        {
+            Start = start;
+            End = end;
+            FlyHeight = flyHeight;
+            Callback = callback;
+        }
     }
 
     public class EnemyManager : MonoBehaviour
@@ -40,6 +58,8 @@ namespace Enemies
         private int _enemyCount;
         private float _spawnInterval;
         private PathFinder _pathFinder;
+        private Queue<PathRequest> _pathRequestQueue;
+        private bool _running;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
 
@@ -50,7 +70,13 @@ namespace Enemies
             
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
             _pathFinder = new PathFinder(MapManager.GetInstance().GetMapSize(), MapManager.GetInstance().GetMapSpacing(), MapManager.GetInstance().GetPathingLodFactor());
+            _pathRequestQueue = new Queue<PathRequest>();
+            _running = true;
+
+            Task.Run(PathThread);
         }
+
+        private void OnApplicationQuit() => _running = false;
 
         public void Kill(Enemy enemy)
         {
@@ -64,9 +90,24 @@ namespace Enemies
             _enemyTypes = difficulty.enemies;
         }
 
-        public Vector3[] FindPath(Vector3 start, Vector3 end)
+        private void PathThread()
         {
-            return _pathFinder.FindPath(start, end, pathingDepth);
+            while (_running)
+            {
+                TryProcessPath();
+            }
+        }
+
+        public void RequestPath(Vector3 start, Vector3 end, float flyHeight, Action<Vector3[]> callback)
+        {
+            _pathRequestQueue.Enqueue(new PathRequest(start, end, flyHeight, callback));
+        }
+
+        private void TryProcessPath()
+        {
+            if (_pathRequestQueue.Count < 1) return;
+            var request = _pathRequestQueue.Dequeue();
+            _pathFinder.FindPathAsync(request.Start, request.End, request.FlyHeight, pathingDepth, request.Callback);
         }
 
         public void KillAllEnemies()
