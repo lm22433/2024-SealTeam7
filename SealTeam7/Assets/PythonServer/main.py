@@ -180,7 +180,9 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                                 left = landmarks
                             else:
                                 right = landmarks
+
                     else:
+                        # hands have different handedness -> use mediapipe's handedness
                         left = None
                         right = None
                         for i, handedness in enumerate(gesture_recognizer_result.handedness):
@@ -188,6 +190,7 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                                 left = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
                             else:
                                 right = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
+
                 else:
                     print("Warning: More than 2 hands detected.")
                     left = None
@@ -201,7 +204,6 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
             # Process gestures
             left_gesture = 0  # Default to None
             right_gesture = 0  # Default to None
-            
             if gesture_recognizer_result.gestures:
                 for i, gesture in enumerate(gesture_recognizer_result.gestures):
                     if gesture_recognizer_result.handedness[i][0].category_name == "Left":
@@ -254,6 +256,7 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                         cv2.putText(vis_frame, f"Right: {list(GESTURE_MAP.keys())[list(GESTURE_MAP.values()).index(right_gesture)]}", 
                                   (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                     
+                    # Handle window
                     cv2.imshow("Inference visualisation", vis_frame)
                     key = cv2.waitKey(1)
                     if key == 27:
@@ -273,7 +276,7 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                 projected_left_hand = left_hand_history[-1]
                 projected_right_hand = right_hand_history[-1]
             else:
-                # extrapolate all landmark locations using numpy operations
+                # assume constant velocity and rigid hand
                 last_wrist = left_hand_history[-1][0]
                 prev_wrist = left_hand_history[-2][0]
                 delta = last_wrist - prev_wrist
