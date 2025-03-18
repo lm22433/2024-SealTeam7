@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Enemies.Utils;
@@ -9,16 +10,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Enemies
-{
-    [Serializable]
-    public struct EnemyData
-    {
-        public GameObject prefab;
-        public int groupSize;
-        public float groupSpacing;
-        [Range(0, 1)] public float spawnChance;
-    }
-    
+{   
     public struct PathRequest
     {
         public Vector3 Start;
@@ -37,7 +29,8 @@ namespace Enemies
 
     public class EnemyManager : MonoBehaviour
     {
-        [Header("Spawn Settings")]
+        [Header("Spawn Settings")] 
+        [SerializeField] private float initialStartDelay = 10f;
         [SerializeField] private Transform[] spawnPoints;
         [SerializeField] private int maxEnemyCount;
         [SerializeField] private float maxEnemyDistance;
@@ -51,6 +44,9 @@ namespace Enemies
         [SerializeField] private int pathingDepth;
         [SerializeField] public float pathFindInterval;
 
+        [Header("Enemies")]
+        [SerializeField] private EnemyData[] enemyData;
+            
         [HideInInspector] public float sqrMaxEnemyDistance;
         
         private float _lastSpawn;
@@ -62,6 +58,8 @@ namespace Enemies
         private bool _running;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
+        private Difficulty _difficulty;
+        private int _currentWave;
 
         private void Awake()
         {
@@ -78,17 +76,26 @@ namespace Enemies
 
         private void OnApplicationQuit() => _running = false;
 
+        private void Start()
+        {
+            foreach (EnemyData data in enemyData)
+            {
+                Debug.Log(data.enemyType);
+                EnemyPool.GetInstance().RegisterEnemy(data);
+            }
+        }
+
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
+            GameManager.GetInstance().RegisterKill(enemy.killScore);
             enemy.SetupDeath();
+            EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
         }
 
-        public void SetDifficulty(Difficulty difficulty)
-        {
-            _spawnInterval = difficulty.spawnInterval;
-            _enemyTypes = difficulty.enemies;
-        }
+        public void StartSpawning() => StartCoroutine(SpawnWaves());
+        
+        public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
 
         private void PathThread()
         {
@@ -110,47 +117,65 @@ namespace Enemies
             _pathFinder.FindPathAsync(request.Start, request.End, pathingDepth, request.Heuristic, request.Callback);
         }
 
-        public void KillAllEnemies()
+        private IEnumerator SpawnWaves()
         {
-            foreach (Transform child in transform)
-            {
-                if (child.TryGetComponent<Enemy>(out var enemy)) Destroy(enemy.gameObject);
-            }
-        }
-
-        private void SpawnEnemies()
-        {
-            // choose random spawn point
-            var spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            yield return new WaitForSeconds(initialStartDelay);
             
-            foreach (var enemy in _enemyTypes)
+            while (GameManager.GetInstance().GameActive)
             {
-                if (Random.value > enemy.spawnChance) continue;
+                _currentWave++;
+                
+                int waveEnemyGroups = _difficulty.GetWaveEnemyGroupCount(_currentWave);
+                float spawnDelay = _difficulty.GetWaveSpawnDelay(_currentWave);
+                float waveTimeLimit = _difficulty.GetWaveTimeLimit(_currentWave);
 
-                for (int i = 0; i < enemy.groupSize; i++)
+                float waveStartTime = Time.time;
+                
+                Debug.Log($"Wave {_currentWave} - Enemy Groups: {waveEnemyGroups}, Spawn Delay: {spawnDelay:F2}s, Time Limit: {waveTimeLimit:F2}s");
+
+                for (int i = 0; i < waveEnemyGroups; i++)
                 {
-                    var spawnOffset2D = Random.insideUnitCircle.normalized * enemy.groupSpacing;
-                    var spawnOffset = new Vector3(spawnOffset2D.x, 4f, spawnOffset2D.y);
+                    yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
                     
-                    if (_enemyCount >= maxEnemyCount) continue;
-                    Instantiate(enemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);
-                    _enemyCount++;
+                    Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
+                    
+                    EnemyData chosenEnemy = _difficulty.GetRandomEnemy(enemyData, _currentWave);
+                    if (chosenEnemy == null) continue;
+                    int finalGroupSize = Mathf.Min(chosenEnemy.GetGroupSpawnSize(_difficulty, _currentWave), maxEnemyCount - _enemyCount);
+                    
+                    for (int j = 0; j < finalGroupSize; j++)
+                    {
+                        Vector2 spawnOffset2D = Random.insideUnitCircle.normalized * chosenEnemy.groupSpacing;
+                        Vector3 spawnOffset = new Vector3(spawnOffset2D.x, 4f, spawnOffset2D.y);
+                        GameObject enemy = EnemyPool.GetInstance().GetFromPool(chosenEnemy, spawn.position + spawnOffset, spawn.rotation);
+                        if (enemy != null)
+                        {
+                            enemy.GetComponent<Enemy>().Init();
+                            enemy.transform.SetParent(transform);
+                            _enemyCount++;
+                        }
+                    }
+                    
+                    yield return new WaitForSeconds(spawnDelay);
+                    if (Time.time - waveStartTime >= waveTimeLimit) break;
+                }
+                
+                while (_enemyCount > 0 && (Time.time - waveStartTime) < waveTimeLimit)
+                {
+                    yield return null;
                 }
 
-                break;
+                if (_enemyCount == 0 && (Time.time - waveStartTime) < waveTimeLimit)
+                {
+                    GameManager.GetInstance().ApplyWaveClearedEarlyBonus();
+                    yield return new WaitForSeconds(1f);
+                }
             }
         }
         
         private void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
-            _lastSpawn += Time.deltaTime;
-            if (_lastSpawn > _spawnInterval)
-            {
-                _lastSpawn = 0;
-                SpawnEnemies();
-            }
             
             _lastMapUpdate += Time.deltaTime;
             if (_lastMapUpdate > mapUpdateInterval)

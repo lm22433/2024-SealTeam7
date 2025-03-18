@@ -58,7 +58,7 @@ MonoBehaviour:
   stopShootingThreshold: 20
   coreTargetHeightOffset: 4
   attackDamage: 1
-  killScore: 10
+  killScore: 200
   deathParticles: {fileID: 800979439519608610}
   model: {fileID: 8766715710197058457}
   muzzle: {fileID: 2415730568844001834}

@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 3
   moveSpeed: 15
   acceleration: 20
   flyHeight: 0
@@ -58,7 +59,7 @@ MonoBehaviour:
   stopShootingThreshold: 150
   coreTargetHeightOffset: 4
   attackDamage: 10
-  killScore: 10
+  killScore: 250
   deathParticles: {fileID: 173710646619886202}
   model: {fileID: 4201665484160803050}
   muzzle: {fileID: 4631428408017700467}

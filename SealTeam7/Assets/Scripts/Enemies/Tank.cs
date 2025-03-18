@@ -1,4 +1,4 @@
-﻿using Enemies.Utils;
+using Enemies.Utils;
 using Map;
 using Player;
 using UnityEngine;

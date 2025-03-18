@@ -21,6 +21,8 @@ namespace Enemies
     {
         [Header("Movement")]
         [SerializeField] protected Vector3 forceOffset;
+        [SerializeField] protected internal EnemyType enemyType;
+        
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float acceleration;
         
@@ -31,7 +33,7 @@ namespace Enemies
         [SerializeField] protected float stopShootingThreshold;
         [SerializeField] protected float coreTargetHeightOffset;
         [SerializeField] protected int attackDamage;
-        [SerializeField] protected int killScore;
+        [SerializeField] protected internal int killScore;
         
         [Header("Visual Effects")]
         [SerializeField] private VisualEffect deathParticles;
@@ -65,24 +67,22 @@ namespace Enemies
         {
             EnemyManager = EnemyManager.GetInstance();
             Rb = GetComponent<Rigidbody>();
-            
-            deathParticles.Stop();
-
             SqrAttackRange = attackRange * attackRange;
-            State = EnemyState.Moving;
-            Path = Array.Empty<Vector3>();
-            TargetPosition = EnemyManager.godlyCore.transform.position;
-            TargetRotation = Quaternion.identity;
-            TargetDirection = Vector3.zero;
-            PathFindInterval = EnemyManager.pathFindInterval;
-            LastAttack = attackInterval;
-            LastPathFind = PathFindInterval;
         }
 
-        public virtual void Die()
+        public virtual void Init()
         {
-            GameManager.GetInstance().RegisterKill(killScore);
-            Destroy(gameObject);
+            model.gameObject.SetActive(true);
+            deathParticles.Stop();
+
+            State = EnemyState.Moving;
+            Path = Array.Empty<Vector3>();
+            TargetPosition = EnemyManager.GetInstance().godlyCore.transform.position;
+            TargetRotation = Quaternion.identity;
+            TargetDirection = Vector3.zero;
+            PathFindInterval = EnemyManager.GetInstance().pathFindInterval;
+            LastAttack = attackInterval;
+            LastPathFind = PathFindInterval;
         }
 
 		public virtual void SetupDeath()
@@ -204,7 +204,7 @@ namespace Enemies
                     transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) - buried, transform.position.z);
                 }
 				DeathDuration -= Time.deltaTime;
-				if (DeathDuration <= 0.0f) Die();
+				if (DeathDuration <= 0.0f) EnemyManager.Kill(this);
 			}
 
             if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance) EnemyManager.Kill(this);
