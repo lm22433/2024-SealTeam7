@@ -77,10 +77,10 @@ namespace Enemies
 
             State = EnemyState.Moving;
             Path = Array.Empty<Vector3>();
-            TargetPosition = EnemyManager.godlyCore.transform.position;
+            TargetPosition = EnemyManager.GetInstance().godlyCore.transform.position;
             TargetRotation = Quaternion.identity;
             TargetDirection = Vector3.zero;
-            PathFindInterval = EnemyManager.pathFindInterval;
+            PathFindInterval = EnemyManager.GetInstance().pathFindInterval;
             LastAttack = attackInterval;
             LastPathFind = PathFindInterval;
         }
