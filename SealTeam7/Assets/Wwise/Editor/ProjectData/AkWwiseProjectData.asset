@@ -303,7 +303,7 @@ MonoBehaviour:
     ParentPath: Master-Mixer Hierarchy\Default Work Unit
     guid: 4a01854a4134a748a243656b4ea7b322
     GuidInternal: 
-    m_lastTime: -8584594489351330823
+    m_lastTime: -8584593937119240615
     List:
     - name: Master Audio Bus
       guid: d8a41415a61d2a41a17e75ca0c2149f3
@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584594478062541343
+    m_lastTime: -8584592852060596979
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,7 +359,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584594485140067799
+    m_lastTime: -8584592852075324464
     List:
     - name: Play_CelebrationFanfare
       guid: 7ed2308a1913644f89ddfcb21e99f0ec
@@ -775,8 +775,8 @@ MonoBehaviour:
     m_lastTime: -8584594489342797400
     List: []
   ExpandedFileSystemItemIds: 
-  ExpandedWaapiItemIds: 0100000006000000070000001500000016000000
-  AutoSyncSelection: 1
+  ExpandedWaapiItemIds: 
+  AutoSyncSelection: 0
   autoPopulateEnabled: 1
   currentDataSource: 0
   CurrentPluginConfig: 

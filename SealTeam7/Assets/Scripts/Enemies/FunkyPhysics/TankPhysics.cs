@@ -9,9 +9,9 @@ namespace Enemies.FunkyPhysics
 
         protected override void EnemyUpdate()
         {
-            if (Grounded && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f) EnemyManager.GetInstance().Kill(Self);
+            if (Grounded && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
 
-			if (Self.IsDying() && !_exploded)
+			if (Self.IsDying && !_exploded)
 			{
 				RaycastHit[] objs = Physics.SphereCastAll(transform.position, 50.0f, transform.forward, 1.0f);
                 foreach (var item in objs)
