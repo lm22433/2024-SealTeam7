@@ -4,6 +4,7 @@ import struct
 import mmap
 import time
 import signal
+import os
 from contextlib import contextmanager
 
 import win32event
@@ -45,6 +46,10 @@ def timer(name):
     yield
     end = time.time()
     # print(f"{name}: {int((end - start)*1000)} ms")
+    
+def get_path(path):
+    dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(dir, path)
 
 # Create events
 ready_event = win32event.CreateEvent(None, 0, 0, READY_EVENT_NAME)
@@ -56,7 +61,7 @@ hand_landmarks_buffer = mmap.mmap(-1, HAND_LANDMARKS_SIZE, access=mmap.ACCESS_WR
 gestures_buffer = mmap.mmap(-1, GESTURES_SIZE, access=mmap.ACCESS_WRITE, tagname=GESTURES_FILE_NAME)
 
 gesture_recognizer_options = GestureRecognizerOptions(
-    base_options=BaseOptions(model_asset_path=GESTURE_RECOGNITION_MODEL_PATH),
+    base_options=BaseOptions(model_asset_path=get_path(GESTURE_RECOGNITION_MODEL_PATH)),
     running_mode=RunningMode.VIDEO,
     num_hands=2,
     min_hand_detection_confidence=0.05,
@@ -133,13 +138,13 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                     left_hand_absent_count += 1
                     right_hand_absent_count += 1
 
-                    # Fill in missing hands with projected positions if absent for <= 2 frames
-                    if left_hand_absent_count <= 2:
-                        left = projected_left_hand
-                        using_left_projected_hand = True
-                    if right_hand_absent_count <= 2:
-                        right = projected_right_hand
-                        using_right_projected_hand = True
+                    # # Fill in missing hands with projected positions if absent for <= 2 frames
+                    # if left_hand_absent_count <= 2:
+                    #     left = projected_left_hand
+                    #     using_left_projected_hand = True
+                    # if right_hand_absent_count <= 2:
+                    #     right = projected_right_hand
+                    #     using_right_projected_hand = True
                         
                 elif len(gesture_recognizer_result.hand_landmarks) <= 1:
                     left = None
@@ -154,13 +159,13 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                             left_hand_absent_count += 1
                             right_hand_absent_count = 0
                     
-                    # Fill in missing hands with projected positions if absent for <= 2 frames
-                    if left is None and left_hand_absent_count <= 2:
-                        left = projected_left_hand
-                        using_left_projected_hand = True
-                    if right is None and right_hand_absent_count <= 2:
-                        right = projected_right_hand
-                        using_right_projected_hand = True
+                    # # Fill in missing hands with projected positions if absent for <= 2 frames
+                    # if left is None and left_hand_absent_count <= 2:
+                    #     left = projected_left_hand
+                    #     using_left_projected_hand = True
+                    # if right is None and right_hand_absent_count <= 2:
+                    #     right = projected_right_hand
+                    #     using_right_projected_hand = True
 
                 elif len(gesture_recognizer_result.hand_landmarks) == 2:
                     left_hand_absent_count = 0
@@ -312,8 +317,8 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
     finally:
         # Clean up
         cv2.destroyAllWindows()
-        del mp_image
-        del colour_image_data
+        if "mp_image" in vars(): del mp_image
+        if "colour_image_data" in vars(): del colour_image_data
         colour_image_buffer.close()
         hand_landmarks_buffer.close()
         gestures_buffer.close()
