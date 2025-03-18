@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Enemies
 {
-    public class ArialSpawner : Enemy
+    public class AerialSpawner : Enemy
     {
         [SerializeField] float flyHeight;
         [SerializeField] private Transform muzzle;

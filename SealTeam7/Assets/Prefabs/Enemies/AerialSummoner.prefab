@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 377835221181255017}
   - component: {fileID: 781513554043923579}
   m_Layer: 0
-  m_Name: ArialSummoner
+  m_Name: AerialSummoner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
