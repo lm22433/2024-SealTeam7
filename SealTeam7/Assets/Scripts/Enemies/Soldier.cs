@@ -24,7 +24,7 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(Rb.linearVelocity).eulerAngles.y, 0f);
+                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, 0f);
                     break;
                 }
                 case EnemyState.AttackCore:

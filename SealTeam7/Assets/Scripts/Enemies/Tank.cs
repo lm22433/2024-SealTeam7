@@ -22,7 +22,7 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(Rb.linearVelocity).eulerAngles.y, transform.eulerAngles.z);
+                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, transform.eulerAngles.z);
                     
                     if (DisallowMovement || Rb.position.y > MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
                     {

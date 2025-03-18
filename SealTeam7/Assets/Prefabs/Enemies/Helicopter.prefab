@@ -86,7 +86,7 @@ MonoBehaviour:
   moveSpeed: 15
   acceleration: 20
   flyHeight: 165
-  aimSpeed: 1
+  aimSpeed: 10
   attackRange: 110
   attackInterval: 2
   stopShootingThreshold: 20

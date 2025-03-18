@@ -81,8 +81,8 @@ namespace Enemies.Utils
             // var gradientWeightOld = (current.GradientX * Mathf.Cos(angle) + current.GradientZ * Mathf.Sin(angle)) * 100f;
 
             float gradientWeight, distanceWeight;
-            if (flyHeight == 0) gradientWeight = (current.WorldPos.y - current.Parent?.WorldPos.y ?? current.WorldPos.y) * 100f;
-            else gradientWeight = goal.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
+            if (flyHeight == 0) gradientWeight = (current.WorldPos.y - current.Parent?.WorldPos.y ?? current.WorldPos.y) * 50f;
+            else gradientWeight = goal.WorldPos.y > flyHeight - 10f ? 5000f : 0f;
             
             var dstX = Mathf.Abs(current.WorldPos.x - goal.WorldPos.x);
             var dstZ = Mathf.Abs(current.WorldPos.z - goal.WorldPos.z);

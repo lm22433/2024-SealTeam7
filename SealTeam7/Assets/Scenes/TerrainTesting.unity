@@ -5036,7 +5036,7 @@ MonoBehaviour:
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
   mapUpdateInterval: 1
-  pathingDepth: 250
+  pathingDepth: 300
   pathFindInterval: 5
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped

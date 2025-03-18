@@ -13,8 +13,30 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-            if (State is EnemyState.AttackCore) TargetPosition = new Vector3(TargetPosition.x, flyHeight, TargetPosition.z);
-            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(Rb.linearVelocity).eulerAngles.y, transform.eulerAngles.z);
+            switch (State)
+            {
+                case EnemyState.AttackCore:
+                {
+                    TargetPosition = new Vector3(TargetPosition.x, flyHeight, TargetPosition.z);
+                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x,
+                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
+                        transform.eulerAngles.z);
+                    break;
+                }
+                case EnemyState.AttackHands:
+                {
+                    TargetRotation = Quaternion.Euler(
+                        transform.eulerAngles.x,
+                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
+                        transform.eulerAngles.z);
+                    break;
+                }
+                case EnemyState.Moving:
+                {
+                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, transform.eulerAngles.z);
+                    break;
+                }
+            }
         }
 
         protected override void EnemyFixedUpdate()
