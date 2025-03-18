@@ -19,12 +19,12 @@ namespace Map
         private readonly float _heightScale;
         
         private float[,] _heightMap;
-        private float2[,] _gradientMap;
-        private Image<Gray, float> _heightImage;
-        private Image<Gray, float> _gradientX;
-        private Image<Gray, float> _gradientZ;
-        private Image<Gray, float> _squareGradient;
-        private Image<Gray, float> _gradientMagnitude;
+        // private float2[,] _gradientMap;
+        // private Image<Gray, float> _heightImage;
+        // private Image<Gray, float> _gradientX;
+        // private Image<Gray, float> _gradientZ;
+        // private Image<Gray, float> _squareGradient;
+        // private Image<Gray, float> _gradientMagnitude;
         
         private bool _running;
         private float _time;
@@ -38,12 +38,12 @@ namespace Map
             _time = 0f;
             
             _heightMap = heightMap;
-            _gradientMap = gradientMap;
-            _heightImage = new Image<Gray, float>(size + 1, size + 1);
-            _gradientX = new Image<Gray, float>(size + 1, size + 1);
-            _gradientZ = new Image<Gray, float>(size + 1, size + 1);
-            _squareGradient = new Image<Gray, float>(size + 1, size + 1);
-            _gradientMagnitude = new Image<Gray, float>(size + 1, size + 1);
+            // _gradientMap = gradientMap;
+            // _heightImage = new Image<Gray, float>(size + 1, size + 1);
+            // _gradientX = new Image<Gray, float>(size + 1, size + 1);
+            // _gradientZ = new Image<Gray, float>(size + 1, size + 1);
+            // _squareGradient = new Image<Gray, float>(size + 1, size + 1);
+            // _gradientMagnitude = new Image<Gray, float>(size + 1, size + 1);
             
             _running = true;
             
