@@ -40,8 +40,8 @@ namespace Enemies
         [SerializeField] private GameObject projectile;
 
         [Header("Sound Effects")]
-        [SerializeField] private AK.Wwise.Event gunFireSound;
-        [SerializeField] private AK.Wwise.Event deathSoundEffect;
+        [SerializeField] protected AK.Wwise.Event gunFireSound;
+        [SerializeField] protected AK.Wwise.Event deathSoundEffect;
         
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
@@ -91,8 +91,10 @@ namespace Enemies
             
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
             {
-                transform.position = new Vector3(transform.position.x,
-                    MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
+                transform.position = new Vector3(
+                    transform.position.x,
+                    MapManager.GetInstance().GetHeight(transform.position),
+                    transform.position.z);
             }
             
             model.gameObject.SetActive(false);

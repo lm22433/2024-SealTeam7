@@ -80,10 +80,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 20
   acceleration: 40
-  flyHeight: 0
-  aimSpeed: 10
+  aimSpeed: 5
   attackRange: 50
   attackInterval: 1
   stopShootingThreshold: 20

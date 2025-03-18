@@ -70,15 +70,13 @@ namespace Map
                     {
                         var perlinX = x * _noiseScale + _time * _speed;
                         var perlinY = y * _noiseScale + _time * _speed;
-                        _heightImage.Data[y, x, 0] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        //_heightImage.Data[y, x, 0] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
+                        _heightMap[y, x] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
                     }
                 }
                 
-                CvInvoke.Sobel(_heightImage, _gradientX, DepthType.Default, 1, 0);
+                /*CvInvoke.Sobel(_heightImage, _gradientX, DepthType.Default, 1, 0);
                 CvInvoke.Sobel(_heightImage, _gradientZ, DepthType.Default, 0, 1);
-                // CvInvoke.AccumulateSquare(_gradientX, _squareGradient);
-                // CvInvoke.AccumulateSquare(_gradientY, _squareGradient);
-                // CvInvoke.Sqrt(_squareGradient, _gradientMagnitude);
                 
                 for (int y = 0; y < _size + 1; y++)
                 {
@@ -87,7 +85,7 @@ namespace Map
                         _heightMap[y, x] = _heightImage.Data[y, x, 0];
                         _gradientMap[y, x] = new float2(_gradientZ.Data[y, x, 0], _gradientX.Data[y, x, 0]);
                     }
-                }
+                }*/
             }
         }
     }

@@ -10012,7 +10012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc6c0171c084d7cb202329c32b1c168, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceOffset: {x: 0, y: -2, z: 1}
+  forceOffset: {x: 0, y: -1, z: 1}
   moveSpeed: 20
   acceleration: 100
   aimSpeed: 2
@@ -10536,7 +10536,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.04
   m_Height: 0.47457257
   m_Direction: 1
   m_Center: {x: 0.075, y: 0.081314035, z: -0.048035488}
@@ -10559,7 +10559,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.04
   m_Height: 0.47457257
   m_Direction: 1
   m_Center: {x: -0.075, y: 0.081314035, z: -0.048035488}

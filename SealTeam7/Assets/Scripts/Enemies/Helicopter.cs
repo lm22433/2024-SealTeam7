@@ -15,7 +15,7 @@ namespace Enemies
         
         protected override float Heuristic(Node start, Node end)
         {
-            return end.WorldPos.y > flyHeight ? 5000f : 0f;
+            return end.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
         }
         
         protected override void EnemyUpdate()

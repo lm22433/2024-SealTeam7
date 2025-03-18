@@ -83,10 +83,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309dac9d4c44f1b4fb414807a7fdbeaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 15
   acceleration: 20
-  flyHeight: 165
-  aimSpeed: 10
+  aimSpeed: 5
   attackRange: 110
   attackInterval: 2
   stopShootingThreshold: 20
@@ -107,6 +107,7 @@ MonoBehaviour:
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
   buried: 0
   buriedAmount: 0.5
+  flyHeight: 165
 --- !u!114 &2280521706687957157
 MonoBehaviour:
   m_ObjectHideFlags: 0
