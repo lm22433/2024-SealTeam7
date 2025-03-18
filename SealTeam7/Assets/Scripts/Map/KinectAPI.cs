@@ -161,19 +161,12 @@ namespace Map
                 
                 try
                 {
-                    // var stopwatch = new Stopwatch();
-                    // stopwatch.Start();
                     using Capture capture = _kinect.GetCapture();
-                    // stopwatch.Stop();
-                    // Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
 
                     _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
                     
                     if (PythonManager.IsInitialized) {
-                        // stopwatch.Restart();
                         var hl = PythonManager.ProcessFrame(capture.Color);
-                        // stopwatch.Stop();
-                        // Debug.Log($"PythonManager2.ProcessFrame: {stopwatch.ElapsedMilliseconds} ms");
 
                         // Skip frame if hand is absent, up to a few frames
                         if (hl.Left == null) _leftHandAbsentCount++;
@@ -186,11 +179,8 @@ namespace Map
                         // Saves adjusted hand landmarks to HandLandmarks
                         UpdateHandLandmarks(hl, _transformedDepthImage);
                     }
-                    
-                    // stopwatch.Restart();
+
                     UpdateHeightMap(_transformedDepthImage, HandLandmarks);
-                    // stopwatch.Stop();
-                    // Debug.Log($"UpdateHeightMap: {stopwatch.ElapsedMilliseconds} ms");
                     
                 } catch (Exception e) {
                     Debug.Log(e);
@@ -208,6 +198,8 @@ namespace Map
             Span<ushort> depthBuffer = depthImage.GetPixels<ushort>().Span;
 
             // Create a new image with data from the depth and colour image
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
@@ -233,10 +225,15 @@ namespace Map
                     }
                 }
             }
+            stopwatch.Stop();
+            Console.WriteLine($"Loop 1: {stopwatch.ElapsedMilliseconds} ms");
             
+            stopwatch.Restart();
             // Dilate the mask (extend it slightly along its borders)
             CvInvoke.Dilate(_tmpImage, _heightMask, _dilationKernel, _defaultAnchor, iterations: 1, 
                 BorderType.Default, _scalarOne);
+            stopwatch.Stop();
+            Console.WriteLine($"Loop 1: {stopwatch.ElapsedMilliseconds} ms");
             
             // Also mask using hand landmarks
             const float paddingHand = 20f;
@@ -272,6 +269,8 @@ namespace Map
             BboxLeft = bboxLeftHand;
             BboxRight = bboxRightHand;
             var vec2 = new Vector2();
+
+            stopwatch.Restart();
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
@@ -282,37 +281,38 @@ namespace Map
                     {
                         _heightMask.Data[y, x, 0] = 1f;
                     }
-                }
-            }
-            
-            // Update the heights, only in the non-masked part
-            for (int y = 0; y < _height + 1; y++)
-            {
-                for (int x = 0; x < _width + 1; x++)
-                {
+
                     if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
                     {
                         _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
                     }
-                    // Otherwise height is kept the same for that pixel
                 }
             }
+            stopwatch.Stop();
+            Console.WriteLine($"Loop 2: {stopwatch.ElapsedMilliseconds} ms");
             
+            stopwatch.Restart();
             // Gaussian blur
             CvInvoke.GaussianBlur(_maskedHeightImage, _tmpImage, _gaussianKernelSize, _gaussianKernelSigma);
+            stopwatch.Stop();
+            Console.WriteLine($"Gaussian Blur: {stopwatch.ElapsedMilliseconds} ms");
 
+            stopwatch.Restart();
             // Write new height data to _heightMap
-            for (int y = 0; y < _height + 1; y++)
-            {
-                for (int x = 0; x < _width + 1; x++)
-                {
-                    var currentHeight = _heightMap[y * (_width + 1) + x];
-                    var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
-                    var distance = Mathf.Abs(currentHeight - newHeight);
-                    var lerpFactor = Mathf.Clamp(distance / 10f, _minLerpFactor, _maxLerpFactor);
-                    _heightMap[y * (_width + 1) + x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
-                }
-            }
+            Parallel.For(0, _height * _width, i => { 
+                int x = i % _width;
+                int y = i / _width;
+
+                var currentHeight = _heightMap[y * (_width + 1) + x];
+                var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
+                var distance = Mathf.Abs(currentHeight - newHeight);
+                var lerpFactor = Mathf.Clamp(distance / 10f, _minLerpFactor, _maxLerpFactor);
+                _heightMap[y * (_width + 1) + x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
+  
+            });
+            
+            stopwatch.Stop();
+            Console.WriteLine($"Loop 3: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void UpdateHandLandmarks(HandLandmarks handLandmarks, Image depthImage)
@@ -341,7 +341,7 @@ namespace Map
                     -_yOffsetStart);
             }
 
-            const float handYScaling = 3f;
+            const float handYScaling = 1.5f;
             HandLandmarks = new HandLandmarks
             {
                 Left = handLandmarks.Left?.Select(p => 

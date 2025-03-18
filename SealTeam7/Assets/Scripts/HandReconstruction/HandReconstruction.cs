@@ -10,17 +10,12 @@ public class HandReconstruction : MonoBehaviour
     [SerializeField] private float _lerpFactor;
     [SerializeField] private float _thresholdDst;
     [SerializeField, Range(0,1)] private int _hand;
+    [SerializeField] private Vector3[] positions_offset;
     private Vector3[] positions;
-    private Vector3[] startRotations;
 
     void Start()
     {
         positions = new Vector3[21];
-        startRotations = new Vector3[18];
-
-        for(int i = 0; i < bones.Length; i++) {
-            startRotations[i] = bones[i].transform.rotation.eulerAngles;
-        }
     }
 
     // Update is called once per frame
@@ -35,7 +30,7 @@ public class HandReconstruction : MonoBehaviour
         }
 
         for(int i = 0; i < tempPositions.Length; i++) {
-            positions[i] = tempPositions[i];
+            positions[i] = tempPositions[i];// + positions_offset[i];
         }
 
         //Hand direction about the Y axis
@@ -44,8 +39,12 @@ public class HandReconstruction : MonoBehaviour
         
         gameObject.transform.localRotation = Quaternion.Euler(gameObject.transform.localRotation.eulerAngles.x, Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, gameObject.transform.localRotation.eulerAngles.z);
 
-        //targetDir = positions[17] - positions[5];
-        //hand.transform.localRotation = Quaternion.LookRotation(targetDir.normalized, Vector3.right);
+        targetDir = positions[17] - positions[5];
+        hand.transform.localRotation = Quaternion.Euler(
+            hand.transform.localRotation.eulerAngles.x, 
+            hand.transform.localRotation.eulerAngles.y,  
+            Vector3.Angle(targetDir.normalized, transform.right) + 180
+        );
 
         //Hand direction wrist to knuckle x axis
         RotateBoneToVector(1, 0, 9);
@@ -79,9 +78,9 @@ public class HandReconstruction : MonoBehaviour
     private void RotateBoneToVector(int bone, int start, int end) {
         Vector3 targetDir = positions[end] - positions[start];
         bones[bone].transform.localRotation = Quaternion.Euler(
-            Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.x + startRotations[bone].x, 
+            Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.x, 
             bones[bone].transform.rotation.y, 
-            Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.z + startRotations[bone].z
+            bones[bone].transform.rotation.z //Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.z
         );
     }
 
@@ -89,7 +88,7 @@ public class HandReconstruction : MonoBehaviour
     {
         Vector3 targetDir = positions[17] - positions[5];
 
-        Gizmos.color = Color.blue;
+        Gizmos.color = Color.black;
         Gizmos.DrawLine(positions[5], positions[5] + targetDir);
         Gizmos.color = Color.red;
         Gizmos.DrawLine(positions[0], positions[0] + transform.right * 10);
