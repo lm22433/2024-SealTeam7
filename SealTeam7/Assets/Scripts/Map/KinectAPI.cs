@@ -128,27 +128,10 @@ namespace Map
                 positions = HandLandmarks.Left;
             }
 
-            if (positions == null) {
-                return null;
-            }
-
-            if (positions[9].z >= _yOffsetStart && positions[9].z <= _yOffsetEnd &&
-                positions[9].x - 30 >= _xOffsetStart && positions[9].x - 30 <= _xOffsetEnd) {
-
-                var height = _rawHeightImage.Data[(int) positions[9].z - _yOffsetStart, (int) positions[9].x - _xOffsetStart - 30, 0];
-                if (height == 0) {
-                    return null;
-                }
-
-                for(int i = 0; i < positions.Length; i++) {
-                    positions[i] = new Vector3((int) positions[i].x - _xOffsetStart - 30, (height + 0.00025f * (positions[0].y + positions[i].y)) * _heightScale, positions[i].z - _yOffsetStart);
-                }
-
+            if (positions != null) {
                 return positions;
             }
-            else {
-                Debug.Log("out of bounds");
-            }
+
                 
             return null;
 
@@ -344,7 +327,7 @@ namespace Map
             
             var offsetLeft = new Vector3();
             var offsetRight = new Vector3();
-            const float wristYOffset = 0f;
+            const float wristYOffset = -50f;
             if (leftHandDepth.HasValue)
             {
                 offsetLeft = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
