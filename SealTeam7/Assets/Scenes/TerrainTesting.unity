@@ -1724,8 +1724,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.001
-  noiseScale: 0.001
+  noiseSpeed: 0.01
+  noiseScale: 0.005
   width: 880
   height: 880
   xOffsetStart: 480
@@ -1742,11 +1742,12 @@ MonoBehaviour:
   mapSize: 880
   chunkRow: 1
   chunkSize: 880
-  heightScale: 300
+  heightScale: 400
   lerpFactor: 0.2
   lodInfo:
-    lod: 0
+    lod: 1
     colliderLod: 2
+    pathingLod: 10
   isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
@@ -4167,13 +4168,53 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: scoreUI
+      value: 
+      objectReference: {fileID: 366592715}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: _scoreUI
       value: 
       objectReference: {fileID: 366592715}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: mainMenu
+      value: 
+      objectReference: {fileID: 1752941133}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: settingsMenu
+      value: 
+      objectReference: {fileID: 1752941134}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: durationSlider
+      value: 
+      objectReference: {fileID: 1752941131}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: difficultyDropdown
+      value: 
+      objectReference: {fileID: 1752941132}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: durationSliderText
+      value: 
+      objectReference: {fileID: 1752941130}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.size
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'difficulties.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 56ddbcfd438354956822f2ccc98c0b9d, type: 2}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'difficulties.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: a0c59461ebefa4ef49d1eea75c4e00a4, type: 2}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'difficulties.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 407dc5d3de3ec4fb0a953ee65e70ada2, type: 2}
+    - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'difficulties.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 9a1d2f5961a384b7e98107e560110632, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.data[3].name
       value: Helicopter
@@ -4823,6 +4864,49 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+--- !u!114 &1752941130 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5279576163568979249, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1752941131 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2972326472664544281, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1752941132 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1635809900923867297, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1752941133 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8561574992264673166, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1752941134 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1882065354379447099, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+  m_PrefabInstance: {fileID: 1752941129}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1778816574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4964,6 +5048,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2004182967}
   - component: {fileID: 2004182966}
+  - component: {fileID: 2004182968}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4985,14 +5070,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameDuration: 120
   maxHealth: 1000
-  completionBonusScore: 1000
+  completionBonusScore: 500
   survivalBonusInterval: 30
-  survivalBonusScore: 500
+  survivalBonusScore: 250
+  waveClearedEarlyBonusScore: 750
   scoreText: {fileID: 1129775591}
   timerText: {fileID: 689466560}
   healthBar: {fileID: 363072743}
   gameoverScoreText: {fileID: 1386844821}
   gameoverText: {fileID: 2136132640}
+  celebrationFanfare:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 3f97d12f1f6264347b4b282d0a44b6a5, type: 2}
 --- !u!4 &2004182967
 Transform:
   m_ObjectHideFlags: 0
@@ -5008,6 +5098,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2004182968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2004182965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 894f28031a344c1184bbf7fca1292d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2008113124
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5108,7 +5210,7 @@ Transform:
   m_GameObject: {fileID: 2027198501}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 909, y: 0, z: 470}
+  m_LocalPosition: {x: 809, y: 0, z: 470}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5210,6 +5312,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2085838829}
   - component: {fileID: 2085838830}
+  - component: {fileID: 2085838831}
   m_Layer: 0
   m_Name: EnemyManager
   m_TagString: Untagged
@@ -5244,6 +5347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f20d8f9e8d424acda38b163a24a46ee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialStartDelay: 10
   spawnPoints:
   - {fileID: 207832236}
   - {fileID: 2136277956}
@@ -5253,10 +5357,32 @@ MonoBehaviour:
   - {fileID: 2027198502}
   - {fileID: 1336062332}
   maxEnemyCount: 1000
-  maxEnemyDistance: 600
+  maxEnemyDistance: 900
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
+  mapUpdateInterval: 1
+  pathingDepth: 300
+  pathFindInterval: 5
+  enemyData:
+  - {fileID: 11400000, guid: 48fcae14540e510498a8ca0e7911261c, type: 2}
+  - {fileID: 11400000, guid: 46cb815e1632b2d44a7f27e801930935, type: 2}
+  - {fileID: 11400000, guid: 8dac9d03a92f5b54d90f651c248933e8, type: 2}
+  - {fileID: 11400000, guid: d7aadd3a0f6d58d49919079d90613b3a, type: 2}
+  - {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
+  - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
   sqrMaxEnemyDistance: 500
+--- !u!114 &2085838831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085838828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b93a9f6b25b14cd3bc9d43be20af79ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2136132640 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7684061989767451873, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}

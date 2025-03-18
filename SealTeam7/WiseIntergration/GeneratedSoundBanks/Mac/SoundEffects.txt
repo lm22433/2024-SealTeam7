@@ -1,7 +1,9 @@
 Event	ID	Name			Wwise Object Path	Notes
 	667425441	Play_MainMenuMusic			\Default Work Unit\Play_MainMenuMusic	
+	1257416293	Play_CelebrationFanfare			\Default Work Unit\Play_CelebrationFanfare	
 	1988800053	Play_Solider_Gunfire			\Default Work Unit\Play_Solider_Gunfire	
 	2568326629	Play_SoliderScream			\Default Work Unit\Play_SoliderScream	
+	2723016199	Play_HelicopterMissile			\Default Work Unit\Play_HelicopterMissile	
 	2853397551	Play_GameIntroTrack			\Default Work Unit\Play_GameIntroTrack	
 	3013451977	Play_Helicopter_Sound			\Default Work Unit\Play_Helicopter_Sound	
 	3624895801	Play_Tank_Gunfire			\Default Work Unit\Play_Tank_Gunfire	
@@ -11,11 +13,16 @@ Event	ID	Name			Wwise Object Path	Notes
 Effect plug-ins	ID	Name	Type				Notes
 	46213127	Parametric EQ (Custom)	Wwise Parametric EQ			
 	300353365	Gain (Custom)	Wwise Gain			
+	332356152	Pitch Shifter (Custom)	Wwise Pitch Shifter			
+	683578907	Parametric EQ (Custom)	Wwise Parametric EQ			
+	702897530	Pitch Shifter (Custom)	Wwise Pitch Shifter			
 	915072423	Pitch Shifter (Custom)	Wwise Pitch Shifter			
+	1042662446	Gain (Custom)	Wwise Gain			
 	1061489957	Pitch Shifter (Custom)	Wwise Pitch Shifter			
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	131038067	explosion-312361	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\B1\{B161CD91-5699-9BBA-220C-E67A91D6C5A7}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Explosion\explosion-312361		212064
+	130871781	missile-explosion-168600	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\59\{59F6AF7A-2BAF-682A-2DC7-0FECF4F3305C}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\HelicopterMissile\missile-explosion-168600		1064544
+	131038067	explosion-312361	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\B1\{B161CD91-5699-9BBA-220C-E67A91D6C5A7}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Explosion_01\explosion-312361		212064
 	164042640	MainMenuMusic	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\AD\{AD075ACF-119C-91C4-5C06-7AB0161BD0AC}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\MainMenuMusic\MainMenuMusic		34264668
 	222821284	DesertAmbiance	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\AB\{AB4ECF3D-92FB-D0B4-7B1F-2F6A39B78195}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\DesertWind\DesertAmbiance		7582560
 	244724092	Sandgametrailer2	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\28\{285E28A1-BCAA-7DD0-4E0F-58DDD5AF5F0B}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\GameIntroTrack\Sandgametrailer2		7486504
@@ -23,6 +30,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	326758480	helicopter-sound-effect-241421	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\B0\{B09C25CE-4003-1CC7-BD02-FD8B57D67B57}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Helicopter Sound\helicopter-sound-effect-241421		3916896
 	331440713	scream-85294	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\57\{57B00845-652B-1355-49EE-17FE145370F5}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\SoliderScream\scream-85294		246624
 	429045206	Pistol 2	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\74\{745CAA50-CFE0-837C-D5CA-704AA9D0A62D}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Solider Gunfire\Pistol 2		397788
+	606358506	fanfare-46385	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\D1\{D112A7A0-E46E-940E-05E3-72465B801674}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Tank Gunfire\fanfare-46385		198240
 	668002209	DesertWind	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\AA\{AAFE09DF-50D0-CE78-BA3C-C7C0EE4D5EC5}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\DesertWind\DesertWind		10135392
 	734982053	Gun SoundsFX	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\52\{5256D022-3E27-31FA-3C43-803BDC823017}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Gun SoundsFX\Gun SoundsFX		157856
 	840879273	Gun Sounds	C:\Users\plill\Desktop\GamesProject\2024-SealTeam7\SealTeam7\WiseIntergration\.cache\FC\{FC4BF945-6612-3DCE-4292-0F6AB8F22069}.wem		\Interactive Music Hierarchy\Default Work Unit\SoundEffects\Tank Gunfire\Gun Sounds		2490360
