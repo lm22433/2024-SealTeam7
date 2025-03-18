@@ -93,6 +93,7 @@ namespace Enemies
                         GameObject enemy = EnemyPool.GetInstance().GetFromPool(chosenEnemy, spawn.position + spawnOffset, spawn.rotation);
                         if (enemy != null)
                         {
+                            enemy.GetComponent<Enemy>().Init();
                             enemy.transform.SetParent(transform);
                             _enemyCount++;
                         }

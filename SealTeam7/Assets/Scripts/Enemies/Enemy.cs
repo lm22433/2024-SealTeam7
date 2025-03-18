@@ -56,13 +56,17 @@ namespace Enemies
         {
             EnemyManager = EnemyManager.GetInstance();
             Rb = GetComponent<Rigidbody>();
-            
+            SqrAttackRange = attackRange * attackRange;
+        }
+
+        public virtual void Init()
+        {
+            model.gameObject.SetActive(true);
             deathParticles.Stop();
 
-            SqrAttackRange = attackRange * attackRange;
             State = EnemyState.Moving;
             // Target = transform.position + transform.forward;
-            TargetPosition = EnemyManager.godlyCore.transform.position;
+            TargetPosition = EnemyManager.GetInstance().godlyCore.transform.position;
             TargetRotation = transform.rotation;
             TargetDirection = transform.forward;
         }
