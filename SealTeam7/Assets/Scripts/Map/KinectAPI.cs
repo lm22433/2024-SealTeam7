@@ -237,7 +237,7 @@ namespace Map
             
             // Also mask using hand landmarks
             const float paddingHand = 20f;
-            const float paddingWrist = 50f;
+            const float paddingWrist = 100f;
             var bboxLeftHand = new Rect();
             var bboxRightHand = new Rect();
             var bboxLeftWrist = new Rect();
