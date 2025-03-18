@@ -58,6 +58,6 @@ Material:
     - _QueueControl: 0
     - _Smoothness: 0
     m_Colors:
-    - _Tint: {r: 0.7764706, g: 0.5254902, b: 0.25882354, a: 0}
+    - _Tint: {r: 0.3882353, g: 0.2627451, b: 0.12941177, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

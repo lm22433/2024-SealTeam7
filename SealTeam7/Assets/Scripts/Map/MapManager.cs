@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using System.Linq;
+using Enemies.Utils;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Map
@@ -10,8 +13,9 @@ namespace Map
     {
         public int lod;
         public int colliderLod;
+        public int pathingLod;
     }
-    
+
     public class MapManager : MonoBehaviour
     {
         [Header("Noise Settings")]
@@ -64,24 +68,26 @@ namespace Map
         [SerializeField] private bool paused;
         [SerializeField] private bool takeSnapshot;
         [SerializeField] private Texture2D texture;
-        
-        private static MapManager _instance;
-        
+
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
-        private float[] _heightMap;
+        private float[,] _heightMap;
+        private float2[,] _gradientMap;
         private List<Chunk> _chunks;
         private float _mapSpacing;
-        
+
+        private static MapManager _instance;
+
         private void Awake()
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
-            
+
             _mapSpacing = (float) mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
-            _heightMap = new float[(int) (mapSize / _mapSpacing + 1) * (int) (mapSize / _mapSpacing + 1)];
-            
+            _heightMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
+            _gradientMap = new float2[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
+
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
             texture = new Texture2D((int) (mapSize / _mapSpacing + 1), (int) (mapSize / _mapSpacing + 1), TextureFormat.RGBA32, false);
@@ -95,8 +101,8 @@ namespace Map
                 ColliderEnabled = colliderEnabled
             };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
-            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, ref _gradientMap, kernelSize, gaussianStrength);
+            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, ref _gradientMap);
 
             for (int z = 0; z < chunkRow; z++)
             {
@@ -134,10 +140,10 @@ namespace Map
             var z1 = Mathf.FloorToInt(percentZ * mapSize);
             var x2 = Mathf.CeilToInt(percentX * mapSize);
             var z2 = Mathf.CeilToInt(percentZ * mapSize);
-            var Q11 = _heightMap[z1 * (mapSize + 1) + x1];
-            var Q21 = _heightMap[z2 * (mapSize + 1) + x1];
-            var Q12 = _heightMap[z1 * (mapSize + 1) + x2];
-            var Q22 = _heightMap[z2 * (mapSize + 1) + x2];
+            var Q11 = _heightMap[z1, x1];
+            var Q21 = _heightMap[z2, x1];
+            var Q12 = _heightMap[z1, x2];
+            var Q22 = _heightMap[z2, x2];
 
             // if one axis is an integer use normal linear interpolation
             if (x1 == x2) return Mathf.Lerp(Q12, Q11, z2 - z);
@@ -156,45 +162,51 @@ namespace Map
             percentX = Mathf.Clamp01(percentX);
             percentZ = Mathf.Clamp01(percentZ);
             
-            var x = Mathf.FloorToInt(percentX * mapSize);
-            var z = Mathf.FloorToInt(percentZ * mapSize);
+            var normalSideCount = Mathf.FloorToInt(Mathf.Sqrt(normals.Length) - 1);
+            var x = Mathf.FloorToInt(percentX * normalSideCount);
+            var z = Mathf.FloorToInt(percentZ * normalSideCount);
 
-            return normals[z * (mapSize + 1) + x];
+            return normals[z * (normalSideCount + 1) + x];
         }
         
         private void Update()
         {
             if (takeSnapshot)
             {
-
-                Color32[] col = new Color32[_heightMap.Length];
-                for(int i = 0; i < _heightMap.Length; i++)
+                Color32[] col = new Color32[_gradientMap.Length];
+                var i = 0;
+                foreach (var h in _gradientMap)
                 {
                     try
                     {
-                        col[i] = new Color32(Convert.ToByte(Mathf.Min(255, _heightMap[i] / heightScale * 255)), 0, 0, Convert.ToByte(255));   
+                        col[i] = new Color32(Convert.ToByte((Mathf.Atan2(h.x, h.y) * Mathf.Rad2Deg + 90f) / 180f * 255f), 0, 0, Convert.ToByte(255));
+                        i++;
                     }
                     catch (OverflowException e)
                     {
                         Debug.LogWarning(e.Message);
                         col[i] = new Color32();
+                        i++;
                     }
                 }
 
                 texture.SetPixels32(col);
                 texture.Apply();
-                Debug.Log(_heightMap.Length);
-                Debug.Log("Applied Texture");
 
                 takeSnapshot = false;
             }
             
             if (!paused && !isKinectPresent)
             {
-                _noiseGenerator.AdvanceTime(Time.deltaTime);                
+                _noiseGenerator.AdvanceTime(Time.deltaTime);
             }
         }
         
         public static MapManager GetInstance() => _instance;
+        public ref float[,] GetHeightMap() => ref _heightMap;
+        public ref float2[,] GetGradientMap() => ref _gradientMap;
+        public int GetMapSize() => mapSize;
+        public float GetMapSpacing() => _mapSpacing;
+        public int GetPathingLodFactor() => lodInfo.pathingLod == 0 ? 1 : lodInfo.pathingLod * 2;
     }
 }

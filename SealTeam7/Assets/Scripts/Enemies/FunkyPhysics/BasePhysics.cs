@@ -28,13 +28,13 @@ namespace Enemies.FunkyPhysics
             Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
             
             //WOULD DIE BURIED
-            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor)
+            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
             {
                 Self.buried = Self.buriedAmount;
                 EnemyManager.GetInstance().Kill(Self);
             }
             //WOULD DIE FALL DMG
-            if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded) EnemyManager.GetInstance().Kill(Self);
+            if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
 
             EnemyUpdate();
         }

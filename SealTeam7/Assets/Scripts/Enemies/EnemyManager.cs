@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Enemies.Utils;
 using Game;
+using Map;
 using Player;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -14,6 +18,22 @@ namespace Enemies
         public float groupSpacing;
         [Range(0, 1)] public float spawnChance;
     }
+    
+    public struct PathRequest
+    {
+        public Vector3 Start;
+        public Vector3 End;
+        public Func<Node, Node, float> Heuristic;
+        public Action<Vector3[]> Callback;
+
+        public PathRequest(Vector3 start, Vector3 end, Func<Node, Node, float> heuristic, Action<Vector3[]> callback)
+        {
+            Start = start;
+            End = end;
+            Heuristic = heuristic;
+            Callback = callback;
+        }
+    }
 
     public class EnemyManager : MonoBehaviour
     {
@@ -26,11 +46,20 @@ namespace Enemies
         [SerializeField] public PlayerCore godlyCore;
         [SerializeField] public PlayerHands godlyHands;
         
+        [Header("Pathing Settings")]
+        [SerializeField] private float mapUpdateInterval;
+        [SerializeField] private int pathingDepth;
+        [SerializeField] public float pathFindInterval;
+
         [HideInInspector] public float sqrMaxEnemyDistance;
         
         private float _lastSpawn;
+        private float _lastMapUpdate;
         private int _enemyCount;
         private float _spawnInterval;
+        private PathFinder _pathFinder;
+        private Queue<PathRequest> _pathRequestQueue;
+        private bool _running;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
 
@@ -40,20 +69,45 @@ namespace Enemies
             else Destroy(gameObject);
             
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
+            _pathFinder = new PathFinder(MapManager.GetInstance().GetMapSize(), MapManager.GetInstance().GetMapSpacing(), MapManager.GetInstance().GetPathingLodFactor());
+            _pathRequestQueue = new Queue<PathRequest>();
+            _running = true;
+
+            Task.Run(PathThread);
         }
+
+        private void OnApplicationQuit() => _running = false;
 
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
             enemy.SetupDeath();
         }
-        
-        public static EnemyManager GetInstance() => _instance;
 
         public void SetDifficulty(Difficulty difficulty)
         {
             _spawnInterval = difficulty.spawnInterval;
             _enemyTypes = difficulty.enemies;
+        }
+
+        private void PathThread()
+        {
+            while (_running)
+            {
+                TryProcessPath();
+            }
+        }
+
+        public void RequestPath(Vector3 start, Vector3 end, Func<Node, Node, float> heuristic, Action<Vector3[]> callback)
+        {
+            _pathRequestQueue.Enqueue(new PathRequest(start, end, heuristic, callback));
+        }
+
+        private void TryProcessPath()
+        {
+            if (_pathRequestQueue.Count < 1) return;
+            var request = _pathRequestQueue.Dequeue();
+            _pathFinder.FindPathAsync(request.Start, request.End, pathingDepth, request.Heuristic, request.Callback);
         }
 
         public void KillAllEnemies()
@@ -92,11 +146,21 @@ namespace Enemies
             if (!GameManager.GetInstance().IsGameActive()) return;
             
             _lastSpawn += Time.deltaTime;
+            if (_lastSpawn > _spawnInterval)
+            {
+                _lastSpawn = 0;
+                SpawnEnemies();
+            }
             
-            if (_lastSpawn < _spawnInterval) return;
-            
-            _lastSpawn = 0;
-            SpawnEnemies();
+            _lastMapUpdate += Time.deltaTime;
+            if (_lastMapUpdate > mapUpdateInterval)
+            {
+                _lastMapUpdate = 0;
+                _pathFinder.UpdateMap(ref MapManager.GetInstance().GetHeightMap());
+                _pathFinder.UpdateGradient(ref MapManager.GetInstance().GetGradientMap());
+            }
         }
+        
+        public static EnemyManager GetInstance() => _instance;
     }
 }
