@@ -85,7 +85,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 15
   acceleration: 20
-  aimSpeed: 20
+  flyHeight: 165
+  aimSpeed: 1
   attackRange: 110
   attackInterval: 2
   stopShootingThreshold: 20
@@ -94,6 +95,8 @@ MonoBehaviour:
   killScore: 20
   deathParticles: {fileID: 4793043602501896030}
   model: {fileID: 1150560966112247641}
+  muzzle: {fileID: 8302181914671201879}
+  projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
@@ -104,9 +107,6 @@ MonoBehaviour:
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
   buried: 0
   buriedAmount: 0.5
-  flyHeight: 165
-  muzzle: {fileID: 8302181914671201879}
-  projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
 --- !u!114 &2280521706687957157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,11 +400,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.7
       objectReference: {fileID: 0}
     - target: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_LocalRotation.w

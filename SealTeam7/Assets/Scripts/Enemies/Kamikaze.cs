@@ -13,17 +13,11 @@ namespace Enemies
         {
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
-        
-        protected override void Attack(PlayerDamageable target)
-        {
-            target?.TakeDamage(attackDamage);
-            killScore = 0;
-            SetupDeath();
-        }
-        
+
         protected override void EnemyUpdate()
         {
-            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetDirection).eulerAngles.y, transform.eulerAngles.z);
+            if (State is EnemyState.AttackCore) TargetPosition = new Vector3(TargetPosition.x, flyHeight, TargetPosition.z);
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(Rb.linearVelocity).eulerAngles.y, transform.eulerAngles.z);
         }
 
         protected override void EnemyFixedUpdate()

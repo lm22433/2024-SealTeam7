@@ -10014,7 +10014,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 20
   acceleration: 100
-  aimSpeed: 1
+  flyHeight: 0
+  aimSpeed: 0.5
   attackRange: 100
   attackInterval: 4
   stopShootingThreshold: 20
@@ -10023,6 +10024,8 @@ MonoBehaviour:
   killScore: 10
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 45913116891892241}
+  muzzle: {fileID: 8190482063018076452}
+  projectile: {fileID: 4367590948807452066, guid: f4ad86d3785a5ed478eeb01a30af078b, type: 3}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
@@ -10037,8 +10040,6 @@ MonoBehaviour:
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
-  muzzle: {fileID: 8190482063018076452}
-  projectile: {fileID: 4367590948807452066, guid: f4ad86d3785a5ed478eeb01a30af078b, type: 3}
   groundedOffset: 7
 --- !u!114 &3729924882987787105
 MonoBehaviour:

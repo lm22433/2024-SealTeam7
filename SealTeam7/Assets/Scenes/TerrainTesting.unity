@@ -1681,7 +1681,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseSpeed: 0.01
-  noiseScale: 0.01
+  noiseScale: 0.005
   width: 520
   height: 520
   xOffsetStart: 680
@@ -5036,7 +5036,7 @@ MonoBehaviour:
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
   mapUpdateInterval: 1
-  pathingDepth: 200
+  pathingDepth: 250
   pathFindInterval: 5
   sqrMaxEnemyDistance: 500
 --- !u!114 &2136132640 stripped

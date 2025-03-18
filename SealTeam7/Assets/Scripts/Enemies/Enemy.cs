@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using Enemies.Utils;
 using Game;
 using Map;
 using Player;
@@ -29,8 +29,12 @@ namespace Enemies
         [SerializeField] protected float coreTargetHeightOffset;
         [SerializeField] protected int attackDamage;
         [SerializeField] protected int killScore;
+        
+        [Header("Visual Effects")]
         [SerializeField] private VisualEffect deathParticles;
         [SerializeField] private Transform model;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
 
         [Header("Sound Effects")]
         [SerializeField] private AK.Wwise.Event gunFireSound;
@@ -94,7 +98,18 @@ namespace Enemies
 			State = EnemyState.Dying;
 		}
 
-        protected abstract void Attack(PlayerDamageable target);
+        protected virtual void Attack(PlayerDamageable toDamage)
+        {
+            gunFireSound.Post(gameObject);
+            
+            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position), EnemyManager.transform).TryGetComponent(out Projectile proj);
+            proj.TargetPosition = TargetPosition;
+            proj.ToDamage = toDamage;
+            proj.Damage = attackDamage;
+            
+            Destroy(proj.gameObject, 3f);
+        }
+        
         protected virtual void EnemyUpdate() {}
         protected virtual void EnemyFixedUpdate() {}
         
@@ -178,20 +193,15 @@ namespace Enemies
 
 			if (State == EnemyState.Dying)
             {
-                var x = transform.position.x;
-                var z = transform.position.z;
                 if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
                 {
-                    transform.position = new Vector3(x, MapManager.GetInstance().GetHeight(transform.position) - buried, z);
+                    transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) - buried, transform.position.z);
                 }
 				DeathDuration -= Time.deltaTime;
 				if (DeathDuration <= 0.0f) Die();
 			}
 
-            if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance)
-            {
-                EnemyManager.Kill(this);
-            }
+            if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance) EnemyManager.Kill(this);
             
             UpdateState();
             UpdateTarget();
@@ -218,22 +228,12 @@ namespace Enemies
                     break;
                 }
                 case EnemyState.AttackCore:
-                {
-                    if (LastAttack >= attackInterval && !DisallowShooting)
-                    {
-                        gunFireSound.Post(gameObject);
-                        Attack(EnemyManager.godlyCore);
-                        LastAttack = 0f;
-                    }
-                    break;
-                }
                 case EnemyState.AttackHands:
                 {
                     if (LastAttack >= attackInterval && !DisallowShooting)
                     {
-                        gunFireSound.Post(gameObject);
-                        Attack(EnemyManager.godlyHands);
                         LastAttack = 0f;
+                        Attack(State is EnemyState.AttackCore ? EnemyManager.godlyCore : EnemyManager.godlyHands);
                     }
                     break;
                 }
@@ -242,7 +242,7 @@ namespace Enemies
             EnemyFixedUpdate();
         }
         
-        public void OnDrawGizmos()
+        public void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
             if (Path.Length > 0) Gizmos.DrawCube(Path[PathIndex], Vector3.one);
@@ -255,6 +255,6 @@ namespace Enemies
             }
         }
 
-        public bool IsDying() => State == EnemyState.Dying;
+        public bool IsDying => State == EnemyState.Dying;
     }
 }

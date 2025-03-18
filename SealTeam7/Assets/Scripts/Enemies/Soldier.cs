@@ -8,8 +8,6 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
-        [SerializeField] private Transform muzzle;
-        [SerializeField] private GameObject projectile;
 
 		protected override void Start()
 		{
@@ -17,16 +15,6 @@ namespace Enemies
 			DeathDuration = 0.5f;
 			buriedAmount = 0.25f;
 		}
-        
-        protected override void Attack(PlayerDamageable toDamage)
-        {
-            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position)).TryGetComponent(out Projectile proj);
-            proj.Target = TargetPosition;
-            proj.ToDamage = toDamage;
-            proj.Damage = attackDamage;
-            
-            Destroy(proj.gameObject, 2f);
-        }
 
         protected override void EnemyUpdate()
         {

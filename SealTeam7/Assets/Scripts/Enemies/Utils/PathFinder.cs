@@ -74,13 +74,15 @@ namespace Enemies.Utils
 
         private static float Heuristic(Node current, Node goal, float flyHeight)
         {
+            // Gradient Map not working?
+            
             // var distance = goal.WorldPos - current.WorldPos;
             // var angle = Mathf.Atan2(distance.z, distance.x) * Mathf.Rad2Deg;
             // var gradientWeightOld = (current.GradientX * Mathf.Cos(angle) + current.GradientZ * Mathf.Sin(angle)) * 100f;
 
             float gradientWeight, distanceWeight;
             if (flyHeight == 0) gradientWeight = (current.WorldPos.y - current.Parent?.WorldPos.y ?? current.WorldPos.y) * 100f;
-            else gradientWeight = goal.WorldPos.y > flyHeight ? 10000f : 0f;
+            else gradientWeight = goal.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
             
             var dstX = Mathf.Abs(current.WorldPos.x - goal.WorldPos.x);
             var dstZ = Mathf.Abs(current.WorldPos.z - goal.WorldPos.z);
