@@ -118,7 +118,7 @@ namespace Map
                             Quaternion.identity, chunkParent.transform).GetComponent<BackgroundChunk>();
                         chunkSettings.X = x;
                         chunkSettings.Z = z;
-                        chunk.Setup(chunkSettings);
+                        chunk.Setup(chunkSettings, heightScale);
                         // _chunks.Add(chunk);
                     }
                 }

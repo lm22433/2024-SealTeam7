@@ -661,7 +661,7 @@ MonoBehaviour:
   kernelSize: 5
   gaussianStrength: 30
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
-  backgroundChunkPrefab: {fileID: 5106176306695275440, guid: 23c7c3a7497b4f344b9286e8a70af932, type: 3}
+  backgroundChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
   mapSize: 520
   chunkRow: 2
   chunkSize: 260
