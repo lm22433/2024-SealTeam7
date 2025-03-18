@@ -34,7 +34,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8766715710197058457}
-  - {fileID: 8504172332382226243}
   - {fileID: 7470219725954957744}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -50,10 +49,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 2
+  forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 40
   acceleration: 40
-  aimSpeed: 20
+  aimSpeed: 5
   attackRange: 50
   attackInterval: 1
   stopShootingThreshold: 20
@@ -61,7 +60,7 @@ MonoBehaviour:
   attackDamage: 1
   killScore: 200
   deathParticles: {fileID: 800979439519608610}
-  model: {fileID: 8504172332382226243}
+  model: {fileID: 8766715710197058457}
   muzzle: {fileID: 2415730568844001834}
   projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
   gunFireSound:
@@ -202,12 +201,12 @@ Transform:
   m_GameObject: {fileID: 8995765152636253557}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.15, z: 0.45}
-  m_LocalScale: {x: 0.099999994, y: 0.3, z: 0.6}
+  m_LocalPosition: {x: 1, y: 0.3, z: 0.9}
+  m_LocalScale: {x: 0.19999999, y: 0.6, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2415730568844001834}
-  m_Father: {fileID: 2009848768158169250}
+  m_Father: {fileID: 8766715710197058457}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2579535534237893623
 MeshFilter:
@@ -5219,7 +5218,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8504172332382226243}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
 --- !u!4 &8766715710197058457 stripped

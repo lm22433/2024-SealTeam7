@@ -83,10 +83,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309dac9d4c44f1b4fb414807a7fdbeaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 8
+  forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 15
   acceleration: 20
-  aimSpeed: 20
+  aimSpeed: 5
   attackRange: 110
   attackInterval: 2
   stopShootingThreshold: 20
@@ -401,11 +401,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.7
       objectReference: {fileID: 0}
     - target: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_LocalRotation.w

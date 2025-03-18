@@ -77,7 +77,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.15
+  m_Time: 0.35
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -88,20 +88,20 @@ TrailRenderer:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: 0
-        outSlope: 0
+        inSlope: -0.16793014
+        outSlope: -0.16793014
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
+        outWeight: 0.18609408
       - serializedVersion: 3
         time: 1
         value: 0
-        inSlope: -2.046595
-        outSlope: -2.046595
+        inSlope: -1.6008924
+        outSlope: -1.6008924
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.0654397
+        inWeight: 0.092024565
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -5040,7 +5040,7 @@ GameObject:
   - component: {fileID: 6812587044924059211}
   - component: {fileID: 3901595538695161424}
   - component: {fileID: 756316238400036014}
-  - component: {fileID: 795774430629081495}
+  - component: {fileID: 916681935167628620}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -5056,13 +5056,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8748850199522349582}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 762222254680533190}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &3901595538695161424
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5070,7 +5070,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8748850199522349582}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &756316238400036014
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5116,8 +5116,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &795774430629081495
-SphereCollider:
+--- !u!136 &916681935167628620
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5134,6 +5134,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 2
   m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}

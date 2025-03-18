@@ -26,7 +26,7 @@ namespace Map
     public class Chunk : MonoBehaviour
     {
         private ChunkSettings _settings;
-        private float[] _heightMap;
+        private float[,] _heightMap;
         
         private Mesh _mesh;
         private Mesh _colliderMesh;
@@ -39,7 +39,7 @@ namespace Map
         private MeshFilter _meshFilter;
         private bool _recalcedTangents;
 
-        public void Setup(ChunkSettings s, ref float[] heightMap)
+        public void Setup(ChunkSettings s, ref float[,] heightMap)
         {
             _settings = s;
 
@@ -99,18 +99,14 @@ namespace Map
             {
                 var x = i / _vertexSideCount * _lodFactor;
                 var z = i % _vertexSideCount * _lodFactor;
-                vertices[i].y =
-                    _heightMap[
-                        (int)((z + zChunkOffset) * (_settings.MapSize / _settings.MapSpacing + 1) + xChunkOffset + x)];
+                vertices[i].y = _heightMap[z + zChunkOffset, xChunkOffset + x];
             }
             
             for (int i = 0; i < colliderNumberOfVertices; i++)
             {
                 var x = i / _colliderVertexSideCount * _colliderLodFactor;
                 var z = i % _colliderVertexSideCount * _colliderLodFactor;
-                colliderVertices[i].y =
-                    _heightMap[
-                        (int)((z + zChunkOffset) * (_settings.MapSize / _settings.MapSpacing + 1) + xChunkOffset + x)];
+                colliderVertices[i].y = _heightMap[z + zChunkOffset, xChunkOffset + x];
             }
             
             _mesh.SetVertices(vertices);
@@ -150,7 +146,7 @@ namespace Map
                 var z = i % _vertexSideCount * _lodFactor;
                 vertices[i] = new Vector3(
                     x * _settings.MapSpacing,
-                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.MapSpacing + 1) + xChunkOffset + x)],
+                    _heightMap[z + zChunkOffset, xChunkOffset + x],
                     z * _settings.MapSpacing);
                 uvs[i] = new Vector2((float) x / _vertexSideCount, (float) z / _vertexSideCount);
             }
@@ -162,7 +158,7 @@ namespace Map
                 
                 colliderVertices[i] = new Vector3(
                     x * _settings.MapSpacing,
-                    _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.MapSpacing + 1) + xChunkOffset + x)],
+                    _heightMap[z + zChunkOffset, xChunkOffset + x],
                     z * _settings.MapSpacing);
             }
 
