@@ -15,12 +15,16 @@ namespace Map
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
 
+        private float _averageHeight;
         private float _heightScale;
+        private float _noiseScale;
 
-        public void Setup(ChunkSettings s, float heightScale)
+        public void Setup(ChunkSettings s, float averageHeight, float heightScale, float noiseScale)
         {
             _settings = s;
+            _averageHeight = averageHeight;
             _heightScale = heightScale;
+            _noiseScale = noiseScale;
             
             _meshData = new MeshData
             {
@@ -117,8 +121,9 @@ namespace Map
             {
                 var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
                 var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
-                vertices[i] = new Vector3(x * _settings.Spacing,
-                    Mathf.PerlinNoise(x + xChunkOffset, z + zChunkOffset) * _heightScale, z * _settings.Spacing);
+                var y = Mathf.PerlinNoise((x + xChunkOffset) * _noiseScale, (z + zChunkOffset) * _noiseScale) 
+                        * _heightScale - (_heightScale / 2) + _averageHeight;
+                vertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
                 uvs[i] = new Vector2((float) x / _meshData.VertexSideCount, (float) z / _meshData.VertexSideCount);
             }
             
@@ -126,9 +131,9 @@ namespace Map
             {
                 var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
                 var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                
-                colliderVertices[i] = new Vector3(x * _settings.Spacing,
-                    Mathf.PerlinNoise(x + xChunkOffset, z + zChunkOffset) * _heightScale, z * _settings.Spacing);
+                var y = Mathf.PerlinNoise((x + xChunkOffset) * _noiseScale, (z + zChunkOffset) * _noiseScale) 
+                        * _heightScale - (_heightScale / 2) + _averageHeight;
+                colliderVertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
             }
 
             for (int i = 0; i < numberOfTriangles; i++)

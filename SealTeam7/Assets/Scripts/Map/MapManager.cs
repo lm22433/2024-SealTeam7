@@ -54,6 +54,9 @@ namespace Map
         [SerializeField] private float heightScale;
         [SerializeField] private float lerpFactor;
         [SerializeField] private LODInfo lodInfo;
+        [SerializeField] private float backgroundAverageHeight;
+        [SerializeField] private float backgroundHeightScale;
+        [SerializeField] private float backgroundNoiseScale;
         
         [Header("")]
         [Header("Environment Settings")]
@@ -70,13 +73,11 @@ namespace Map
         private NoiseGenerator _noiseGenerator;
         private KinectAPI _kinect;
         private float[] _heightMap;
-        private List<Chunk> _chunks;
         private float _mapSpacing;
         
         private void Awake()
         {
             _mapSpacing = (float) mapSize / chunkRow / chunkSize;
-            _chunks = new List<Chunk>(chunkRow);
             _heightMap = new float[(int) (mapSize / _mapSpacing + 1) * (int) (mapSize / _mapSpacing + 1)];
             
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
@@ -108,7 +109,6 @@ namespace Map
                         chunkSettings.X = x;
                         chunkSettings.Z = z;
                         chunk.Setup(chunkSettings, ref _heightMap);
-                        _chunks.Add(chunk);
                     }
                     // Background chunks
                     else
@@ -118,8 +118,7 @@ namespace Map
                             Quaternion.identity, chunkParent.transform).GetComponent<BackgroundChunk>();
                         chunkSettings.X = x;
                         chunkSettings.Z = z;
-                        chunk.Setup(chunkSettings, heightScale);
-                        // _chunks.Add(chunk);
+                        chunk.Setup(chunkSettings, backgroundAverageHeight, backgroundHeightScale, backgroundNoiseScale);
                     }
                 }
             }
