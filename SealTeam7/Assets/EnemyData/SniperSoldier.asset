@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: SniperSoldier
   m_EditorClassIdentifier: 
   prefab: {fileID: 3438950281418470787, guid: 9c5e568ef16f06f4bbbf59b737d9d5da, type: 3}
+  enemyType: 3
   groupSpacing: 0
   startingWave: 4
   baseGroupSpawnSize: 3
   groupSpawnSizeGrowthRate: 2.4
-  groupSpawnSizeMultiplier: 0.8
   maxSpawnChance: 0.4
   spawnChanceGrowthRate: 0.16
-  spawnChanceMultiplier: 0.8

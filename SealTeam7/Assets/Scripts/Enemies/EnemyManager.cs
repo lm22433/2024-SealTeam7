@@ -37,11 +37,21 @@ namespace Enemies
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
         }
 
+        private void Start()
+        {
+            foreach (EnemyData data in enemyData)
+            {
+                Debug.Log(data.enemyType);
+                EnemyPool.GetInstance().RegisterEnemy(data);
+            }
+        }
+
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
             GameManager.GetInstance().RegisterKill(enemy.killScore);
             enemy.SetupDeath();
+            EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
         }
 
         public void StartSpawning() => StartCoroutine(SpawnWaves());
@@ -49,14 +59,6 @@ namespace Enemies
         public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
         
         public static EnemyManager GetInstance() => _instance;
-
-        public void KillAllEnemies()
-        {
-            foreach (Transform child in transform)
-            {
-                if (child.TryGetComponent<Enemy>(out var enemy)) Destroy(enemy.gameObject);
-            }
-        }
 
         private IEnumerator SpawnWaves()
         {
@@ -88,8 +90,12 @@ namespace Enemies
                     {
                         Vector2 spawnOffset2D = Random.insideUnitCircle.normalized * chosenEnemy.groupSpacing;
                         Vector3 spawnOffset = new Vector3(spawnOffset2D.x, 4f, spawnOffset2D.y);
-                        Instantiate(chosenEnemy.prefab, spawn.position + spawnOffset, spawn.rotation, transform);
-                        _enemyCount++;
+                        GameObject enemy = EnemyPool.GetInstance().GetFromPool(chosenEnemy, spawn.position + spawnOffset, spawn.rotation);
+                        if (enemy != null)
+                        {
+                            enemy.transform.SetParent(transform);
+                            _enemyCount++;
+                        }
                     }
                     
                     yield return new WaitForSeconds(spawnDelay);

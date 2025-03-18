@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: Tank
   m_EditorClassIdentifier: 
   prefab: {fileID: 2772852043545815630, guid: ff9f3b3318e5b4e4a8cff3b686366892, type: 3}
+  enemyType: 6
   groupSpacing: 0
   startingWave: 7
   baseGroupSpawnSize: 2
   groupSpawnSizeGrowthRate: 1.8
-  groupSpawnSizeMultiplier: 0.8
   maxSpawnChance: 0.15
   spawnChanceGrowthRate: 0.22
-  spawnChanceMultiplier: 0.8

@@ -17,6 +17,8 @@ namespace Enemies
     
     public abstract class Enemy : MonoBehaviour
     {
+        [SerializeField] protected internal EnemyType enemyType;
+        
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float acceleration;
         [SerializeField] protected float aimSpeed;
@@ -63,11 +65,6 @@ namespace Enemies
             TargetPosition = EnemyManager.godlyCore.transform.position;
             TargetRotation = transform.rotation;
             TargetDirection = transform.forward;
-        }
-
-        public virtual void Die()
-        {
-            Destroy(gameObject);
         }
 
 		public virtual void SetupDeath()
@@ -154,7 +151,7 @@ namespace Enemies
                     transform.position = new Vector3(x, MapManager.GetInstance().GetHeight(transform.position) - buried, z);
                 }
 				DeathDuration -= Time.deltaTime;
-				if (DeathDuration <= 0.0f) Die();
+				if (DeathDuration <= 0.0f) EnemyManager.Kill(this);
 			}
 
             if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude >

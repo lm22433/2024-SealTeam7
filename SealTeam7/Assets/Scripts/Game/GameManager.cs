@@ -79,7 +79,7 @@ namespace Game
         public void StartGame()
         {
             _isGameOver = false;
-            EnemyManager.GetInstance().KillAllEnemies();
+            EnemyPool.GetInstance().ClearPool();
             EnemyManager.GetInstance().SetDifficulty(_difficulty);
             
             GameActive = true;
@@ -114,7 +114,7 @@ namespace Game
             gameoverScoreText.SetText($"Score: {_score}");
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
 
-            EnemyManager.GetInstance().KillAllEnemies();
+            EnemyPool.GetInstance().ClearPool();
         }
 
         private void Die()
@@ -129,7 +129,7 @@ namespace Game
             gameoverText.SetText("You died :(");
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
 
-            EnemyManager.GetInstance().KillAllEnemies();
+            EnemyPool.GetInstance().ClearPool();
         }
 
         public void ApplyWaveClearedEarlyBonus()

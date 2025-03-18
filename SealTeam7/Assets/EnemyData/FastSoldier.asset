@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: FastSoldier
   m_EditorClassIdentifier: 
   prefab: {fileID: 3438950281418470787, guid: 02c645c2385d39a4e8e97e688e4a1232, type: 3}
+  enemyType: 2
   groupSpacing: 0
   startingWave: 3
   baseGroupSpawnSize: 3
   groupSpawnSizeGrowthRate: 2.6
-  groupSpawnSizeMultiplier: 0.8
   maxSpawnChance: 0.6
   spawnChanceGrowthRate: 0.14
-  spawnChanceMultiplier: 0.8

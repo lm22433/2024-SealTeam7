@@ -9,6 +9,7 @@ namespace Enemies
     {
         [Header("Enemy Settings")]
         public GameObject prefab;
+        public EnemyType enemyType;
         public float groupSpacing;
     
         [Header("Wave Settings")]

@@ -1724,7 +1724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.05
+  noiseSpeed: 0.1
   noiseScale: 0.005
   width: 880
   height: 880
@@ -4199,19 +4199,19 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: 'difficulties.Array.data[0]'
+      propertyPath: difficulties.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: 56ddbcfd438354956822f2ccc98c0b9d, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: 'difficulties.Array.data[1]'
+      propertyPath: difficulties.Array.data[1]
       value: 
       objectReference: {fileID: 11400000, guid: a0c59461ebefa4ef49d1eea75c4e00a4, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: 'difficulties.Array.data[2]'
+      propertyPath: difficulties.Array.data[2]
       value: 
       objectReference: {fileID: 11400000, guid: 407dc5d3de3ec4fb0a953ee65e70ada2, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: 'difficulties.Array.data[3]'
+      propertyPath: difficulties.Array.data[3]
       value: 
       objectReference: {fileID: 11400000, guid: 9a1d2f5961a384b7e98107e560110632, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
@@ -5243,6 +5243,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2085838829}
   - component: {fileID: 2085838830}
+  - component: {fileID: 2085838831}
   m_Layer: 0
   m_Name: EnemyManager
   m_TagString: Untagged
@@ -5298,6 +5299,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
   - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
   sqrMaxEnemyDistance: 500
+--- !u!114 &2085838831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085838828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b93a9f6b25b14cd3bc9d43be20af79ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2136132640 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7684061989767451873, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}

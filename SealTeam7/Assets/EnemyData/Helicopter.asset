@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: Helicopter
   m_EditorClassIdentifier: 
   prefab: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
+  enemyType: 8
   groupSpacing: 0
   startingWave: 8
   baseGroupSpawnSize: 1
   groupSpawnSizeGrowthRate: 1.5
-  groupSpawnSizeMultiplier: 0.8
   maxSpawnChance: 0.2
   spawnChanceGrowthRate: 0.24
-  spawnChanceMultiplier: 0.8
