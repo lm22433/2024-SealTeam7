@@ -19,9 +19,12 @@ namespace Enemies
     
     public abstract class Enemy : MonoBehaviour
     {
+        [Header("Movement")]
+        [SerializeField] protected Vector3 forceOffset;
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float acceleration;
-        [SerializeField] protected float flyHeight;
+        
+        [Header("Attacking")]
         [SerializeField] protected float aimSpeed;
         [SerializeField] protected float attackRange;
         [SerializeField] protected float attackInterval;
@@ -109,7 +112,8 @@ namespace Enemies
             
             Destroy(proj.gameObject, 3f);
         }
-        
+
+        protected abstract float Heuristic(Node start, Node end);
         protected virtual void EnemyUpdate() {}
         protected virtual void EnemyFixedUpdate() {}
         
@@ -177,7 +181,7 @@ namespace Enemies
 
         private void RequestPath()
         {
-            EnemyManager.RequestPath(transform.position, TargetPosition, flyHeight, SetPath);
+            EnemyManager.RequestPath(transform.position, TargetPosition, Heuristic, SetPath);
         }
 
         private void SetPath(Vector3[] path)
@@ -224,7 +228,7 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
-                    if (!DisallowMovement) Rb.AddForce(TargetDirection * (acceleration * 10f));
+                    if (!DisallowMovement) Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);
                     break;
                 }
                 case EnemyState.AttackCore:

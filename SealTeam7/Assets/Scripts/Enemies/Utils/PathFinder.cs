@@ -72,7 +72,7 @@ namespace Enemies.Utils
             }
         }
 
-        private static float Heuristic(Node current, Node goal, float flyHeight)
+        private static float Distance(Node current, Node goal, Func<Node, Node, float> heuristic)
         {
             // Gradient Map not working?
             
@@ -80,16 +80,15 @@ namespace Enemies.Utils
             // var angle = Mathf.Atan2(distance.z, distance.x) * Mathf.Rad2Deg;
             // var gradientWeightOld = (current.GradientX * Mathf.Cos(angle) + current.GradientZ * Mathf.Sin(angle)) * 100f;
 
-            float gradientWeight, distanceWeight;
-            if (flyHeight == 0) gradientWeight = (current.WorldPos.y - current.Parent?.WorldPos.y ?? current.WorldPos.y) * 50f;
-            else gradientWeight = goal.WorldPos.y > flyHeight - 10f ? 5000f : 0f;
+            float distanceWeight;
+            var heuristicWeight = heuristic(current, goal);
             
             var dstX = Mathf.Abs(current.WorldPos.x - goal.WorldPos.x);
             var dstZ = Mathf.Abs(current.WorldPos.z - goal.WorldPos.z);
             if (dstX > dstZ) distanceWeight = 10f * (math.SQRT2 * dstZ + (dstX - dstZ));
             else distanceWeight = 10f * (math.SQRT2 * dstX + (dstZ - dstX));
             
-            return distanceWeight + gradientWeight;
+            return distanceWeight + heuristicWeight;
         }
         
         private static Vector3[] ReconstructPath(Node start, Node end)
@@ -147,7 +146,7 @@ namespace Enemies.Utils
             return _map[Mathf.RoundToInt(percentZ * _size), Mathf.RoundToInt(percentX * _size)];
         }
         
-        public void FindPathAsync(Vector3 startPos, Vector3 goalPos, float flyHeight, int depth, Action<Vector3[]> setPath)
+        public void FindPathAsync(Vector3 startPos, Vector3 goalPos, int depth, Func<Node, Node, float> heuristic, Action<Vector3[]> setPath)
         {
             var start = NodeFromWorldPos(startPos);
             var goal = NodeFromWorldPos(goalPos);
@@ -173,12 +172,12 @@ namespace Enemies.Utils
                     var neighbour = _map[neighbourIndex.x, neighbourIndex.y];
                     if (neighbour.Equals(null) || closedSet.Contains(neighbour)) continue;
                     
-                    var tentativeGScore = current.GScore + Heuristic(current, neighbour, flyHeight);
+                    var tentativeGScore = current.GScore + Distance(current, neighbour, heuristic);
                     if (openSet.Contains(neighbour) && tentativeGScore > neighbour.GScore) continue;
                     
                     neighbour.Parent = current;
                     neighbour.GScore = tentativeGScore;
-                    neighbour.HScore = Heuristic(neighbour, goal, flyHeight);
+                    neighbour.HScore = Distance(neighbour, goal, heuristic);
                         
                     if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
                 }

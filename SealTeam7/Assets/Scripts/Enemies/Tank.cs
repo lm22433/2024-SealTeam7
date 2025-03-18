@@ -11,9 +11,14 @@ namespace Enemies
         [SerializeField] private ParticleSystem[] dustTrails;
         [SerializeField] protected float groundedOffset;
 
+        protected override float Heuristic(Node start, Node end)
+        {
+            return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 100f;
+        }
+        
         protected override void EnemyUpdate()
         {
-            DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.8f;
+            DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.6f;
             DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f;
             
             // gun rotation
@@ -47,7 +52,8 @@ namespace Enemies
                 }
                 case EnemyState.Dying:
                 {
-                    foreach (var dustTrail in dustTrails) dustTrail.Stop();
+                    foreach (var dustTrail in dustTrails)
+                        if(dustTrail.isPlaying) dustTrail.Stop();
                     break;
                 }
             }

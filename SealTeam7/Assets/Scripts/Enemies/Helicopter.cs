@@ -6,9 +6,16 @@ namespace Enemies
 {
     public class Helicopter : Enemy
     {
+        [SerializeField] protected float flyHeight;
+        
         private void Awake()
         {
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
+        }
+        
+        protected override float Heuristic(Node start, Node end)
+        {
+            return end.WorldPos.y > flyHeight ? 5000f : 0f;
         }
         
         protected override void EnemyUpdate()

@@ -1,10 +1,12 @@
-﻿using Player;
+﻿using Enemies.Utils;
+using Player;
 using UnityEngine;
 
 namespace Enemies
 {
     public class Kamikaze : Enemy
     {
+        [SerializeField] protected float flyHeight;
         [SerializeField] private ParticleSystem trail;
         [SerializeField] private ParticleSystem smokeTrail;
         [SerializeField] private ParticleSystem chargeParticles;
@@ -12,6 +14,11 @@ namespace Enemies
         private void Awake()
         {
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
+        }
+        
+        protected override float Heuristic(Node start, Node end)
+        {
+            return end.WorldPos.y > flyHeight ? 5000f : 0f;
         }
 
         protected override void EnemyUpdate()

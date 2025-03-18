@@ -162,10 +162,11 @@ namespace Map
             percentX = Mathf.Clamp01(percentX);
             percentZ = Mathf.Clamp01(percentZ);
             
-            var x = Mathf.FloorToInt(percentX * mapSize);
-            var z = Mathf.FloorToInt(percentZ * mapSize);
+            var normalSideCount = Mathf.FloorToInt(Mathf.Sqrt(normals.Length) - 1);
+            var x = Mathf.FloorToInt(percentX * normalSideCount);
+            var z = Mathf.FloorToInt(percentZ * normalSideCount);
 
-            return normals[z * (mapSize + 1) + x];
+            return normals[z * (normalSideCount + 1) + x];
         }
         
         private void Update()

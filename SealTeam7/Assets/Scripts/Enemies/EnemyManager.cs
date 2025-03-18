@@ -23,14 +23,14 @@ namespace Enemies
     {
         public Vector3 Start;
         public Vector3 End;
-        public float FlyHeight;
+        public Func<Node, Node, float> Heuristic;
         public Action<Vector3[]> Callback;
 
-        public PathRequest(Vector3 start, Vector3 end, float flyHeight, Action<Vector3[]> callback)
+        public PathRequest(Vector3 start, Vector3 end, Func<Node, Node, float> heuristic, Action<Vector3[]> callback)
         {
             Start = start;
             End = end;
-            FlyHeight = flyHeight;
+            Heuristic = heuristic;
             Callback = callback;
         }
     }
@@ -98,16 +98,16 @@ namespace Enemies
             }
         }
 
-        public void RequestPath(Vector3 start, Vector3 end, float flyHeight, Action<Vector3[]> callback)
+        public void RequestPath(Vector3 start, Vector3 end, Func<Node, Node, float> heuristic, Action<Vector3[]> callback)
         {
-            _pathRequestQueue.Enqueue(new PathRequest(start, end, flyHeight, callback));
+            _pathRequestQueue.Enqueue(new PathRequest(start, end, heuristic, callback));
         }
 
         private void TryProcessPath()
         {
             if (_pathRequestQueue.Count < 1) return;
             var request = _pathRequestQueue.Dequeue();
-            _pathFinder.FindPathAsync(request.Start, request.End, request.FlyHeight, pathingDepth, request.Callback);
+            _pathFinder.FindPathAsync(request.Start, request.End, pathingDepth, request.Heuristic, request.Callback);
         }
 
         public void KillAllEnemies()
