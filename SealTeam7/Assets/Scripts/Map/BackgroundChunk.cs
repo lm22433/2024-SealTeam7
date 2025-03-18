@@ -4,9 +4,39 @@ using UnityEngine;
 
 namespace Map
 {
+    public enum Interpolate
+    {
+        NONE,
+        RIGHT_EDGE,
+        LEFT_EDGE,
+        TOP_EDGE,
+        BOTTOM_EDGE,
+        TOP_RIGHT_CORNER,
+        TOP_LEFT_CORNER,
+        BOTTOM_RIGHT_CORNER,
+        BOTTOM_LEFT_CORNER
+    }
+
+    public struct BackgroundChunkSettings
+    {
+        public int Size;
+        public int MapSize;
+        public float Spacing;
+        public int X;
+        public int Z;
+        public LODInfo LODInfo;
+        public bool ColliderEnabled;
+        public float AverageHeight;
+        public float HeightScale;
+        public float NoiseScale;
+        public Interpolate Interpolate;
+        public int InterpolationMargin;
+    }
+
     public class BackgroundChunk : MonoBehaviour
     {
-        private ChunkSettings _settings;
+        private BackgroundChunkSettings _settings;
+        private float[] _heightMap;
         
         private Mesh _mesh;
         private Mesh _colliderMesh;
@@ -19,12 +49,9 @@ namespace Map
         private float _heightScale;
         private float _noiseScale;
 
-        public void Setup(ChunkSettings s, float averageHeight, float heightScale, float noiseScale)
+        public void Setup(BackgroundChunkSettings s, ref float[] heightMap)
         {
             _settings = s;
-            _averageHeight = averageHeight;
-            _heightScale = heightScale;
-            _noiseScale = noiseScale;
             
             _meshData = new MeshData
             {
@@ -37,6 +64,8 @@ namespace Map
                 LODFactor = _settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2,
                 VertexSideCount = _settings.Size / (_settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2) + 1
             };
+
+            _heightMap = heightMap;
             
             _mesh = new Mesh { name = "Generated Mesh" };
             _mesh.MarkDynamic();
@@ -72,6 +101,21 @@ namespace Map
 
             int zChunkOffset = _settings.Z * _settings.Size;
             int xChunkOffset = _settings.X * _settings.Size;
+
+            if (_settings.Interpolate == Interpolate.RIGHT_EDGE)
+            {
+                for (int z = 0; z < _meshData.VertexSideCount; z++)
+                {
+                    var a = vertices[z * _meshData.VertexSideCount + _meshData.VertexSideCount - _settings.InterpolationMargin];
+                    var b = _heightMap[(int) ((z * _meshData.LODFactor + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1))];
+                    for (int x = _meshData.VertexSideCount - _settings.InterpolationMargin; x < _meshData.VertexSideCount; x++)
+                    {
+                        //TODO interpolate between a and b with parameter t
+                        //TODO do edge vertices on adjacent chunks overlap?
+                        var t = (x - (_meshData.VertexSideCount - _settings.InterpolationMargin)) / _settings.InterpolationMargin;
+                    }
+                }
+            }
 
             for (int i = 0; i < numberOfVertices; i++)
             {
@@ -121,8 +165,8 @@ namespace Map
             {
                 var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
                 var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
-                var y = Mathf.PerlinNoise((x + xChunkOffset) * _noiseScale, (z + zChunkOffset) * _noiseScale) 
-                        * _heightScale - (_heightScale / 2) + _averageHeight;
+                var y = Mathf.PerlinNoise((x + xChunkOffset) * _settings.NoiseScale, (z + zChunkOffset) * _settings.NoiseScale) 
+                        * _settings.HeightScale - (_settings.HeightScale / 2) + _settings.AverageHeight;
                 vertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
                 uvs[i] = new Vector2((float) x / _meshData.VertexSideCount, (float) z / _meshData.VertexSideCount);
             }
@@ -131,8 +175,8 @@ namespace Map
             {
                 var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
                 var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                var y = Mathf.PerlinNoise((x + xChunkOffset) * _noiseScale, (z + zChunkOffset) * _noiseScale) 
-                        * _heightScale - (_heightScale / 2) + _averageHeight;
+                var y = Mathf.PerlinNoise((x + xChunkOffset) * _settings.NoiseScale, (z + zChunkOffset) * _settings.NoiseScale) 
+                        * _settings.HeightScale - (_settings.HeightScale / 2) + _settings.AverageHeight;
                 colliderVertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
             }
 

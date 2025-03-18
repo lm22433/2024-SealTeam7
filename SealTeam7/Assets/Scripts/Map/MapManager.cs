@@ -92,6 +92,19 @@ namespace Map
                 LODInfo = lodInfo,
                 ColliderEnabled = colliderEnabled
             };
+
+            BackgroundChunkSettings backgroundChunkSettings = new BackgroundChunkSettings
+            {
+                Size = chunkSize,
+                MapSize = mapSize,
+                Spacing = _mapSpacing,
+                LODInfo = lodInfo,
+                ColliderEnabled = colliderEnabled,
+                AverageHeight = backgroundAverageHeight,
+                HeightScale = backgroundHeightScale,
+                NoiseScale = backgroundNoiseScale,
+                InterpolationMargin = 10
+            };
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
@@ -116,9 +129,18 @@ namespace Map
                         var chunk = Instantiate(backgroundChunkPrefab,
                             new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing),
                             Quaternion.identity, chunkParent.transform).GetComponent<BackgroundChunk>();
-                        chunkSettings.X = x;
-                        chunkSettings.Z = z;
-                        chunk.Setup(chunkSettings, backgroundAverageHeight, backgroundHeightScale, backgroundNoiseScale);
+                        backgroundChunkSettings.X = x;
+                        backgroundChunkSettings.Z = z;
+                        if (x == -1 && z == -1) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_RIGHT_CORNER;
+                        else if (x == -1 && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.TOP_RIGHT_CORNER;
+                        else if (x == chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_LEFT_CORNER;
+                        else if (x == chunkRow && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.TOP_LEFT_CORNER;
+                        else if (x == -1 && z > 0 && z < chunkRow) backgroundChunkSettings.Interpolate = Interpolate.RIGHT_EDGE;
+                        else if (x == chunkRow && z > 0 && z < chunkRow) backgroundChunkSettings.Interpolate = Interpolate.LEFT_EDGE;
+                        else if (x > 0 && x < chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_EDGE;
+                        else if (x > 0 && x < chunkRow && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_EDGE;
+                        else backgroundChunkSettings.Interpolate = Interpolate.NONE;
+                        chunk.Setup(backgroundChunkSettings, ref _heightMap);
                     }
                 }
             }
