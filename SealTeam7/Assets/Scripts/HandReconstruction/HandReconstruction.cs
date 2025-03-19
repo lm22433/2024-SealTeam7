@@ -11,7 +11,7 @@ public class HandReconstruction : MonoBehaviour
     [SerializeField] private float _thresholdDst;
     [SerializeField, Range(0,1)] private int _hand;
     [SerializeField] private Vector3[] positions_offset;
-    private Vector3[] positions;
+    [SerializeField] private Vector3[] positions;
 
     void Start()
     {
@@ -22,29 +22,36 @@ public class HandReconstruction : MonoBehaviour
     private void FixedUpdate()
     {
         //Get hand points Vector3[21]
-        var tempPositions = mapManager.GetHandPositions(_hand); //GetPositions();
+        /*
+        var tempPositions = mapManager.GetHandPositions(_hand);
 
-        if (tempPositions == null) {   
-            Debug.Log("Null position");
-            return;
-        }
+        if (tempPositions != null) {   
 
-        for(int i = 0; i < tempPositions.Length; i++) {
-            positions[i] = tempPositions[i];// + positions_offset[i];
+            for(int i = 0; i < tempPositions.Length; i++) {
+                positions[i] = tempPositions[i];// + positions_offset[i];
+            }
         }
+        */
 
         //Hand direction about the Y axis
         Vector3 targetDir = positions[9] - positions[0];
         gameObject.transform.localPosition = positions[0];
-        
-        gameObject.transform.localRotation = Quaternion.Euler(gameObject.transform.localRotation.eulerAngles.x, Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, gameObject.transform.localRotation.eulerAngles.z);
 
-        targetDir = positions[17] - positions[5];
-        hand.transform.localRotation = Quaternion.Euler(
-            hand.transform.localRotation.eulerAngles.x, 
-            hand.transform.localRotation.eulerAngles.y,  
-            Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.z
-        );
+
+        Vector3 targetDir2 = positions[17] - positions[5];
+        if (positions[17].x < positions[5].x) {
+            gameObject.transform.localRotation = Quaternion.Euler(
+                gameObject.transform.localRotation.eulerAngles.x, 
+                Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, 
+                -180 + Quaternion.LookRotation(targetDir2.normalized).eulerAngles.x
+            );
+        } else {
+            gameObject.transform.localRotation = Quaternion.Euler(
+                gameObject.transform.localRotation.eulerAngles.x, 
+                Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, 
+                -Quaternion.LookRotation(targetDir2.normalized).eulerAngles.x
+            );
+        }
 
         //Hand direction wrist to knuckle x axis
         RotateBoneToVector(1, 0, 9);
@@ -75,18 +82,18 @@ public class HandReconstruction : MonoBehaviour
     }
 
 
-    private void RotateBoneToVector(int bone, int start, int end) {
+    private void RotateBoneToVector(int bone, int start, int end, bool isZmovable = false) {
         Vector3 targetDir = positions[end] - positions[start];
         bones[bone].transform.localRotation = Quaternion.Euler(
             Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.x, 
             bones[bone].transform.rotation.y, 
-            bones[bone].transform.rotation.z //Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.z
+            (isZmovable) ? Quaternion.LookRotation(targetDir.normalized, bones[bone].transform.right).eulerAngles.z : bones[bone].transform.rotation.z
         );
     }
 
     private void OnDrawGizmos()
     {
-        Vector3 targetDir = positions[17] - positions[5];
+        Vector3 targetDir = positions[6] - positions[5];
 
         Gizmos.color = Color.black;
         Gizmos.DrawLine(positions[5], positions[5] + targetDir);
@@ -94,6 +101,7 @@ public class HandReconstruction : MonoBehaviour
         Gizmos.DrawLine(positions[0], positions[0] + transform.right * 10);
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(positions[0], 2);
+        Gizmos.DrawSphere(positions[5], 2);
+        Gizmos.DrawSphere(positions[6], 2);
     }
 }
