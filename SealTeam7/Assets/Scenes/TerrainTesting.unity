@@ -5082,7 +5082,7 @@ MonoBehaviour:
   celebrationFanfare:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: 3f97d12f1f6264347b4b282d0a44b6a5, type: 2}
 --- !u!4 &2004182967
 Transform:
   m_ObjectHideFlags: 0
