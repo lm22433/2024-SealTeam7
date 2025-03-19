@@ -1,14 +1,22 @@
 using Map;
 using Game;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Enemies.FunkyPhysics
 {
     public class TankPhysics : BasePhysics
     {
 		private bool _exploded;
-		private int _lives = 0;
-		
+		private int _lives = 1;
+		[SerializeField] private VisualEffect SmokeDmg;
+
+		protected override void Start()
+		{
+			base.Start();
+			SmokeDmg.Stop();
+		}
+
 		protected override void Update()
 		{
 			if (!GameManager.GetInstance().IsGameActive()) return;
@@ -25,6 +33,7 @@ namespace Enemies.FunkyPhysics
 				}
 				else
 				{
+					SmokeDmg.Play();
 					transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
 					_lives--;
 				}
@@ -32,6 +41,7 @@ namespace Enemies.FunkyPhysics
 			//WOULD DIE FALL DMG
 			if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded && !Self.IsDying)
 			{
+				SmokeDmg.Play();
 				if (_lives <= 0)Self.SetupDeath();
 				else _lives--;
 			}

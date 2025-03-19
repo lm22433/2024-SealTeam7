@@ -5171,9 +5171,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2009848768158169250}
     m_Modifications:
+    - target: {fileID: 1284134104053458768, guid: f13b5f4a84133814eb35699234c59251, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6498736891518013186, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_Name
       value: Explosion
+      objectReference: {fileID: 0}
+    - target: {fileID: 6498736891518013186, guid: f13b5f4a84133814eb35699234c59251, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_LocalPosition.x
