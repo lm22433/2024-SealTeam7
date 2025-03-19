@@ -20,9 +20,11 @@ namespace Enemies
         {
             return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 50f;
         }
-
+        
         protected override void EnemyUpdate()
         {
+            DisallowShooting = !grounded;
+            
             // gun rotation
             switch (State)
             {

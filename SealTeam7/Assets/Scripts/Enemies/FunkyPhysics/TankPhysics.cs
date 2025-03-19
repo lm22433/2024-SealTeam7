@@ -7,41 +7,10 @@ namespace Enemies.FunkyPhysics
     public class TankPhysics : BasePhysics
     {
 		private bool _exploded;
-		private int _lives = 0;
-		
-		protected override void Update()
-		{
-			if (!GameManager.GetInstance().IsGameActive()) return;
-
-			Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
-            
-			//WOULD DIE BURIED
-			if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
-			{
-				if (_lives <= 0)
-				{
-					Self.buried = Self.buriedAmount;
-					Self.SetupDeath();
-				}
-				else
-				{
-					transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
-					_lives--;
-				}
-			}
-			//WOULD DIE FALL DMG
-			if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded && !Self.IsDying)
-			{
-				if (_lives <= 0)Self.SetupDeath();
-				else _lives--;
-			}
-
-			EnemyUpdate();
-		}
 
         protected override void EnemyUpdate()
         {
-            if (Grounded && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f && !Self.IsDying) Self.SetupDeath();
+            if (Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f && Self.grounded && !Self.IsDying) Self.SetupDeath();
 
 			if (Self.IsDying && !_exploded)
 			{

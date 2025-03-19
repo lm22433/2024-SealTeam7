@@ -25,6 +25,7 @@ namespace Enemies
         [SerializeField] protected Vector3 forceOffset;
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float acceleration;
+        [SerializeField] protected float groundedOffset;
         
         [Header("Attacking")]
         [SerializeField] protected float aimSpeed;
@@ -60,6 +61,7 @@ namespace Enemies
         protected float PathFindInterval;
         protected float LastPathFind;
 		protected float DeathDuration;
+        public bool grounded;
         public float buried;
 		public float buriedAmount = 0.5f;
 
@@ -211,6 +213,7 @@ namespace Enemies
 			}
 
             if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance) EnemyManager.Kill(this);
+            grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
             
             UpdateState();
             UpdateTarget();

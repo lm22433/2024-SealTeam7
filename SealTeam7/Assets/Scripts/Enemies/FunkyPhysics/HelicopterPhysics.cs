@@ -13,7 +13,7 @@ namespace Enemies.FunkyPhysics
 
         protected override void EnemyUpdate()
         {
-            if (Grounded && !Self.IsDying) Self.SetupDeath();
+            if (Self.grounded && !Self.IsDying) Self.SetupDeath();
             
             mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
             subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
