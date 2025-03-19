@@ -53,6 +53,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 20
   acceleration: 20
+  groundedOffset: 5
   aimSpeed: 10
   attackRange: 1000
   attackInterval: 12
@@ -72,12 +73,12 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  grounded: 0
   buried: 0
   buriedAmount: 0.5
   flyHeight: 500
   spawnPoint: {fileID: 214597990731930319}
   spawnee: {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
-  _oppositePosition: {x: 0, y: 0, z: 0}
 --- !u!114 &377835221181255017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,14 +91,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20cd61a0970409d4e9cb698c14991df7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityDefiance: 1
-  defianceThreshold: 1
-  sinkFactor: 100
-  groundedOffset: 0
+  gravityDefiance: 0
+  defianceThreshold: 0
+  sinkFactor: 0
   fallDeathVelocityY: 0
   mainPropeller: {fileID: 1213454741650169418}
   subPropeller: {fileID: 3281944060087321159}
-  propellerSpeed: 30
+  propellerSpeed: 1000
 --- !u!54 &781513554043923579
 Rigidbody:
   m_ObjectHideFlags: 0

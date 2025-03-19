@@ -9,7 +9,6 @@ namespace Enemies
     {
         [SerializeField] private EnemyData spawnee;
         [SerializeField] private ParticleSystem[] dustTrails;
-        [SerializeField] protected float groundedOffset;
 
         public override void Init()
         {

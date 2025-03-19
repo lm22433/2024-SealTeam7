@@ -84,6 +84,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 10
   acceleration: 40
+  groundedOffset: 4
   aimSpeed: 10
   attackRange: 50
   attackInterval: 0.2
@@ -103,6 +104,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
+  grounded: 0
   buried: 0
   buriedAmount: 3
   gun: {fileID: 4797994724752532913}

@@ -10,7 +10,7 @@ namespace Enemies
         [SerializeField] private float flyHeight;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private EnemyData spawnee;
-        [SerializeField] private Vector3 _oppositePosition;
+        private Vector3 _oppositePosition;
 
         public override void Init()
         {

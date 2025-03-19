@@ -9,7 +9,6 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float gravityDefiance;
         [SerializeField] protected float defianceThreshold;
         [SerializeField] protected float sinkFactor;
-        [SerializeField] protected float groundedOffset;
         [SerializeField] protected float fallDeathVelocityY;
         protected Enemy Self;
         protected Rigidbody Rb;
@@ -42,7 +41,7 @@ namespace Enemies.FunkyPhysics
             
             if (Rb.linearVelocity.y > defianceThreshold && Self.grounded)
             {
-                Physics.Raycast(transform.position, Vector3.down, out var hit, groundedOffset * 2.0f);
+                Physics.Raycast(transform.position, Vector3.down, out var hit, Self.transform.localScale.y * 2.0f);
                 Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
             }
             

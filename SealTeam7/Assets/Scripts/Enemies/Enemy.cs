@@ -61,9 +61,9 @@ namespace Enemies
         protected float PathFindInterval;
         protected float LastPathFind;
 		protected float DeathDuration;
-        public bool grounded;
-        public float buried;
-		public float buriedAmount = 0.5f;
+        [HideInInspector] public bool grounded;
+        [HideInInspector] public float buried;
+        [HideInInspector] public float buriedAmount = 0.5f;
 
         protected virtual void Start()
         {

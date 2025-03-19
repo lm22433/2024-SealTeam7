@@ -85,6 +85,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 10
   acceleration: 20
+  groundedOffset: 5
   aimSpeed: 10
   attackRange: 500
   attackInterval: 10
@@ -104,6 +105,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  grounded: 0
   buried: 0
   buriedAmount: 0.5
   flyHeight: 200
@@ -135,7 +137,6 @@ MonoBehaviour:
   gravityDefiance: 0
   defianceThreshold: 0
   sinkFactor: 0
-  groundedOffset: 5
   fallDeathVelocityY: 60
   mainPropeller: {fileID: 5474418017215342941}
   subPropeller: {fileID: 3727117144722257347}
