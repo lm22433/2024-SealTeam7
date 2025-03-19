@@ -9,7 +9,7 @@ namespace Enemies.FunkyPhysics
 
         protected override void EnemyUpdate()
         {
-            if (Grounded && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
+            if (Grounded && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f && !Self.IsDying) Self.SetupDeath();
 
 			if (Self.IsDying && !_exploded)
 			{

@@ -89,7 +89,6 @@ namespace Enemies
         {
             _enemyCount--;
             GameManager.GetInstance().RegisterKill(enemy.killScore);
-            enemy.SetupDeath();
             EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
         }
 
@@ -140,7 +139,7 @@ namespace Enemies
                     Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
                     
                     EnemyData chosenEnemy = _difficulty.GetRandomEnemy(enemyData, _currentWave);
-                    if (chosenEnemy == null) continue;
+                    if (!chosenEnemy) continue;
                     int finalGroupSize = Mathf.Min(chosenEnemy.GetGroupSpawnSize(_difficulty, _currentWave), maxEnemyCount - _enemyCount);
                     
                     for (int j = 0; j < finalGroupSize; j++)

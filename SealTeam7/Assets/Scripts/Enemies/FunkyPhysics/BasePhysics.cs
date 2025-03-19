@@ -31,10 +31,10 @@ namespace Enemies.FunkyPhysics
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
             {
                 Self.buried = Self.buriedAmount;
-                EnemyManager.GetInstance().Kill(Self);
+                Self.SetupDeath();
             }
             //WOULD DIE FALL DMG
-            if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
+            if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded && !Self.IsDying) Self.SetupDeath();
 
             EnemyUpdate();
         }
