@@ -25,14 +25,18 @@ namespace Enemies
         public override void SetupDeath()
         {
             lives--;
-            if (lives > 0) transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
+            if (lives > 0)
+            {
+                transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);
+                Rb.linearVelocity = Vector3.zero;
+            }
             else base.SetupDeath();
         }
         
         protected override void EnemyUpdate()
         {
             DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f;
-            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !grounded;
+            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
             
             // gun rotation
             switch (State)

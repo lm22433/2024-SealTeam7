@@ -26,11 +26,11 @@ namespace Enemies.FunkyPhysics
             //WOULD DIE BURIED
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
             {
-                Self.buried = Self.buriedAmount;
+                Self.Buried = Self.BuriedAmount;
                 Self.SetupDeath();
             }
             //WOULD DIE FALL DMG
-            if (-Rb.linearVelocity.y >= fallDeathVelocityY && Self.grounded && !Self.IsDying) Self.SetupDeath();
+            if (-Rb.linearVelocity.y >= fallDeathVelocityY && Self.Grounded && !Self.IsDying) Self.SetupDeath();
 
             EnemyUpdate();
         }
@@ -39,7 +39,7 @@ namespace Enemies.FunkyPhysics
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
-            if (Rb.linearVelocity.y > defianceThreshold && Self.grounded)
+            if (Rb.linearVelocity.y > defianceThreshold && Self.Grounded)
             {
                 Physics.Raycast(transform.position, Vector3.down, out var hit, Self.transform.localScale.y * 2.0f);
                 Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
