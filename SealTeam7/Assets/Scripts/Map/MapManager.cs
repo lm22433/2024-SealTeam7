@@ -131,10 +131,10 @@ namespace Map
                             Quaternion.identity, chunkParent.transform).GetComponent<BackgroundChunk>();
                         backgroundChunkSettings.X = x;
                         backgroundChunkSettings.Z = z;
-                        if (x == -1 && z == -1) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_RIGHT_CORNER;
-                        else if (x == -1 && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.TOP_RIGHT_CORNER;
-                        else if (x == chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_LEFT_CORNER;
-                        else if (x == chunkRow && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.TOP_LEFT_CORNER;
+                        if (x == -1 && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_RIGHT_CORNER;
+                        else if (x == -1 && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_RIGHT_CORNER;
+                        else if (x == chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_LEFT_CORNER;
+                        else if (x == chunkRow && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_LEFT_CORNER;
                         else if (x == -1 && z > 0 && z < chunkRow) backgroundChunkSettings.Interpolate = Interpolate.RIGHT_EDGE;
                         else if (x == chunkRow && z > 0 && z < chunkRow) backgroundChunkSettings.Interpolate = Interpolate.LEFT_EDGE;
                         else if (x > 0 && x < chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_EDGE;

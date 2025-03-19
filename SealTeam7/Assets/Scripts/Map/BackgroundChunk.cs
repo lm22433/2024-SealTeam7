@@ -106,15 +106,19 @@ namespace Map
             {
                 for (int z = 0; z < _meshData.VertexSideCount; z++)
                 {
-                    var a = vertices[z * _meshData.VertexSideCount + _meshData.VertexSideCount - _settings.InterpolationMargin];
+                    var a = vertices[z * _meshData.VertexSideCount + _meshData.VertexSideCount - _settings.InterpolationMargin].y;
                     var b = _heightMap[(int) ((z * _meshData.LODFactor + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1))];
                     for (int x = _meshData.VertexSideCount - _settings.InterpolationMargin; x < _meshData.VertexSideCount; x++)
                     {
                         //TODO interpolate between a and b with parameter t
                         //TODO do edge vertices on adjacent chunks overlap?
                         var t = (x - (_meshData.VertexSideCount - _settings.InterpolationMargin)) / _settings.InterpolationMargin;
+                        var y = Mathf.SmoothStep(a, b, t);
+                        vertices[z * _meshData.VertexSideCount + x].y = y;
                     }
                 }
+
+                //TODO same for collider mesh
             }
 
             for (int i = 0; i < numberOfVertices; i++)
@@ -160,12 +164,14 @@ namespace Map
 
             int zChunkOffset = _settings.Z * _settings.Size;
             int xChunkOffset = _settings.X * _settings.Size;
+            int zExtraOffset = 5 * _settings.Size;  // Ensures positive region of Perlin noise
+            int xExtraOffset = 5 * _settings.Size;
 
             for (int i = 0; i < numberOfVertices; i++)
             {
                 var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
                 var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
-                var y = Mathf.PerlinNoise((x + xChunkOffset) * _settings.NoiseScale, (z + zChunkOffset) * _settings.NoiseScale) 
+                var y = Mathf.PerlinNoise((x + xChunkOffset + xExtraOffset) * _settings.NoiseScale, (z + zChunkOffset + zExtraOffset) * _settings.NoiseScale) 
                         * _settings.HeightScale - (_settings.HeightScale / 2) + _settings.AverageHeight;
                 vertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
                 uvs[i] = new Vector2((float) x / _meshData.VertexSideCount, (float) z / _meshData.VertexSideCount);
@@ -175,7 +181,7 @@ namespace Map
             {
                 var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
                 var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                var y = Mathf.PerlinNoise((x + xChunkOffset) * _settings.NoiseScale, (z + zChunkOffset) * _settings.NoiseScale) 
+                var y = Mathf.PerlinNoise((x + xChunkOffset + xExtraOffset) * _settings.NoiseScale, (z + zChunkOffset + zExtraOffset) * _settings.NoiseScale) 
                         * _settings.HeightScale - (_settings.HeightScale / 2) + _settings.AverageHeight;
                 colliderVertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
             }
