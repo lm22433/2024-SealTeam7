@@ -13,16 +13,18 @@ namespace Enemies
         {
             base.Init();
             DeathDuration = 0.5f;
-            buriedAmount = 0.25f;
+            BuriedAmount = 0.25f;
         }
 
         protected override float Heuristic(Node start, Node end)
         {
             return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 50f;
         }
-
+        
         protected override void EnemyUpdate()
         {
+            DisallowShooting = !Grounded;
+            
             // gun rotation
             switch (State)
             {

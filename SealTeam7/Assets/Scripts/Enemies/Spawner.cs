@@ -9,7 +9,6 @@ namespace Enemies
     {
         [SerializeField] private EnemyData spawnee;
         [SerializeField] private ParticleSystem[] dustTrails;
-        [SerializeField] protected float groundedOffset;
 
         public override void Init()
         {
@@ -30,7 +29,7 @@ namespace Enemies
         protected override void EnemyUpdate()
         {
             DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.8f;
-            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f;
+            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
             
             // gun rotation
             switch (State)

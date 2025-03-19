@@ -53,6 +53,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 12
   acceleration: 20
+  groundedOffset: 7
   aimSpeed: 10
   attackRange: 200
   attackInterval: 8.5
@@ -72,8 +73,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
-  buried: 0
-  buriedAmount: 1
+  Grounded: 0
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
@@ -90,7 +90,6 @@ MonoBehaviour:
   gravityDefiance: 10
   defianceThreshold: 20
   sinkFactor: 10
-  groundedOffset: 4
   fallDeathVelocityY: 40
 --- !u!54 &4195251952092455746
 Rigidbody:
