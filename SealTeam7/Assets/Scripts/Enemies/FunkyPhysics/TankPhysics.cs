@@ -10,7 +10,7 @@ namespace Enemies.FunkyPhysics
 		private bool _exploded;
 		[SerializeField] private int lives = 1;
 		[SerializeField] private float gracePeriod = 3.0f;
-		private float _deathTime;
+		private float _deathTime = 0.0f;
 		[SerializeField] private VisualEffect SmokeDmg;
 
 		protected override void Start()
