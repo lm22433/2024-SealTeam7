@@ -43,7 +43,7 @@ public class HandReconstruction : MonoBehaviour
         hand.transform.localRotation = Quaternion.Euler(
             hand.transform.localRotation.eulerAngles.x, 
             hand.transform.localRotation.eulerAngles.y,  
-            Vector3.Angle(targetDir.normalized, transform.right) + 180
+            Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.z
         );
 
         //Hand direction wrist to knuckle x axis
