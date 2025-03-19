@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b5805bd080546e4b268349983e4b7e1, type: 3}
+  m_Script: {fileID: 11500000, guid: 7eb84f4a579217946a2f6ca9ce3bdfd0, type: 3}
   m_Name: Spawner
   m_EditorClassIdentifier: 
   prefab: {fileID: 2772852043545815630, guid: 28fbf6b5f6092454c9f3491aab58cb52, type: 3}
   enemyType: 8
-  groupSpacing: 0
+  groupSpacing: 3
   startingWave: 5
   baseGroupSpawnSize: 2
   groupSpawnSizeGrowthRate: 1.8

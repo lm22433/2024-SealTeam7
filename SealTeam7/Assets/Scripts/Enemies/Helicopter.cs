@@ -7,8 +7,6 @@ namespace Enemies
     public class Helicopter : Enemy
     {
         [SerializeField] protected float flyHeight;
-        [SerializeField] private Transform muzzle;
-        [SerializeField] private GameObject projectile;
         [SerializeField] private AK.Wwise.Event helicopterSound;
         private bool _isGracefulShutdown = false;
 

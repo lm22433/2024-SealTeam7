@@ -5082,7 +5082,7 @@ MonoBehaviour:
   celebrationFanfare:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: 3f97d12f1f6264347b4b282d0a44b6a5, type: 2}
 --- !u!4 &2004182967
 Transform:
   m_ObjectHideFlags: 0
@@ -5311,8 +5311,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2085838829}
-  - component: {fileID: 2085838830}
   - component: {fileID: 2085838831}
+  - component: {fileID: 2085838830}
   m_Layer: 0
   m_Name: EnemyManager
   m_TagString: Untagged
@@ -5344,7 +5344,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2085838828}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f20d8f9e8d424acda38b163a24a46ee7, type: 3}
+  m_Script: {fileID: 11500000, guid: ea9e33a6fd2a4a741862e128e3ba8e69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2085838831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085838828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaaf555c71dd7b548bb781cb97cb73c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   initialStartDelay: 10
@@ -5357,7 +5369,7 @@ MonoBehaviour:
   - {fileID: 2027198502}
   - {fileID: 1336062332}
   maxEnemyCount: 1000
-  maxEnemyDistance: 900
+  maxEnemyDistance: 1000
   godlyCore: {fileID: 1884077987}
   godlyHands: {fileID: 332022279}
   mapUpdateInterval: 1
@@ -5368,24 +5380,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 48fcae14540e510498a8ca0e7911261c, type: 2}
   - {fileID: 11400000, guid: 46cb815e1632b2d44a7f27e801930935, type: 2}
   - {fileID: 11400000, guid: 8dac9d03a92f5b54d90f651c248933e8, type: 2}
+  - {fileID: 11400000, guid: 691f86badb4ae604fb8469565b926d20, type: 2}
+  - {fileID: 11400000, guid: 1cfb98aa5d8fbc44fb31853b5efdc409, type: 2}
   - {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
+  - {fileID: 11400000, guid: 5275300b38eb9504b97031ff718a9c67, type: 2}
   - {fileID: 11400000, guid: d7aadd3a0f6d58d49919079d90613b3a, type: 2}
   - {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
   - {fileID: 11400000, guid: e1562d7a103d9ee4d806e6412cf4505b, type: 2}
   - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
-  sqrMaxEnemyDistance: 500
---- !u!114 &2085838831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2085838828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b93a9f6b25b14cd3bc9d43be20af79ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  - {fileID: 11400000, guid: 0fcede88453c26447b212c8d62ef2114, type: 2}
+  sqrMaxEnemyDistance: 0
 --- !u!114 &2136132640 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7684061989767451873, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}

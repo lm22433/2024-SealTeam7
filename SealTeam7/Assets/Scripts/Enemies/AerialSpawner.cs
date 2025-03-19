@@ -6,9 +6,8 @@ namespace Enemies
 {
     public class AerialSpawner : Enemy
     {
-        [SerializeField] float flyHeight;
-        [SerializeField] private Transform muzzle;
-        [SerializeField] private GameObject projectile;
+        [SerializeField] private float flyHeight;
+        [SerializeField] private Transform spawnPoint;
         [SerializeField] private EnemyData spawnee;
 
         protected override void Start()
@@ -25,11 +24,18 @@ namespace Enemies
         
         protected override void Attack(PlayerDamageable toDamage)
         {
-            EnemyManager.SpawnerSpawn(new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z - 2.0f), spawnee, attackDamage);
+            EnemyManager.SpawnerSpawn(spawnPoint.position, spawnee, attackDamage);
+        }
+
+        protected override void EnemyUpdate()
+        {
+            TargetRotation = Quaternion.LookRotation(new Vector3(-transform.position.x, transform.position.y, -transform.position.z));
+            TargetDirection = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
         }
 
         protected override void EnemyFixedUpdate()
         {
+            if (State is not (EnemyState.Moving or EnemyState.Dying) && !DisallowMovement) Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);
             if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
             if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
         }

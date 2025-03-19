@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Impossible
   m_EditorClassIdentifier: 
   difficultyName: IMPOSSIBLE
+  difficultyType: 3
   initialGroupCount: 10
   growthFactor: 1.3
   exponent: 0.8
@@ -22,4 +23,3 @@ MonoBehaviour:
   initialWaveTimeLimit: 15
   minimumWaveTimeLimit: 8
   timeReductionPerWave: 1.5
-  enemyData: []

@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4198281567830001334}
-  - component: {fileID: 3557171694228446854}
+  - component: {fileID: -6486184457175985008}
   - component: {fileID: 2280521706687957157}
   - component: {fileID: 7202123808863129688}
   - component: {fileID: 1183064847185308582}
@@ -63,7 +63,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 8, y: 8, z: 8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1150560966112247641}
@@ -71,7 +71,7 @@ Transform:
   - {fileID: 3328833087940979148}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3557171694228446854
+--- !u!114 &-6486184457175985008
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5638199596941746840}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 309dac9d4c44f1b4fb414807a7fdbeaf, type: 3}
+  m_Script: {fileID: 11500000, guid: e0a88b3722d7439e98311e7110c99968, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 11
@@ -88,12 +88,12 @@ MonoBehaviour:
   moveSpeed: 10
   acceleration: 20
   aimSpeed: 10
-  attackRange: 125
-  attackInterval: 5
+  attackRange: 500
+  attackInterval: 10
   stopShootingThreshold: 20
   coreTargetHeightOffset: 0
   attackDamage: 16
-  killScore: 500
+  killScore: 750
   deathParticles: {fileID: 4793043602501896030}
   model: {fileID: 1150560966112247641}
   muzzle: {fileID: 8302181914671201879}
@@ -101,20 +101,27 @@ MonoBehaviour:
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 7bc4b69af44bb3849ab50f6da32645d1, type: 2}
+    WwiseObjectReference: {fileID: 11400000, guid: e0f4c9549fb33bc469776ddfc385ecaa, type: 2}
   deathSoundEffect:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
   buried: 0
   buriedAmount: 0.5
-  flyHeight: 180
-  muzzle: {fileID: 8302181914671201879}
-  projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
+  flyHeight: 200
   helicopterSound:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: f53d52dbc83ca3b46abccd2e979a524e, type: 2}
+  spawnableEnemies:
+  - {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
+  - {fileID: 11400000, guid: 8dac9d03a92f5b54d90f651c248933e8, type: 2}
+  - {fileID: 11400000, guid: 46cb815e1632b2d44a7f27e801930935, type: 2}
+  - {fileID: 11400000, guid: 11214c7990501be48a622d04de42f72d, type: 2}
+  - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
+  - {fileID: 11400000, guid: 1cfb98aa5d8fbc44fb31853b5efdc409, type: 2}
+  - {fileID: 11400000, guid: e1562d7a103d9ee4d806e6412cf4505b, type: 2}
+  spawnCount: 1
 --- !u!114 &2280521706687957157
 MonoBehaviour:
   m_ObjectHideFlags: 0

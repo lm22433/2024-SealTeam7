@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Hard
   m_EditorClassIdentifier: 
   difficultyName: Hard
+  difficultyType: 2
   initialGroupCount: 8
   growthFactor: 1.2
   exponent: 0.75
@@ -22,4 +23,3 @@ MonoBehaviour:
   initialWaveTimeLimit: 20
   minimumWaveTimeLimit: 10
   timeReductionPerWave: 1.2
-  enemyData: []

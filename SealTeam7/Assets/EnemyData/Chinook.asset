@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7eb84f4a579217946a2f6ca9ce3bdfd0, type: 3}
-  m_Name: Helicopter
+  m_Name: Chinook
   m_EditorClassIdentifier: 
-  prefab: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
-  enemyType: 10
+  prefab: {fileID: 5638199596941746840, guid: 1a49971c3e9f2a8418bd8673260ab7e9, type: 3}
+  enemyType: 11
   groupSpacing: 10
-  startingWave: 8
+  startingWave: 10
   baseGroupSpawnSize: 1
-  groupSpawnSizeGrowthRate: 1.5
-  maxSpawnChance: 0.2
-  spawnChanceGrowthRate: 0.24
+  groupSpawnSizeGrowthRate: 1.2
+  maxSpawnChance: 0.35
+  spawnChanceGrowthRate: 0.12

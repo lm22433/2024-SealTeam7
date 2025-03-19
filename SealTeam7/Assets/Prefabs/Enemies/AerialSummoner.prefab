@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3448069917559438630}
@@ -53,7 +53,7 @@ MonoBehaviour:
   moveSpeed: 10
   acceleration: 10
   aimSpeed: 10
-  attackRange: 200
+  attackRange: 500
   attackInterval: 12
   stopShootingThreshold: 150
   coreTargetHeightOffset: 0
@@ -70,12 +70,11 @@ MonoBehaviour:
   deathSoundEffect:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
   buried: 0
   buriedAmount: 0.5
   flyHeight: 180
-  muzzle: {fileID: 0}
-  projectile: {fileID: 0}
+  spawnPoint: {fileID: 0}
   spawnee: {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
 --- !u!114 &377835221181255017
 MonoBehaviour:

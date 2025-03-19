@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7eb84f4a579217946a2f6ca9ce3bdfd0, type: 3}
-  m_Name: Helicopter
+  m_Name: LMGSoldier
   m_EditorClassIdentifier: 
-  prefab: {fileID: 5638199596941746840, guid: 0c407dff493bba74fa60a264c83ab3a3, type: 3}
-  enemyType: 10
-  groupSpacing: 10
-  startingWave: 8
-  baseGroupSpawnSize: 1
-  groupSpawnSizeGrowthRate: 1.5
-  maxSpawnChance: 0.2
-  spawnChanceGrowthRate: 0.24
+  prefab: {fileID: 3438950281418470787, guid: caa9677e850d75c47aa31d63b98329a2, type: 3}
+  enemyType: 3
+  groupSpacing: 1.2
+  startingWave: 4
+  baseGroupSpawnSize: 4
+  groupSpawnSizeGrowthRate: 1.6
+  maxSpawnChance: 0.3
+  spawnChanceGrowthRate: 0.12

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Normal
   m_EditorClassIdentifier: 
   difficultyName: Normal
+  difficultyType: 1
   initialGroupCount: 6
   growthFactor: 1.1
   exponent: 0.7
@@ -22,4 +23,3 @@ MonoBehaviour:
   initialWaveTimeLimit: 25
   minimumWaveTimeLimit: 12
   timeReductionPerWave: 1
-  enemyData: []
