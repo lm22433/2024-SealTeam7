@@ -1,3 +1,4 @@
+using System;
 using Game;
 using UnityEngine;
 
@@ -100,35 +101,17 @@ namespace Map
 
         private void UpdateHeights()
         {
-            var vertices = _meshData.Vertices;
-            var colliderVertices = _colliderMeshData.Vertices;
-            
-            switch (_settings.InterpolationDirection)
-            {
-                case InterpolationDirection.RightEdge:
-                {
-                    InterpolateMargin(_meshData.Vertices, _interpolationMargin, _meshData.VertexSideCount, _meshData.LODFactor, InterpolationDirection.RightEdge);
-                    InterpolateMargin(_colliderMeshData.Vertices, _colliderInterpolationMargin, _colliderMeshData.VertexSideCount, _colliderMeshData.LODFactor, InterpolationDirection.RightEdge);
-                    break;
-                }
-                case InterpolationDirection.LeftEdge:
-                {
-                    InterpolateMargin(_meshData.Vertices, _interpolationMargin, _meshData.VertexSideCount, _meshData.LODFactor, InterpolationDirection.LeftEdge);
-                    InterpolateMargin(_colliderMeshData.Vertices, _colliderInterpolationMargin, _colliderMeshData.VertexSideCount, _colliderMeshData.LODFactor, InterpolationDirection.LeftEdge);
-                    break;
-                }
-                case InterpolationDirection.None:
-                {
-                    break;
-                }
-            }
+            InterpolateMargin(_meshData.Vertices, _interpolationMargin, _meshData.VertexSideCount, 
+                _meshData.LODFactor, _settings.InterpolationDirection);
+            InterpolateMargin(_colliderMeshData.Vertices, _colliderInterpolationMargin, _colliderMeshData.VertexSideCount, 
+                _colliderMeshData.LODFactor, _settings.InterpolationDirection);
 
-            _mesh.SetVertices(vertices);
+            _mesh.SetVertices(_meshData.Vertices);
             _mesh.RecalculateNormals();
             _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
             
-            _colliderMesh.SetVertices(colliderVertices);
+            _colliderMesh.SetVertices(_colliderMeshData.Vertices);
             _colliderMesh.RecalculateNormals();
             _colliderMesh.RecalculateBounds();
             
@@ -138,62 +121,99 @@ namespace Map
         private void InterpolateMargin(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int lodFactor, 
             InterpolationDirection interpolationDirection)
         {
-            if (interpolationDirection == InterpolationDirection.None) return;
+            // Temporary
+            if (interpolationDirection != InterpolationDirection.RightEdge && interpolationDirection != InterpolationDirection.LeftEdge) return;
             
             int zChunkOffset = _settings.Z * _settings.Size;
             int heightMapWidth = (int) (_settings.MapSize / _settings.Spacing + 1);
-            
-            for (int z = 0; z < vertexSideCount; z++)
-            {
-                int aIndex;
-                int aPrevIndex;
-                int bIndex;
-                int bNextIndex;
-                int startX;
-                int endX;
 
-                if (interpolationDirection == InterpolationDirection.LeftEdge)
-                {
-                    aIndex = z + _interpolationMargin * vertexSideCount;
-                    aPrevIndex = z + (_interpolationMargin + 1) * vertexSideCount;
-                    bIndex = (z * lodFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1;
-                    bNextIndex = (z * lodFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1 - lodFactor;
+            int startX;
+            int endX;
+            int startZ;
+            int endZ;
+
+            switch (interpolationDirection)
+            {
+                case InterpolationDirection.LeftEdge:
                     startX = 0;
                     endX = interpolationMargin;
-                }
-                else
-                {
-                    aIndex = z + (vertexSideCount - interpolationMargin - 1) * vertexSideCount;
-                    aPrevIndex = z + (vertexSideCount - interpolationMargin - 2) * vertexSideCount;
-                    bIndex = (z * lodFactor + zChunkOffset) * heightMapWidth;
-                    bNextIndex = (z * lodFactor + zChunkOffset) * heightMapWidth + lodFactor;
+                    startZ = 0;
+                    endZ = vertexSideCount;
+                    break;
+                case InterpolationDirection.RightEdge:
                     startX = vertexSideCount - interpolationMargin;
                     endX = vertexSideCount;
+                    startZ = 0;
+                    endZ = vertexSideCount;
+                    break;
+                default:
+                    // Not possible
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            for (int z = startZ; z < endZ; z++)
+            {
+                // t always increases towards the centre, so a is always on the background chunk and b is always on the
+                // play region chunk
+                int aX;
+                int aZ;
+                int aPrevX;
+                int aPrevZ;
+                int bX;
+                int bZ;
+                int bNextX;
+                int bNextZ;
+
+                switch (interpolationDirection)
+                {
+                    case InterpolationDirection.LeftEdge:
+                        aX = _interpolationMargin;
+                        aZ = z;
+                        aPrevX = _interpolationMargin + 1;
+                        aPrevZ = z;
+                        bX = heightMapWidth - 1;
+                        bZ = z * lodFactor + zChunkOffset;
+                        bNextX = heightMapWidth - 1 - lodFactor;
+                        bNextZ = z * lodFactor + zChunkOffset;
+                        break;
+                    case InterpolationDirection.RightEdge:
+                        aX = vertexSideCount - interpolationMargin - 1;
+                        aZ = z;
+                        aPrevX = vertexSideCount - interpolationMargin - 2;
+                        aPrevZ = z;
+                        bX = 0;
+                        bZ = z * lodFactor + zChunkOffset;
+                        bNextX = lodFactor;
+                        bNextZ = z * lodFactor + zChunkOffset;
+                        break;
+                    default:
+                        // Not possible
+                        throw new ArgumentOutOfRangeException();
                 }
 
-                var a = vertices[aIndex].y;
-                var aPrev = vertices[aPrevIndex].y;
+                // vertices is z-major, heightMap is x-major
+                var a = vertices[aZ + aX*vertexSideCount].y;
+                var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
                 var aGrad = (a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
-                var b = _heightMap[bIndex];
-                var bNext = _heightMap[bNextIndex];
+                var b = _heightMap[bZ*heightMapWidth + bX];
+                var bNext = _heightMap[bNextZ*heightMapWidth + bNextX];
                 var bGrad = (bNext - b) / _settings.Spacing * interpolationMargin;
                 if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
 
                 for (int x = startX; x < endX; x++)
                 {
-                    float t;
-                    if (interpolationDirection == InterpolationDirection.LeftEdge)
+                    float t = interpolationDirection switch
                     {
-                        t = (_interpolationMargin - x) / (float)interpolationMargin;
-                    }
-                    else
-                    {
-                        t = (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin;
-                    }
+                        InterpolationDirection.LeftEdge => (_interpolationMargin - x) / (float)interpolationMargin,
+                        InterpolationDirection.RightEdge => (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin,
+                        _ => throw new ArgumentOutOfRangeException()  // Not possible
+                    };
+
                     if (z == 0) Debug.Log("t: " + t);
+
                     // Cubic Hermite interpolation
                     var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
-                    vertices[z + x * vertexSideCount].y = y;
+                    vertices[z + x*vertexSideCount].y = y;
                 }
             }
         }
@@ -220,8 +240,10 @@ namespace Map
             {
                 var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
                 var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
-                var y = Mathf.PerlinNoise((x + xChunkOffset + xExtraOffset) * _settings.NoiseScale, (z + zChunkOffset + zExtraOffset) * _settings.NoiseScale) 
-                        * _settings.HeightScale - (_settings.HeightScale / 2) + _settings.AverageHeight;
+                var perlinX = (x + xChunkOffset + xExtraOffset) * _settings.NoiseScale;
+                var perlinY = (z + zChunkOffset + zExtraOffset) * _settings.NoiseScale;
+                var y = Mathf.PerlinNoise(perlinX, perlinY) * _settings.HeightScale
+                    - (_settings.HeightScale / 2) + _settings.AverageHeight;
                 vertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
                 uvs[i] = new Vector2((float) x / _meshData.VertexSideCount, (float) z / _meshData.VertexSideCount);
             }
@@ -230,8 +252,10 @@ namespace Map
             {
                 var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
                 var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                var y = Mathf.PerlinNoise((x + xChunkOffset + xExtraOffset) * _settings.NoiseScale, (z + zChunkOffset + zExtraOffset) * _settings.NoiseScale) 
-                        * _settings.HeightScale - (_settings.HeightScale / 2) + _settings.AverageHeight;
+                var perlinX = (x + xChunkOffset + xExtraOffset) * _settings.NoiseScale;
+                var perlinY = (z + zChunkOffset + zExtraOffset) * _settings.NoiseScale;
+                var y = Mathf.PerlinNoise(perlinX, perlinY) * _settings.HeightScale 
+                    - (_settings.HeightScale / 2) + _settings.AverageHeight;
                 colliderVertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
             }
 
