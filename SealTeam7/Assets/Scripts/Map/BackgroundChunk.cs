@@ -106,15 +106,31 @@ namespace Map
             {
                 for (int z = 0; z < _meshData.VertexSideCount; z++)
                 {
-                    var a = vertices[z * _meshData.VertexSideCount + _meshData.VertexSideCount - _settings.InterpolationMargin].y;
+                    // vertices indexing is z-major, heightMap indexing is x-major
+                    var a = vertices[z + (_meshData.VertexSideCount - _settings.InterpolationMargin - 1) * _meshData.VertexSideCount].y;
+                    var aPrev = vertices[z + (_meshData.VertexSideCount - _settings.InterpolationMargin - 2) * _meshData.VertexSideCount].y;
+                    var m_a = (a - aPrev) / (float)_settings.Spacing * _settings.InterpolationMargin;  // Gradient is difference in y per unit of t
                     var b = _heightMap[(int) ((z * _meshData.LODFactor + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1))];
+                    var bNext = _heightMap[(int) ((z * _meshData.LODFactor + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1)) + _meshData.LODFactor];
+                    var m_b = (bNext - b) / (float)_settings.Spacing * _settings.InterpolationMargin;
+                    if (z == 0) 
+                    {
+                        Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + m_a + " b: " + b + " bNext: " + bNext + " m_b: " + m_b + " spacing: " + _settings.Spacing);
+                    }
                     for (int x = _meshData.VertexSideCount - _settings.InterpolationMargin; x < _meshData.VertexSideCount; x++)
                     {
                         //TODO interpolate between a and b with parameter t
                         //TODO do edge vertices on adjacent chunks overlap?
-                        var t = (x - (_meshData.VertexSideCount - _settings.InterpolationMargin)) / _settings.InterpolationMargin;
-                        var y = Mathf.SmoothStep(a, b, t);
-                        vertices[z * _meshData.VertexSideCount + x].y = y;
+                        var t = (x - (_meshData.VertexSideCount - _settings.InterpolationMargin - 1)) / (float)_settings.InterpolationMargin;
+                        if (z == 0)
+                        {
+                            Debug.Log("t: " + t);
+                        }
+
+                        // Cubic Hermite interpolation
+                        var y = a + m_a * t + (3 * (b - a) - 2 * m_a - m_b) * t * t + (2 * (a - b) + m_a + m_b) * t * t * t;
+
+                        vertices[z + x * _meshData.VertexSideCount].y = y;
                     }
                 }
 
