@@ -1,0 +1,389 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Linux",
+  "BasePlatform": "Linux",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "3898083304",
+    "Type": "User",
+    "GUID": "{B94DA0AB-228D-465F-9C82-287D3D575D75}",
+    "Language": "SFX",
+    "Hash": "{88A14C22-CD38-E968-535D-3A8B7C47E7D6}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
+    "ShortName": "SoundEffects",
+    "Path": "SoundEffects.bnk",
+    "Media": [
+     {
+      "Id": "130871781",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "missile-explosion-168600.wav",
+      "CachePath": "59/{59F6AF7A-2BAF-682A-2DC7-0FECF4F3305C}.wem"
+     },
+     {
+      "Id": "131038067",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "explosion-312361.wav",
+      "CachePath": "B1/{B161CD91-5699-9BBA-220C-E67A91D6C5A7}.wem"
+     },
+     {
+      "Id": "164042640",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sandgametrailer1.wav",
+      "CachePath": "AD/{AD075ACF-119C-91C4-5C06-7AB0161BD0AC}.wem"
+     },
+     {
+      "Id": "222821284",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "DesertAmbiance.wav",
+      "CachePath": "AB/{AB4ECF3D-92FB-D0B4-7B1F-2F6A39B78195}.wem"
+     },
+     {
+      "Id": "244724092",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Sandgametrailer2.wav",
+      "CachePath": "28/{285E28A1-BCAA-7DD0-4E0F-58DDD5AF5F0B}.wem"
+     },
+     {
+      "Id": "315071779",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "wilhelm-splash-14579.wav",
+      "CachePath": "D1/{D1EA2545-DE22-119D-EE7D-A83E1A88D250}.wem"
+     },
+     {
+      "Id": "326758480",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "helicopter-sound-effect-241421.wav",
+      "CachePath": "B0/{B09C25CE-4003-1CC7-BD02-FD8B57D67B57}.wem"
+     },
+     {
+      "Id": "331440713",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "scream-85294.wav",
+      "CachePath": "57/{57B00845-652B-1355-49EE-17FE145370F5}.wem"
+     },
+     {
+      "Id": "429045206",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Pistol 2.wav",
+      "CachePath": "74/{745CAA50-CFE0-837C-D5CA-704AA9D0A62D}.wem"
+     },
+     {
+      "Id": "606358506",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "fanfare-46385.wav",
+      "CachePath": "D1/{D112A7A0-E46E-940E-05E3-72465B801674}.wem"
+     },
+     {
+      "Id": "668002209",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "DesertWind.wav",
+      "CachePath": "AA/{AAFE09DF-50D0-CE78-BA3C-C7C0EE4D5EC5}.wem"
+     },
+     {
+      "Id": "734982053",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Gun SoundsFX.wav",
+      "CachePath": "52/{5256D022-3E27-31FA-3C43-803BDC823017}.wem"
+     },
+     {
+      "Id": "840879273",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Gun Sounds.wav",
+      "CachePath": "FC/{FC4BF945-6612-3DCE-4292-0F6AB8F22069}.wem"
+     }
+    ],
+    "Plugins": {
+     "Custom": [
+      {
+       "Id": "46213127",
+       "Name": "Parametric EQ (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion\\[Effect Slot [1]: (Parametric EQ)]\\Parametric EQ (Custom)",
+       "GUID": "{D6B61490-AF78-436E-81B7-A457C3427AB6}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      },
+      {
+       "Id": "300353365",
+       "Name": "Gain (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion\\[Effect Slot [0]: (Gain)]\\Gain (Custom)",
+       "GUID": "{77A67DF9-9B6C-49D7-B6B0-088A6196F80F}",
+       "LibName": "Wwise Gain",
+       "LibId": "9109507"
+      },
+      {
+       "Id": "332356152",
+       "Name": "Pitch Shifter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\MainMenuMusic\\[Effect Slot [0]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
+       "GUID": "{6BAEE42C-3ABD-4284-A34F-4A921E7B442A}",
+       "LibName": "Wwise Pitch Shifter",
+       "LibId": "8912899"
+      },
+      {
+       "Id": "683578907",
+       "Name": "Parametric EQ (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion_01\\[Effect Slot [1]: (Parametric EQ)]\\Parametric EQ (Custom)",
+       "GUID": "{CB51F10D-6C6C-4B35-A949-86A1EADA720C}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      },
+      {
+       "Id": "702897530",
+       "Name": "Pitch Shifter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion_01\\[Effect Slot [2]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
+       "GUID": "{2ACBAEC8-5DF0-422F-92E4-FA1D9FFC6748}",
+       "LibName": "Wwise Pitch Shifter",
+       "LibId": "8912899"
+      },
+      {
+       "Id": "915072423",
+       "Name": "Pitch Shifter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\SoliderScream\\[Effect Slot [0]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
+       "GUID": "{6ADDE648-408D-4898-9BA7-530B8ACF6325}",
+       "LibName": "Wwise Pitch Shifter",
+       "LibId": "8912899"
+      },
+      {
+       "Id": "1042662446",
+       "Name": "Gain (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion_01\\[Effect Slot [0]: (Gain)]\\Gain (Custom)",
+       "GUID": "{64A254A1-E851-4A12-80E5-0B830DBC9436}",
+       "LibName": "Wwise Gain",
+       "LibId": "9109507"
+      },
+      {
+       "Id": "1061489957",
+       "Name": "Pitch Shifter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Tank Gunfire\\[Effect Slot [0]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
+       "GUID": "{F49CE688-D687-42E0-A53D-602139DB9FFD}",
+       "LibName": "Wwise Pitch Shifter",
+       "LibId": "8912899"
+      }
+     ]
+    },
+    "Events": [
+     {
+      "Id": "1257416293",
+      "Name": "Play_CelebrationFanfare",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_CelebrationFanfare",
+      "GUID": "{8A30D27E-1319-4F64-89DD-FCB21E99F0EC}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.064",
+      "DurationMax": "2.064",
+      "MediaRefs": [
+       {
+        "Id": "606358506"
+       }
+      ]
+     },
+     {
+      "Id": "3643602477",
+      "Name": "Play_DesertAmbiance",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_DesertAmbiance",
+      "GUID": "{85FAA578-4DB0-473E-916F-016DB8FDCEFD}",
+      "DurationType": "OneShot",
+      "DurationMin": "211.47435",
+      "DurationMax": "211.47435",
+      "MediaRefs": [
+       {
+        "Id": "222821284"
+       },
+       {
+        "Id": "668002209"
+       }
+      ]
+     },
+     {
+      "Id": "4030404899",
+      "Name": "Play_Explosion",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Explosion",
+      "GUID": "{9559A078-E99F-4AA3-8FFF-F3C4DB50CEE8}",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "1.5",
+      "MediaRefs": [
+       {
+        "Id": "131038067"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "46213127"
+        },
+        {
+         "Id": "300353365"
+        },
+        {
+         "Id": "683578907"
+        },
+        {
+         "Id": "702897530"
+        },
+        {
+         "Id": "1042662446"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "2853397551",
+      "Name": "Play_GameIntroTrack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_GameIntroTrack",
+      "GUID": "{2466550F-4D7B-4A4F-AFEF-5C5D506AD9C5}",
+      "DurationType": "OneShot",
+      "DurationMin": "16.991709",
+      "DurationMax": "16.991709",
+      "MediaRefs": [
+       {
+        "Id": "244724092"
+       }
+      ]
+     },
+     {
+      "Id": "3013451977",
+      "Name": "Play_Helicopter_Sound",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Helicopter_Sound",
+      "GUID": "{9A2C6923-A903-4022-8422-F895D27F1356}",
+      "DurationType": "OneShot",
+      "DurationMin": "16.5",
+      "DurationMax": "16.5",
+      "MediaRefs": [
+       {
+        "Id": "326758480"
+       }
+      ]
+     },
+     {
+      "Id": "2723016199",
+      "Name": "Play_HelicopterMissile",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_HelicopterMissile",
+      "GUID": "{F61F1241-ED7D-4362-9641-80B72401ECB8}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.25",
+      "DurationMax": "2.25",
+      "MediaRefs": [
+       {
+        "Id": "130871781"
+       }
+      ]
+     },
+     {
+      "Id": "667425441",
+      "Name": "Play_MainMenuMusic",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_MainMenuMusic",
+      "GUID": "{3ACF7174-567D-4D3C-895E-94FEF2EA7D0C}",
+      "DurationType": "OneShot",
+      "DurationMin": "178.46132",
+      "DurationMax": "178.46132",
+      "MediaRefs": [
+       {
+        "Id": "164042640"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "332356152"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "1988800053",
+      "Name": "Play_Solider_Gunfire",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Solider_Gunfire",
+      "GUID": "{D6D31185-9808-4672-BFD6-F4892BDDC093}",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "2.0818489",
+      "MediaRefs": [
+       {
+        "Id": "429045206"
+       },
+       {
+        "Id": "734982053"
+       }
+      ]
+     },
+     {
+      "Id": "2568326629",
+      "Name": "Play_SoliderScream",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_SoliderScream",
+      "GUID": "{B220BA90-D0DA-4A17-A04D-6B32C4A389E4}",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "6.48",
+      "MediaRefs": [
+       {
+        "Id": "315071779"
+       },
+       {
+        "Id": "331440713"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "915072423"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "3624895801",
+      "Name": "Play_Tank_Gunfire",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Tank_Gunfire",
+      "GUID": "{E8D017D2-2CA8-4271-8F03-442494A10FFE}",
+      "DurationType": "OneShot",
+      "DurationMin": "12.969792",
+      "DurationMax": "12.969792",
+      "MediaRefs": [
+       {
+        "Id": "606358506"
+       },
+       {
+        "Id": "840879273"
+       }
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "1061489957"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "FileHash": "{AB88C65C-B922-0AB3-588F-B03CA4C09C91}"
+ }
+}

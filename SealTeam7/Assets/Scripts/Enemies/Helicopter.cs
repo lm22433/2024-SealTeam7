@@ -1,62 +1,73 @@
-﻿using Player;
+using Enemies.Utils;
+using Player;
 using UnityEngine;
 
 namespace Enemies
 {
     public class Helicopter : Enemy
     {
-        [SerializeField] float flyHeight;
-        private float _lastAttack;
+        [SerializeField] protected float flyHeight;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
+        [SerializeField] private AK.Wwise.Event helicopterSound;
+        private bool _isGracefulShutdown = false;
 
-        private void Awake() {
+        private void Awake()
+        {
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
+            helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
+        }
+
+        private void OnDestroy() {
+        
+            _isGracefulShutdown = true;
+
+            helicopterSound.Stop(gameObject);
+        }
+
+        void SoundEffectCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (!_isGracefulShutdown) {
+                helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
+            }
         }
         
-        protected override void Attack(PlayerDamageable target)
+        protected override float Heuristic(Node start, Node end)
         {
-            target?.TakeDamage(attackDamage);
+            return end.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
         }
         
         protected override void EnemyUpdate()
         {
-            TargetRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, Quaternion.LookRotation(Target.transform.position - transform.position).eulerAngles.y, transform.rotation.eulerAngles.z);
-            TargetDirection = (Target.transform.position - transform.position + Vector3.up * (transform.position.y - Target.transform.position.y)).normalized;
-            
-            _lastAttack += Time.deltaTime;
+            switch (State)
+            {
+                case EnemyState.AttackCore:
+                {
+                    TargetPosition = new Vector3(TargetPosition.x, flyHeight, TargetPosition.z);
+                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x,
+                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
+                        transform.eulerAngles.z);
+                    break;
+                }
+                case EnemyState.AttackHands:
+                {
+                    TargetRotation = Quaternion.Euler(
+                        transform.eulerAngles.x,
+                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
+                        transform.eulerAngles.z);
+                    break;
+                }
+                case EnemyState.Moving:
+                {
+                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, transform.eulerAngles.z);
+                    break;
+                }
+            }
         }
 
         protected override void EnemyFixedUpdate()
         {
             if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
             if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
-            Rb.MoveRotation(TargetRotation);
-            
-            switch (State)
-            {
-                case EnemyState.Moving:
-                {
-                    Rb.AddForce(TargetDirection * (moveSpeed * 10f));
-                    break;
-                }
-                case EnemyState.AttackCore:
-                {
-                    if (_lastAttack > attackInterval)
-                    {
-                        Attack(EnemyManager.godlyCore);
-                        _lastAttack = 0f;
-                    }
-                    break;
-                }
-                case EnemyState.AttackHands:
-                {
-                    if (_lastAttack < attackInterval)
-                    {
-                        Attack(EnemyManager.godlyHands);
-                        _lastAttack = 0f;
-                    }
-                    break;
-                }
-            }
         }
     }
 }

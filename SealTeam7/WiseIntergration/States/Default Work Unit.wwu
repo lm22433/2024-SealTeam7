@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{06625803-DAAE-445E-B44C-482F9B18344D}" SchemaVersion="123">
+	<States>
+		<WorkUnit Name="Default Work Unit" ID="{06625803-DAAE-445E-B44C-482F9B18344D}" PersistMode="Standalone">
+			<ChildrenList>
+				<StateGroup Name="SoundEffectStates" ID="{B5C5E32D-03B4-4767-9020-ADC5EA53AE72}">
+					<ChildrenList>
+						<State Name="None" ID="{65F99E4C-C78A-457B-A50C-86F42C1CC6DB}"/>
+					</ChildrenList>
+				</StateGroup>
+			</ChildrenList>
+		</WorkUnit>
+	</States>
+</WwiseDocument>
