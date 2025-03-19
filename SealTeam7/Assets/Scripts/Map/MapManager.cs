@@ -47,16 +47,21 @@ namespace Map
         [Header("Map Settings")]
         [Header("")]
         [SerializeField] private GameObject chunkPrefab;
-        [SerializeField] private GameObject backgroundChunkPrefab;
         [SerializeField] private int mapSize;
         [SerializeField] private int chunkRow;
         [SerializeField] private int chunkSize;
         [SerializeField] private float heightScale;
         [SerializeField] private float lerpFactor;
         [SerializeField] private LODInfo lodInfo;
+
+        [Header("")]
+        [Header("Infinite Sand Settings")]
+        [Header("")]
+        [SerializeField] private GameObject backgroundChunkPrefab;
         [SerializeField] private float backgroundAverageHeight;
         [SerializeField] private float backgroundHeightScale;
         [SerializeField] private float backgroundNoiseScale;
+        [SerializeField] private int backgroundInterpolationMargin;
         
         [Header("")]
         [Header("Environment Settings")]
@@ -103,7 +108,7 @@ namespace Map
                 AverageHeight = backgroundAverageHeight,
                 HeightScale = backgroundHeightScale,
                 NoiseScale = backgroundNoiseScale,
-                InterpolationMargin = 50
+                InterpolationMargin = backgroundInterpolationMargin
             };
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
