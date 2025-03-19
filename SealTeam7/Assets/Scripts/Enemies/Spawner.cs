@@ -11,9 +11,9 @@ namespace Enemies
         [SerializeField] private ParticleSystem[] dustTrails;
         [SerializeField] protected float groundedOffset;
 
-        protected override void Start()
+        public override void Init()
         {
-            base.Start();
+            base.Init();
             LastAttack = attackInterval - 2.0f;
         }
         

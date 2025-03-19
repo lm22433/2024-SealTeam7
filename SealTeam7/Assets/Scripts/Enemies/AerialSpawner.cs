@@ -1,4 +1,5 @@
 ﻿using Enemies.Utils;
+using Map;
 using Player;
 using UnityEngine;
 
@@ -9,14 +10,18 @@ namespace Enemies
         [SerializeField] private float flyHeight;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private EnemyData spawnee;
+        [SerializeField] private Vector3 _oppositePosition;
 
-        protected override void Start()
+        public override void Init()
         {
-            base.Start();
+            base.Init();
+            
             LastAttack = attackInterval - 2.0f;
+            var mapSize = MapManager.GetInstance().GetMapSize() * MapManager.GetInstance().GetMapSpacing();
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
+            _oppositePosition = new Vector3(mapSize - transform.position.x, flyHeight, mapSize - transform.position.z);
         }
-        
+
         protected override float Heuristic(Node start, Node end)
         {
             return start.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
@@ -29,7 +34,8 @@ namespace Enemies
 
         protected override void EnemyUpdate()
         {
-            TargetRotation = Quaternion.LookRotation(new Vector3(-transform.position.x, transform.position.y, -transform.position.z));
+            if ((transform.position - _oppositePosition).sqrMagnitude < 1000f) EnemyManager.Kill(this);
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(_oppositePosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
             TargetDirection = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
         }
 
