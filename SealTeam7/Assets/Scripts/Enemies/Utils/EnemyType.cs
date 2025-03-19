@@ -15,6 +15,8 @@ namespace Enemies
         Helicopter,
         Chinook,
         AerialSpawner,
+        Burrower,
+        Necromancer,
         Mech
     }
 }
