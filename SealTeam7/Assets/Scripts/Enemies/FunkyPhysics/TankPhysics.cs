@@ -8,7 +8,9 @@ namespace Enemies.FunkyPhysics
     public class TankPhysics : BasePhysics
     {
 		private bool _exploded;
-		private int _lives = 1;
+		[SerializeField] private int lives = 1;
+		[SerializeField] private float gracePeriod = 3.0f;
+		private float _deathTime;
 		[SerializeField] private VisualEffect SmokeDmg;
 
 		protected override void Start()
@@ -22,28 +24,35 @@ namespace Enemies.FunkyPhysics
 			if (!GameManager.GetInstance().IsGameActive()) return;
 
 			Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
+			
+			_deathTime += Time.deltaTime;
             
 			//WOULD DIE BURIED
-			if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
+			if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying && _deathTime >= gracePeriod)
 			{
-				if (_lives <= 0)
+				if (lives <= 0)
 				{
 					Self.buried = Self.buriedAmount;
 					Self.SetupDeath();
 				}
 				else
 				{
+					_deathTime = 0.0f;
 					SmokeDmg.Play();
 					transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position), transform.position.z);
-					_lives--;
+					lives--;
 				}
 			}
 			//WOULD DIE FALL DMG
-			if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded && !Self.IsDying)
+			if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded && !Self.IsDying && _deathTime >= gracePeriod)
 			{
 				SmokeDmg.Play();
-				if (_lives <= 0)Self.SetupDeath();
-				else _lives--;
+				if (lives <= 0)Self.SetupDeath();
+				else
+				{
+					lives--;
+					_deathTime = 0.0f;
+				}
 			}
 
 			EnemyUpdate();
