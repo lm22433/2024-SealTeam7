@@ -136,18 +136,15 @@ namespace Map
                             Quaternion.identity, chunkParent.transform).GetComponent<BackgroundChunk>();
                         backgroundChunkSettings.X = x;
                         backgroundChunkSettings.Z = z;
-                        if (x == -1 && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_RIGHT_CORNER;
-                        else if (x == -1 && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_RIGHT_CORNER;
-                        else if (x == chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_LEFT_CORNER;
-                        else if (x == chunkRow && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_LEFT_CORNER;
-                        else if (x == -1 && z >= 0 && z < chunkRow) backgroundChunkSettings.Interpolate = Interpolate.RIGHT_EDGE;
-                        else if (x == chunkRow && z >= 0 && z < chunkRow) {
-                            backgroundChunkSettings.Interpolate = Interpolate.LEFT_EDGE;
-                            Debug.Log("LEFT_EDGE");
-                        }
-                        else if (x >= 0 && x < chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_EDGE;
-                        else if (x >= 0 && x < chunkRow && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_EDGE;
-                        else backgroundChunkSettings.Interpolate = Interpolate.NONE;
+                        if (x == -1 && z == -1) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.TopRightCorner;
+                        else if (x == -1 && z == chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.BottomRightCorner;
+                        else if (x == chunkRow && z == -1) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.TopLeftCorner;
+                        else if (x == chunkRow && z == chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.BottomLeftCorner;
+                        else if (x == -1 && z >= 0 && z < chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.RightEdge;
+                        else if (x == chunkRow && z >= 0 && z < chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.LeftEdge;
+                        else if (x >= 0 && x < chunkRow && z == -1) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.TopEdge;
+                        else if (x >= 0 && x < chunkRow && z == chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.BottomEdge;
+                        else backgroundChunkSettings.InterpolationDirection = InterpolationDirection.None;
                         chunk.Setup(backgroundChunkSettings, ref _heightMap);
                     }
                 }
