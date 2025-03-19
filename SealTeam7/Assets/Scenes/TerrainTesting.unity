@@ -1724,8 +1724,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.05
-  noiseScale: 0.005
+  noiseSpeed: 0.1
+  noiseScale: 0.01
   width: 880
   height: 880
   xOffsetStart: 480
