@@ -113,18 +113,18 @@ namespace Map
 
             int zChunkOffset = _settings.Z * _settings.Size;
             int xChunkOffset = _settings.X * _settings.Size;
+            int heightMapWidth = (int) (_settings.MapSize / _settings.Spacing + 1);
 
             if (_settings.Interpolate == Interpolate.RIGHT_EDGE)
             {
                 for (int z = 0; z < _meshData.VertexSideCount; z++)
                 {
-                    if (z == 0) Debug.Log("_interpolationMargin: " + _interpolationMargin);
                     // vertices indexing is z-major, heightMap indexing is x-major
                     var a = vertices[z + (_meshData.VertexSideCount - _interpolationMargin - 1) * _meshData.VertexSideCount].y;
                     var aPrev = vertices[z + (_meshData.VertexSideCount - _interpolationMargin - 2) * _meshData.VertexSideCount].y;
                     var m_a = (a - aPrev) / (float)_settings.Spacing * _interpolationMargin;  // Gradient is difference in y per unit of t
-                    var b = _heightMap[(int) ((z * _meshData.LODFactor + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1))];
-                    var bNext = _heightMap[(int) ((z * _meshData.LODFactor + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1)) + _meshData.LODFactor];
+                    var b = _heightMap[(z * _meshData.LODFactor + zChunkOffset) * heightMapWidth];
+                    var bNext = _heightMap[(z * _meshData.LODFactor + zChunkOffset) * heightMapWidth + _meshData.LODFactor];
                     var m_b = (bNext - b) / (float)_settings.Spacing * _interpolationMargin;
                     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + m_a + " b: " + b + " bNext: " + bNext + " m_b: " + m_b + " spacing: " + _settings.Spacing);
                     for (int x = _meshData.VertexSideCount - _interpolationMargin; x < _meshData.VertexSideCount; x++)
@@ -137,16 +137,14 @@ namespace Map
                     }
                 }
 
-                //TODO same for collider mesh
                 for (int z = 0; z < _colliderMeshData.VertexSideCount; z++)
                 {
-                    if (z == 0) Debug.Log("_colliderInterpolationMargin: " + _colliderInterpolationMargin);
                     // vertices indexing is z-major, heightMap indexing is x-major
                     var a = colliderVertices[z + (_colliderMeshData.VertexSideCount - _colliderInterpolationMargin - 1) * _colliderMeshData.VertexSideCount].y;
                     var aPrev = colliderVertices[z + (_colliderMeshData.VertexSideCount - _colliderInterpolationMargin - 2) * _colliderMeshData.VertexSideCount].y;
                     var m_a = (a - aPrev) / (float)_settings.Spacing * _colliderInterpolationMargin;  // Gradient is difference in y per unit of t
-                    var b = _heightMap[(int) ((z * _colliderMeshData.LODFactor + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1))];
-                    var bNext = _heightMap[(int) ((z * _colliderMeshData.LODFactor + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1)) + _colliderMeshData.LODFactor];
+                    var b = _heightMap[(z * _colliderMeshData.LODFactor + zChunkOffset) * heightMapWidth];
+                    var bNext = _heightMap[(z * _colliderMeshData.LODFactor + zChunkOffset) * heightMapWidth + _colliderMeshData.LODFactor];
                     var m_b = (bNext - b) / (float)_settings.Spacing * _colliderInterpolationMargin;
                     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + m_a + " b: " + b + " bNext: " + bNext + " m_b: " + m_b + " spacing: " + _settings.Spacing);
                     for (int x = _colliderMeshData.VertexSideCount - _colliderInterpolationMargin; x < _colliderMeshData.VertexSideCount; x++)
@@ -160,27 +158,54 @@ namespace Map
                 }
             }
 
-            for (int i = 0; i < numberOfVertices; i++)
+            else if (_settings.Interpolate == Interpolate.LEFT_EDGE)
             {
-                var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
-                var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
-                // vertices[i].y = _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)];
-            }
-            
-            for (int i = 0; i < colliderNumberOfVertices; i++)
-            {
-                var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                // colliderVertices[i].y = _heightMap[(int) ((z + zChunkOffset) * (_settings.MapSize / _settings.Spacing + 1) + xChunkOffset + x)];
+                for (int z = 0; z < _meshData.VertexSideCount; z++)
+                {
+                    // vertices indexing is z-major, heightMap indexing is x-major
+                    var a = vertices[z + _interpolationMargin * _meshData.VertexSideCount].y;
+                    var aPrev = vertices[z + (_interpolationMargin + 1) * _meshData.VertexSideCount].y;
+                    var m_a = (a - aPrev) / (float)_settings.Spacing * _interpolationMargin;  // Gradient is difference in y per unit of t
+                    var b = _heightMap[(z * _meshData.LODFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1];
+                    var bNext = _heightMap[(z * _meshData.LODFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1 - _meshData.LODFactor];
+                    var m_b = (bNext - b) / (float)_settings.Spacing * _interpolationMargin;
+                    if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + m_a + " b: " + b + " bNext: " + bNext + " m_b: " + m_b + " spacing: " + _settings.Spacing);
+                    for (int x = 0; x < _interpolationMargin; x++)
+                    {
+                        var t = (_interpolationMargin - x) / (float)_interpolationMargin;
+                        if (z == 0) Debug.Log("t: " + t);
+                        // Cubic Hermite interpolation
+                        var y = a + m_a * t + (3 * (b - a) - 2 * m_a - m_b) * t * t + (2 * (a - b) + m_a + m_b) * t * t * t;
+                        vertices[z + x * _meshData.VertexSideCount].y = y;
+                    }
+                }
+
+                for (int z = 0; z < _colliderMeshData.VertexSideCount; z++)
+                {
+                    // vertices indexing is z-major, heightMap indexing is x-major
+                    var a = colliderVertices[z + _colliderInterpolationMargin * _colliderMeshData.VertexSideCount].y;
+                    var aPrev = colliderVertices[z + (_colliderInterpolationMargin + 1) * _colliderMeshData.VertexSideCount].y;
+                    var m_a = (a - aPrev) / (float)_settings.Spacing * _colliderInterpolationMargin;  // Gradient is difference in y per unit of t
+                    var b = _heightMap[(int) ((z * _colliderMeshData.LODFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1)];
+                    var bNext = _heightMap[(int) ((z * _colliderMeshData.LODFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1 - _colliderMeshData.LODFactor)];
+                    var m_b = (bNext - b) / (float)_settings.Spacing * _colliderInterpolationMargin;
+                    if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + m_a + " b: " + b + " bNext: " + bNext + " m_b: " + m_b + " spacing: " + _settings.Spacing);
+                    for (int x = 0; x < _colliderInterpolationMargin; x++)
+                    {
+                        var t = (_colliderInterpolationMargin - x) / (float)_colliderInterpolationMargin;
+                        if (z == 0) Debug.Log("t: " + t);
+                        // Cubic Hermite interpolation
+                        var y = a + m_a * t + (3 * (b - a) - 2 * m_a - m_b) * t * t + (2 * (a - b) + m_a + m_b) * t * t * t;
+                        colliderVertices[z + x * _colliderMeshData.VertexSideCount].y = y;
+                    }
+                }
             }
 
-            _meshData.Vertices = vertices;
             _mesh.SetVertices(vertices);
             _mesh.RecalculateNormals();
             _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
             
-            _colliderMeshData.Vertices = colliderVertices;
             _colliderMesh.SetVertices(colliderVertices);
             _colliderMesh.RecalculateNormals();
             _colliderMesh.RecalculateBounds();

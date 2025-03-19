@@ -141,7 +141,10 @@ namespace Map
                         else if (x == chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_LEFT_CORNER;
                         else if (x == chunkRow && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_LEFT_CORNER;
                         else if (x == -1 && z >= 0 && z < chunkRow) backgroundChunkSettings.Interpolate = Interpolate.RIGHT_EDGE;
-                        else if (x == chunkRow && z >= 0 && z < chunkRow) backgroundChunkSettings.Interpolate = Interpolate.LEFT_EDGE;
+                        else if (x == chunkRow && z >= 0 && z < chunkRow) {
+                            backgroundChunkSettings.Interpolate = Interpolate.LEFT_EDGE;
+                            Debug.Log("LEFT_EDGE");
+                        }
                         else if (x >= 0 && x < chunkRow && z == -1) backgroundChunkSettings.Interpolate = Interpolate.TOP_EDGE;
                         else if (x >= 0 && x < chunkRow && z == chunkRow) backgroundChunkSettings.Interpolate = Interpolate.BOTTOM_EDGE;
                         else backgroundChunkSettings.Interpolate = Interpolate.NONE;
