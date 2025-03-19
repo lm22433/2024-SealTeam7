@@ -8,11 +8,11 @@ namespace Enemies
     {
         [SerializeField] protected float flyHeight;
         [SerializeField] private AK.Wwise.Event helicopterSound;
-        private bool _isGracefulShutdown = false;
+        private bool _isGracefulShutdown;
 
-        protected override void Start()
+        public override void Init()
         {
-            base.Start();
+            base.Init();
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
             helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
         }

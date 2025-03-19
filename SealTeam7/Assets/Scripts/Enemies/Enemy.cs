@@ -59,7 +59,7 @@ namespace Enemies
         protected int PathIndex;
         protected float PathFindInterval;
         protected float LastPathFind;
-		protected float DeathDuration = 3.0f;
+		protected float DeathDuration;
         public float buried;
 		public float buriedAmount = 0.5f;
 
@@ -83,6 +83,7 @@ namespace Enemies
             PathFindInterval = EnemyManager.GetInstance().pathFindInterval;
             LastAttack = attackInterval;
             LastPathFind = PathFindInterval;
+            DeathDuration = 3.0f;
         }
 
 		public virtual void SetupDeath()

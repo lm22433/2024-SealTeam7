@@ -10,10 +10,10 @@ namespace Enemies
         [SerializeField] private ParticleSystem trail;
         [SerializeField] private ParticleSystem smokeTrail;
         [SerializeField] private ParticleSystem chargeParticles;
-        
-        protected override void Start()
+
+        public override void Init()
         {
-            base.Start();
+            base.Init();
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
         

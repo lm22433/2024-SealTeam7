@@ -8,13 +8,13 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
-
-		protected override void Start()
-		{
-			base.Start();
-			DeathDuration = 0.5f;
-			buriedAmount = 0.25f;
-		}
+        
+        public override void Init() 
+        {
+            base.Init();
+            DeathDuration = 0.5f;
+            buriedAmount = 0.25f;
+        }
 
         protected override float Heuristic(Node start, Node end)
         {
