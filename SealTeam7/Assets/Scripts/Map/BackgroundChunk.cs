@@ -102,58 +102,19 @@ namespace Map
         {
             var vertices = _meshData.Vertices;
             var colliderVertices = _colliderMeshData.Vertices;
-            int zChunkOffset = _settings.Z * _settings.Size;
-            int heightMapWidth = (int) (_settings.MapSize / _settings.Spacing + 1);
-
+            
             switch (_settings.InterpolationDirection)
             {
                 case InterpolationDirection.RightEdge:
                 {
-                    InterpolateMargin(_meshData.Vertices, _interpolationMargin, _meshData.VertexSideCount, _meshData.LODFactor);
-                    InterpolateMargin(_colliderMeshData.Vertices, _colliderInterpolationMargin, _colliderMeshData.VertexSideCount, _colliderMeshData.LODFactor);
+                    InterpolateMargin(_meshData.Vertices, _interpolationMargin, _meshData.VertexSideCount, _meshData.LODFactor, InterpolationDirection.RightEdge);
+                    InterpolateMargin(_colliderMeshData.Vertices, _colliderInterpolationMargin, _colliderMeshData.VertexSideCount, _colliderMeshData.LODFactor, InterpolationDirection.RightEdge);
                     break;
                 }
                 case InterpolationDirection.LeftEdge:
                 {
-                    for (int z = 0; z < _meshData.VertexSideCount; z++)
-                    {
-                        // vertices indexing is z-major, heightMap indexing is x-major
-                        var a = vertices[z + _interpolationMargin * _meshData.VertexSideCount].y;
-                        var aPrev = vertices[z + (_interpolationMargin + 1) * _meshData.VertexSideCount].y;
-                        var m_a = (a - aPrev) / (float)_settings.Spacing * _interpolationMargin;  // Gradient is difference in y per unit of t
-                        var b = _heightMap[(z * _meshData.LODFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1];
-                        var bNext = _heightMap[(z * _meshData.LODFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1 - _meshData.LODFactor];
-                        var m_b = (bNext - b) / (float)_settings.Spacing * _interpolationMargin;
-                        if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + m_a + " b: " + b + " bNext: " + bNext + " m_b: " + m_b + " spacing: " + _settings.Spacing);
-                        for (int x = 0; x < _interpolationMargin; x++)
-                        {
-                            var t = (_interpolationMargin - x) / (float)_interpolationMargin;
-                            if (z == 0) Debug.Log("t: " + t);
-                            // Cubic Hermite interpolation
-                            var y = a + m_a * t + (3 * (b - a) - 2 * m_a - m_b) * t * t + (2 * (a - b) + m_a + m_b) * t * t * t;
-                            vertices[z + x * _meshData.VertexSideCount].y = y;
-                        }
-                    }
-
-                    for (int z = 0; z < _colliderMeshData.VertexSideCount; z++)
-                    {
-                        // vertices indexing is z-major, heightMap indexing is x-major
-                        var a = colliderVertices[z + _colliderInterpolationMargin * _colliderMeshData.VertexSideCount].y;
-                        var aPrev = colliderVertices[z + (_colliderInterpolationMargin + 1) * _colliderMeshData.VertexSideCount].y;
-                        var m_a = (a - aPrev) / (float)_settings.Spacing * _colliderInterpolationMargin;  // Gradient is difference in y per unit of t
-                        var b = _heightMap[(int) ((z * _colliderMeshData.LODFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1)];
-                        var bNext = _heightMap[(int) ((z * _colliderMeshData.LODFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1 - _colliderMeshData.LODFactor)];
-                        var m_b = (bNext - b) / (float)_settings.Spacing * _colliderInterpolationMargin;
-                        if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + m_a + " b: " + b + " bNext: " + bNext + " m_b: " + m_b + " spacing: " + _settings.Spacing);
-                        for (int x = 0; x < _colliderInterpolationMargin; x++)
-                        {
-                            var t = (_colliderInterpolationMargin - x) / (float)_colliderInterpolationMargin;
-                            if (z == 0) Debug.Log("t: " + t);
-                            // Cubic Hermite interpolation
-                            var y = a + m_a * t + (3 * (b - a) - 2 * m_a - m_b) * t * t + (2 * (a - b) + m_a + m_b) * t * t * t;
-                            colliderVertices[z + x * _colliderMeshData.VertexSideCount].y = y;
-                        }
-                    }
+                    InterpolateMargin(_meshData.Vertices, _interpolationMargin, _meshData.VertexSideCount, _meshData.LODFactor, InterpolationDirection.LeftEdge);
+                    InterpolateMargin(_colliderMeshData.Vertices, _colliderInterpolationMargin, _colliderMeshData.VertexSideCount, _colliderMeshData.LODFactor, InterpolationDirection.LeftEdge);
                     break;
                 }
                 case InterpolationDirection.None:
@@ -174,24 +135,61 @@ namespace Map
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _colliderMesh;
         }
 
-        private void InterpolateMargin(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int lodFactor)
+        private void InterpolateMargin(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int lodFactor, 
+            InterpolationDirection interpolationDirection)
         {
+            if (interpolationDirection == InterpolationDirection.None) return;
+            
             int zChunkOffset = _settings.Z * _settings.Size;
             int heightMapWidth = (int) (_settings.MapSize / _settings.Spacing + 1);
             
             for (int z = 0; z < vertexSideCount; z++)
             {
-                // vertices indexing is z-major, heightMap indexing is x-major
-                var a = vertices[z + (vertexSideCount - interpolationMargin - 1) * vertexSideCount].y;
-                var aPrev = vertices[z + (vertexSideCount - interpolationMargin - 2) * vertexSideCount].y;
+                int aIndex;
+                int aPrevIndex;
+                int bIndex;
+                int bNextIndex;
+                int startX;
+                int endX;
+
+                if (interpolationDirection == InterpolationDirection.LeftEdge)
+                {
+                    aIndex = z + _interpolationMargin * vertexSideCount;
+                    aPrevIndex = z + (_interpolationMargin + 1) * vertexSideCount;
+                    bIndex = (z * lodFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1;
+                    bNextIndex = (z * lodFactor + zChunkOffset) * heightMapWidth + heightMapWidth - 1 - lodFactor;
+                    startX = 0;
+                    endX = interpolationMargin;
+                }
+                else
+                {
+                    aIndex = z + (vertexSideCount - interpolationMargin - 1) * vertexSideCount;
+                    aPrevIndex = z + (vertexSideCount - interpolationMargin - 2) * vertexSideCount;
+                    bIndex = (z * lodFactor + zChunkOffset) * heightMapWidth;
+                    bNextIndex = (z * lodFactor + zChunkOffset) * heightMapWidth + lodFactor;
+                    startX = vertexSideCount - interpolationMargin;
+                    endX = vertexSideCount;
+                }
+
+                var a = vertices[aIndex].y;
+                var aPrev = vertices[aPrevIndex].y;
                 var aGrad = (a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
-                var b = _heightMap[(z * lodFactor + zChunkOffset) * heightMapWidth];
-                var bNext = _heightMap[(z * lodFactor + zChunkOffset) * heightMapWidth + lodFactor];
+                var b = _heightMap[bIndex];
+                var bNext = _heightMap[bNextIndex];
                 var bGrad = (bNext - b) / _settings.Spacing * interpolationMargin;
                 if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
-                for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
+
+                for (int x = startX; x < endX; x++)
                 {
-                    var t = (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin;
+                    float t;
+                    if (interpolationDirection == InterpolationDirection.LeftEdge)
+                    {
+                        t = (_interpolationMargin - x) / (float)interpolationMargin;
+                    }
+                    else
+                    {
+                        t = (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin;
+                    }
                     if (z == 0) Debug.Log("t: " + t);
                     // Cubic Hermite interpolation
                     var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
