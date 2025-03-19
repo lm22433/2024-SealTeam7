@@ -11,14 +11,15 @@ namespace Enemies
         [SerializeField] private ParticleSystem smokeTrail;
         [SerializeField] private ParticleSystem chargeParticles;
         
-        private void Awake()
+        protected override void Start()
         {
+            base.Start();
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
         
         protected override float Heuristic(Node start, Node end)
         {
-            return end.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
+            return start.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
         }
         
         protected override void Attack(PlayerDamageable toDamage)

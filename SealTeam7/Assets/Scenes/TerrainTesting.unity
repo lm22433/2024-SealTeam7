@@ -1724,7 +1724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.01
+  noiseSpeed: 0.05
   noiseScale: 0.005
   width: 880
   height: 880
@@ -4197,7 +4197,7 @@ PrefabInstance:
       objectReference: {fileID: 1752941130}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: difficulties.Array.size
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: 'difficulties.Array.data[0]'
@@ -5082,7 +5082,7 @@ MonoBehaviour:
   celebrationFanfare:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 3f97d12f1f6264347b4b282d0a44b6a5, type: 2}
+    WwiseObjectReference: {fileID: 0}
 --- !u!4 &2004182967
 Transform:
   m_ObjectHideFlags: 0
@@ -5364,11 +5364,14 @@ MonoBehaviour:
   pathingDepth: 300
   pathFindInterval: 5
   enemyData:
+  - {fileID: 11400000, guid: 11214c7990501be48a622d04de42f72d, type: 2}
   - {fileID: 11400000, guid: 48fcae14540e510498a8ca0e7911261c, type: 2}
   - {fileID: 11400000, guid: 46cb815e1632b2d44a7f27e801930935, type: 2}
   - {fileID: 11400000, guid: 8dac9d03a92f5b54d90f651c248933e8, type: 2}
+  - {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
   - {fileID: 11400000, guid: d7aadd3a0f6d58d49919079d90613b3a, type: 2}
   - {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
+  - {fileID: 11400000, guid: e1562d7a103d9ee4d806e6412cf4505b, type: 2}
   - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
   sqrMaxEnemyDistance: 500
 --- !u!114 &2085838831

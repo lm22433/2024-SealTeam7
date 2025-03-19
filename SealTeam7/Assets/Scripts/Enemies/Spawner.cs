@@ -7,7 +7,7 @@ namespace Enemies
 {
     public class Spawner : Enemy
     {
-        [SerializeField] private GameObject spawnee;
+        [SerializeField] private EnemyData spawnee;
         [SerializeField] private ParticleSystem[] dustTrails;
         [SerializeField] protected float groundedOffset;
 
@@ -15,6 +15,11 @@ namespace Enemies
         {
             base.Start();
             LastAttack = attackInterval - 2.0f;
+        }
+        
+        protected override float Heuristic(Node start, Node end)
+        {
+            return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 100f;
         }
 
         protected override void Attack(PlayerDamageable player)
@@ -60,7 +65,8 @@ namespace Enemies
                 }
                 case EnemyState.Dying:
                 {
-                    foreach (var dustTrail in dustTrails) dustTrail.Stop();
+                    foreach (var dustTrail in dustTrails)
+                        if(dustTrail.isPlaying) dustTrail.Stop();
                     break;
                 }
             }

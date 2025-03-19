@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b5805bd080546e4b268349983e4b7e1, type: 3}
-  m_Name: SniperSoldier
+  m_Name: AerialSpawner
   m_EditorClassIdentifier: 
-  prefab: {fileID: 3438950281418470787, guid: 9c5e568ef16f06f4bbbf59b737d9d5da, type: 3}
-  enemyType: 2
+  prefab: {fileID: 294539034509554032, guid: 31855706cfe18c84c9ea24276217cb1c, type: 3}
+  enemyType: 12
   groupSpacing: 0
-  startingWave: 4
-  baseGroupSpawnSize: 3
-  groupSpawnSizeGrowthRate: 2.4
+  startingWave: 9
+  baseGroupSpawnSize: 2
+  groupSpawnSizeGrowthRate: 1.4
   maxSpawnChance: 0.4
-  spawnChanceGrowthRate: 0.16
+  spawnChanceGrowthRate: 0.14

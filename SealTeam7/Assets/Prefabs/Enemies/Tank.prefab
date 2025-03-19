@@ -10012,10 +10012,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc6c0171c084d7cb202329c32b1c168, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 6
   forceOffset: {x: 0, y: -1, z: 1}
   moveSpeed: 20
   acceleration: 100
-  aimSpeed: 2
+  aimSpeed: 5
   attackRange: 100
   attackInterval: 4
   stopShootingThreshold: 20

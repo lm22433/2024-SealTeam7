@@ -49,11 +49,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 3
+  enemyType: 2
+  forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 15
   acceleration: 20
-  flyHeight: 0
-  aimSpeed: 2
+  aimSpeed: 10
   attackRange: 200
   attackInterval: 6
   stopShootingThreshold: 150

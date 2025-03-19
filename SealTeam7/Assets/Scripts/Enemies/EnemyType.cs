@@ -3,15 +3,18 @@ namespace Enemies
     public enum EnemyType
     {
         Soldier,
-        Parachutist,
         FastSoldier,
         SniperSoldier,
         LmgSoldier,
         RpgSoldier,
+        ParaSoldier,
         Tank,
+        MortarTank,
+        Spawner,
         KamikazePlane,
         Helicopter,
         Chinook,
+        AerialSpawner,
         Mech
     }
 }

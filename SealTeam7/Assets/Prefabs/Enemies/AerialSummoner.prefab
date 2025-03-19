@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 377835221181255017}
   - component: {fileID: 781513554043923579}
   m_Layer: 0
-  m_Name: ArialSummoner
+  m_Name: AerialSummoner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,9 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f6cc4da529cf8d4c8008fc79d3ea29b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 12
+  forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 10
   acceleration: 10
-  aimSpeed: 20
+  aimSpeed: 10
   attackRange: 200
   attackInterval: 12
   stopShootingThreshold: 150
@@ -59,6 +61,8 @@ MonoBehaviour:
   killScore: 25
   deathParticles: {fileID: 4858304961345967028}
   model: {fileID: 5102378100835869772}
+  muzzle: {fileID: 0}
+  projectile: {fileID: 0}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
@@ -72,7 +76,7 @@ MonoBehaviour:
   flyHeight: 180
   muzzle: {fileID: 0}
   projectile: {fileID: 0}
-  spawnee: {fileID: 3438950281418470787, guid: 3252ff332f9da98479c2156205a4816d, type: 3}
+  spawnee: {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
 --- !u!114 &377835221181255017
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,10 +19,10 @@ namespace Enemies
     
     public abstract class Enemy : MonoBehaviour
     {
-        [Header("Movement")]
-        [SerializeField] protected Vector3 forceOffset;
         [SerializeField] protected internal EnemyType enemyType;
         
+        [Header("Movement")]
+        [SerializeField] protected Vector3 forceOffset;
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float acceleration;
         
@@ -179,6 +179,8 @@ namespace Enemies
                 RequestPath();
                 State = EnemyState.Idle;
             }
+            
+            TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, 0f);
         }
 
         private void RequestPath()

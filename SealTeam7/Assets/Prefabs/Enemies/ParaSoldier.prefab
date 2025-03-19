@@ -166,14 +166,14 @@ Transform:
   m_GameObject: {fileID: 1454860698003466138}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.7628391, y: 0.30220446, z: 2.8108299}
-  m_LocalScale: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+  m_LocalPosition: {x: 3.5256782, y: 0.6044089, z: 5.6216598}
+  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1029316436539079164}
   - {fileID: 1494565198523338992}
   - {fileID: 6197896887285708827}
-  m_Father: {fileID: 2009848768158169250}
+  m_Father: {fileID: 1011021850132016292}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3123211244846321954
 GameObject:
@@ -319,9 +319,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1011021850132016292}
-  - {fileID: 4797994724752532913}
   - {fileID: 8765050186859169673}
-  - {fileID: 5007841751084571245}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8717828168720478181
@@ -336,17 +334,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 5
+  forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 20
   acceleration: 40
-  aimSpeed: 20
+  aimSpeed: 10
   attackRange: 50
   attackInterval: 1
   stopShootingThreshold: 20
   coreTargetHeightOffset: 4
   attackDamage: 1
-  killScore: 5
+  killScore: 100
   deathParticles: {fileID: 1519293595971627291}
   model: {fileID: 1011021850132016292}
+  muzzle: {fileID: 1551213479543639856}
+  projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
@@ -358,8 +360,6 @@ MonoBehaviour:
   buried: 0
   buriedAmount: 3
   gun: {fileID: 4797994724752532913}
-  muzzle: {fileID: 1551213479543639856}
-  projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
 --- !u!54 &4195251952092455746
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -543,13 +543,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6408983562744472360}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.15, z: 0.45}
-  m_LocalScale: {x: 0.1, y: 0.3, z: 0.6}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1, y: 0.3, z: 0.9}
+  m_LocalScale: {x: 0.20000002, y: 0.6, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1551213479543639856}
-  m_Father: {fileID: 2009848768158169250}
+  m_Father: {fileID: 1011021850132016292}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5869765654115437350
 MeshFilter:
@@ -5494,7 +5494,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5007841751084571245}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4797994724752532913}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4799f202e73aa467ab296151d9bec8fc, type: 3}
 --- !u!4 &1011021850132016292 stripped

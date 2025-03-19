@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: KamikazePlane
   m_EditorClassIdentifier: 
   prefab: {fileID: 6364100127909003597, guid: a61f570ffbb401a4a9b4862d49f7721a, type: 3}
-  enemyType: 7
+  enemyType: 9
   groupSpacing: 0
   startingWave: 9
   baseGroupSpawnSize: 2

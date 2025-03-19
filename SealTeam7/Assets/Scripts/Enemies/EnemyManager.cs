@@ -173,12 +173,15 @@ namespace Enemies
             }
         }
 
-        public void SpawnerSpawn(Vector3 spawnPoint, GameObject spawnee, int spawnCount)
+        public void SpawnerSpawn(Vector3 spawnPoint, EnemyData spawnee, int spawnCount)
         {
             for (int i = 0; i < spawnCount; i++)
             {
+                GameObject enemy = EnemyPool.GetInstance().GetFromPool(spawnee, spawnPoint, Quaternion.identity);
+                if (!enemy) continue;
+                enemy.GetComponent<Enemy>().Init();
+                enemy.transform.SetParent(transform);
                 _enemyCount++;
-                Instantiate(spawnee, spawnPoint, Quaternion.identity, transform);
             }
         }
         

@@ -10042,10 +10042,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c99aece3fd099b4eb894cc02d757ead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 9
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 25
   acceleration: 20
-  aimSpeed: 1
+  aimSpeed: 10
   attackRange: 30
   attackInterval: 0
   stopShootingThreshold: 20
@@ -10064,7 +10065,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  State: 0
   buried: 0
   buriedAmount: 0.5
   flyHeight: 170
