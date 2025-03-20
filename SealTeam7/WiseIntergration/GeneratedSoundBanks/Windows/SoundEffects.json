@@ -10,11 +10,19 @@
     "Type": "User",
     "GUID": "{B94DA0AB-228D-465F-9C82-287D3D575D75}",
     "Language": "SFX",
-    "Hash": "{D52A577C-B7AD-05C0-2428-7FAD8A9A0466}",
+    "Hash": "{88A14C22-CD38-E968-535D-3A8B7C47E7D6}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
     "ShortName": "SoundEffects",
     "Path": "SoundEffects.bnk",
     "Media": [
+     {
+      "Id": "130871781",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "missile-explosion-168600.wav",
+      "CachePath": "59/{59F6AF7A-2BAF-682A-2DC7-0FECF4F3305C}.wem"
+     },
      {
       "Id": "131038067",
       "Language": "SFX",
@@ -80,6 +88,14 @@
       "CachePath": "74/{745CAA50-CFE0-837C-D5CA-704AA9D0A62D}.wem"
      },
      {
+      "Id": "606358506",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "fanfare-46385.wav",
+      "CachePath": "D1/{D112A7A0-E46E-940E-05E3-72465B801674}.wem"
+     },
+     {
       "Id": "668002209",
       "Language": "SFX",
       "Streaming": "false",
@@ -123,12 +139,44 @@
        "LibId": "9109507"
       },
       {
+       "Id": "332356152",
+       "Name": "Pitch Shifter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\MainMenuMusic\\[Effect Slot [0]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
+       "GUID": "{6BAEE42C-3ABD-4284-A34F-4A921E7B442A}",
+       "LibName": "Wwise Pitch Shifter",
+       "LibId": "8912899"
+      },
+      {
+       "Id": "683578907",
+       "Name": "Parametric EQ (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion_01\\[Effect Slot [1]: (Parametric EQ)]\\Parametric EQ (Custom)",
+       "GUID": "{CB51F10D-6C6C-4B35-A949-86A1EADA720C}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      },
+      {
+       "Id": "702897530",
+       "Name": "Pitch Shifter (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion_01\\[Effect Slot [2]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
+       "GUID": "{2ACBAEC8-5DF0-422F-92E4-FA1D9FFC6748}",
+       "LibName": "Wwise Pitch Shifter",
+       "LibId": "8912899"
+      },
+      {
        "Id": "915072423",
        "Name": "Pitch Shifter (Custom)",
        "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\SoliderScream\\[Effect Slot [0]: (Pitch Shifter)]\\Pitch Shifter (Custom)",
        "GUID": "{6ADDE648-408D-4898-9BA7-530B8ACF6325}",
        "LibName": "Wwise Pitch Shifter",
        "LibId": "8912899"
+      },
+      {
+       "Id": "1042662446",
+       "Name": "Gain (Custom)",
+       "ObjectPath": "\\Interactive Music Hierarchy\\Default Work Unit\\SoundEffects\\Explosion_01\\[Effect Slot [0]: (Gain)]\\Gain (Custom)",
+       "GUID": "{64A254A1-E851-4A12-80E5-0B830DBC9436}",
+       "LibName": "Wwise Gain",
+       "LibId": "9109507"
       },
       {
        "Id": "1061489957",
@@ -141,6 +189,20 @@
      ]
     },
     "Events": [
+     {
+      "Id": "1257416293",
+      "Name": "Play_CelebrationFanfare",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_CelebrationFanfare",
+      "GUID": "{8A30D27E-1319-4F64-89DD-FCB21E99F0EC}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.064",
+      "DurationMax": "2.064",
+      "MediaRefs": [
+       {
+        "Id": "606358506"
+       }
+      ]
+     },
      {
       "Id": "3643602477",
       "Name": "Play_DesertAmbiance",
@@ -164,7 +226,7 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Explosion",
       "GUID": "{9559A078-E99F-4AA3-8FFF-F3C4DB50CEE8}",
       "DurationType": "OneShot",
-      "DurationMin": "1.5",
+      "DurationMin": "0",
       "DurationMax": "1.5",
       "MediaRefs": [
        {
@@ -178,6 +240,15 @@
         },
         {
          "Id": "300353365"
+        },
+        {
+         "Id": "683578907"
+        },
+        {
+         "Id": "702897530"
+        },
+        {
+         "Id": "1042662446"
         }
        ]
       }
@@ -211,6 +282,20 @@
       ]
      },
      {
+      "Id": "2723016199",
+      "Name": "Play_HelicopterMissile",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_HelicopterMissile",
+      "GUID": "{F61F1241-ED7D-4362-9641-80B72401ECB8}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.25",
+      "DurationMax": "2.25",
+      "MediaRefs": [
+       {
+        "Id": "130871781"
+       }
+      ]
+     },
+     {
       "Id": "667425441",
       "Name": "Play_MainMenuMusic",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_MainMenuMusic",
@@ -222,7 +307,14 @@
        {
         "Id": "164042640"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "Custom": [
+        {
+         "Id": "332356152"
+        }
+       ]
+      }
      },
      {
       "Id": "1988800053",
@@ -275,6 +367,9 @@
       "DurationMax": "12.969792",
       "MediaRefs": [
        {
+        "Id": "606358506"
+       },
+       {
         "Id": "840879273"
        }
       ],
@@ -289,6 +384,6 @@
     ]
    }
   ],
-  "FileHash": "{1D121DC4-E9E2-945F-1112-A46320DEF7DF}"
+  "FileHash": "{10412DDB-F5F0-03D7-4F27-39CB1BE60957}"
  }
 }

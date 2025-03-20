@@ -112,9 +112,47 @@
 				<Event Name="Play_Explosion" ID="{9559A078-E99F-4AA3-8FFF-F3C4DB50CEE8}">
 					<ChildrenList>
 						<Action Name="" ID="{62B32B81-6CBB-4C1F-A398-FB549B14111D}" ShortID="177167647">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="50"/>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="Explosion" ID="{6023DF7D-9BA0-43A8-B8CE-679D5B619304}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{C000EC0C-16B6-4FB0-ABC7-12206191DCFF}" ShortID="406291025">
+							<PropertyList>
+								<Property Name="Probability" Type="Real64" Value="50"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Explosion_01" ID="{A8FFD18E-8221-4E07-A8B4-96C8A63EC191}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_HelicopterMissile" ID="{F61F1241-ED7D-4362-9641-80B72401ECB8}">
+					<ChildrenList>
+						<Action Name="" ID="{2A0E4CB3-0F34-4F94-BAA9-8EB21FE4DA66}" ShortID="688254783">
+							<PropertyList>
+								<Property Name="FadeInCurve" Type="int16" Value="8"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="HelicopterMissile" ID="{B8168F35-12E8-4FEE-A9B8-29A87B66F7C3}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_CelebrationFanfare" ID="{8A30D27E-1319-4F64-89DD-FCB21E99F0EC}">
+					<ChildrenList>
+						<Action Name="" ID="{E6F98754-5A15-476D-BD99-634BDF7DD295}" ShortID="923304667">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="CelebrationFanfare" ID="{85869B74-7530-4283-805C-75F60C7FB91B}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
