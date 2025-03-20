@@ -9977,6 +9977,9 @@ MonoBehaviour:
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
+  smokeDmg: {fileID: 763469492654417899}
+  lives: 2
+  gracePeriod: 3
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9993,8 +9996,6 @@ MonoBehaviour:
   defianceThreshold: 20
   sinkFactor: 10
   fallDeathVelocityY: 40
-  gracePeriod: 3
-  SmokeDmg: {fileID: 763469492654417899}
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10062,7 +10063,9 @@ MonoBehaviour:
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
+  smokeDmg: {fileID: 0}
   lives: 2
+  gracePeriod: 3
 --- !u!1 &3860991068415625870
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,39 +8,6 @@ namespace Enemies.FunkyPhysics
     public class TankPhysics : BasePhysics
     {
 		private bool _exploded;
-		[SerializeField] private float gracePeriod = 3.0f;
-		private float _deathTime = 0.0f;
-		[SerializeField] private VisualEffect SmokeDmg;
-
-		protected override void Start()
-		{
-			base.Start();
-			SmokeDmg.Stop();
-		}
-
-		protected override void Update()
-		{
-			if (!GameManager.GetInstance().IsGameActive()) return;
-
-			//Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
-			
-			_deathTime += Time.deltaTime;
-            
-			//WOULD DIE BURIED
-			if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying && _deathTime >= gracePeriod)
-			{
-				SmokeDmg.Play();
-				Self.SetupDeath();
-			}
-			//WOULD DIE FALL DMG
-			if (-Rb.linearVelocity.y >= fallDeathVelocityY && Self.Grounded && !Self.IsDying && _deathTime >= gracePeriod)
-			{
-				SmokeDmg.Play();
-				Self.SetupDeath();
-			}
-
-			EnemyUpdate();
-		}
 
         protected override void EnemyUpdate()
         {

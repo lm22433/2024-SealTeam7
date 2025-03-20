@@ -2,6 +2,7 @@
 using Map;
 using Player;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Enemies
 {
@@ -9,16 +10,38 @@ namespace Enemies
     {
         [SerializeField] private EnemyData spawnee;
         [SerializeField] private ParticleSystem[] dustTrails;
+        [SerializeField] private VisualEffect smokeDmg;
+        [SerializeField] private int lives = 2;
+        [SerializeField] private float gracePeriod = 3.0f;
+        private float _deathTime;
 
         public override void Init()
         {
             base.Init();
             LastAttack = attackInterval - 2.0f;
+            lives = 2;
+            smokeDmg.Stop();
+            _deathTime = 0f;
         }
         
         protected override float Heuristic(Node start, Node end)
         {
             return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 100f;
+        }
+        
+        public override void SetupDeath()
+        {
+            if (_deathTime < gracePeriod) return;
+            
+            _deathTime = 0f;
+            lives--;
+            if (lives > 0)
+            {
+                smokeDmg.Play();
+                transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);
+                Rb.linearVelocity = Vector3.zero;
+            }
+            else base.SetupDeath();
         }
 
         protected override void Attack(PlayerDamageable player)

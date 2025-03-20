@@ -2,6 +2,8 @@ using Enemies.Utils;
 using Map;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.VFX;
 
 namespace Enemies
 {
@@ -9,12 +11,17 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem[] dustTrails;
+        [SerializeField] private VisualEffect smokeDmg;
         [SerializeField] private int lives = 2;
+        [SerializeField] private float gracePeriod = 3.0f;
+        private float _deathTime;
 
         public override void Init()
         {
             base.Init();
             lives = 2;
+            smokeDmg.Stop();
+            _deathTime = 0f;
         }
         
         protected override float Heuristic(Node start, Node end)
@@ -24,9 +31,13 @@ namespace Enemies
 
         public override void SetupDeath()
         {
+            if (_deathTime < gracePeriod) return;
+            
+            _deathTime = 0f;
             lives--;
             if (lives > 0)
             {
+                smokeDmg.Play();
                 transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);
                 Rb.linearVelocity = Vector3.zero;
             }
@@ -35,6 +46,8 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
+            _deathTime += Time.deltaTime;
+            
             DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f;
             DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
             
