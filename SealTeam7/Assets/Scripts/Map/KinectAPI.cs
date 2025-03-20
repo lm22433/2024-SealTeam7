@@ -10,6 +10,7 @@ using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
 using Python;
 using Debug = UnityEngine.Debug;
+using Unity.Mathematics;
 
 namespace Map
 {
@@ -19,7 +20,8 @@ namespace Map
         private readonly Device _kinect;
         private readonly Transformation _transformation;
         private Image _transformedDepthImage;
-        private float[] _heightMap;
+        private float[,] _heightMap;
+        private float2[,] _gradientMap;
         
         /*
          * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
@@ -64,7 +66,7 @@ namespace Map
         public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
         public KinectAPI(float heightScale, float minLerpFactor, float maxLerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int gaussianKernelRadius, float gaussianKernelSigma)
+                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int gaussianKernelRadius, float gaussianKernelSigma)
         {
             _heightScale = heightScale;
             _minLerpFactor = minLerpFactor;
@@ -85,6 +87,7 @@ namespace Map
             _tmpImage = new Image<Gray, float>(_width + 1, _height + 1);
             _dilationKernel = Mat.Ones(50, 50, DepthType.Cv8U, 1);
             _defaultAnchor = new Point(-1, -1);
+            _gradientMap = gradientMap;
             _scalarOne = new MCvScalar(1f);
             _gaussianKernelSize = new Size(gaussianKernelRadius * 2 + 1, gaussianKernelRadius * 2 + 1);
             _gaussianKernelSigma = gaussianKernelSigma;
@@ -271,6 +274,10 @@ namespace Map
             var vec2 = new Vector2();
 
             stopwatch.Restart();
+            CvInvoke.GaussianBlur(_heightMask, _tmpImage, _gaussianKernelSize, _gaussianKernelSigma);
+            _tmpImage = _tmpImage.Sobel(0, 1, 3);
+
+            // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
@@ -279,12 +286,13 @@ namespace Map
                     if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
                         (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
                     {
-                        _heightMask.Data[y, x, 0] = 1f;
+                        _heightMask.Data[y, x, 0] = 0;
                     }
 
                     if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
                     {
                         _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
+                        _gradientMap[y, x] = _tmpImage4.Data[y, x, 0];
                     }
                 }
             }

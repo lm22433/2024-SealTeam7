@@ -83,3 +83,10 @@ crashlytics-build.properties
 *.prof
 *.validationcache
 */Assets/Wwise/Editor/ProjectData/AkWwiseProjectData.asset*
+
+google-services.json*
+google-services-desktop.json*
+
+*.DS_Store
+
+.env
