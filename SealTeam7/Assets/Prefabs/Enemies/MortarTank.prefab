@@ -10017,6 +10017,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: -1, z: 1}
   moveSpeed: 15
   acceleration: 100
+  groundedOffset: 7
   aimSpeed: 5
   attackRange: 250
   attackInterval: 5
@@ -10036,13 +10037,13 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  buried: 0
-  buriedAmount: 0.5
   gun: {fileID: 3715524712139545896}
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
-  groundedOffset: 7
+  smokeDmg: {fileID: 8715206472391717232}
+  lives: 2
+  gracePeriod: 3
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10058,10 +10059,7 @@ MonoBehaviour:
   gravityDefiance: 5
   defianceThreshold: 20
   sinkFactor: 10
-  groundedOffset: 7
   fallDeathVelocityY: 40
-  lives: 1
-  SmokeDmg: {fileID: 8715206472391717232}
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
