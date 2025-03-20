@@ -82,8 +82,8 @@ public class HandReconstruction : MonoBehaviour
         gameObject.transform.localPosition = positions[0];
 
 
-        Vector3 targetDir2 = positions[17] - positions[5];
         if (_handNum == 0) {
+            Vector3 targetDir2 = positions[17] - positions[5];
             if (positions[17].x < positions[5].x) {
                 gameObject.transform.localRotation = Quaternion.Euler(
                     gameObject.transform.localRotation.eulerAngles.x, 
@@ -98,6 +98,7 @@ public class HandReconstruction : MonoBehaviour
                 );
             }
         } else {
+            Vector3 targetDir2 = positions[5] - positions[17];
             if (positions[17].x < positions[5].x) {
                 gameObject.transform.localRotation = Quaternion.Euler(
                     gameObject.transform.localRotation.eulerAngles.x, 
