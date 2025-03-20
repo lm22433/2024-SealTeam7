@@ -116,13 +116,7 @@ namespace Map
 
         private void InterpolateMargin(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int lodFactor, 
             InterpolationDirection interpolationDirection)
-        {
-            // Temporary
-            if (interpolationDirection != InterpolationDirection.RightEdge && 
-                interpolationDirection != InterpolationDirection.LeftEdge &&
-                interpolationDirection != InterpolationDirection.TopEdge &&
-                interpolationDirection != InterpolationDirection.BottomEdge) return;
-            
+        {          
             int zChunkOffset = _settings.Z * _settings.Size;
             int xChunkOffset = _settings.X * _settings.Size;
 
@@ -151,6 +145,7 @@ namespace Map
                     break;
                 
                 case InterpolationDirection.RightEdge:
+
                     for (int z = 0; z < vertexSideCount; z++)
                     {
                         for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
@@ -190,7 +185,7 @@ namespace Map
                     break;
 
                 case InterpolationDirection.TopEdge:
-                
+
                     for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount; z++)
                     {
                         for (int x = 0; x < vertexSideCount; x++)
@@ -209,8 +204,27 @@ namespace Map
                     }
                     break;
 
+                case InterpolationDirection.BottomLeftCorner:
+
+                    // Diagonal
+                    for (int i = 0; i < interpolationMargin; i++)
+                    {
+                        InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, i, i, 
+                            aZ: interpolationMargin, 
+                            aX: interpolationMargin, 
+                            aPrevZ: interpolationMargin + 1, 
+                            aPrevX: interpolationMargin + 1, 
+                            bZ: _heightMapWidth - 1, 
+                            bX: _heightMapWidth - 1, 
+                            bNextZ: _heightMapWidth - 1 - lodFactor, 
+                            bNextX: _heightMapWidth - 1 - lodFactor, 
+                            t: (interpolationMargin - i) / (float)interpolationMargin);
+                    }
+                    break;
+
                 default:
-                    throw new ArgumentOutOfRangeException();  // Not possible
+                    // Not possible
+                    break;
             }
         }
 
