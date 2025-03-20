@@ -1724,8 +1724,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.1
-  noiseScale: 0.01
+  noiseSpeed: 0.001
+  noiseScale: 0.001
   width: 880
   height: 880
   xOffsetStart: 480
@@ -5389,6 +5389,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
   - {fileID: 11400000, guid: e1562d7a103d9ee4d806e6412cf4505b, type: 2}
   - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
+  - {fileID: 11400000, guid: 9ad19be5e22b0f84abb29ea1936bd113, type: 2}
   sqrMaxEnemyDistance: 0
 --- !u!114 &2136132640 stripped
 MonoBehaviour:

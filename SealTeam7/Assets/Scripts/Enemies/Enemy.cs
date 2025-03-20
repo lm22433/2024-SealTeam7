@@ -162,9 +162,10 @@ namespace Enemies
             var newVel = vel.normalized * moveSpeed;
             Rb.linearVelocity = new Vector3(newVel.x, Rb.linearVelocity.y, newVel.z);
         }
-        
+
         private void FollowPath()
         {
+            Path ??= Array.Empty<Vector3>();
             if (Path.Length > 0 && PathIndex < Path.Length - 1)
             {
                 if (LastPathFind >= PathFindInterval)
@@ -230,7 +231,7 @@ namespace Enemies
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
-            if (!DisallowMovement) Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime));
+            if (!DisallowMovement) Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation.normalized, aimSpeed * Time.fixedDeltaTime));
             
             switch (State)
             {
