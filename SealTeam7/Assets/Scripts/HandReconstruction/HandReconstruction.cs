@@ -39,6 +39,11 @@ public class HandReconstruction : MonoBehaviour
 
     }
 
+    private void Update() {
+        handSpeed = Vector3.Distance(positions[0], lastPosition) / Time.deltaTime;
+        lastPosition = positions[0];
+    }
+
     // Update is called once per frame
     private void FixedUpdate()
     {
@@ -46,14 +51,12 @@ public class HandReconstruction : MonoBehaviour
         var tempPositions = mapManager.GetHandPositions(_handNum);
 
         if (tempPositions != null) {   
-            handSpeed = Vector3.Distance(positions[0], lastPosition) / Time.deltaTime;
-            lastPosition = positions[0];
 
             nullFrameCount = 0;
 
             if (handSpeed > handStartFadeSpeed) {
                 float alpha = _renderer.material.GetFloat("_TransparancyScalar");
-                float fadePercent = (handSpeed - handStartFadeSpeed) / (handMaxFadeSpeed - handStartFadeSpeed);
+                float fadePercent = (handSpeed - handStartFadeSpeed) / (handMaxFadeSpeed - handStartFadeSpeed) * fadeRate;
 
                 _renderer.material.SetFloat("_TransparancyScalar", Mathf.Lerp(alpha, 0, fadePercent));
 

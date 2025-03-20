@@ -69,7 +69,7 @@ MonoBehaviour:
   hand: {fileID: 0}
   _lerpFactor: 0
   _thresholdDst: 0
-  _hand: 0
+  _handNum: 0
   positions_offset:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: -1, z: 0}
@@ -94,10 +94,12 @@ MonoBehaviour:
   - {x: 0, y: -8, z: 0}
   handMaterial: {fileID: 0}
   maxHandSpeed: 0
-  maxFramesWithoutHand: 15
-  startAlpha: 0.3
-  fadeRate: 0.05
+  maxFramesWithoutHand: 25
+  startAlpha: 0.2
+  fadeRate: 0.01
   _renderer: {fileID: 2433431767938355854}
+  handStartFadeSpeed: 600
+  handMaxFadeSpeed: 2000
 --- !u!114 &6961489748271865038
 MonoBehaviour:
   m_ObjectHideFlags: 0
