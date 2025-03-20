@@ -10018,6 +10018,7 @@ MonoBehaviour:
   moveSpeed: 15
   acceleration: 100
   groundedOffset: 7
+  flyHeight: 0
   aimSpeed: 5
   attackRange: 250
   attackInterval: 5
@@ -10028,6 +10029,7 @@ MonoBehaviour:
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 45913116891892241}
   muzzle: {fileID: 8190482063018076452}
+  projectileType: 3
   projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
   gunFireSound:
     idInternal: 0
@@ -10042,7 +10044,7 @@ MonoBehaviour:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
   smokeDmg: {fileID: 8715206472391717232}
-  lives: 2
+  maxLives: 2
   gracePeriod: 3
 --- !u!114 &3729924882987787105
 MonoBehaviour:

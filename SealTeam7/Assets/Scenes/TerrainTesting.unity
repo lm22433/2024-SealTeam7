@@ -5467,6 +5467,7 @@ GameObject:
   - component: {fileID: 2085838829}
   - component: {fileID: 2085838831}
   - component: {fileID: 2085838830}
+  - component: {fileID: 2085838832}
   m_Layer: 0
   m_Name: EnemyManager
   m_TagString: Untagged
@@ -5547,6 +5548,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
   - {fileID: 11400000, guid: 9ad19be5e22b0f84abb29ea1936bd113, type: 2}
   sqrMaxEnemyDistance: 0
+--- !u!114 &2085838832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085838828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9388a1932474285b8beb41d00d418da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2136132640 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7684061989767451873, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}

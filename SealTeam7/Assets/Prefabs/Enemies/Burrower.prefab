@@ -10282,6 +10282,7 @@ MonoBehaviour:
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 45913116891892241}
   muzzle: {fileID: 4905351747079400291}
+  projectileType: 2
   projectile: {fileID: 4367590948807452066, guid: f4ad86d3785a5ed478eeb01a30af078b, type: 3}
   gunFireSound:
     idInternal: 0

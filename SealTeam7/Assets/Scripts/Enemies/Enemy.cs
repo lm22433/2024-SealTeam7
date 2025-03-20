@@ -4,6 +4,7 @@ using Enemies.Utils;
 using Game;
 using Map;
 using Player;
+using Projectiles;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -42,7 +43,9 @@ namespace Enemies
         [SerializeField] private VisualEffect deathParticles;
         [SerializeField] private Transform model;
         [SerializeField] private Transform muzzle;
-        [SerializeField] private GameObject projectile;
+        [Header("Projectiles")]
+        [SerializeField] public ProjectileType projectileType;
+        [SerializeField] public GameObject projectile;
 
         [Header("Sound Effects")]
         [SerializeField] protected AK.Wwise.Event gunFireSound;
@@ -112,13 +115,18 @@ namespace Enemies
         protected virtual void Attack(PlayerDamageable toDamage)
         {
             gunFireSound.Post(gameObject);
-            
-            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position), EnemyManager.transform).TryGetComponent(out Projectile proj);
+
+            GameObject obj = ProjectilePool.GetInstance().GetFromPool(projectileType, muzzle.position,
+                Quaternion.LookRotation(TargetPosition - muzzle.position));
+            obj.transform.parent = EnemyManager.transform;
+
+            obj.TryGetComponent(out Projectile proj);
+            proj.projectileType = projectileType;
             proj.TargetPosition = TargetPosition;
             proj.ToDamage = toDamage;
             proj.Damage = attackDamage;
             
-            Destroy(proj.gameObject, 3f);
+            ProjectilePool.GetInstance().ReturnToPool(projectileType, obj, 3f);
         }
 
         protected abstract float Heuristic(Node start, Node end);

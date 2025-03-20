@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Game;
 using Map;
 using Player;
+using Projectiles;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -80,8 +81,9 @@ namespace Enemies.Utils
         {
             foreach (EnemyData data in enemyData)
             {
-                Debug.Log(data.enemyType);
                 EnemyPool.GetInstance().RegisterEnemy(data);
+                Enemy enemy = data.prefab.GetComponent<Enemy>();
+                ProjectilePool.GetInstance().RegisterProjectile(enemy.projectileType, enemy.projectile);
             }
         }
 
