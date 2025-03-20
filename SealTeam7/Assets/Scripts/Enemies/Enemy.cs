@@ -257,6 +257,8 @@ namespace Enemies
         
         public void OnDrawGizmosSelected()
         {
+            if (!GameManager.GetInstance().IsGameActive()) return;
+            
             Gizmos.color = Color.green;
             if (Path.Length > 0) Gizmos.DrawCube(Path[PathIndex], Vector3.one);
             for (int i = PathIndex + 1; i < Path.Length; i++)
