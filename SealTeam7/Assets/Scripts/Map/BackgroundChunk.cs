@@ -1,5 +1,6 @@
 using System;
 using Game;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Map
@@ -130,7 +131,7 @@ namespace Map
                         {
                             // t always increases towards the centre, so a is always on the background chunk and b is always on the
                             // play region chunk
-                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x,
                                 aZ: z, 
                                 aX: interpolationMargin, 
                                 aPrevZ: z, 
@@ -150,7 +151,7 @@ namespace Map
                     {
                         for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
                         {
-                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
                                 aZ: z, 
                                 aX: vertexSideCount - interpolationMargin - 1, 
                                 aPrevZ: z, 
@@ -170,7 +171,7 @@ namespace Map
                     {
                         for (int x = 0; x < vertexSideCount; x++)
                         {
-                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
                                 aZ: interpolationMargin, 
                                 aX: x, 
                                 aPrevZ: interpolationMargin + 1, 
@@ -190,7 +191,7 @@ namespace Map
                     {
                         for (int x = 0; x < vertexSideCount; x++)
                         {
-                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
                                 aZ: vertexSideCount - interpolationMargin - 1, 
                                 aX: x, 
                                 aPrevZ: vertexSideCount - interpolationMargin - 2, 
@@ -207,9 +208,11 @@ namespace Map
                 case InterpolationDirection.BottomLeftCorner:
 
                     // Diagonal
+                    Vector2 cornerGrad = Vector2.zero;
                     for (int i = 0; i < interpolationMargin; i++)
                     {
-                        InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, i, i, 
+                        // Also returns gradient perpendicular to diagonal, which is independent of i
+                        cornerGrad = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, i, i, 
                             aZ: interpolationMargin, 
                             aX: interpolationMargin, 
                             aPrevZ: interpolationMargin + 1, 
@@ -221,17 +224,46 @@ namespace Map
                             t: (interpolationMargin - i) / (float)interpolationMargin);
                     }
 
-                    // Bottom/right triangle
-                    for (int z = 0; z < interpolationMargin; z++)
+                    // Bottom/right triangle - z=0
+                    for (int x = 0; x < interpolationMargin; x++)
+                    {
+                        InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, 0, x,
+                            aZ: 0,
+                            aX: interpolationMargin,
+                            aPrevZ: 0,
+                            aPrevX: interpolationMargin + 1,
+                            bZ: 0,
+                            bX: 0,
+                            bGrad: cornerGrad.x,
+                            t: (interpolationMargin - x) / (float)(interpolationMargin - 0));
+                    }
+
+                    // Bottom/right triangle - main bulk
+                    float bGradPerp = (cornerGrad.x - cornerGrad.y) / Mathf.Sqrt(2);
+                    for (int z = 1; z < interpolationMargin; z++)
                     {
                         for (int x = z; x < interpolationMargin; x++)
                         {
-                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            var bZ = z;
+                            var bX = z;
+                            var bNextZ = z - 1;
+                            var bNextX = z - 1;
+                            var b = vertices[bZ + bX*vertexSideCount].y;
+                            var bNext = vertices[bNextZ + bNextX*vertexSideCount].y;
+                            
+                            // Gradient at b, component parallel to diagonal
+                            // (Extra factor of root 2 to account for diagonal)
+                            var bGradPara = (b - bNext) / (_settings.Spacing * Mathf.Sqrt(2)) * interpolationMargin;
+                            
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
                                 aZ: z,
                                 aX: interpolationMargin,
                                 aPrevZ: z,
                                 aPrevX: interpolationMargin + 1,
-                                bZ: );
+                                bZ: bZ,
+                                bX: bX,
+                                bGrad: -(bGradPara - bGradPerp) / Mathf.Sqrt(2),
+                                t: (interpolationMargin - x) / (float)(interpolationMargin - z));
                         }
                     }
                     break;
@@ -242,7 +274,7 @@ namespace Map
             }
         }
 
-        private void InterpolateMarginKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
+        private void InterpolateMarginEdgeKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
             int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, int bNextZ, int bNextX, float t)
         {
             // vertices is z-major, heightMap is x-major
@@ -263,16 +295,44 @@ namespace Map
             vertices[z + x*vertexSideCount].y = y;
         }
         
-        private void InterpolateMarginKernel2(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
+        private Vector2 InterpolateMarginDiagonalKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
             int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, int bNextZ, int bNextX, float t)
+        {
+            // vertices is z-major, heightMap is x-major
+            var a = vertices[aZ + aX*vertexSideCount].y;
+            var aPrevAlongX = vertices[aZ + aPrevX*vertexSideCount].y;
+            var aPrevAlongZ = vertices[aPrevZ + aX*vertexSideCount].y;
+            var aGradX = (a - aPrevAlongX) / _settings.Spacing * interpolationMargin;
+            var aGradZ = (a - aPrevAlongZ) / _settings.Spacing * interpolationMargin;
+            var aGrad = (aGradX + aGradZ) / Mathf.Sqrt(2);
+            var b = _heightMap[bZ*_heightMapWidth + bX];
+            var bNextAlongX = _heightMap[bZ*_heightMapWidth + bNextX];
+            var bNextAlongZ = _heightMap[bNextZ*_heightMapWidth + bX];
+            var bGradX = (bNextAlongX - b) / _settings.Spacing * interpolationMargin;
+            var bGradZ = (bNextAlongZ - b) / _settings.Spacing * interpolationMargin;
+            var bGrad = (bGradX + bGradZ) / Mathf.Sqrt(2);
+
+            // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
+            //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
+            //     if (z == 0) Debug.Log("t: " + t);
+            // }
+
+            // Cubic Hermite interpolation
+            var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
+            vertices[z + x*vertexSideCount].y = y;
+            
+            // Return gradient at corner for interpolation of triangles
+            return new Vector2(bGradX, bGradZ);
+        }
+        
+        private void InterpolateMarginTriangleKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
+            int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, float bGrad, float t)
         {
             // vertices is z-major, heightMap is x-major
             var a = vertices[aZ + aX*vertexSideCount].y;
             var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
             var aGrad = (a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
-            var b = _heightMap[bZ*_heightMapWidth + bX];
-            var bNext = _heightMap[bNextZ*_heightMapWidth + bNextX];
-            var bGrad = (bNext - b) / _settings.Spacing * interpolationMargin;
+            var b = vertices[bZ + bX*vertexSideCount].y;
 
             // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
             //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
