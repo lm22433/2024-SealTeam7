@@ -6,7 +6,6 @@ namespace Enemies
 {
     public class Kamikaze : Enemy
     {
-        [SerializeField] protected float flyHeight;
         [SerializeField] private ParticleSystem trail;
         [SerializeField] private ParticleSystem smokeTrail;
         [SerializeField] private ParticleSystem chargeParticles;

@@ -6,7 +6,6 @@ namespace Enemies
 {
     public class Helicopter : Enemy
     {
-        [SerializeField] protected float flyHeight;
         [SerializeField] private AK.Wwise.Event helicopterSound;
         private bool _isGracefulShutdown;
 

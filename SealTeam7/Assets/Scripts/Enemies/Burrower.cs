@@ -12,31 +12,11 @@ namespace Enemies
         [SerializeField] private Transform drill;
         [SerializeField] private float drillSpeed;
         [SerializeField] private ParticleSystem[] dustTrails;
-        [SerializeField] private VisualEffect smokeDmg;
-        [SerializeField] private int lives = 1;
-        [SerializeField] private float gracePeriod = 3.0f;
         [SerializeField] private float burrowDepth;
-    public override void Init()
-        {
-            base.Init();
-            lives = 1;
-            smokeDmg.Stop();
-        }
         
         protected override float Heuristic(Node start, Node end)
         {
             return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 100f;
-        }
-
-        public override void SetupDeath()
-        {
-            lives--;
-            if (lives > 0)
-            {
-                transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);
-                Rb.linearVelocity = Vector3.zero;
-            }
-            else base.SetupDeath();
         }
         
         protected override void EnemyUpdate()
@@ -49,9 +29,12 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
-                    var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x,
-                        MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) +
-                        coreTargetHeightOffset, EnemyManager.godlyCore.transform.position.z);
+                    var coreTarget = new Vector3(
+                        EnemyManager.godlyCore.transform.position.x,
+                        MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset,
+                        EnemyManager.godlyCore.transform.position.z
+                    );
+                    
                     if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold)
                     {
                         transform.position = new Vector3(transform.position.x,
@@ -66,8 +49,7 @@ namespace Enemies
                         Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) -
                                                 transform.position).eulerAngles.y, transform.eulerAngles.z);
 
-                    if (DisallowMovement || Rb.position.y >
-                        MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
+                    if (DisallowMovement || !Grounded)
                     {
                         foreach (var dustTrail in dustTrails)
                             if (dustTrail.isPlaying)

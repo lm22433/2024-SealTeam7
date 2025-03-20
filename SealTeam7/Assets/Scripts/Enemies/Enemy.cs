@@ -26,6 +26,7 @@ namespace Enemies
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float acceleration;
         [SerializeField] protected float groundedOffset;
+        [SerializeField] protected float flyHeight;
         
         [Header("Attacking")]
         [SerializeField] protected float aimSpeed;
@@ -124,12 +125,16 @@ namespace Enemies
         
         private void UpdateState()
         {
-			if (State is EnemyState.Dying or EnemyState.Idle) return;
-            var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset, EnemyManager.godlyCore.transform.position.z);
+			if (State is EnemyState.Dying) return;
+            var coreTarget = new Vector3(
+                EnemyManager.godlyCore.transform.position.x,
+                flyHeight == 0 ? MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset : flyHeight,
+                EnemyManager.godlyCore.transform.position.z
+            );
             if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackCore;
             else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackHands;
             else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
-            else State = EnemyState.Moving;
+            else if (State is not EnemyState.Idle) State = EnemyState.Moving;
         }
 
         private void UpdateTarget()
@@ -141,7 +146,7 @@ namespace Enemies
                 {
                     TargetPosition = new Vector3(
                         EnemyManager.godlyCore.transform.position.x,
-                        MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset,
+                        flyHeight == 0 ? MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset : flyHeight,
                         EnemyManager.godlyCore.transform.position.z
                     );
                     break;

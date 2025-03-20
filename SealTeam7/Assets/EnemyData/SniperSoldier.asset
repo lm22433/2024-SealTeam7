@@ -15,7 +15,7 @@ MonoBehaviour:
   prefab: {fileID: 3438950281418470787, guid: 9c5e568ef16f06f4bbbf59b737d9d5da, type: 3}
   enemyType: 2
   groupSpacing: 1.2
-  startingWave: 4
+  startingWave: 2
   baseGroupSpawnSize: 3
   groupSpawnSizeGrowthRate: 2.4
   maxSpawnChance: 0.4

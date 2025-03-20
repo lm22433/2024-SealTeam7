@@ -1,15 +1,15 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Enemies.Utils;
 using Game;
 using Map;
 using Player;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Enemies
+namespace Enemies.Utils
 {   
     public struct PathRequest
     {
@@ -54,7 +54,7 @@ namespace Enemies
         private int _enemyCount;
         private float _spawnInterval;
         private PathFinder _pathFinder;
-        private Queue<PathRequest> _pathRequestQueue;
+        private ConcurrentQueue<PathRequest> _pathRequestQueue;
         private bool _running;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
@@ -68,7 +68,7 @@ namespace Enemies
             
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
             _pathFinder = new PathFinder(MapManager.GetInstance().GetMapSize(), MapManager.GetInstance().GetMapSpacing(), MapManager.GetInstance().GetPathingLodFactor());
-            _pathRequestQueue = new Queue<PathRequest>();
+            _pathRequestQueue = new ConcurrentQueue<PathRequest>();
             _running = true;
 
             Task.Run(PathThread);
@@ -112,7 +112,7 @@ namespace Enemies
         private void TryProcessPath()
         {
             if (_pathRequestQueue.Count < 1) return;
-            var request = _pathRequestQueue.Dequeue();
+            if (!_pathRequestQueue.TryDequeue(out var request)) return;
             _pathFinder.FindPathAsync(request.Start, request.End, pathingDepth, request.Heuristic, request.Callback);
         }
 

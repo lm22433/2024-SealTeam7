@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using Enemies.Utils;
+using Player;
 using UnityEngine;
 
 namespace Enemies

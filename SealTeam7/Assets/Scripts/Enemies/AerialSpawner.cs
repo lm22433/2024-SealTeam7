@@ -7,7 +7,6 @@ namespace Enemies
 {
     public class AerialSpawner : Enemy
     {
-        [SerializeField] private float flyHeight;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private EnemyData spawnee;
         private Vector3 _oppositePosition;

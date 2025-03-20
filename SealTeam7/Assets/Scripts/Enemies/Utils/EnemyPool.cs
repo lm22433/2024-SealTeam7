@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Enemies
+namespace Enemies.Utils
 {
     public class EnemyPool : MonoBehaviour
     {

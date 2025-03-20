@@ -1,4 +1,4 @@
-namespace Enemies
+namespace Enemies.Utils
 {
     public enum EnemyType
     {
