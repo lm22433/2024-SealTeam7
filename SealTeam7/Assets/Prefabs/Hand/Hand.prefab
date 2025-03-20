@@ -67,7 +67,7 @@ MonoBehaviour:
   - {fileID: 88024523701351980}
   mapManager: {fileID: 0}
   hand: {fileID: 0}
-  _lerpFactor: 0
+  _lerpFactor: 1
   _thresholdDst: 0
   _handNum: 0
   positions_offset:
@@ -95,7 +95,7 @@ MonoBehaviour:
   handMaterial: {fileID: 0}
   maxHandSpeed: 0
   maxFramesWithoutHand: 25
-  startAlpha: 0.2
+  startAlpha: 0.1
   fadeRate: 0.01
   _renderer: {fileID: 2433431767938355854}
   handStartFadeSpeed: 600

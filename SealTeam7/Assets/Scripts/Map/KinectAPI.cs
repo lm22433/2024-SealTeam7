@@ -274,8 +274,7 @@ namespace Map
             var vec2 = new Vector2();
 
             stopwatch.Restart();
-            CvInvoke.GaussianBlur(_heightMask, _tmpImage, _gaussianKernelSize, _gaussianKernelSigma);
-            _tmpImage = _tmpImage.Sobel(0, 1, 3);
+            //_tmpImage = _tmpImage.Sobel(0, 1, 3);
 
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
@@ -286,13 +285,13 @@ namespace Map
                     if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
                         (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
                     {
-                        _heightMask.Data[y, x, 0] = 0;
+                        _heightMask.Data[y, x, 0] = 1f;
                     }
 
                     if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
                     {
                         _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
-                        _gradientMap[y, x] = _tmpImage4.Data[y, x, 0];
+                        //_gradientMap[y, x] = _tmpImage.Data[y, x, 0];
                     }
                 }
             }
@@ -311,11 +310,11 @@ namespace Map
                 int x = i % _width;
                 int y = i / _width;
 
-                var currentHeight = _heightMap[y * (_width + 1) + x];
+                var currentHeight = _heightMap[y, x];
                 var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
                 var distance = Mathf.Abs(currentHeight - newHeight);
                 var lerpFactor = Mathf.Clamp(distance / 10f, _minLerpFactor, _maxLerpFactor);
-                _heightMap[y * (_width + 1) + x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
+                _heightMap[y, x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
   
             });
             

@@ -285,5 +285,10 @@ namespace Map
                 }
             }
         }
+        public ref float[,] GetHeightMap() => ref _heightMap;
+        public ref float2[,] GetGradientMap() => ref _gradientMap;
+        public int GetMapSize() => mapSize;
+        public float GetMapSpacing() => _mapSpacing;
+        public int GetPathingLodFactor() => lodInfo.pathingLod == 0 ? 1 : lodInfo.pathingLod * 2;
     }
 }
