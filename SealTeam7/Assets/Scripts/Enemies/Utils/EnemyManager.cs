@@ -37,7 +37,7 @@ namespace Enemies.Utils
 
         [Header("Game Settings")]
         [SerializeField] public PlayerCore godlyCore;
-        [SerializeField] public PlayerHands godlyHands;
+        [SerializeField] public PlayerHands[] godlyHands;
         
         [Header("Pathing Settings")]
         [SerializeField] private float mapUpdateInterval;

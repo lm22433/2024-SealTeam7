@@ -12,14 +12,15 @@ namespace Enemies
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem[] dustTrails;
         [SerializeField] private VisualEffect smokeDmg;
-        [SerializeField] private int lives = 2;
-        [SerializeField] private float gracePeriod = 3.0f;
+        [SerializeField] private int maxLives = 2;
+        [SerializeField] private float gracePeriod = 2.0f;
         private float _deathTime;
+        private int _lives;
 
         public override void Init()
         {
             base.Init();
-            lives = 2;
+            _lives = maxLives;
             smokeDmg.Stop();
             _deathTime = 0f;
         }
@@ -34,8 +35,8 @@ namespace Enemies
             if (_deathTime < gracePeriod) return;
             
             _deathTime = 0f;
-            lives--;
-            if (lives > 0)
+            _lives--;
+            if (_lives > 0)
             {
                 smokeDmg.Play();
                 transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);

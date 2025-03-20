@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Enemies.Utils;
 using Game;
 using Map;
@@ -65,6 +66,7 @@ namespace Enemies
         protected internal bool Grounded;
         protected internal float Buried;
         protected internal float BuriedAmount = 0.5f;
+        private int _handIndex;
 
         protected virtual void Start()
         {
@@ -131,10 +133,19 @@ namespace Enemies
                 flyHeight == 0 ? MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset : flyHeight,
                 EnemyManager.godlyCore.transform.position.z
             );
+            
             if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackCore;
-            else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackHands;
-            else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
+            else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold && State is EnemyState.AttackCore) State = EnemyState.Moving;
             else if (State is not EnemyState.Idle) State = EnemyState.Moving;
+            
+            foreach (var hand in EnemyManager.godlyHands.Select((value, index) => new {value, index}))
+            {
+                if ((hand.value.transform.position - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting)
+                {
+                    State = EnemyState.AttackHands;
+                    _handIndex = hand.index;
+                }
+            }
         }
 
         private void UpdateTarget()
@@ -153,7 +164,7 @@ namespace Enemies
                 }
                 case EnemyState.AttackHands:
                 {
-                    TargetPosition = EnemyManager.godlyHands.transform.position;
+                    TargetPosition = EnemyManager.godlyHands[_handIndex].transform.position;
                     break;
                 }
             }
@@ -251,7 +262,7 @@ namespace Enemies
                     if (LastAttack >= attackInterval && !DisallowShooting)
                     {
                         LastAttack = 0f;
-                        Attack(State is EnemyState.AttackCore ? EnemyManager.godlyCore : EnemyManager.godlyHands);
+                        Attack(State is EnemyState.AttackCore ? EnemyManager.godlyCore : EnemyManager.godlyHands[_handIndex]);
                     }
                     break;
                 }
