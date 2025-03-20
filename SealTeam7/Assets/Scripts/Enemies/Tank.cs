@@ -1,4 +1,4 @@
-using Enemies.Utils;
+﻿using Enemies.Utils;
 using Map;
 using Player;
 using UnityEngine;
@@ -9,16 +9,23 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem[] dustTrails;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
         [SerializeField] protected float groundedOffset;
 
-        protected override float Heuristic(Node start, Node end)
+        protected override void Attack(PlayerDamageable toDamage)
         {
-            return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 100f;
+            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position)).TryGetComponent(out Projectile proj);
+            proj.Target = TargetPosition;
+            proj.ToDamage = toDamage;
+            proj.Damage = attackDamage;
+            
+            Destroy(proj.gameObject, 2f);
         }
         
         protected override void EnemyUpdate()
         {
-            DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f;
+            DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.8f;
             DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f;
             
             // gun rotation
@@ -27,8 +34,6 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, transform.eulerAngles.z);
-                    
                     if (DisallowMovement || Rb.position.y > MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
                     {
                         foreach (var dustTrail in dustTrails)
@@ -42,21 +47,27 @@ namespace Enemies
                     break;
                 }
                 case EnemyState.AttackCore:
-                case EnemyState.AttackHands:
                 {
                     var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x - transform.eulerAngles.x;
                     TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
+                    break;
+                }
+                case EnemyState.AttackHands:
+                {
+                    TargetRotation = Quaternion.Euler(Vector3.Angle(TargetPosition - gun.position, gun.right), 0f, 0f);
+                    gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
                     break;
                 }
                 case EnemyState.Dying:
                 {
-                    foreach (var dustTrail in dustTrails)
-                        if(dustTrail.isPlaying) dustTrail.Stop();
+                    foreach (var dustTrail in dustTrails) dustTrail.Stop();
                     break;
                 }
             }
+            
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
+            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
     }
 }

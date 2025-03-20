@@ -1,5 +1,4 @@
-using Game;
-using Player;
+﻿using Player;
 using UnityEngine;
 
 namespace Enemies.Utils
@@ -7,21 +6,15 @@ namespace Enemies.Utils
     public class Projectile : MonoBehaviour
     {
         [SerializeField] private float speed;
-        public Vector3 TargetPosition { get; set; }
+        public Vector3 Target { get; set; }
         public PlayerDamageable ToDamage { get; set; }
         public int Damage { get; set; }
-
+        
         private void Update()
         {
-            if (!GameManager.GetInstance().IsGameActive())
-            {
-                Destroy(gameObject);
-                return;
-            }
+            transform.position = Vector3.MoveTowards(transform.position, Target, speed * Time.deltaTime);
 
-            transform.position = Vector3.MoveTowards(transform.position, TargetPosition, speed * Time.deltaTime);
-
-            if (transform.position == TargetPosition)
+            if (transform.position == Target)
             {
                 ToDamage.TakeDamage(Damage);
                 Destroy(gameObject);

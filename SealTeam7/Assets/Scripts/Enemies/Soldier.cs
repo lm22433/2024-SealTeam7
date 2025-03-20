@@ -8,6 +8,8 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
+        [SerializeField] private Transform muzzle;
+        [SerializeField] private GameObject projectile;
 
 		protected override void Start()
 		{
@@ -15,10 +17,15 @@ namespace Enemies
 			DeathDuration = 0.5f;
 			buriedAmount = 0.25f;
 		}
-
-        protected override float Heuristic(Node start, Node end)
+        
+        protected override void Attack(PlayerDamageable toDamage)
         {
-            return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 50f;
+            Instantiate(projectile, muzzle.position, Quaternion.LookRotation(TargetPosition - muzzle.position)).TryGetComponent(out Projectile proj);
+            proj.Target = TargetPosition;
+            proj.ToDamage = toDamage;
+            proj.Damage = attackDamage;
+            
+            Destroy(proj.gameObject, 2f);
         }
 
         protected override void EnemyUpdate()
@@ -29,7 +36,6 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, 0f);
                     break;
                 }
                 case EnemyState.AttackCore:
@@ -38,10 +44,12 @@ namespace Enemies
                     var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
                     TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, 0f);
                     break;
                 }
             }
+            
+            TargetRotation = Quaternion.LookRotation(new Vector3(TargetPosition.x, transform.position.y, TargetPosition.z) - transform.position);
+            TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
     }
 }

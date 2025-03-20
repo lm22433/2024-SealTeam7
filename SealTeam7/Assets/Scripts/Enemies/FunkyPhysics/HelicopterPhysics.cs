@@ -13,12 +13,10 @@ namespace Enemies.FunkyPhysics
 
         protected override void EnemyUpdate()
         {
-            if (Grounded && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
-            
             mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
             subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
             
-            if (Self.IsDying && !_exploded)
+            if (Self.IsDying() && !_exploded)
             {
                 RaycastHit[] objs = Physics.SphereCastAll(transform.position, 50.0f, transform.forward, 1.0f);
                 foreach (var item in objs)
@@ -27,6 +25,12 @@ namespace Enemies.FunkyPhysics
                 }
                 _exploded = true;
             }
+        }
+        
+        private void OnTriggerEnter(Collider c)
+        {
+            if (!c.gameObject.CompareTag($"Ground")) return;
+            EnemyManager.GetInstance().Kill(Self);
         }
     }
 }

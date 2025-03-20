@@ -1,12 +1,11 @@
-﻿using Enemies.Utils;
-using Player;
+﻿using Player;
 using UnityEngine;
 
 namespace Enemies
 {
     public class Kamikaze : Enemy
     {
-        [SerializeField] protected float flyHeight;
+        [SerializeField] float flyHeight;
         [SerializeField] private ParticleSystem trail;
         [SerializeField] private ParticleSystem smokeTrail;
         [SerializeField] private ParticleSystem chargeParticles;
@@ -16,46 +15,18 @@ namespace Enemies
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
         
-        protected override float Heuristic(Node start, Node end)
+        protected override void Attack(PlayerDamageable target)
         {
-            return end.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
-        }
-        
-        protected override void Attack(PlayerDamageable toDamage)
-        {
-            gunFireSound.Post(gameObject);
-            
-            toDamage.TakeDamage(attackDamage);
+            target?.TakeDamage(attackDamage);
             killScore = 0;
             SetupDeath();
         }
-
+        
         protected override void EnemyUpdate()
         {
-            switch (State)
-            {
-                case EnemyState.AttackCore:
-                {
-                    TargetPosition = new Vector3(TargetPosition.x, flyHeight, TargetPosition.z);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x,
-                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
-                    break;
-                }
-                case EnemyState.AttackHands:
-                {
-                    TargetRotation = Quaternion.Euler(
-                        transform.eulerAngles.x,
-                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
-                    break;
-                }
-                case EnemyState.Moving:
-                {
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, transform.eulerAngles.z);
-                    break;
-                }
-            }
+
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
+            TargetDirection = TargetDirection = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         }
 
         protected override void EnemyFixedUpdate()

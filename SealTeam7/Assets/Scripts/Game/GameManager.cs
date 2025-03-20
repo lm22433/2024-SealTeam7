@@ -6,6 +6,15 @@ using UnityEngine;
 
 namespace Game
 {
+    [Serializable]
+    public struct Difficulty
+    {
+        public int index;
+        [Range(0f, 1f)] public float durationPercentage;
+        public float spawnInterval;
+        public EnemyData[] enemies;
+    }
+    
     public class GameManager : MonoBehaviour
     {
         [Header("Game Settings")] 
@@ -15,10 +24,9 @@ namespace Game
         [SerializeField] private int maxHealth = 1000;
         
         [Header("Score Settings")]
-        [SerializeField] private int completionBonusScore = 500;
+        [SerializeField] private int completionBonusScore = 1000;
         [SerializeField] private float survivalBonusInterval = 30f;
-        [SerializeField] private int survivalBonusScore = 250;
-        [SerializeField] private int waveClearedEarlyBonusScore = 750;
+        [SerializeField] private int survivalBonusScore = 500;
 
         [Header("UI objects")]
         [SerializeField] private TMP_Text scoreText;
@@ -27,21 +35,18 @@ namespace Game
         [SerializeField] private TMP_Text gameoverScoreText;
         [SerializeField] private TMP_Text gameoverText;
 
-        [Header("Sound Options")]
-        [SerializeField] private AK.Wwise.Event celebrationFanfare;
-
         private static GameManager _instance;
-        
         public bool GameActive {get; set;}
         private float _timer;
 		private int _totalKills;
         private int _score;
         private int _health;
-
         private Difficulty _difficulty;
+        private Difficulty[] _difficulties;
         
         private float _lastSurvivalBonusTime;
         private float _lastDamageTime;
+        private float _lastDifficultyIncrease;
         private bool _isGameOver = false; 
         
         private void Awake()
@@ -57,12 +62,23 @@ namespace Game
             if (!GameActive) return;
             
             _timer -= Time.deltaTime;
+
+            if (Time.time - _lastDifficultyIncrease >= _difficulty.durationPercentage * gameDuration)
+            {
+                if (_difficulty.index < _difficulties.Length - 1)
+                {
+                    _difficulty = _difficulties[_difficulty.index + 1];
+                    EnemyManager.GetInstance().SetDifficulty(_difficulty);
+                    _lastDifficultyIncrease = Time.time;
+                    Debug.Log($"Difficulty increased! Current difficulty: {_difficulty.index}");   
+                }
+            }
             
             if (Time.time - _lastSurvivalBonusTime >= survivalBonusInterval)
             {
                 _score += survivalBonusScore;
                 _lastSurvivalBonusTime = Time.time;
-                Debug.Log($"Survival Bonus! +{survivalBonusScore} points");
+                Debug.Log("Survival Bonus! +500 points");
             }
             
             if (_timer <= 0) EndGame();
@@ -82,7 +98,8 @@ namespace Game
         public void StartGame()
         {
             _isGameOver = false;
-            EnemyPool.GetInstance().ClearPool();
+            EnemyManager.GetInstance().KillAllEnemies();
+            _difficulty = _difficulties[0];
             EnemyManager.GetInstance().SetDifficulty(_difficulty);
             
             GameActive = true;
@@ -91,8 +108,7 @@ namespace Game
             _health = maxHealth;
 
             _lastSurvivalBonusTime = Time.time;
-
-            EnemyManager.GetInstance().StartSpawning();
+            _lastDifficultyIncrease = Time.time;
 
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(false);
             
@@ -103,13 +119,15 @@ namespace Game
         {
             if (!GameActive) throw new Exception("Game has not started yet, how can it end dummy?");
 
-            if (_isGameOver) return;
-            
-            celebrationFanfare.Post(gameObject);
+            if (_isGameOver) {return;}
 
-            int completionBonus = (_health / maxHealth) * completionBonusScore;
-            _score += completionBonus;
-            Debug.Log($"Completion Bonus! +{completionBonus} points");
+            _score += _health;
+
+            if (_health >= maxHealth - 25) {
+                _score += completionBonusScore;
+            }
+
+            Debug.Log("Completion Bonus! +1000 points");
             
             GameActive = false;
             _isGameOver = true;
@@ -119,7 +137,7 @@ namespace Game
             gameoverScoreText.SetText($"Score: {_score}");
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
 
-            EnemyPool.GetInstance().ClearPool();
+            EnemyManager.GetInstance().KillAllEnemies();
         }
 
         private void Die()
@@ -134,15 +152,7 @@ namespace Game
             gameoverText.SetText("You died :(");
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
 
-            EnemyPool.GetInstance().ClearPool();
-        }
-
-        public void ApplyWaveClearedEarlyBonus()
-        {
-            if (!GameActive) throw new Exception("Game has not started yet, how can you clear a wave dummy?");
-
-            _score += waveClearedEarlyBonusScore;
-            Debug.Log($"Wave cleared early! +{waveClearedEarlyBonusScore} points");
+            EnemyManager.GetInstance().KillAllEnemies();
         }
         
         public void TakeDamage(int damage)
@@ -160,18 +170,17 @@ namespace Game
             }
         }
 
-        public void RegisterKill(int basePoints, float multiplier = 1.0f)
+        public void RegisterKill(int score)
         {
             if (!GameActive) throw new Exception("Game has not started yet, how have you killed something dummy?");
             
-            int points = Mathf.RoundToInt(basePoints * multiplier);
-            _score += points;
-            _totalKills++;
-            
-            Debug.Log($"Killed something! +{points} points");
+            // Debug.Log($"Killed something! +{score} points");
+
+			_totalKills++;
+			_score += score;
         }
 
-        public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
+        public void SetDifficulty(Difficulty[] difficulties) => _difficulties = difficulties;
         public void SetGameDuration(int time) => gameDuration = time;
         
         public static GameManager GetInstance() => _instance;

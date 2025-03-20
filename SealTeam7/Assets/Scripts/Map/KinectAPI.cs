@@ -10,7 +10,6 @@ using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
 using Python;
 using Debug = UnityEngine.Debug;
-using Unity.Mathematics;
 
 namespace Map
 {
@@ -20,8 +19,7 @@ namespace Map
         private readonly Device _kinect;
         private readonly Transformation _transformation;
         private Image _transformedDepthImage;
-        private float[,] _heightMap;
-        private float2[,] _gradientMap;
+        private float[] _heightMap;
         
         /*
          * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
@@ -34,7 +32,6 @@ namespace Map
         private Image<Gray, float> _maskedHeightImage;
         private Image<Gray, float> _heightMask;
         private Image<Gray, float> _tmpImage;
-        private Image<Gray, float> _tmpImage4;
         
         private readonly Mat _dilationKernel;
         private readonly Point _defaultAnchor;
@@ -67,7 +64,7 @@ namespace Map
         public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
         public KinectAPI(float heightScale, float minLerpFactor, float maxLerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int gaussianKernelRadius, float gaussianKernelSigma)
+                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int gaussianKernelRadius, float gaussianKernelSigma)
         {
             _heightScale = heightScale;
             _minLerpFactor = minLerpFactor;
@@ -86,8 +83,6 @@ namespace Map
             _maskedHeightImage = new Image<Gray, float>(_width + 1, _height + 1);
             _heightMask = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage = new Image<Gray, float>(_width + 1, _height + 1);
-            _tmpImage4 = new Image<Gray, float>(_width + 1, _height + 1);
-
             _dilationKernel = Mat.Ones(50, 50, DepthType.Cv8U, 1);
             _defaultAnchor = new Point(-1, -1);
             _scalarOne = new MCvScalar(1f);
@@ -276,10 +271,6 @@ namespace Map
             var vec2 = new Vector2();
 
             stopwatch.Restart();
-            CvInvoke.GaussianBlur(_rawHeightImage, _maskedHeightImage, _gaussianKernelSize, _gaussianKernelSigma);
-            _tmpImage4 = _maskedHeightImage.Sobel(0, 1, 3);
-
-            // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
                 for (int x = 0; x < _width + 1; x++)
@@ -294,7 +285,6 @@ namespace Map
                     if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
                     {
                         _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
-                        _gradientMap[y, x] = _tmpImage4.Data[y, x, 0];
                     }
                 }
             }
@@ -313,11 +303,11 @@ namespace Map
                 int x = i % _width;
                 int y = i / _width;
 
-                var currentHeight = _heightMap[y, x];
+                var currentHeight = _heightMap[y * (_width + 1) + x];
                 var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
                 var distance = Mathf.Abs(currentHeight - newHeight);
                 var lerpFactor = Mathf.Clamp(distance / 10f, _minLerpFactor, _maxLerpFactor);
-                _heightMap[y, x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
+                _heightMap[y * (_width + 1) + x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
   
             });
             

@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584591355827864043
+    m_lastTime: -8584591392997719783
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,25 +359,8 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584591355844277708
+    m_lastTime: -8584591393011574270
     List:
-    - name: Play_CelebrationFanfare
-      guid: 7ed2308a1913644f89ddfcb21e99f0ec
-      id: 1257416293
-      PathAndIcons:
-      - ElementName: Events
-        ObjectType: 5
-        guid: 00000000000000000000000000000000
-      - ElementName: Default Work Unit
-        ObjectType: 12
-        guid: 3e919ce37f3a4b4eb021aaf40f66a207
-      - ElementName: Play_CelebrationFanfare
-        ObjectType: 3
-        guid: 7ed2308a1913644f89ddfcb21e99f0ec
-      Path: Events\Default Work Unit\Play_CelebrationFanfare
-      maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
     - name: Play_DesertAmbiance
       guid: 78a5fa85b04d3e47916f016db8fdcefd
       id: 3643602477
@@ -446,23 +429,6 @@ MonoBehaviour:
       maxAttenuation: 0
       maxDuration: 16.5
       minDuration: 16.5
-    - name: Play_HelicopterMissile
-      guid: 41121ff67ded6243964180b72401ecb8
-      id: 2723016199
-      PathAndIcons:
-      - ElementName: Events
-        ObjectType: 5
-        guid: 00000000000000000000000000000000
-      - ElementName: Default Work Unit
-        ObjectType: 12
-        guid: 3e919ce37f3a4b4eb021aaf40f66a207
-      - ElementName: Play_HelicopterMissile
-        ObjectType: 3
-        guid: 41121ff67ded6243964180b72401ecb8
-      Path: Events\Default Work Unit\Play_HelicopterMissile
-      maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
     - name: Play_MainMenuMusic
       guid: 7471cf3a7d563c4d895e94fef2ea7d0c
       id: 667425441
