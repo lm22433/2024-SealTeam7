@@ -122,9 +122,13 @@ namespace Map
             InterpolationDirection interpolationDirection)
         {
             // Temporary
-            if (interpolationDirection != InterpolationDirection.RightEdge && interpolationDirection != InterpolationDirection.LeftEdge) return;
+            if (interpolationDirection != InterpolationDirection.RightEdge && 
+                interpolationDirection != InterpolationDirection.LeftEdge &&
+                interpolationDirection != InterpolationDirection.TopEdge &&
+                interpolationDirection != InterpolationDirection.BottomEdge) return;
             
             int zChunkOffset = _settings.Z * _settings.Size;
+            int xChunkOffset = _settings.X * _settings.Size;
             int heightMapWidth = (int) (_settings.MapSize / _settings.Spacing + 1);
 
             int startX;
@@ -146,6 +150,18 @@ namespace Map
                     startZ = 0;
                     endZ = vertexSideCount;
                     break;
+                case InterpolationDirection.BottomEdge:
+                    startX = 0;
+                    endX = vertexSideCount;
+                    startZ = 0;
+                    endZ = interpolationMargin;
+                    break;
+                case InterpolationDirection.TopEdge:
+                    startX = 0;
+                    endX = vertexSideCount;
+                    startZ = vertexSideCount - interpolationMargin;
+                    endZ = vertexSideCount;
+                    break;
                 default:
                     // Not possible
                     throw new ArgumentOutOfRangeException();
@@ -155,60 +171,92 @@ namespace Map
             {
                 // t always increases towards the centre, so a is always on the background chunk and b is always on the
                 // play region chunk
-                int aX;
                 int aZ;
-                int aPrevX;
                 int aPrevZ;
-                int bX;
                 int bZ;
-                int bNextX;
                 int bNextZ;
 
                 switch (interpolationDirection)
                 {
                     case InterpolationDirection.LeftEdge:
-                        aX = _interpolationMargin;
                         aZ = z;
-                        aPrevX = _interpolationMargin + 1;
                         aPrevZ = z;
-                        bX = heightMapWidth - 1;
                         bZ = z * lodFactor + zChunkOffset;
-                        bNextX = heightMapWidth - 1 - lodFactor;
                         bNextZ = z * lodFactor + zChunkOffset;
                         break;
                     case InterpolationDirection.RightEdge:
-                        aX = vertexSideCount - interpolationMargin - 1;
                         aZ = z;
-                        aPrevX = vertexSideCount - interpolationMargin - 2;
                         aPrevZ = z;
-                        bX = 0;
                         bZ = z * lodFactor + zChunkOffset;
-                        bNextX = lodFactor;
                         bNextZ = z * lodFactor + zChunkOffset;
+                        break;
+                    case InterpolationDirection.BottomEdge:
+                        aZ = _interpolationMargin;
+                        aPrevZ = _interpolationMargin + 1;
+                        bZ = heightMapWidth - 1;
+                        bNextZ = heightMapWidth - 1 - lodFactor;
+                        break;
+                    case InterpolationDirection.TopEdge:
+                        aZ = vertexSideCount - interpolationMargin - 1;
+                        aPrevZ = vertexSideCount - interpolationMargin - 2;
+                        bZ = 0;
+                        bNextZ = lodFactor;
                         break;
                     default:
                         // Not possible
                         throw new ArgumentOutOfRangeException();
                 }
 
-                // vertices is z-major, heightMap is x-major
-                var a = vertices[aZ + aX*vertexSideCount].y;
-                var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
-                var aGrad = (a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
-                var b = _heightMap[bZ*heightMapWidth + bX];
-                var bNext = _heightMap[bNextZ*heightMapWidth + bNextX];
-                var bGrad = (bNext - b) / _settings.Spacing * interpolationMargin;
-                if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
-
                 for (int x = startX; x < endX; x++)
                 {
-                    float t = interpolationDirection switch
-                    {
-                        InterpolationDirection.LeftEdge => (_interpolationMargin - x) / (float)interpolationMargin,
-                        InterpolationDirection.RightEdge => (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin,
-                        _ => throw new ArgumentOutOfRangeException()  // Not possible
-                    };
+                    int aX;
+                    int aPrevX;
+                    int bX;
+                    int bNextX;
+                    float t;
 
+                    switch (interpolationDirection)
+                    {
+                        case InterpolationDirection.LeftEdge:
+                            aX = _interpolationMargin;
+                            aPrevX = _interpolationMargin + 1;
+                            bX = heightMapWidth - 1;
+                            bNextX = heightMapWidth - 1 - lodFactor;
+                            t = (_interpolationMargin - x) / (float)interpolationMargin;
+                            break;
+                        case InterpolationDirection.RightEdge:
+                            aX = vertexSideCount - interpolationMargin - 1;
+                            aPrevX = vertexSideCount - interpolationMargin - 2;
+                            bX = 0;
+                            bNextX = lodFactor;
+                            t = (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin;
+                            break;
+                        case InterpolationDirection.BottomEdge:
+                            aX = x;
+                            aPrevX = x;
+                            bX = x * lodFactor + xChunkOffset;
+                            bNextX = x * lodFactor + xChunkOffset;
+                            t = (_interpolationMargin - z) / (float)interpolationMargin;
+                            break;
+                        case InterpolationDirection.TopEdge:
+                            aX = x;
+                            aPrevX = x;
+                            bX = x * lodFactor + xChunkOffset;
+                            bNextX = x * lodFactor + xChunkOffset;
+                            t = (z - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();  // Not possible
+                    }
+
+                    // vertices is z-major, heightMap is x-major
+                    var a = vertices[aZ + aX*vertexSideCount].y;
+                    var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
+                    var aGrad = (a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
+                    var b = _heightMap[bZ*heightMapWidth + bX];
+                    var bNext = _heightMap[bNextZ*heightMapWidth + bNextX];
+                    var bGrad = (bNext - b) / _settings.Spacing * interpolationMargin;
+                    if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
                     if (z == 0) Debug.Log("t: " + t);
 
                     // Cubic Hermite interpolation
