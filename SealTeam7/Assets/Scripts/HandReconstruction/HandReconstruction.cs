@@ -27,6 +27,9 @@ public class HandReconstruction : MonoBehaviour
 
     private Vector3[] positions;
     Vector3 lastPosition;
+
+    [SerializeField] private float handStartFadeSpeed;
+    [SerializeField] private float handMaxFadeSpeed;
     float handSpeed = 0;
 
     void Start()
@@ -43,8 +46,20 @@ public class HandReconstruction : MonoBehaviour
         var tempPositions = mapManager.GetHandPositions(_handNum);
 
         if (tempPositions != null) {   
+            handSpeed = Vector3.Distance(positions[0], lastPosition) / Time.deltaTime;
+            lastPosition = positions[0];
+
             nullFrameCount = 0;
-            _renderer.material.SetFloat("_TransparancyScalar", startAlpha);
+
+            if (handSpeed > handStartFadeSpeed) {
+                float alpha = _renderer.material.GetFloat("_TransparancyScalar");
+                float fadePercent = (handSpeed - handStartFadeSpeed) / (handMaxFadeSpeed - handStartFadeSpeed);
+
+                _renderer.material.SetFloat("_TransparancyScalar", Mathf.Lerp(alpha, 0, fadePercent));
+
+            } else {
+                _renderer.material.SetFloat("_TransparancyScalar", startAlpha);
+            }
 
             for(int i = 0; i < tempPositions.Length; i++) {
                 positions[i] = tempPositions[i];// + positions_offset[i];
@@ -58,9 +73,6 @@ public class HandReconstruction : MonoBehaviour
             }
             nullFrameCount++;
         }
-
-        handSpeed = Vector3.Distance(positions[0], lastPosition) / Time.deltaTime;
-        lastPosition = positions[0];
 
         //Hand direction about the Y axis
         Vector3 targetDir = positions[9] - positions[0];
