@@ -4,34 +4,63 @@ using UnityEngine;
 public class HandReconstruction : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    [Header("Hand Calibration")]
     [SerializeField] private GameObject[] bones; //Must be length 18 (palm - 4 fingers right to left - thumb all bottom to top)
     [SerializeField] private MapManager mapManager;
     [SerializeField] private GameObject hand;
     [SerializeField] private float _lerpFactor;
     [SerializeField] private float _thresholdDst;
-    [SerializeField, Range(0,1)] private int _hand;
+    [SerializeField, Range(0,1)] private int _handNum;
     [SerializeField] private Vector3[] positions_offset;
-    [SerializeField] private Vector3[] positions;
+
+    [Header("Shader Calibration")]
+    [SerializeField, Range(0,1)] private Material handMaterial;
+    [SerializeField, Range(0,1)] private float maxHandSpeed;
+
+    [Header("Hand Visibility")]
+    [SerializeField] private int maxFramesWithoutHand = 10;
+    [SerializeField] private float startAlpha = 0.4f;
+    [SerializeField] private float fadeRate = 0.1f;
+    private int nullFrameCount = 0;
+    [SerializeField] private Renderer _renderer;
+
+    private Vector3[] positions;
+    Vector3 lastPosition;
+    float handSpeed = 0;
 
     void Start()
     {
         positions = new Vector3[21];
+        lastPosition = Vector3.zero;
+
     }
 
     // Update is called once per frame
     private void FixedUpdate()
     {
         //Get hand points Vector3[21]
-        /*
-        var tempPositions = mapManager.GetHandPositions(_hand);
+        var tempPositions = mapManager.GetHandPositions(_handNum);
 
         if (tempPositions != null) {   
+            nullFrameCount = 0;
+            _renderer.material.SetFloat("_TransparancyScalar", startAlpha);
 
             for(int i = 0; i < tempPositions.Length; i++) {
                 positions[i] = tempPositions[i];// + positions_offset[i];
             }
+        } else {
+            if (nullFrameCount >= maxFramesWithoutHand) {
+                float alpha = _renderer.material.GetFloat("_TransparancyScalar");
+                _renderer.material.SetFloat("_TransparancyScalar", Mathf.Lerp(alpha, 0, fadeRate));
+
+                return;
+            }
+            nullFrameCount++;
         }
-        */
+
+        handSpeed = Vector3.Distance(positions[0], lastPosition) / Time.deltaTime;
+        lastPosition = positions[0];
 
         //Hand direction about the Y axis
         Vector3 targetDir = positions[9] - positions[0];
@@ -39,18 +68,34 @@ public class HandReconstruction : MonoBehaviour
 
 
         Vector3 targetDir2 = positions[17] - positions[5];
-        if (positions[17].x < positions[5].x) {
-            gameObject.transform.localRotation = Quaternion.Euler(
-                gameObject.transform.localRotation.eulerAngles.x, 
-                Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, 
-                -180 + Quaternion.LookRotation(targetDir2.normalized).eulerAngles.x
-            );
+        if (_handNum == 0) {
+            if (positions[17].x < positions[5].x) {
+                gameObject.transform.localRotation = Quaternion.Euler(
+                    gameObject.transform.localRotation.eulerAngles.x, 
+                    Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, 
+                    -180 + Quaternion.LookRotation(targetDir2.normalized).eulerAngles.x
+                );
+            } else {
+                gameObject.transform.localRotation = Quaternion.Euler(
+                    gameObject.transform.localRotation.eulerAngles.x, 
+                    Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, 
+                    -Quaternion.LookRotation(targetDir2.normalized).eulerAngles.x
+                );
+            }
         } else {
-            gameObject.transform.localRotation = Quaternion.Euler(
-                gameObject.transform.localRotation.eulerAngles.x, 
-                Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, 
-                -Quaternion.LookRotation(targetDir2.normalized).eulerAngles.x
-            );
+            if (positions[17].x < positions[5].x) {
+                gameObject.transform.localRotation = Quaternion.Euler(
+                    gameObject.transform.localRotation.eulerAngles.x, 
+                    Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, 
+                    -Quaternion.LookRotation(targetDir2.normalized).eulerAngles.x
+                );
+            } else {
+                gameObject.transform.localRotation = Quaternion.Euler(
+                    gameObject.transform.localRotation.eulerAngles.x, 
+                    Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.y, 
+                    -180 + Quaternion.LookRotation(targetDir2.normalized).eulerAngles.x
+                );
+            }
         }
 
         //Hand direction wrist to knuckle x axis

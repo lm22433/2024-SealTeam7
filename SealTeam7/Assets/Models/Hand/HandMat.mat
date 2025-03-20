@@ -97,7 +97,7 @@ Material:
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
-    - _AlphaClippingScalar: 0
+    - _AlphaClippingScalar: 0.15
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
@@ -116,6 +116,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _NoiseScale: 0.05
     - _OcclusionStrength: 1
     - _OriginOffsetZ: -1.63
     - _Parallax: 0.005
@@ -128,13 +129,13 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _TransparancyDropoff: 0.005
-    - _TransparancyScalar: 0.4
+    - _TransparancyDropoff: 1
+    - _TransparancyScalar: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColour: {r: 51.73605, g: 61.30214, b: 191.74902, a: 0}
+    - _BaseColour: {r: 51.73605, g: 61.30214, b: 191.74902, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OriginOffset: {r: 0, g: 0, b: -10, a: 0}

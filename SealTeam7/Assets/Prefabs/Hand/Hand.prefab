@@ -92,7 +92,12 @@ MonoBehaviour:
   - {x: 0, y: -4, z: 0}
   - {x: 0, y: -6, z: 0}
   - {x: 0, y: -8, z: 0}
-  positions: []
+  handMaterial: {fileID: 0}
+  maxHandSpeed: 0
+  maxFramesWithoutHand: 15
+  startAlpha: 0.3
+  fadeRate: 0.05
+  _renderer: {fileID: 2433431767938355854}
 --- !u!114 &6961489748271865038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,6 +249,11 @@ GameObject:
 --- !u!1 &1944912731023476969 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3407968012437679379, guid: 6ddf434066ab7334e8d1ef2e9e8485a8, type: 3}
+  m_PrefabInstance: {fileID: 5353021791126690308}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &2433431767938355854 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7749720489917270154, guid: 6ddf434066ab7334e8d1ef2e9e8485a8, type: 3}
   m_PrefabInstance: {fileID: 5353021791126690308}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &3044794687224215857 stripped
