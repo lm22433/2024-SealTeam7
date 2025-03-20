@@ -15,11 +15,11 @@ MonoBehaviour:
   difficultyName: IMPOSSIBLE
   difficultyType: 3
   initialGroupCount: 15
-  growthFactor: 1.7
-  exponent: 0.9
-  initialSpawnDelay: 0.8
+  growthFactor: 1.5
+  exponent: 0.8
+  initialSpawnDelay: 0.75
   minimumSpawnDelay: 0.2
   decayFactor: 0.2
   initialWaveTimeLimit: 12
-  minimumWaveTimeLimit: 5
+  minimumWaveTimeLimit: 8
   timeReductionPerWave: 2.5

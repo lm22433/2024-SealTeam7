@@ -16,7 +16,7 @@ MonoBehaviour:
   enemyType: 2
   groupSpacing: 1.2
   startingWave: 2
-  baseGroupSpawnSize: 3
-  groupSpawnSizeGrowthRate: 2.4
-  maxSpawnChance: 0.4
-  spawnChanceGrowthRate: 0.16
+  baseGroupSpawnSize: 1
+  groupSpawnSizeGrowthRate: 1.4
+  maxSpawnChance: 0.3
+  spawnChanceGrowthRate: 0.12

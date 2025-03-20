@@ -16,10 +16,10 @@ MonoBehaviour:
   difficultyType: 1
   initialGroupCount: 9
   growthFactor: 1.3
-  exponent: 0.8
-  initialSpawnDelay: 1.1
+  exponent: 0.7
+  initialSpawnDelay: 1
   minimumSpawnDelay: 0.3
   decayFactor: 0.12
-  initialWaveTimeLimit: 20
+  initialWaveTimeLimit: 18
   minimumWaveTimeLimit: 10
   timeReductionPerWave: 1.5
