@@ -191,8 +191,8 @@ namespace Map
                         bNextZ = z * lodFactor + zChunkOffset;
                         break;
                     case InterpolationDirection.BottomEdge:
-                        aZ = _interpolationMargin;
-                        aPrevZ = _interpolationMargin + 1;
+                        aZ = interpolationMargin;
+                        aPrevZ = interpolationMargin + 1;
                         bZ = heightMapWidth - 1;
                         bNextZ = heightMapWidth - 1 - lodFactor;
                         break;
@@ -218,11 +218,11 @@ namespace Map
                     switch (interpolationDirection)
                     {
                         case InterpolationDirection.LeftEdge:
-                            aX = _interpolationMargin;
-                            aPrevX = _interpolationMargin + 1;
+                            aX = interpolationMargin;
+                            aPrevX = interpolationMargin + 1;
                             bX = heightMapWidth - 1;
                             bNextX = heightMapWidth - 1 - lodFactor;
-                            t = (_interpolationMargin - x) / (float)interpolationMargin;
+                            t = (interpolationMargin - x) / (float)interpolationMargin;
                             break;
                         case InterpolationDirection.RightEdge:
                             aX = vertexSideCount - interpolationMargin - 1;
@@ -236,7 +236,7 @@ namespace Map
                             aPrevX = x;
                             bX = x * lodFactor + xChunkOffset;
                             bNextX = x * lodFactor + xChunkOffset;
-                            t = (_interpolationMargin - z) / (float)interpolationMargin;
+                            t = (interpolationMargin - z) / (float)interpolationMargin;
                             break;
                         case InterpolationDirection.TopEdge:
                             aX = x;
@@ -256,8 +256,11 @@ namespace Map
                     var b = _heightMap[bZ*heightMapWidth + bX];
                     var bNext = _heightMap[bNextZ*heightMapWidth + bNextX];
                     var bGrad = (bNext - b) / _settings.Spacing * interpolationMargin;
-                    if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
-                    if (z == 0) Debug.Log("t: " + t);
+
+                    // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
+                    //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
+                    //     if (z == 0) Debug.Log("t: " + t);
+                    // }
 
                     // Cubic Hermite interpolation
                     var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
