@@ -1216,7 +1216,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 420
       objectReference: {fileID: 0}
     - target: {fileID: 4990981103674803823, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1864,8 +1864,8 @@ MonoBehaviour:
   height: 880
   xOffsetStart: 480
   xOffsetEnd: 1360
-  yOffsetStart: 95
-  yOffsetEnd: 975
+  yOffsetStart: 105
+  yOffsetEnd: 985
   minimumSandDepth: 800
   maximumSandDepth: 1180
   blurRadius: 5
