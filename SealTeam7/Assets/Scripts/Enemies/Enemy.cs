@@ -49,7 +49,8 @@ namespace Enemies
         protected float SqrAttackRange;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
-        protected EnemyState State;
+        [Header("State")]
+        [SerializeField]protected EnemyState State;
         protected bool DisallowMovement;
         protected bool DisallowShooting;
         protected float LastAttack;
@@ -124,12 +125,12 @@ namespace Enemies
         
         private void UpdateState()
         {
-			if (State is EnemyState.Dying or EnemyState.Idle) return;
+			if (State is EnemyState.Dying) return;
             var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x, MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset, EnemyManager.godlyCore.transform.position.z);
             if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackCore;
             else if ((EnemyManager.godlyHands.transform.position - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.AttackHands;
             else if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold) State = EnemyState.Moving;
-            else State = EnemyState.Moving;
+            else if(State is not EnemyState.Idle) State = EnemyState.Moving;
         }
 
         private void UpdateTarget()

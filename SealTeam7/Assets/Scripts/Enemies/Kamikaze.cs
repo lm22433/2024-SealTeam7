@@ -1,5 +1,6 @@
 ﻿using Enemies.Utils;
 using Player;
+using Map;
 using UnityEngine;
 
 namespace Enemies
@@ -19,7 +20,7 @@ namespace Enemies
         
         protected override float Heuristic(Node start, Node end)
         {
-            return start.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
+            return start.WorldPos.y > flyHeight - 20f ? 10000f : 0f;
         }
         
         protected override void Attack(PlayerDamageable toDamage)
@@ -33,6 +34,9 @@ namespace Enemies
 
         protected override void EnemyUpdate()
         {
+            DisallowShooting = false;
+            var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x,0, EnemyManager.godlyCore.transform.position.z);
+            if ((coreTarget - transform.position + new Vector3(0,transform.position.y,0)).sqrMagnitude < SqrAttackRange && State is not EnemyState.Dying) State = EnemyState.AttackCore;
             switch (State)
             {
                 case EnemyState.AttackCore:
