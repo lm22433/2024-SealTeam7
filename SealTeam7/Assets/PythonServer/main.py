@@ -26,7 +26,7 @@ GESTURES_SIZE = 2 * 4  # 2 hands, 4 bytes per int
 GESTURES_FILE_NAME = "gestures"
 READY_EVENT_NAME = "SealTeam7ColourImageReady"
 DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
-GESTURE_RECOGNITION_MODEL_PATH = 'gesture_recognition_model.task'
+GESTURE_RECOGNITION_MODEL_PATH = 'hand_landmarking_model.task'
 VISUALISE_INFERENCE_RESULTS = True
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
@@ -60,7 +60,7 @@ colour_image_buffer = mmap.mmap(-1, COLOUR_IMAGE_FULL_SIZE, access=mmap.ACCESS_W
 hand_landmarks_buffer = mmap.mmap(-1, HAND_LANDMARKS_SIZE, access=mmap.ACCESS_WRITE, tagname=HAND_LANDMARKS_FILE_NAME)
 gestures_buffer = mmap.mmap(-1, GESTURES_SIZE, access=mmap.ACCESS_WRITE, tagname=GESTURES_FILE_NAME)
 
-gesture_recognizer_options = GestureRecognizerOptions(
+gesture_recognizer_options = HandLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=get_path(GESTURE_RECOGNITION_MODEL_PATH)),
     running_mode=RunningMode.VIDEO,
     num_hands=2,
@@ -102,7 +102,7 @@ def landmarks_to_array(landmarks):
                      landmark.y * COLOUR_IMAGE_FULL_HEIGHT] for landmark in landmarks])
     return arr
 
-with GestureRecognizer.create_from_options(gesture_recognizer_options) as gesture_recognizer:
+with HandLandmarker.create_from_options(gesture_recognizer_options) as gesture_recognizer:
     print("Ready.")
 
     try:
@@ -125,7 +125,7 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
             with timer("Creating mp image"):
                 mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=colour_image_data)
             with timer("Gesture recognition"):
-                gesture_recognizer_result = gesture_recognizer.recognize_for_video(mp_image, int(time.monotonic()*1000))
+                gesture_recognizer_result = gesture_recognizer.detect_for_video(mp_image, int(time.monotonic()*1000))
 
             # determine handedness and scale to pixel coordinates
             with timer("Processing results"):
@@ -206,15 +206,15 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                         else:
                             right = landmarks_to_array(gesture_recognizer_result.hand_landmarks[i])
 
-            # Process gestures
-            left_gesture = 0  # Default to None
-            right_gesture = 0  # Default to None
-            if gesture_recognizer_result.gestures:
-                for i, gesture in enumerate(gesture_recognizer_result.gestures):
-                    if gesture_recognizer_result.handedness[i][0].category_name == "Left":
-                        left_gesture = gesture_to_int(gesture[0].category_name)
-                    else:
-                        right_gesture = gesture_to_int(gesture[0].category_name)
+            # # Process gestures
+            # left_gesture = 0  # Default to None
+            # right_gesture = 0  # Default to None
+            # if gesture_recognizer_result.gestures:
+            #     for i, gesture in enumerate(gesture_recognizer_result.gestures):
+            #         if gesture_recognizer_result.handedness[i][0].category_name == "Left":
+            #             left_gesture = gesture_to_int(gesture[0].category_name)
+            #         else:
+            #             right_gesture = gesture_to_int(gesture[0].category_name)
 
             if VISUALISE_INFERENCE_RESULTS:
                 with timer("Visualising results"):
@@ -253,13 +253,13 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                     cv2.circle(vis_frame, (int(projected_left_hand[0, 0]), int(projected_left_hand[0, 2])), 3, (255, 0, 255), -1)
                     cv2.circle(vis_frame, (int(projected_right_hand[0, 0]), int(projected_right_hand[0, 2])), 3, (255, 0, 255), -1)
                     
-                    # Draw gestures
-                    if left_gesture > 0:
-                        cv2.putText(vis_frame, f"Left: {list(GESTURE_MAP.keys())[list(GESTURE_MAP.values()).index(left_gesture)]}", 
-                                  (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                    if right_gesture > 0:
-                        cv2.putText(vis_frame, f"Right: {list(GESTURE_MAP.keys())[list(GESTURE_MAP.values()).index(right_gesture)]}", 
-                                  (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                    # # Draw gestures
+                    # if left_gesture > 0:
+                    #     cv2.putText(vis_frame, f"Left: {list(GESTURE_MAP.keys())[list(GESTURE_MAP.values()).index(left_gesture)]}", 
+                    #               (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    # if right_gesture > 0:
+                    #     cv2.putText(vis_frame, f"Right: {list(GESTURE_MAP.keys())[list(GESTURE_MAP.values()).index(right_gesture)]}", 
+                    #               (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                     
                     # Handle window
                     cv2.imshow("Inference visualisation", vis_frame)
@@ -308,8 +308,8 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
                                            hand[j, 0], hand[j, 1], hand[j, 2])
                 
                 # Write gestures
-                gestures_buffer.seek(0)
-                struct.pack_into("<ii", gestures_buffer, 0, left_gesture, right_gesture)
+                # gestures_buffer.seek(0)
+                # struct.pack_into("<ii", gestures_buffer, 0, left_gesture, right_gesture)
 
             if not shutdown_flag:
                 win32event.SetEvent(done_event)
