@@ -220,6 +220,20 @@ namespace Map
                             bNextX: _heightMapWidth - 1 - lodFactor, 
                             t: (interpolationMargin - i) / (float)interpolationMargin);
                     }
+
+                    // Bottom/right triangle
+                    for (int z = 0; z < interpolationMargin; z++)
+                    {
+                        for (int x = z; x < interpolationMargin; x++)
+                        {
+                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                                aZ: z,
+                                aX: interpolationMargin,
+                                aPrevZ: z,
+                                aPrevX: interpolationMargin + 1,
+                                bZ: );
+                        }
+                    }
                     break;
 
                 default:
@@ -229,6 +243,27 @@ namespace Map
         }
 
         private void InterpolateMarginKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
+            int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, int bNextZ, int bNextX, float t)
+        {
+            // vertices is z-major, heightMap is x-major
+            var a = vertices[aZ + aX*vertexSideCount].y;
+            var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
+            var aGrad = (a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
+            var b = _heightMap[bZ*_heightMapWidth + bX];
+            var bNext = _heightMap[bNextZ*_heightMapWidth + bNextX];
+            var bGrad = (bNext - b) / _settings.Spacing * interpolationMargin;
+
+            // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
+            //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
+            //     if (z == 0) Debug.Log("t: " + t);
+            // }
+
+            // Cubic Hermite interpolation
+            var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
+            vertices[z + x*vertexSideCount].y = y;
+        }
+        
+        private void InterpolateMarginKernel2(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
             int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, int bNextZ, int bNextX, float t)
         {
             // vertices is z-major, heightMap is x-major
