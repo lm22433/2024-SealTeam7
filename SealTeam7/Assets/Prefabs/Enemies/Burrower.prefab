@@ -136,13 +136,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 293108071531977410}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.67559016, y: -0, z: -0, w: 0.7372774}
-  m_LocalPosition: {x: 0.45, y: 1.2, z: -1}
+  m_LocalRotation: {x: -0.6653264, y: -0.11731504, z: -0.12802692, w: 0.7260765}
+  m_LocalPosition: {x: 0.2, y: 1.2, z: -0.5}
   m_LocalScale: {x: 0.1, y: 0.10000001, z: 0.10000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2013928995460809366}
-  m_LocalEulerAnglesHint: {x: -85, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -85, y: 0, z: -20}
 --- !u!198 &552652031790891173
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -5272,13 +5272,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2325727739015341921}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.67559016, y: -0, z: -0, w: 0.7372774}
-  m_LocalPosition: {x: -0.45, y: 1.2, z: -1}
+  m_LocalRotation: {x: -0.6653265, y: 0.11731499, z: 0.12802686, w: 0.72607654}
+  m_LocalPosition: {x: -0.2, y: 1.2, z: -0.5}
   m_LocalScale: {x: 0.1, y: 0.10000001, z: 0.10000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2013928995460809366}
-  m_LocalEulerAnglesHint: {x: -85, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -85, y: 0, z: 20}
 --- !u!198 &2423127030068606280
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -10183,7 +10183,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -10198,9 +10198,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2013928995460809366}
-  - component: {fileID: 3729924882987787105}
   - component: {fileID: 828698031663403021}
   - component: {fileID: 6137134856117979157}
+  - component: {fileID: 1762384143968135915}
   m_Layer: 0
   m_Name: Burrower
   m_TagString: Untagged
@@ -10228,24 +10228,6 @@ Transform:
   - {fileID: 8444834786128062806}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3729924882987787105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2772852043545815630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7004c134e7a4de2a0ec47e7f6165bb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gravityDefiance: 5
-  defianceThreshold: 20
-  sinkFactor: 10
-  fallDeathVelocityY: 40
-  gracePeriod: 3
-  SmokeDmg: {fileID: 1838664589082494916}
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10292,11 +10274,11 @@ MonoBehaviour:
   groundedOffset: 7
   aimSpeed: 5
   attackRange: 100
-  attackInterval: 4
-  stopShootingThreshold: 20
+  attackInterval: 5
+  stopShootingThreshold: 30
   coreTargetHeightOffset: 10
-  attackDamage: 2
-  killScore: 400
+  attackDamage: 4
+  killScore: 500
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 45913116891892241}
   muzzle: {fileID: 4905351747079400291}
@@ -10310,11 +10292,30 @@ MonoBehaviour:
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 0}
   drill: {fileID: 3857096993399556680}
-  drillSpeed: 100
+  drillSpeed: 250
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
-  lives: 2
+  smokeDmg: {fileID: 1838664589082494916}
+  lives: 1
+  gracePeriod: 3
+  burrowDepth: 7
+--- !u!114 &1762384143968135915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772852043545815630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dde076dee4ffe4143980428613d0b2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravityDefiance: 5
+  defianceThreshold: 20
+  sinkFactor: 10
+  fallDeathVelocityY: 10
 --- !u!1 &3860991068415625870
 GameObject:
   m_ObjectHideFlags: 0
@@ -10591,7 +10592,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -10701,7 +10702,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -10811,7 +10812,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -11337,7 +11338,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2

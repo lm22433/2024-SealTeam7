@@ -3,6 +3,7 @@ using Map;
 using Player;
 using UnityEngine;
 using System;
+using UnityEngine.VFX;
 
 namespace Enemies
 {
@@ -11,12 +12,15 @@ namespace Enemies
         [SerializeField] private Transform drill;
         [SerializeField] private float drillSpeed;
         [SerializeField] private ParticleSystem[] dustTrails;
-        [SerializeField] private int lives = 2;
-
+        [SerializeField] private VisualEffect smokeDmg;
+        [SerializeField] private int lives = 1;
+        [SerializeField] private float gracePeriod = 3.0f;
+        [SerializeField] private float burrowDepth;
     public override void Init()
         {
             base.Init();
-            lives = 2;
+            lives = 1;
+            smokeDmg.Stop();
         }
         
         protected override float Heuristic(Node start, Node end)
@@ -41,39 +45,96 @@ namespace Enemies
             DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
             drill.Rotate(Time.deltaTime * drillSpeed * Vector3.forward);
             
-            // gun rotation
             switch (State)
             {
                 case EnemyState.Moving:
                 {
-                    drill.localRotation = Quaternion.Slerp(drill.localRotation, Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, transform.eulerAngles.z);
-                    
-                    if (DisallowMovement || Rb.position.y > MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
+                    var coreTarget = new Vector3(EnemyManager.godlyCore.transform.position.x,
+                        MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) +
+                        coreTargetHeightOffset, EnemyManager.godlyCore.transform.position.z);
+                    if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold)
+                    {
+                        transform.position = new Vector3(transform.position.x,
+                            MapManager.GetInstance().GetHeight(transform.position) - burrowDepth, transform.position.z);
+                        Rb.freezeRotation = true;
+                        Rb.detectCollisions = false;
+                    }
+
+                    drill.localRotation = Quaternion.Slerp(drill.localRotation,
+                        Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
+                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x,
+                        Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) -
+                                                transform.position).eulerAngles.y, transform.eulerAngles.z);
+
+                    if (DisallowMovement || Rb.position.y >
+                        MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
                     {
                         foreach (var dustTrail in dustTrails)
-                            if (dustTrail.isPlaying) dustTrail.Stop();
+                            if (dustTrail.isPlaying)
+                                dustTrail.Stop();
                     }
                     else
                     {
                         foreach (var dustTrail in dustTrails)
-                            if (!dustTrail.isPlaying) dustTrail.Play();
+                            if (!dustTrail.isPlaying)
+                                dustTrail.Play();
                     }
+
                     break;
-                }
+            }
                 case EnemyState.AttackCore:
+                    if (Grounded)
+                    {
+                        Rb.linearVelocity = Vector3.zero;
+                        transform.position = new Vector3(transform.position.x,
+                            MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
+                            transform.position.z);
+                    }
+
+                    Rb.freezeRotation = false;
+                    Rb.detectCollisions = true;
+                    break;
                 case EnemyState.AttackHands:
                 {
-                    var xAngle = Quaternion.LookRotation(TargetPosition - drill.position).eulerAngles.x - transform.eulerAngles.x;
+                    if (Grounded)
+                    {
+                        Rb.linearVelocity = Vector3.zero;
+                        transform.position = new Vector3(transform.position.x,
+                            MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
+                            transform.position.z);
+                    }
+
+                    Rb.freezeRotation = false;
+                    Rb.detectCollisions = true;
+
+                    var xAngle = Quaternion.LookRotation(TargetPosition - drill.position).eulerAngles.x -
+                                 transform.eulerAngles.x;
                     TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
-                    drill.localRotation = Quaternion.Slerp(drill.localRotation, TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
+                    drill.localRotation = Quaternion.Slerp(drill.localRotation,
+                        TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
+                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x,
+                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
+                        transform.eulerAngles.z);
                     break;
                 }
                 case EnemyState.Dying:
                 {
                     foreach (var dustTrail in dustTrails)
-                        if(dustTrail.isPlaying) dustTrail.Stop();
+                        if (dustTrail.isPlaying)
+                            dustTrail.Stop();
+                    break;
+                }
+                case EnemyState.Idle:
+                {
+                    if (Grounded)
+                    {
+                        Rb.linearVelocity = Vector3.zero;
+                        transform.position = new Vector3(transform.position.x,
+                            MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
+                            transform.position.z);
+                    }
+                    Rb.detectCollisions = true;
+                    Rb.freezeRotation = false;
                     break;
                 }
             }
