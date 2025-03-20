@@ -126,126 +126,91 @@ namespace Map
             int zChunkOffset = _settings.Z * _settings.Size;
             int xChunkOffset = _settings.X * _settings.Size;
 
-            int startX;
-            int endX;
-            int startZ;
-            int endZ;
-
             switch (interpolationDirection)
             {
                 case InterpolationDirection.LeftEdge:
-                    startX = 0;
-                    endX = interpolationMargin;
-                    startZ = 0;
-                    endZ = vertexSideCount;
-                    break;
-                case InterpolationDirection.RightEdge:
-                    startX = vertexSideCount - interpolationMargin;
-                    endX = vertexSideCount;
-                    startZ = 0;
-                    endZ = vertexSideCount;
-                    break;
-                case InterpolationDirection.BottomEdge:
-                    startX = 0;
-                    endX = vertexSideCount;
-                    startZ = 0;
-                    endZ = interpolationMargin;
-                    break;
-                case InterpolationDirection.TopEdge:
-                    startX = 0;
-                    endX = vertexSideCount;
-                    startZ = vertexSideCount - interpolationMargin;
-                    endZ = vertexSideCount;
-                    break;
-                default:
-                    // Not possible
-                    throw new ArgumentOutOfRangeException();
-            }
 
-            for (int z = startZ; z < endZ; z++)
-            {
-                // t always increases towards the centre, so a is always on the background chunk and b is always on the
-                // play region chunk
-                int aZ;
-                int aPrevZ;
-                int bZ;
-                int bNextZ;
-
-                switch (interpolationDirection)
-                {
-                    case InterpolationDirection.LeftEdge:
-                        aZ = z;
-                        aPrevZ = z;
-                        bZ = z * lodFactor + zChunkOffset;
-                        bNextZ = z * lodFactor + zChunkOffset;
-                        break;
-                    case InterpolationDirection.RightEdge:
-                        aZ = z;
-                        aPrevZ = z;
-                        bZ = z * lodFactor + zChunkOffset;
-                        bNextZ = z * lodFactor + zChunkOffset;
-                        break;
-                    case InterpolationDirection.BottomEdge:
-                        aZ = interpolationMargin;
-                        aPrevZ = interpolationMargin + 1;
-                        bZ = _heightMapWidth - 1;
-                        bNextZ = _heightMapWidth - 1 - lodFactor;
-                        break;
-                    case InterpolationDirection.TopEdge:
-                        aZ = vertexSideCount - interpolationMargin - 1;
-                        aPrevZ = vertexSideCount - interpolationMargin - 2;
-                        bZ = 0;
-                        bNextZ = lodFactor;
-                        break;
-                    default:
-                        // Not possible
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                for (int x = startX; x < endX; x++)
-                {
-                    int aX;
-                    int aPrevX;
-                    int bX;
-                    int bNextX;
-                    float t;
-
-                    switch (interpolationDirection)
+                    for (int z = 0; z < vertexSideCount; z++)
                     {
-                        case InterpolationDirection.LeftEdge:
-                            aX = interpolationMargin;
-                            aPrevX = interpolationMargin + 1;
-                            bX = _heightMapWidth - 1;
-                            bNextX = _heightMapWidth - 1 - lodFactor;
-                            t = (interpolationMargin - x) / (float)interpolationMargin;
-                            break;
-                        case InterpolationDirection.RightEdge:
-                            aX = vertexSideCount - interpolationMargin - 1;
-                            aPrevX = vertexSideCount - interpolationMargin - 2;
-                            bX = 0;
-                            bNextX = lodFactor;
-                            t = (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin;
-                            break;
-                        case InterpolationDirection.BottomEdge:
-                            aX = x;
-                            aPrevX = x;
-                            bX = x * lodFactor + xChunkOffset;
-                            bNextX = x * lodFactor + xChunkOffset;
-                            t = (interpolationMargin - z) / (float)interpolationMargin;
-                            break;
-                        case InterpolationDirection.TopEdge:
-                            aX = x;
-                            aPrevX = x;
-                            bX = x * lodFactor + xChunkOffset;
-                            bNextX = x * lodFactor + xChunkOffset;
-                            t = (z - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();  // Not possible
+                        for (int x = 0; x < interpolationMargin; x++)
+                        {
+                            // t always increases towards the centre, so a is always on the background chunk and b is always on the
+                            // play region chunk
+                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                                aZ: z, 
+                                aX: interpolationMargin, 
+                                aPrevZ: z, 
+                                aPrevX: interpolationMargin + 1, 
+                                bZ: z * lodFactor + zChunkOffset, 
+                                bX: _heightMapWidth - 1, 
+                                bNextZ: z * lodFactor + zChunkOffset, 
+                                bNextX: _heightMapWidth - 1 - lodFactor, 
+                                t: (interpolationMargin - x) / (float)interpolationMargin);
+                        }
                     }
+                    break;
+                
+                case InterpolationDirection.RightEdge:
+                    for (int z = 0; z < vertexSideCount; z++)
+                    {
+                        for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
+                        {
+                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
+                                aZ: z, 
+                                aX: vertexSideCount - interpolationMargin - 1, 
+                                aPrevZ: z, 
+                                aPrevX: vertexSideCount - interpolationMargin - 2, 
+                                bZ: z * lodFactor + zChunkOffset, 
+                                bX: 0, 
+                                bNextZ: z * lodFactor + zChunkOffset, 
+                                bNextX: lodFactor, 
+                                t: (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin);
+                        }
+                    }
+                    break;
 
-                    InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x, aZ, aX, aPrevZ, aPrevX, bZ, bX, bNextZ, bNextX, t);
-                }
+                case InterpolationDirection.BottomEdge:
+
+                    for (int z = 0; z < interpolationMargin; z++)
+                    {
+                        for (int x = 0; x < vertexSideCount; x++)
+                        {
+                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
+                                aZ: interpolationMargin, 
+                                aX: x, 
+                                aPrevZ: interpolationMargin + 1, 
+                                aPrevX: x, 
+                                bZ: _heightMapWidth - 1, 
+                                bX: x * lodFactor + xChunkOffset, 
+                                bNextZ: _heightMapWidth - 1 - lodFactor, 
+                                bNextX: x * lodFactor + xChunkOffset, 
+                                t: (interpolationMargin - z) / (float)interpolationMargin);
+                        }
+                    }
+                    break;
+
+                case InterpolationDirection.TopEdge:
+                
+                    for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount; z++)
+                    {
+                        for (int x = 0; x < vertexSideCount; x++)
+                        {
+                            InterpolateMarginKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
+                                aZ: vertexSideCount - interpolationMargin - 1, 
+                                aX: x, 
+                                aPrevZ: vertexSideCount - interpolationMargin - 2, 
+                                aPrevX: x, 
+                                bZ: 0, 
+                                bX: x * lodFactor + xChunkOffset, 
+                                bNextZ: lodFactor, 
+                                bNextX: x * lodFactor + xChunkOffset, 
+                                t: (z - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin);
+                        }
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();  // Not possible
             }
         }
 
