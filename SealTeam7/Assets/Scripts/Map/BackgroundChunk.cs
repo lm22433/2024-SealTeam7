@@ -235,7 +235,8 @@ namespace Map
                             bZ: 0,
                             bX: 0,
                             bGrad: cornerGrad.x,
-                            t: (interpolationMargin - x) / (float)(interpolationMargin - 0));
+                            t: (interpolationMargin - x) / (float)interpolationMargin,
+                            tUnitLength: interpolationMargin);
                     }
 
                     // Bottom/right triangle - main bulk
@@ -250,10 +251,21 @@ namespace Map
                             var bNextX = z - 1;
                             var b = vertices[bZ + bX*vertexSideCount].y;
                             var bNext = vertices[bNextZ + bNextX*vertexSideCount].y;
+                            var tUnitLength = interpolationMargin - z;
                             
                             // Gradient at b, component parallel to diagonal
                             // (Extra factor of root 2 to account for diagonal)
-                            var bGradPara = (b - bNext) / (_settings.Spacing * Mathf.Sqrt(2)) * interpolationMargin;
+                            var bGradPara = (bNext - b) / (_settings.Spacing * Mathf.Sqrt(2)) * tUnitLength;
+                            
+                            // bGradPerp needs to be scaled to account for varying scale of t
+                            var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
+                            var bGrad = (bGradPara + bGradPerpScaled) / Mathf.Sqrt(2);
+
+                            if (z == interpolationMargin - 3)
+                            {
+                                Debug.Log("b: " + b + " bNext: " + bNext + " bGradPara: " + bGradPara + " bGradPerpScaled: " + bGradPerpScaled);
+                                Debug.Log("z: " + z + " x: " + x + " t: " + (interpolationMargin - x) / (float)tUnitLength);
+                            }
                             
                             InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
                                 aZ: z,
@@ -262,8 +274,9 @@ namespace Map
                                 aPrevX: interpolationMargin + 1,
                                 bZ: bZ,
                                 bX: bX,
-                                bGrad: -(bGradPara - bGradPerp) / Mathf.Sqrt(2),
-                                t: (interpolationMargin - x) / (float)(interpolationMargin - z));
+                                bGrad: bGrad,
+                                t: (interpolationMargin - x) / (float)tUnitLength,
+                                tUnitLength: tUnitLength);
                         }
                     }
                     break;
@@ -302,14 +315,14 @@ namespace Map
             var a = vertices[aZ + aX*vertexSideCount].y;
             var aPrevAlongX = vertices[aZ + aPrevX*vertexSideCount].y;
             var aPrevAlongZ = vertices[aPrevZ + aX*vertexSideCount].y;
-            var aGradX = (a - aPrevAlongX) / _settings.Spacing * interpolationMargin;
-            var aGradZ = (a - aPrevAlongZ) / _settings.Spacing * interpolationMargin;
+            var aGradX = (a - aPrevAlongX) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
+            var aGradZ = (a - aPrevAlongZ) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var aGrad = (aGradX + aGradZ) / Mathf.Sqrt(2);
             var b = _heightMap[bZ*_heightMapWidth + bX];
             var bNextAlongX = _heightMap[bZ*_heightMapWidth + bNextX];
             var bNextAlongZ = _heightMap[bNextZ*_heightMapWidth + bX];
-            var bGradX = (bNextAlongX - b) / _settings.Spacing * interpolationMargin;
-            var bGradZ = (bNextAlongZ - b) / _settings.Spacing * interpolationMargin;
+            var bGradX = (bNextAlongX - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
+            var bGradZ = (bNextAlongZ - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var bGrad = (bGradX + bGradZ) / Mathf.Sqrt(2);
 
             // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
@@ -321,23 +334,23 @@ namespace Map
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
             vertices[z + x*vertexSideCount].y = y;
             
-            // Return gradient at corner for interpolation of triangles
-            return new Vector2(bGradX, bGradZ);
+            // Return gradient at corner for interpolation of triangles, scaled to t unit length = interpolationMargin
+            return new Vector2(bGradX, bGradZ) / Mathf.Sqrt(2);
         }
         
         private void InterpolateMarginTriangleKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
-            int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, float bGrad, float t)
+            int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, float bGrad, float t, int tUnitLength)
         {
             // vertices is z-major, heightMap is x-major
             var a = vertices[aZ + aX*vertexSideCount].y;
             var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
-            var aGrad = (a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
+            var aGrad = (a - aPrev) / _settings.Spacing * tUnitLength;  // Gradient is difference in y per unit of t
             var b = vertices[bZ + bX*vertexSideCount].y;
 
-            // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
-            //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
-            //     if (z == 0) Debug.Log("t: " + t);
-            // }
+            if (z == interpolationMargin - 3) {
+                Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " m_b: " + bGrad);
+                Debug.Log("t: " + t);
+            }
 
             // Cubic Hermite interpolation
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
