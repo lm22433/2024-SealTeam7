@@ -1634,7 +1634,7 @@ MonoBehaviour:
   mapSize: 880
   chunkRow: 1
   chunkSize: 880
-  heightScale: 400
+  heightScale: 450
   lerpFactor: 0.2
   lodInfo:
     lod: 1
