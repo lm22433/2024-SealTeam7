@@ -250,17 +250,11 @@ namespace Map
                     }
 
                     // Bottom/right triangle - main bulk
-                    float bGradPerp = (dkrt.CornerGradX - dkrt.CornerGradZ) / Mathf.Sqrt(2);
+                    float bGradPerp = 0;//(dkrt.CornerGradX - dkrt.CornerGradZ) / Mathf.Sqrt(2);
                     for (int z = 1; z < interpolationMargin; z++)
                     {
                         for (int x = z; x < interpolationMargin; x++)
                         {
-                            var bZ = z;
-                            var bX = z;
-                            var bNextZ = z - 1;
-                            var bNextX = z - 1;
-                            var b = vertices[bZ + bX*vertexSideCount].y;
-                            var bNext = vertices[bNextZ + bNextX*vertexSideCount].y;
                             var tUnitLength = interpolationMargin - z;
                             
                             // Gradient at b, component parallel to diagonal
@@ -282,7 +276,7 @@ namespace Map
                             
                             // bGradPerp needs to be scaled to account for varying scale of t
                             var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
-                            var bGrad = (bGradParaScaled + bGradPerpScaled) / Mathf.Sqrt(2);
+                            var bGrad = (bGradParaScaled + bGradPerpScaled) / Mathf.Sqrt(2) * Mathf.Sqrt(2);
 
                             // if (z == interpolationMargin - 3)
                             // {
@@ -295,8 +289,8 @@ namespace Map
                                 aX: interpolationMargin,
                                 aPrevZ: z,
                                 aPrevX: interpolationMargin + 1,
-                                bZ: bZ,
-                                bX: bX,
+                                bZ: z,
+                                bX: z,
                                 bGrad: bGrad,
                                 t: (interpolationMargin - x) / (float)tUnitLength,
                                 tUnitLength: tUnitLength);
@@ -347,7 +341,7 @@ namespace Map
             var bNextAlongZ = _heightMap[bNextZ*_heightMapWidth + bX];
             var bGradX = (bNextAlongX - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var bGradZ = (bNextAlongZ - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
-            var bGrad = (bGradX + bGradZ) / Mathf.Sqrt(2) / Mathf.Sqrt(2);
+            var bGrad = (bGradX + bGradZ) / Mathf.Sqrt(2);
 
             // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
             //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
