@@ -268,15 +268,21 @@ namespace Map
                             var diagT = (interpolationMargin - z)/(float)interpolationMargin;
                             var bGradPara = dkrt.AGrad + (-6*(dkrt.A - dkrt.B) - 4*dkrt.AGrad - 2*dkrt.BGrad)*diagT + 
                                             (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
+                            var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength;
+                            if (z == 3 && x == z)
+                            {
+                                Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
+                                          + " diagT: " + diagT + " bGradPara: " + bGradPara);
+                            }
                             if (z == interpolationMargin - 3 && x == z)
                             {
-                                Debug.Log("A: " + dkrt.AGrad + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
+                                Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
                                     + " diagT: " + diagT + " bGradPara: " + bGradPara);
                             }
                             
                             // bGradPerp needs to be scaled to account for varying scale of t
                             var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
-                            var bGrad = (bGradPara + bGradPerpScaled) / Mathf.Sqrt(2);
+                            var bGrad = (bGradParaScaled + bGradPerpScaled) / Mathf.Sqrt(2);
 
                             // if (z == interpolationMargin - 3)
                             // {
@@ -341,7 +347,7 @@ namespace Map
             var bNextAlongZ = _heightMap[bNextZ*_heightMapWidth + bX];
             var bGradX = (bNextAlongX - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var bGradZ = (bNextAlongZ - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
-            var bGrad = (bGradX + bGradZ) / Mathf.Sqrt(2);
+            var bGrad = (bGradX + bGradZ) / Mathf.Sqrt(2) / Mathf.Sqrt(2);
 
             // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
             //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
