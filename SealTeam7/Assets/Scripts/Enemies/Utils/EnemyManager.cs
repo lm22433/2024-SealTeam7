@@ -1,15 +1,16 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Enemies.Utils;
 using Game;
 using Map;
 using Player;
+using Projectiles;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Enemies
+namespace Enemies.Utils
 {   
     public struct PathRequest
     {
@@ -37,7 +38,7 @@ namespace Enemies
 
         [Header("Game Settings")]
         [SerializeField] public PlayerCore godlyCore;
-        [SerializeField] public PlayerHands godlyHands;
+        [SerializeField] public PlayerHands[] godlyHands;
         
         [Header("Pathing Settings")]
         [SerializeField] private float mapUpdateInterval;
@@ -54,7 +55,7 @@ namespace Enemies
         private int _enemyCount;
         private float _spawnInterval;
         private PathFinder _pathFinder;
-        private Queue<PathRequest> _pathRequestQueue;
+        private ConcurrentQueue<PathRequest> _pathRequestQueue;
         private bool _running;
         private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
@@ -68,7 +69,7 @@ namespace Enemies
             
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
             _pathFinder = new PathFinder(MapManager.GetInstance().GetMapSize(), MapManager.GetInstance().GetMapSpacing(), MapManager.GetInstance().GetPathingLodFactor());
-            _pathRequestQueue = new Queue<PathRequest>();
+            _pathRequestQueue = new ConcurrentQueue<PathRequest>();
             _running = true;
 
             Task.Run(PathThread);
@@ -80,8 +81,9 @@ namespace Enemies
         {
             foreach (EnemyData data in enemyData)
             {
-                Debug.Log(data.enemyType);
                 EnemyPool.GetInstance().RegisterEnemy(data);
+                Enemy enemy = data.prefab.GetComponent<Enemy>();
+                ProjectilePool.GetInstance().RegisterProjectile(enemy.projectileType, enemy.projectile);
             }
         }
 
@@ -89,7 +91,6 @@ namespace Enemies
         {
             _enemyCount--;
             GameManager.GetInstance().RegisterKill(enemy.killScore);
-            enemy.SetupDeath();
             EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
         }
 
@@ -113,7 +114,7 @@ namespace Enemies
         private void TryProcessPath()
         {
             if (_pathRequestQueue.Count < 1) return;
-            var request = _pathRequestQueue.Dequeue();
+            if (!_pathRequestQueue.TryDequeue(out var request)) return;
             _pathFinder.FindPathAsync(request.Start, request.End, pathingDepth, request.Heuristic, request.Callback);
         }
 
@@ -140,7 +141,7 @@ namespace Enemies
                     Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
                     
                     EnemyData chosenEnemy = _difficulty.GetRandomEnemy(enemyData, _currentWave);
-                    if (chosenEnemy == null) continue;
+                    if (!chosenEnemy) continue;
                     int finalGroupSize = Mathf.Min(chosenEnemy.GetGroupSpawnSize(_difficulty, _currentWave), maxEnemyCount - _enemyCount);
                     
                     for (int j = 0; j < finalGroupSize; j++)
@@ -170,6 +171,18 @@ namespace Enemies
                     GameManager.GetInstance().ApplyWaveClearedEarlyBonus();
                     yield return new WaitForSeconds(1f);
                 }
+            }
+        }
+
+        public void SpawnerSpawn(Vector3 spawnPoint, EnemyData spawnee, int spawnCount)
+        {
+            for (int i = 0; i < spawnCount; i++)
+            {
+                GameObject enemy = EnemyPool.GetInstance().GetFromPool(spawnee, spawnPoint, Quaternion.identity);
+                if (!enemy) continue;
+                enemy.GetComponent<Enemy>().Init();
+                enemy.transform.SetParent(transform);
+                _enemyCount++;
             }
         }
         

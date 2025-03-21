@@ -1,8 +1,10 @@
+using Enemies.Utils;
 using Game;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Enemies.Utils
+namespace Projectiles
 {
     public class Projectile : MonoBehaviour
     {
@@ -11,11 +13,13 @@ namespace Enemies.Utils
         public PlayerDamageable ToDamage { get; set; }
         public int Damage { get; set; }
 
+        public ProjectileType projectileType;
+
         private void Update()
         {
             if (!GameManager.GetInstance().IsGameActive())
             {
-                Destroy(gameObject);
+                ProjectilePool.GetInstance().ReturnToPool(projectileType, gameObject);
                 return;
             }
 
@@ -24,7 +28,7 @@ namespace Enemies.Utils
             if (transform.position == TargetPosition)
             {
                 ToDamage.TakeDamage(Damage);
-                Destroy(gameObject);
+                ProjectilePool.GetInstance().ReturnToPool(projectileType, gameObject);
             }
         }
     }

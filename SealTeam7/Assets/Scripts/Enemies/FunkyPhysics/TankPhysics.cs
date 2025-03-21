@@ -1,5 +1,7 @@
 using Map;
+using Game;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Enemies.FunkyPhysics
 {
@@ -9,7 +11,7 @@ namespace Enemies.FunkyPhysics
 
         protected override void EnemyUpdate()
         {
-            if (Grounded && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
+            if (Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0f && Self.Grounded && !Self.IsDying) Self.SetupDeath();
 
 			if (Self.IsDying && !_exploded)
 			{

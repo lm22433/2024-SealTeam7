@@ -2,7 +2,7 @@ using System;
 using Game;
 using UnityEngine;
 
-namespace Enemies
+namespace Enemies.Utils
 {
     [CreateAssetMenu(fileName = "EnemyData", menuName = "Game/EnemyData", order = 1)]
     public class EnemyData : ScriptableObject

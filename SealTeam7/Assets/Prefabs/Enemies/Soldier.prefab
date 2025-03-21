@@ -61,7 +61,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1011021850132016292}
@@ -80,10 +80,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 0
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 20
   acceleration: 40
-  aimSpeed: 5
+  groundedOffset: 7
+  flyHeight: 0
+  aimSpeed: 10
   attackRange: 50
   attackInterval: 1
   stopShootingThreshold: 20
@@ -93,6 +96,7 @@ MonoBehaviour:
   deathParticles: {fileID: 1519293595971627291}
   model: {fileID: 1011021850132016292}
   muzzle: {fileID: 1551213479543639856}
+  projectileType: 1
   projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
   gunFireSound:
     idInternal: 0
@@ -102,8 +106,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
-  buried: 0
-  buriedAmount: 3
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
@@ -120,7 +122,6 @@ MonoBehaviour:
   gravityDefiance: 10
   defianceThreshold: 20
   sinkFactor: 10
-  groundedOffset: 4
   fallDeathVelocityY: 40
 --- !u!54 &4195251952092455746
 Rigidbody:
@@ -5170,9 +5171,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2009848768158169250}
     m_Modifications:
+    - target: {fileID: 1284134104053458768, guid: f13b5f4a84133814eb35699234c59251, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6498736891518013186, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_Name
       value: Explosion
+      objectReference: {fileID: 0}
+    - target: {fileID: 6498736891518013186, guid: f13b5f4a84133814eb35699234c59251, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7280891853492195071, guid: f13b5f4a84133814eb35699234c59251, type: 3}
       propertyPath: m_LocalPosition.x

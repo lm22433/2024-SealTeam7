@@ -6,14 +6,12 @@ namespace Enemies
 {
     public class Helicopter : Enemy
     {
-        [SerializeField] protected float flyHeight;
-        [SerializeField] private Transform muzzle;
-        [SerializeField] private GameObject projectile;
         [SerializeField] private AK.Wwise.Event helicopterSound;
-        private bool _isGracefulShutdown = false;
+        private bool _isGracefulShutdown;
 
-        private void Awake()
+        public override void Init()
         {
+            base.Init();
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
             helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
         }
@@ -33,7 +31,7 @@ namespace Enemies
         
         protected override float Heuristic(Node start, Node end)
         {
-            return end.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
+            return start.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
         }
         
         protected override void EnemyUpdate()

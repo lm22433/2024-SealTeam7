@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Enemies
+namespace Enemies.Utils
 {
     public class EnemyPool : MonoBehaviour
     {
@@ -21,6 +21,7 @@ namespace Enemies
             foreach (Queue<GameObject> queue in _enemyPool.Values)
             {
                 while (queue.Count > 0) Destroy(queue.Dequeue());
+                queue.Clear();
             }
         }
 

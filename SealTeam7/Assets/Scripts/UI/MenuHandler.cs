@@ -3,6 +3,7 @@ using System.Linq;
 using Game;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI
@@ -68,7 +69,7 @@ namespace UI
             }
 
             if (Input.GetKeyDown("r")) {
-                GameManager.GetInstance().StartGame();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
 

@@ -10,7 +10,7 @@ namespace Enemies.FunkyPhysics
 
         protected override void EnemyUpdate()
         {
-            if (Grounded && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
+            if (Self.Grounded && !Self.IsDying) Self.SetupDeath();
 
             if (Self.IsDying && !_exploded)
             {

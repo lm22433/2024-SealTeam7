@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4201665484160803050}
@@ -49,11 +49,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30e231f8f71411da38d1eeb592eb7b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 3
+  enemyType: 2
+  forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 15
   acceleration: 20
+  groundedOffset: 7
   flyHeight: 0
-  aimSpeed: 2
+  aimSpeed: 10
   attackRange: 200
   attackInterval: 6
   stopShootingThreshold: 150
@@ -63,6 +65,7 @@ MonoBehaviour:
   deathParticles: {fileID: 173710646619886202}
   model: {fileID: 4201665484160803050}
   muzzle: {fileID: 4631428408017700467}
+  projectileType: 1
   projectile: {fileID: 3476414290645683195, guid: 3100d50e4bac2bd4d92ec9617fe4523d, type: 3}
   gunFireSound:
     idInternal: 0
@@ -72,8 +75,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
-  buried: 0
-  buriedAmount: 1
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
@@ -90,7 +91,6 @@ MonoBehaviour:
   gravityDefiance: 10
   defianceThreshold: 20
   sinkFactor: 10
-  groundedOffset: 4
   fallDeathVelocityY: 40
 --- !u!54 &4195251952092455746
 Rigidbody:

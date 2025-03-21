@@ -2,6 +2,8 @@ using Enemies.Utils;
 using Map;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.VFX;
 
 namespace Enemies
 {
@@ -9,17 +11,46 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
         [SerializeField] private ParticleSystem[] dustTrails;
-        [SerializeField] protected float groundedOffset;
+        [SerializeField] private VisualEffect smokeDmg;
+        [SerializeField] private int maxLives = 2;
+        [SerializeField] private float gracePeriod = 2.0f;
+        private float _deathTime;
+        private int _lives;
 
+        public override void Init()
+        {
+            base.Init();
+            _lives = maxLives;
+            smokeDmg.Stop();
+            _deathTime = 0f;
+        }
+        
         protected override float Heuristic(Node start, Node end)
         {
             return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 100f;
         }
+
+        public override void SetupDeath()
+        {
+            if (_deathTime < gracePeriod) return;
+            
+            _deathTime = 0f;
+            _lives--;
+            if (_lives > 0)
+            {
+                smokeDmg.Play();
+                transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);
+                Rb.linearVelocity = Vector3.zero;
+            }
+            else base.SetupDeath();
+        }
         
         protected override void EnemyUpdate()
         {
+            _deathTime += Time.deltaTime;
+            
             DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f;
-            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f;
+            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
             
             // gun rotation
             switch (State)
