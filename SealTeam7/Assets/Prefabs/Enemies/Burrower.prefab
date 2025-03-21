@@ -9769,7 +9769,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  drill: {fileID: 0}
+  drill: {fileID: 1539957999329854138}
   drillSpeed: 250
   dustTrails:
   - {fileID: 2423127030068606280}
@@ -9961,7 +9961,7 @@ PrefabInstance:
     - target: {fileID: -803405088876591012, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: dcf91967ea2ac6046b6c6ca13241540d, type: 2}
+      objectReference: {fileID: 2100000, guid: e3976a5da2abd8444ab845508f46dff7, type: 2}
     - target: {fileID: -376215948998169126, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -9987,6 +9987,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
+--- !u!4 &1539957999329854138 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -6771557359873248076, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
+  m_PrefabInstance: {fileID: 3988394666948130318}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3518198254304760293 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
