@@ -248,19 +248,18 @@ namespace Map
                             var bGradPara = dkrt.AGrad + (-6*(dkrt.A - dkrt.B) - 4*dkrt.AGrad - 2*dkrt.BGrad)*diagT + 
                                             (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
                             var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength * Mathf.Sqrt(2);
-                            if (z == 3 && x == z)
-                            {
-                                Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
-                                          + " diagT: " + diagT + " bGradPara: " + bGradPara);
-                            }
-                            if (z == interpolationMargin - 3 && x == z)
-                            {
-                                Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
-                                    + " diagT: " + diagT + " bGradPara: " + bGradPara);
-                            }
+                            // if (z == 0 && x == z)
+                            // {
+                            //     Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
+                            //               + " diagT: " + diagT + " bGradPara: " + bGradPara);
+                            // }
                             
                             // bGradPerp needs to be scaled to account for varying scale of t
-                            var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
+                            var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength * Mathf.Sqrt(2);
+                            if (z == 0 && x == z)
+                            {
+                                Debug.Log("z: " + z + " bGradParaScaled: " + bGradParaScaled + " bGradPerpScaled: " + bGradPerpScaled);
+                            }
                             var bGrad = (bGradParaScaled + bGradPerpScaled) / Mathf.Sqrt(2);
 
                             // if (z == interpolationMargin - 3)
