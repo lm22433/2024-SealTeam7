@@ -232,6 +232,7 @@ namespace Map
                             bNextZ: _heightMapWidth - 1 - lodFactor, 
                             bNextX: _heightMapWidth - 1 - lodFactor, 
                             t: (interpolationMargin - i) / (float)interpolationMargin);
+                        // Debug.Log("t: " + (interpolationMargin - i) / (float)interpolationMargin);
                     }
 
                     // Bottom/right triangle
@@ -248,17 +249,18 @@ namespace Map
                             var bGradPara = dkrt.AGrad + (-6*(dkrt.A - dkrt.B) - 4*dkrt.AGrad - 2*dkrt.BGrad)*diagT + 
                                             (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
                             var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength / Mathf.Sqrt(2);
-                            // if (z == 0 && x == z)
-                            // {
-                            //     Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
-                            //               + " diagT: " + diagT + " bGradPara: " + bGradPara);
-                            // }
+                            if (z == 1 && x == z)
+                            {
+                                Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
+                                          + " diagT: " + diagT + " bGradPara: " + bGradPara);
+                            }
                             
                             // bGradPerp needs to be scaled to account for varying scale of t
                             var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
-                            if (z == 0 && x == z)
+                            if (z == 1 && x == z)
                             {
                                 Debug.Log("z: " + z + " bGradParaScaled: " + bGradParaScaled + " bGradPerpScaled: " + bGradPerpScaled);
+                                Debug.Log("tUnitLength: " + tUnitLength + " diagT: " + diagT);
                             }
                             var bGrad = (bGradParaScaled + bGradPerpScaled) / Mathf.Sqrt(2);
 
@@ -277,6 +279,53 @@ namespace Map
                                 bX: z,
                                 bGrad: bGrad,
                                 t: (interpolationMargin - x) / (float)tUnitLength,
+                                tUnitLength: tUnitLength);
+                        }
+                    }
+                    
+                    // Top/left triangle
+                    for (int x = 0; x < interpolationMargin; x++)
+                    {
+                        for (int z = x; z < interpolationMargin; z++)
+                        {
+                            var tUnitLength = interpolationMargin - x;
+                            
+                            // Gradient at b, component parallel to diagonal
+                            // (Extra factor of root 2 to account for diagonal) - TODO?
+                            var diagT = (interpolationMargin - x)/(float)interpolationMargin;
+                            var bGradPara = dkrt.AGrad + (-6*(dkrt.A - dkrt.B) - 4*dkrt.AGrad - 2*dkrt.BGrad)*diagT + 
+                                            (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
+                            var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength / Mathf.Sqrt(2);
+                            if (z == 1 && x == z)
+                            {
+                                Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
+                                          + " diagT: " + diagT + " bGradPara: " + bGradPara);
+                            }
+                            
+                            // bGradPerp needs to be scaled to account for varying scale of t
+                            var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
+                            if (z == 1 && x == z)
+                            {
+                                Debug.Log("z: " + z + " bGradParaScaled: " + bGradParaScaled + " bGradPerpScaled: " + bGradPerpScaled);
+                                Debug.Log("tUnitLength: " + tUnitLength + " diagT: " + diagT);
+                            }
+                            var bGrad = (bGradParaScaled - bGradPerpScaled) / Mathf.Sqrt(2);
+
+                            // if (z == interpolationMargin - 3)
+                            // {
+                            //     Debug.Log("b: " + b + " bNext: " + bNext + " bGradPara: " + bGradPara + " bGradPerpScaled: " + bGradPerpScaled);
+                            //     Debug.Log("z: " + z + " x: " + x + " t: " + (interpolationMargin - x) / (float)tUnitLength);
+                            // }
+                            
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                                aZ: interpolationMargin,
+                                aX: x,
+                                aPrevZ: interpolationMargin + 1,
+                                aPrevX: x,
+                                bZ: x,
+                                bX: x,
+                                bGrad: bGrad,
+                                t: (interpolationMargin - z) / (float)tUnitLength,
                                 tUnitLength: tUnitLength);
                         }
                     }
