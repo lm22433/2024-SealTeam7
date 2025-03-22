@@ -10,6 +10,10 @@ Event	ID	Name			Wwise Object Path	Notes
 	3643602477	Play_DesertAmbiance			\Default Work Unit\Play_DesertAmbiance	
 	4030404899	Play_Explosion			\Default Work Unit\Play_Explosion	
 
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	1985131783	SoundEffectVolume			\Default Work Unit\SoundEffectVolume	
+	2346531308	MusicVolume			\Default Work Unit\MusicVolume	
+
 Effect plug-ins	ID	Name	Type				Notes
 	46213127	Parametric EQ (Custom)	Wwise Parametric EQ			
 	300353365	Gain (Custom)	Wwise Gain			

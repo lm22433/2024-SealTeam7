@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{AB0B782E-50ED-4731-B9B6-CF23803DE159}" SchemaVersion="123">
 	<GameParameters>
-		<WorkUnit Name="Default Work Unit" ID="{AB0B782E-50ED-4731-B9B6-CF23803DE159}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{AB0B782E-50ED-4731-B9B6-CF23803DE159}" PersistMode="Standalone">
+			<ChildrenList>
+				<GameParameter Name="SoundEffectVolume" ID="{70821926-0A62-41CB-8BF7-8D695593EEA0}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="100"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MusicVolume" ID="{45C8588C-CEB8-45E8-BFF0-BCC9120D0975}">
+					<PropertyList>
+						<Property Name="Color" Type="int16" Value="1"/>
+						<Property Name="InitialValue" Type="Real64" Value="100"/>
+						<Property Name="OverrideColor" Type="bool" Value="True"/>
+					</PropertyList>
+				</GameParameter>
+			</ChildrenList>
+		</WorkUnit>
 	</GameParameters>
 </WwiseDocument>

@@ -2371,6 +2371,7 @@ GameObject:
   - component: {fileID: 1017560462}
   - component: {fileID: 1017560461}
   - component: {fileID: 1017560463}
+  - component: {fileID: 1017560464}
   m_Layer: 0
   m_Name: WwiseGlobal
   m_TagString: Untagged
@@ -2443,6 +2444,29 @@ MonoBehaviour:
   unloadTriggerList: 958ca0ea
   bankNameInternal: 
   valueGuidInternal: 
+--- !u!114 &1017560464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1017560460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 023b46b9c817594438dd804e2d264813, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  masterVolume: 1
+  musicVolume: 1
+  soundEffectVolume: 1
+  soundEffectRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 4c32b1a6c6aff30448a620ce74fe2f25, type: 2}
+  musicRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 24fb87b417e368340843e0a69cff7943, type: 2}
 --- !u!4 &1047621032 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4957578726440732668, guid: 26e5c3c42dfbcf14fb07a7da9eb22581, type: 3}
