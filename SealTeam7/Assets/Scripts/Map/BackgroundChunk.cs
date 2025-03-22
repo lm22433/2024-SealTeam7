@@ -234,24 +234,9 @@ namespace Map
                             t: (interpolationMargin - i) / (float)interpolationMargin);
                     }
 
-                    // Bottom/right triangle - z=0
-                    for (int x = 0; x < interpolationMargin; x++)
-                    {
-                        InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, 0, x,
-                            aZ: 0,
-                            aX: interpolationMargin,
-                            aPrevZ: 0,
-                            aPrevX: interpolationMargin + 1,
-                            bZ: 0,
-                            bX: 0,
-                            bGrad: dkrt.CornerGradX,
-                            t: (interpolationMargin - x) / (float)interpolationMargin,
-                            tUnitLength: interpolationMargin);
-                    }
-
-                    // Bottom/right triangle - main bulk
-                    float bGradPerp = 0;//(dkrt.CornerGradX - dkrt.CornerGradZ) / Mathf.Sqrt(2);
-                    for (int z = 1; z < interpolationMargin; z++)
+                    // Bottom/right triangle
+                    float bGradPerp = (dkrt.CornerGradX - dkrt.CornerGradZ) / Mathf.Sqrt(2);
+                    for (int z = 0; z < interpolationMargin; z++)
                     {
                         for (int x = z; x < interpolationMargin; x++)
                         {
@@ -262,7 +247,7 @@ namespace Map
                             var diagT = (interpolationMargin - z)/(float)interpolationMargin;
                             var bGradPara = dkrt.AGrad + (-6*(dkrt.A - dkrt.B) - 4*dkrt.AGrad - 2*dkrt.BGrad)*diagT + 
                                             (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
-                            var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength;
+                            var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength * Mathf.Sqrt(2);
                             if (z == 3 && x == z)
                             {
                                 Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
@@ -276,7 +261,7 @@ namespace Map
                             
                             // bGradPerp needs to be scaled to account for varying scale of t
                             var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
-                            var bGrad = (bGradParaScaled + bGradPerpScaled) / Mathf.Sqrt(2) * Mathf.Sqrt(2);
+                            var bGrad = (bGradParaScaled + bGradPerpScaled) / Mathf.Sqrt(2);
 
                             // if (z == interpolationMargin - 3)
                             // {
