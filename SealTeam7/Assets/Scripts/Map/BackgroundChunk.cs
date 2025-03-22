@@ -232,7 +232,6 @@ namespace Map
                             bNextZ: _heightMapWidth - 1 - lodFactor, 
                             bNextX: _heightMapWidth - 1 - lodFactor, 
                             t: (interpolationMargin - i) / (float)interpolationMargin);
-                        // Debug.Log("t: " + (interpolationMargin - i) / (float)interpolationMargin);
                     }
 
                     // Bottom/right triangle
@@ -241,35 +240,6 @@ namespace Map
                     {
                         for (int x = z; x < interpolationMargin; x++)
                         {
-                            var tUnitLength = interpolationMargin - z;
-                            
-                            // Gradient at b, component parallel to diagonal
-                            // (Extra factor of root 2 to account for diagonal) - TODO?
-                            var diagT = (interpolationMargin - z)/(float)interpolationMargin;
-                            var bGradPara = dkrt.AGrad + (-6*(dkrt.A - dkrt.B) - 4*dkrt.AGrad - 2*dkrt.BGrad)*diagT + 
-                                            (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
-                            var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength / Mathf.Sqrt(2);
-                            if (z == 1 && x == z)
-                            {
-                                Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
-                                          + " diagT: " + diagT + " bGradPara: " + bGradPara);
-                            }
-                            
-                            // bGradPerp needs to be scaled to account for varying scale of t
-                            var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
-                            if (z == 1 && x == z)
-                            {
-                                Debug.Log("z: " + z + " bGradParaScaled: " + bGradParaScaled + " bGradPerpScaled: " + bGradPerpScaled);
-                                Debug.Log("tUnitLength: " + tUnitLength + " diagT: " + diagT);
-                            }
-                            var bGrad = (bGradParaScaled + bGradPerpScaled) / Mathf.Sqrt(2);
-
-                            // if (z == interpolationMargin - 3)
-                            // {
-                            //     Debug.Log("b: " + b + " bNext: " + bNext + " bGradPara: " + bGradPara + " bGradPerpScaled: " + bGradPerpScaled);
-                            //     Debug.Log("z: " + z + " x: " + x + " t: " + (interpolationMargin - x) / (float)tUnitLength);
-                            // }
-                            
                             InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
                                 aZ: z,
                                 aX: interpolationMargin,
@@ -277,9 +247,11 @@ namespace Map
                                 aPrevX: interpolationMargin + 1,
                                 bZ: z,
                                 bX: z,
-                                bGrad: bGrad,
-                                t: (interpolationMargin - x) / (float)tUnitLength,
-                                tUnitLength: tUnitLength);
+                                t: (interpolationMargin - x) / (float)(interpolationMargin - z),  // denominator=tUnitLength
+                                tUnitLength: interpolationMargin - z, 
+                                dkrt: dkrt,
+                                bGradPerp: bGradPerp,
+                                bGradDir: new Vector2(1, 1));
                         }
                     }
                     
@@ -288,35 +260,6 @@ namespace Map
                     {
                         for (int z = x; z < interpolationMargin; z++)
                         {
-                            var tUnitLength = interpolationMargin - x;
-                            
-                            // Gradient at b, component parallel to diagonal
-                            // (Extra factor of root 2 to account for diagonal) - TODO?
-                            var diagT = (interpolationMargin - x)/(float)interpolationMargin;
-                            var bGradPara = dkrt.AGrad + (-6*(dkrt.A - dkrt.B) - 4*dkrt.AGrad - 2*dkrt.BGrad)*diagT + 
-                                            (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
-                            var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength / Mathf.Sqrt(2);
-                            if (z == 1 && x == z)
-                            {
-                                Debug.Log("z: " + z + " A: " + dkrt.A + " AGrad: " + dkrt.AGrad + " B: " + dkrt.B + " BGrad: " + dkrt.BGrad
-                                          + " diagT: " + diagT + " bGradPara: " + bGradPara);
-                            }
-                            
-                            // bGradPerp needs to be scaled to account for varying scale of t
-                            var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
-                            if (z == 1 && x == z)
-                            {
-                                Debug.Log("z: " + z + " bGradParaScaled: " + bGradParaScaled + " bGradPerpScaled: " + bGradPerpScaled);
-                                Debug.Log("tUnitLength: " + tUnitLength + " diagT: " + diagT);
-                            }
-                            var bGrad = (bGradParaScaled - bGradPerpScaled) / Mathf.Sqrt(2);
-
-                            // if (z == interpolationMargin - 3)
-                            // {
-                            //     Debug.Log("b: " + b + " bNext: " + bNext + " bGradPara: " + bGradPara + " bGradPerpScaled: " + bGradPerpScaled);
-                            //     Debug.Log("z: " + z + " x: " + x + " t: " + (interpolationMargin - x) / (float)tUnitLength);
-                            // }
-                            
                             InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
                                 aZ: interpolationMargin,
                                 aX: x,
@@ -324,9 +267,11 @@ namespace Map
                                 aPrevX: x,
                                 bZ: x,
                                 bX: x,
-                                bGrad: bGrad,
-                                t: (interpolationMargin - z) / (float)tUnitLength,
-                                tUnitLength: tUnitLength);
+                                t: (interpolationMargin - z) / (float)(interpolationMargin - x),
+                                tUnitLength: interpolationMargin - x,
+                                dkrt: dkrt,
+                                bGradPerp: bGradPerp,
+                                bGradDir: new Vector2(1, -1));
                         }
                     }
                     break;
@@ -398,20 +343,23 @@ namespace Map
             };
         }
         
-        private void InterpolateMarginTriangleKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
-            int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, float bGrad, float t, int tUnitLength)
+        private void InterpolateMarginTriangleKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, 
+            int z, int x, int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, float t, int tUnitLength,
+            InterpolateMarginDiagonalKernelReturnType dkrt, float bGradPerp, Vector2 bGradDir)
         {
+            var diagT = tUnitLength/(float)interpolationMargin;
+            var bGradPara = dkrt.AGrad + (-6*(dkrt.A - dkrt.B) - 4*dkrt.AGrad - 2*dkrt.BGrad)*diagT + 
+                            (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
+            var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength / Mathf.Sqrt(2);
+            var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
+            var bGrad = (bGradDir.x*bGradParaScaled + bGradDir.y*bGradPerpScaled) / Mathf.Sqrt(2);
+            
             // vertices is z-major, heightMap is x-major
             var a = vertices[aZ + aX*vertexSideCount].y;
             var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
             var aGrad = (a - aPrev) / _settings.Spacing * tUnitLength;  // Gradient is difference in y per unit of t
             var b = vertices[bZ + bX*vertexSideCount].y;
-
-            // if (z == interpolationMargin - 3) {
-            //     Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " m_b: " + bGrad);
-            //     Debug.Log("t: " + t);
-            // }
-
+            
             // Cubic Hermite interpolation
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
             vertices[z + x*vertexSideCount].y = y;
