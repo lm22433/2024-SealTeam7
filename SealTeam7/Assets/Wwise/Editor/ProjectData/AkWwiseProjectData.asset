@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584591331042146421
+    m_lastTime: -8584589514440131721
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,7 +359,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584591331055286035
+    m_lastTime: -8584589514440041599
     List:
     - name: Play_CelebrationFanfare
       guid: 7ed2308a1913644f89ddfcb21e99f0ec
@@ -531,6 +531,23 @@ MonoBehaviour:
       maxAttenuation: 0
       maxDuration: 12.969792
       minDuration: 12.969792
+    - name: Play_WaveIncoming
+      guid: 2657f5badf48f5439b8270f365b78f6e
+      id: 4136339245
+      PathAndIcons:
+      - ElementName: Events
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: 3e919ce37f3a4b4eb021aaf40f66a207
+      - ElementName: Play_WaveIncoming
+        ObjectType: 3
+        guid: 2657f5badf48f5439b8270f365b78f6e
+      Path: Events\Default Work Unit\Play_WaveIncoming
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
   RtpcWwu:
   - PhysicalPath: Game Parameters\Default Work Unit.wwu
     PathAndIcons:
@@ -543,7 +560,7 @@ MonoBehaviour:
     ParentPath: Game Parameters\Default Work Unit
     guid: 2e780babed503147b9b6cf23803de159
     GuidInternal: 
-    m_lastTime: -8584589600233420780
+    m_lastTime: -8584589598068520254
     List:
     - name: MusicVolume
       guid: 8c58c845b8cee845bff0bcc9120d0975
@@ -803,7 +820,7 @@ MonoBehaviour:
     m_lastTime: -8584594489342797400
     List: []
   ExpandedFileSystemItemIds: 0200000003000000110000002e0000002f000000
-  ExpandedWaapiItemIds: 2000000021000000
+  ExpandedWaapiItemIds: 0200000003000000110000002e0000002f000000
   AutoSyncSelection: 0
   autoPopulateEnabled: 1
   currentDataSource: 0
