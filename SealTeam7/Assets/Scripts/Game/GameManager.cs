@@ -168,7 +168,7 @@ namespace Game
             _score += points;
             _totalKills++;
             
-            Debug.Log($"Killed something! +{points} points");
+            Debug.Log($"Killed something! +{points} points. ({basePoints} * {multiplier})");
         }
 
         public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;

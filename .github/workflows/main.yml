@@ -3,6 +3,7 @@ name: Build and Test Unity Project
 on:
   workflow_dispatch:
   pull_request:
+    branches: [main, dev]
     paths:
       - SealTeam7/Assets/**
       - SealTeam7/Packages/**
