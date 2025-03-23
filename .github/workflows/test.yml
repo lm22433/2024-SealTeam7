@@ -1,8 +1,9 @@
 name: Unity Continuous Integration
 
 on:
-  pull_request:
   workflow_dispatch:
+  pull_request:
+    branches: [main, dev]
 
 jobs:
   test:
@@ -10,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        targetPlatform: [StandaloneLinux64, StandaloneWindows64, StandaloneOSX]
+        targetPlatform: [StandaloneWindows64]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

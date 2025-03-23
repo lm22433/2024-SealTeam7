@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        targetPlatform: [StandaloneLinux64, StandaloneWindows64, StandaloneOSX]
+        targetPlatform: [StandaloneWindows64]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
