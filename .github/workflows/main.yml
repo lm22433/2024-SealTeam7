@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - Assets/**
-      - Packages/**
+      - SealTeam7/Assets/**
+      - SealTeam7/Packages/**
 
 jobs:
   buildForAllSupportedPlatforms:
