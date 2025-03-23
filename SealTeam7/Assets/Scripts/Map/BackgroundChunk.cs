@@ -39,8 +39,8 @@ namespace Map
     {
         internal struct InterpolateMarginDiagonalKernelReturnType
         {
-            public float CornerGradX;
-            public float CornerGradZ;
+            public float GradPerpInner;
+            public float GradPerpOuter;
             public float A;
             public float AGrad;
             public float B;
@@ -221,7 +221,7 @@ namespace Map
                     var dkrt = new InterpolateMarginDiagonalKernelReturnType();
                     for (int i = 0; i < interpolationMargin; i++)
                     {
-                        // Also returns gradient perpendicular to diagonal, which is independent of i
+                        // Returned dkrt is the same for all iterations
                         dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, i, i, 
                             aZ: interpolationMargin, 
                             aX: interpolationMargin, 
@@ -235,9 +235,9 @@ namespace Map
                     }
 
                     // Bottom/right triangle
-                    float bGradPerp = (dkrt.CornerGradX - dkrt.CornerGradZ) / Mathf.Sqrt(2);
                     for (int z = 0; z < interpolationMargin; z++)
                     {
+                        var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, z/(float)interpolationMargin);
                         for (int x = z; x < interpolationMargin; x++)
                         {
                             InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
@@ -260,6 +260,7 @@ namespace Map
                     {
                         for (int z = x; z < interpolationMargin; z++)
                         {
+                            var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, x/(float)interpolationMargin);
                             InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
                                 aZ: interpolationMargin,
                                 aX: x,
@@ -330,12 +331,14 @@ namespace Map
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
             vertices[z + x*vertexSideCount].y = y;
             
-            // Return gradient at corner for interpolation of triangles, scaled to t unit length = interpolationMargin
-            // And also parameters of Cubic Hermite curve for calculating bGrad in the triangles
+            // Perpendicular gradients only need to be calculated once so I do them here
+            var gradPerpInner = (bGradX - bGradZ) / 2;  // Extra factor of sqrt 2 to scale gradient properly
+            var gradPerpOuter = (aGradX - aGradZ) / 2;
+            
             return new InterpolateMarginDiagonalKernelReturnType
             {
-                CornerGradX = bGradX / Mathf.Sqrt(2), 
-                CornerGradZ = bGradZ / Mathf.Sqrt(2), 
+                GradPerpInner = gradPerpInner, 
+                GradPerpOuter = gradPerpOuter,
                 A = a, 
                 AGrad = aGrad, 
                 B = b, 
