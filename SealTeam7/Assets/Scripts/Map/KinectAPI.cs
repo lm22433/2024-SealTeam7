@@ -7,6 +7,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Microsoft.Azure.Kinect.Sensor;
 using Python;
+using Unity.Mathematics;
 
 namespace Map
 {
@@ -16,7 +17,8 @@ namespace Map
         private readonly Device _kinect;
         private readonly Transformation _transformation;
         private Image _transformedDepthImage;
-        private float[] _heightMap;
+        private float[,] _heightMap;
+        private float2[,] _gradientMap;
         
         /*
          * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
@@ -28,6 +30,7 @@ namespace Map
         private Image<Gray, float> _tmpImage1;
         private Image<Gray, float> _tmpImage2;
         private Image<Gray, float> _tmpImage3;
+        private Image<Gray, float> _tmpImage4;
         
         private readonly Mat _dilationKernel;
         private readonly System.Drawing.Point _defaultAnchor;
@@ -47,9 +50,11 @@ namespace Map
 
         private bool _running;
         private Task _getCaptureTask;
+        private int _kernelSize;
+        private float _gaussianStrength;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[] heightMap, int kernelSize, float gaussianStrength)
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int kernelSize, float gaussianStrength)
         {
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;
@@ -62,10 +67,14 @@ namespace Map
             _yOffsetStart = yOffsetStart;
             _yOffsetEnd = yOffsetEnd;
             _heightMap = heightMap;
+            _gradientMap = gradientMap;
+            _kernelSize = kernelSize;
+            _gaussianStrength = gaussianStrength;
             
             _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage3 = new Image<Gray, float>(_width + 1, _height + 1);
+            _tmpImage4 = new Image<Gray, float>(_width + 1, _height + 1);
             _dilationKernel = Mat.Ones(100, 100, DepthType.Cv8U, 1);
             _defaultAnchor = new System.Drawing.Point(-1, -1);
             _scalarOne = new MCvScalar(1f);
@@ -175,6 +184,9 @@ namespace Map
             CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1, 
                 BorderType.Default, _scalarOne);
 
+            CvInvoke.GaussianBlur(_tmpImage1, _tmpImage2, new System.Drawing.Size(_kernelSize, _kernelSize), _gaussianStrength);
+            _tmpImage4 = _tmpImage2.Sobel(0, 1, 3);
+
             // Write new height data to _heightMap
             for (int y = 0; y < _height + 1; y++)
             {
@@ -184,11 +196,11 @@ namespace Map
                         _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
                         if (y == 0 || y == _height || x == 0 || x == _width) {
-                            _heightMap[y * (_width + 1) + x] = 0;
+                            _heightMap[y, x] = 0;
                             
                         } else {
-                            _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
-                                _tmpImage1.Data[y, x, 0] * _heightScale, _lerpFactor);
+                            _heightMap[y, x] = Mathf.Lerp(_heightMap[y, x], _tmpImage2.Data[y, x, 0] * _heightScale, _lerpFactor);
+                            _gradientMap[y, x] = _tmpImage4.Data[y, x, 0];
                         }
                         // Debug.Log(_lerpFactor);
                         // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
