@@ -20,10 +20,9 @@ jobs:
           fetch-depth: 0
           lfs: true
       - name: Run Linter
-        uses: super-linter/super-linter@v7.3.0
+        uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: dev
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
     
