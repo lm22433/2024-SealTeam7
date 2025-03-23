@@ -1,6 +1,4 @@
-using System;
 using Game;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Map
@@ -325,20 +323,84 @@ namespace Map
                     for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - x)/(float)interpolationMargin);
-                        for (int z = interpolationMargin - (x - (vertexSideCount - interpolationMargin) + 1); z < interpolationMargin; z++)
+                        for (int z = vertexSideCount - 1 - x; z < interpolationMargin; z++)
                         {
                             InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
                                 aZ: interpolationMargin,
                                 aX: x,
                                 aPrevZ: interpolationMargin + 1,
                                 aPrevX: x,
-                                bZ: interpolationMargin - (x - (vertexSideCount - interpolationMargin)) - 1,
+                                bZ: vertexSideCount - 1 - x,
                                 bX: x,
                                 t: (interpolationMargin - z) / (float)(x - (vertexSideCount - interpolationMargin) + 1),
                                 tUnitLength: x - (vertexSideCount - interpolationMargin) + 1,
                                 dkrt: dkrt,
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, -1));
+                        }
+                    }
+                    break;
+                
+                case InterpolationDirection.TopLeftCorner:
+
+                    // Diagonal
+                    dkrt = new InterpolateMarginDiagonalKernelReturnType();
+                    for (int x = 0; x < interpolationMargin; x++)
+                    {
+                        // Returned dkrt is the same for all iterations
+                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, 
+                            z: vertexSideCount - 1 - x, 
+                            x: x, 
+                            aZ: vertexSideCount - interpolationMargin - 1, 
+                            aX: interpolationMargin, 
+                            aPrevZ: vertexSideCount - interpolationMargin - 2, 
+                            aPrevX: interpolationMargin + 1, 
+                            bZ: 0, 
+                            bX: _heightMapWidth - 1, 
+                            bNextZ: lodFactor, 
+                            bNextX: _heightMapWidth - 1 - lodFactor, 
+                            t: (interpolationMargin - x) / (float)interpolationMargin);
+                    }
+
+                    // Bottom/left triangle
+                    for (int x = 0; x < interpolationMargin; x++)
+                    {
+                        var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, x/(float)interpolationMargin);
+                        for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount - x; z++)
+                        {
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                                aZ: vertexSideCount - interpolationMargin - 1,
+                                aX: x,
+                                aPrevZ: vertexSideCount - interpolationMargin - 2,
+                                aPrevX: x,
+                                bZ: vertexSideCount - 1 - x,
+                                bX: x,
+                                t: (z - (vertexSideCount - interpolationMargin - 1)) / (float)(interpolationMargin - x),  // denominator=tUnitLength
+                                tUnitLength: interpolationMargin - x, 
+                                dkrt: dkrt,
+                                bGradPerp: bGradPerp,
+                                bGradDir: new Vector2(1, -1));
+                        }
+                    }
+                    
+                    // Top/left triangle
+                    for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount; z++)
+                    {
+                        var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - z)/(float)interpolationMargin);
+                        for (int x = vertexSideCount - 1 - z; x < interpolationMargin; x++)
+                        {
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                                aZ: z,
+                                aX: interpolationMargin,
+                                aPrevZ: z,
+                                aPrevX: interpolationMargin + 1,
+                                bZ: z,
+                                bX: vertexSideCount - 1 - z,
+                                t: (interpolationMargin - x) / (float)(z - (vertexSideCount - interpolationMargin) + 1),
+                                tUnitLength: z - (vertexSideCount - interpolationMargin) + 1,
+                                dkrt: dkrt,
+                                bGradPerp: bGradPerp,
+                                bGradDir: new Vector2(1, 1));
                         }
                     }
                     break;
