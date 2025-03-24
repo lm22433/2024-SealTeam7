@@ -199,15 +199,16 @@ namespace Map
                     {
                         for (int x = 0; x < vertexSideCount; x++)
                         {
-                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
-                                aZ: vertexSideCount - interpolationMargin - 1, 
-                                aX: x, 
-                                aPrevZ: vertexSideCount - interpolationMargin - 2, 
-                                aPrevX: x, 
-                                bZ: 0, 
-                                bX: x * lodFactor + xChunkOffset, 
-                                bNextZ: lodFactor, 
-                                bNextX: x * lodFactor + xChunkOffset, 
+                            // if (x == 0) Debug.Log("t: " + (z - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin);
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                                aZ: vertexSideCount - interpolationMargin - 1,
+                                aX: x,
+                                aPrevZ: vertexSideCount - interpolationMargin - 2,
+                                aPrevX: x,
+                                bZ: 0,
+                                bX: x * lodFactor + xChunkOffset,
+                                bNextZ: lodFactor,
+                                bNextX: x * lodFactor + xChunkOffset,
                                 t: (z - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin);
                         }
                     }
@@ -383,7 +384,7 @@ namespace Map
                         }
                     }
                     
-                    // Top/left triangle
+                    // Top/right triangle
                     for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount; z++)
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - z)/(float)interpolationMargin);
@@ -397,6 +398,70 @@ namespace Map
                                 bZ: z,
                                 bX: vertexSideCount - 1 - z,
                                 t: (interpolationMargin - x) / (float)(z - (vertexSideCount - interpolationMargin) + 1),
+                                tUnitLength: z - (vertexSideCount - interpolationMargin) + 1,
+                                dkrt: dkrt,
+                                bGradPerp: bGradPerp,
+                                bGradDir: new Vector2(1, 1));
+                        }
+                    }
+                    break;
+                
+                case InterpolationDirection.TopRightCorner:
+
+                    // Diagonal
+                    dkrt = new InterpolateMarginDiagonalKernelReturnType();
+                    for (int i = 0; i < interpolationMargin; i++)
+                    {
+                        // Returned dkrt is the same for all iterations
+                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, 
+                            z: vertexSideCount - interpolationMargin + i, 
+                            x: vertexSideCount - interpolationMargin + i, 
+                            aZ: vertexSideCount - interpolationMargin - 1, 
+                            aX: vertexSideCount - interpolationMargin - 1, 
+                            aPrevZ: vertexSideCount - interpolationMargin - 2, 
+                            aPrevX: vertexSideCount - interpolationMargin - 2, 
+                            bZ: 0, 
+                            bX: 0, 
+                            bNextZ: lodFactor, 
+                            bNextX: lodFactor, 
+                            t: (i + 1)/(float)interpolationMargin);
+                    }
+
+                    // Bottom/right triangle
+                    for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
+                    {
+                        var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - x)/(float)interpolationMargin);
+                        for (int z = vertexSideCount - interpolationMargin; z < x + 1; z++)
+                        {
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                                aZ: vertexSideCount - interpolationMargin - 1,
+                                aX: x,
+                                aPrevZ: vertexSideCount - interpolationMargin - 2,
+                                aPrevX: x,
+                                bZ: x,
+                                bX: x,
+                                t: (z - (vertexSideCount - interpolationMargin - 1)) / (float)(x - (vertexSideCount - interpolationMargin - 1)),
+                                tUnitLength: x - (vertexSideCount - interpolationMargin - 1), 
+                                dkrt: dkrt,
+                                bGradPerp: bGradPerp,
+                                bGradDir: new Vector2(1, -1));
+                        }
+                    }
+                    
+                    // Top/left triangle
+                    for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount; z++)
+                    {
+                        var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - z)/(float)interpolationMargin);
+                        for (int x = vertexSideCount - interpolationMargin; x < z + 1; x++)
+                        {
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                                aZ: z,
+                                aX: vertexSideCount - interpolationMargin - 1,
+                                aPrevZ: z,
+                                aPrevX: vertexSideCount - interpolationMargin - 2,
+                                bZ: z,
+                                bX: z,
+                                t: (x - (vertexSideCount - interpolationMargin - 1)) / (float)(z - (vertexSideCount - interpolationMargin) + 1),
                                 tUnitLength: z - (vertexSideCount - interpolationMargin) + 1,
                                 dkrt: dkrt,
                                 bGradPerp: bGradPerp,
