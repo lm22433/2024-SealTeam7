@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584591331042146421
+    m_lastTime: -8584588720855248043
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,7 +359,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584591331055286035
+    m_lastTime: -8584588720869434170
     List:
     - name: Play_CelebrationFanfare
       guid: 7ed2308a1913644f89ddfcb21e99f0ec
@@ -376,8 +376,8 @@ MonoBehaviour:
         guid: 7ed2308a1913644f89ddfcb21e99f0ec
       Path: Events\Default Work Unit\Play_CelebrationFanfare
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 2.064
+      minDuration: 2.064
     - name: Play_DesertAmbiance
       guid: 78a5fa85b04d3e47916f016db8fdcefd
       id: 3643602477
@@ -393,8 +393,8 @@ MonoBehaviour:
         guid: 78a5fa85b04d3e47916f016db8fdcefd
       Path: Events\Default Work Unit\Play_DesertAmbiance
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 211.47435
+      minDuration: 211.47435
     - name: Play_Explosion
       guid: 78a059959fe9a34a8ffff3c4db50cee8
       id: 4030404899
@@ -410,8 +410,8 @@ MonoBehaviour:
         guid: 78a059959fe9a34a8ffff3c4db50cee8
       Path: Events\Default Work Unit\Play_Explosion
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 1.5
+      minDuration: 0
     - name: Play_GameIntroTrack
       guid: 0f5566247b4d4f4aafef5c5d506ad9c5
       id: 2853397551
@@ -427,8 +427,8 @@ MonoBehaviour:
         guid: 0f5566247b4d4f4aafef5c5d506ad9c5
       Path: Events\Default Work Unit\Play_GameIntroTrack
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 16.991709
+      minDuration: 16.991709
     - name: Play_Helicopter_Sound
       guid: 23692c9a03a922408422f895d27f1356
       id: 3013451977
@@ -444,8 +444,8 @@ MonoBehaviour:
         guid: 23692c9a03a922408422f895d27f1356
       Path: Events\Default Work Unit\Play_Helicopter_Sound
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 16.5
+      minDuration: 16.5
     - name: Play_HelicopterMissile
       guid: 41121ff67ded6243964180b72401ecb8
       id: 2723016199
@@ -461,8 +461,8 @@ MonoBehaviour:
         guid: 41121ff67ded6243964180b72401ecb8
       Path: Events\Default Work Unit\Play_HelicopterMissile
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 2.25
+      minDuration: 2.25
     - name: Play_MainMenuMusic
       guid: 7471cf3a7d563c4d895e94fef2ea7d0c
       id: 667425441
@@ -478,8 +478,8 @@ MonoBehaviour:
         guid: 7471cf3a7d563c4d895e94fef2ea7d0c
       Path: Events\Default Work Unit\Play_MainMenuMusic
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 178.46132
+      minDuration: 178.46132
     - name: Play_Solider_Gunfire
       guid: 8511d3d608987246bfd6f4892bddc093
       id: 1988800053
@@ -495,8 +495,8 @@ MonoBehaviour:
         guid: 8511d3d608987246bfd6f4892bddc093
       Path: Events\Default Work Unit\Play_Solider_Gunfire
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 2.0818489
+      minDuration: 0
     - name: Play_SoliderScream
       guid: 90ba20b2dad0174aa04d6b32c4a389e4
       id: 2568326629
@@ -512,8 +512,8 @@ MonoBehaviour:
         guid: 90ba20b2dad0174aa04d6b32c4a389e4
       Path: Events\Default Work Unit\Play_SoliderScream
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 6.48
+      minDuration: 0
     - name: Play_Tank_Gunfire
       guid: d217d0e8a82c71428f03442494a10ffe
       id: 3624895801
@@ -529,8 +529,8 @@ MonoBehaviour:
         guid: d217d0e8a82c71428f03442494a10ffe
       Path: Events\Default Work Unit\Play_Tank_Gunfire
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 12.969792
+      minDuration: 12.969792
   RtpcWwu:
   - PhysicalPath: Game Parameters\Default Work Unit.wwu
     PathAndIcons:
@@ -543,7 +543,7 @@ MonoBehaviour:
     ParentPath: Game Parameters\Default Work Unit
     guid: 2e780babed503147b9b6cf23803de159
     GuidInternal: 
-    m_lastTime: -8584594489366232936
+    m_lastTime: -8584588720869404109
     List: []
   - PhysicalPath: Game Parameters\Factory Soundseed Air Game Syncs.wwu
     PathAndIcons:

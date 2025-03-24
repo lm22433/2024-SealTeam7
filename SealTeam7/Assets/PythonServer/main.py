@@ -27,7 +27,7 @@ GESTURES_FILE_NAME = "gestures"
 READY_EVENT_NAME = "SealTeam7ColourImageReady"
 DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
 GESTURE_RECOGNITION_MODEL_PATH = 'hand_landmarking_model.task'
-VISUALISE_INFERENCE_RESULTS = True
+VISUALISE_INFERENCE_RESULTS = False
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
 # Global flag for graceful shutdown
@@ -45,7 +45,7 @@ def timer(name):
     start = time.time()
     yield
     end = time.time()
-    # print(f"{name}: {int((end - start)*1000)} ms")
+    print(f"{name}: {int((end - start)*1000)} ms")
     
 def get_path(path):
     dir = os.path.dirname(os.path.abspath(__file__))
@@ -66,7 +66,8 @@ gesture_recognizer_options = HandLandmarkerOptions(
     num_hands=2,
     min_hand_detection_confidence=0.05,
     min_hand_presence_confidence=0.5,
-    min_tracking_confidence=0.5)
+    min_tracking_confidence=0.5,
+    )
 
 left_hand_history = []  # Will store numpy arrays of shape (21, 3)
 right_hand_history = []

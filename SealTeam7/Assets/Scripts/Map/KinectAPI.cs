@@ -164,12 +164,20 @@ namespace Map
                 
                 try
                 {
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
                     using Capture capture = _kinect.GetCapture();
 
                     _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
+                    stopwatch.Stop();
+                    Console.WriteLine($"Get Capture: {stopwatch.ElapsedMilliseconds} ms");
                     
                     if (PythonManager.IsInitialized) {
+                        
+                        stopwatch.Restart();
                         var hl = PythonManager.ProcessFrame(capture.Color);
+                        stopwatch.Stop();
+                        Console.WriteLine($"Process Frame: {stopwatch.ElapsedMilliseconds} ms");
 
                         // Skip frame if hand is absent, up to a few frames
                         if (hl.Left == null) _leftHandAbsentCount++;
