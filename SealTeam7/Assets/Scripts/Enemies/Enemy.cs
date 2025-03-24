@@ -156,7 +156,7 @@ namespace Enemies
             }
         }
 
-        private void UpdateTarget()
+        protected virtual void UpdateTarget()
         {
             switch (State)
             {
@@ -189,7 +189,6 @@ namespace Enemies
 
         private void FollowPath()
         {
-            Path ??= Array.Empty<Vector3>();
             if (Path.Length > 0 && PathIndex < Path.Length - 1)
             {
                 if (LastPathFind >= PathFindInterval)

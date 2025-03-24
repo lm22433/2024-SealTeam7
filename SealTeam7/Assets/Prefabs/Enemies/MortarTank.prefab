@@ -9695,7 +9695,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1460443714081759202}
@@ -9721,7 +9721,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: -1, z: 1}
   moveSpeed: 15
   acceleration: 100
-  groundedOffset: 7
+  groundedOffset: 8
   flyHeight: 0
   aimSpeed: 5
   attackRange: 250
@@ -9732,8 +9732,8 @@ MonoBehaviour:
   killScore: 400
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 9210303565649351679}
-  muzzle: {fileID: 5401406604641473446}
-  projectileType: 3
+  muzzle: {fileID: 0}
+  projectileType: 4
   projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
   gunFireSound:
     idInternal: 0
@@ -9743,13 +9743,13 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  gun: {fileID: 5401406604641473446}
+  gun: {fileID: 0}
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
   smokeDmg: {fileID: 8715206472391717232}
   maxLives: 2
-  gracePeriod: 3
+  gracePeriod: 2
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9764,7 +9764,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityDefiance: 5
   defianceThreshold: 20
-  sinkFactor: 10
+  sinkFactor: 8
   fallDeathVelocityY: 40
 --- !u!54 &828698031663403021
 Rigidbody:
@@ -10056,11 +10056,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}
---- !u!4 &5401406604641473446 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3652011956315678642, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}
-  m_PrefabInstance: {fileID: 8672573018607088660}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9210303565649351679 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}

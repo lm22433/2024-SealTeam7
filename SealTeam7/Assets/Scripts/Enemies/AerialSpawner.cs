@@ -23,7 +23,7 @@ namespace Enemies
 
         protected override float Heuristic(Node start, Node end)
         {
-            return start.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
+            return 1 / (start.WorldPos - EnemyManager.godlyCore.transform.position).sqrMagnitude * 1000f;
         }
         
         protected override void Attack(PlayerDamageable toDamage)
@@ -31,11 +31,15 @@ namespace Enemies
             EnemyManager.SpawnerSpawn(spawnPoint.position, spawnee, attackDamage);
         }
 
+        protected override void UpdateTarget()
+        {
+            TargetPosition = _oppositePosition;
+        }
+
         protected override void EnemyUpdate()
         {
-            if ((transform.position - _oppositePosition).sqrMagnitude < 1000f) EnemyManager.Kill(this);
-            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(_oppositePosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
-            TargetDirection = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
+            if ((transform.position - TargetPosition).sqrMagnitude < 1000f) EnemyManager.Kill(this);
+            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
         }
 
         protected override void EnemyFixedUpdate()

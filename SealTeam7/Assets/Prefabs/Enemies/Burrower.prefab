@@ -9695,7 +9695,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8530385386723807346}
@@ -9747,10 +9747,10 @@ MonoBehaviour:
   forceOffset: {x: 0, y: -1, z: 1}
   moveSpeed: 20
   acceleration: 100
-  groundedOffset: 7
+  groundedOffset: 8
   flyHeight: 0
   aimSpeed: 5
-  attackRange: 100
+  attackRange: 20
   attackInterval: 5
   stopShootingThreshold: 30
   coreTargetHeightOffset: 10
@@ -9758,9 +9758,9 @@ MonoBehaviour:
   killScore: 500
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 3518198254304760293}
-  muzzle: {fileID: 6571015022771528734}
-  projectileType: 2
-  projectile: {fileID: 4367590948807452066, guid: f4ad86d3785a5ed478eeb01a30af078b, type: 3}
+  muzzle: {fileID: 0}
+  projectileType: 0
+  projectile: {fileID: 0}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
@@ -9774,7 +9774,7 @@ MonoBehaviour:
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
-  burrowDepth: 7
+  burrowDepth: 8
 --- !u!114 &1762384143968135915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9789,7 +9789,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityDefiance: 5
   defianceThreshold: 20
-  sinkFactor: 10
+  sinkFactor: 8
   fallDeathVelocityY: 10
 --- !u!1001 &1273045529044028289
 PrefabInstance:
@@ -9995,10 +9995,5 @@ Transform:
 --- !u!4 &3518198254304760293 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
-  m_PrefabInstance: {fileID: 3988394666948130318}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &6571015022771528734 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7811898759235506704, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
   m_PrefabInstance: {fileID: 3988394666948130318}
   m_PrefabAsset: {fileID: 0}
