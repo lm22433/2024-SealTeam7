@@ -1,5 +1,9 @@
+using System;
 using Game;
 using UnityEngine;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Debug = UnityEngine.Debug;
 
 namespace Map
 {
@@ -133,29 +137,29 @@ namespace Map
             {
                 case InterpolationDirection.LeftEdge:
 
-                    for (int z = 0; z < vertexSideCount; z++)
+                    Parallel.For(0, vertexSideCount, z =>
                     {
                         for (int x = 0; x < interpolationMargin; x++)
                         {
                             // t always increases towards the centre, so a is always on the background chunk and b is always on the
                             // play region chunk
                             InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x,
-                                aZ: z, 
-                                aX: interpolationMargin, 
-                                aPrevZ: z, 
-                                aPrevX: interpolationMargin + 1, 
-                                bZ: z * lodFactor + zChunkOffset, 
-                                bX: _heightMapWidth - 1, 
-                                bNextZ: z * lodFactor + zChunkOffset, 
-                                bNextX: _heightMapWidth - 1 - lodFactor, 
+                                aZ: z,
+                                aX: interpolationMargin,
+                                aPrevZ: z,
+                                aPrevX: interpolationMargin + 1,
+                                bZ: z * lodFactor + zChunkOffset,
+                                bX: _heightMapWidth - 1,
+                                bNextZ: z * lodFactor + zChunkOffset,
+                                bNextX: _heightMapWidth - 1 - lodFactor,
                                 t: (interpolationMargin - x) / (float)interpolationMargin);
                         }
-                    }
+                    });
                     break;
                 
                 case InterpolationDirection.RightEdge:
 
-                    for (int z = 0; z < vertexSideCount; z++)
+                    Parallel.For(0, vertexSideCount, z =>
                     {
                         for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
                         {
@@ -170,12 +174,12 @@ namespace Map
                                 bNextX: lodFactor, 
                                 t: (x - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin);
                         }
-                    }
+                    });
                     break;
 
                 case InterpolationDirection.BottomEdge:
 
-                    for (int z = 0; z < interpolationMargin; z++)
+                    Parallel.For(0, interpolationMargin, z =>
                     {
                         for (int x = 0; x < vertexSideCount; x++)
                         {
@@ -190,12 +194,12 @@ namespace Map
                                 bNextX: x * lodFactor + xChunkOffset, 
                                 t: (interpolationMargin - z) / (float)interpolationMargin);
                         }
-                    }
+                    });
                     break;
 
                 case InterpolationDirection.TopEdge:
 
-                    for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount; z++)
+                    Parallel.For(vertexSideCount - interpolationMargin, vertexSideCount, z =>
                     {
                         for (int x = 0; x < vertexSideCount; x++)
                         {
@@ -211,7 +215,7 @@ namespace Map
                                 bNextX: x * lodFactor + xChunkOffset,
                                 t: (z - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin);
                         }
-                    }
+                    });
                     break;
 
                 case InterpolationDirection.BottomLeftCorner:
@@ -236,7 +240,7 @@ namespace Map
                     }
 
                     // Bottom/right triangle
-                    for (int z = 0; z < interpolationMargin; z++)
+                    Parallel.For(0, interpolationMargin, z =>
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, z/(float)interpolationMargin);
                         for (int x = z; x < interpolationMargin; x++)
@@ -254,10 +258,10 @@ namespace Map
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, 1));
                         }
-                    }
+                    });
                     
                     // Top/left triangle
-                    for (int x = 0; x < interpolationMargin; x++)
+                    Parallel.For(0, interpolationMargin, x =>
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, x/(float)interpolationMargin);
                         for (int z = x; z < interpolationMargin; z++)
@@ -275,7 +279,7 @@ namespace Map
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, -1));
                         }
-                    }
+                    });
                     break;
                 
                 case InterpolationDirection.BottomRightCorner:
@@ -300,7 +304,7 @@ namespace Map
                     }
 
                     // Bottom/left triangle
-                    for (int z = 0; z < interpolationMargin; z++)
+                    Parallel.For(0, interpolationMargin, z =>
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, z/(float)interpolationMargin);
                         for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount - z; x++)
@@ -318,10 +322,10 @@ namespace Map
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, 1));
                         }
-                    }
+                    });
                     
                     // Top/right triangle
-                    for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
+                    Parallel.For(vertexSideCount - interpolationMargin, vertexSideCount, x =>
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - x)/(float)interpolationMargin);
                         for (int z = vertexSideCount - 1 - x; z < interpolationMargin; z++)
@@ -339,7 +343,7 @@ namespace Map
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, -1));
                         }
-                    }
+                    });
                     break;
                 
                 case InterpolationDirection.TopLeftCorner:
@@ -364,7 +368,7 @@ namespace Map
                     }
 
                     // Bottom/left triangle
-                    for (int x = 0; x < interpolationMargin; x++)
+                    Parallel.For(0, interpolationMargin, x =>
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, x/(float)interpolationMargin);
                         for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount - x; z++)
@@ -382,10 +386,10 @@ namespace Map
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, -1));
                         }
-                    }
+                    });
                     
                     // Top/right triangle
-                    for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount; z++)
+                    Parallel.For(vertexSideCount - interpolationMargin, vertexSideCount, z =>
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - z)/(float)interpolationMargin);
                         for (int x = vertexSideCount - 1 - z; x < interpolationMargin; x++)
@@ -403,7 +407,7 @@ namespace Map
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, 1));
                         }
-                    }
+                    });
                     break;
                 
                 case InterpolationDirection.TopRightCorner:
@@ -428,7 +432,7 @@ namespace Map
                     }
 
                     // Bottom/right triangle
-                    for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
+                    Parallel.For(vertexSideCount - interpolationMargin, vertexSideCount, x =>
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - x)/(float)interpolationMargin);
                         for (int z = vertexSideCount - interpolationMargin; z < x + 1; z++)
@@ -446,10 +450,10 @@ namespace Map
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, -1));
                         }
-                    }
+                    });
                     
                     // Top/left triangle
-                    for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount; z++)
+                    Parallel.For(vertexSideCount - interpolationMargin, vertexSideCount, z =>
                     {
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - z)/(float)interpolationMargin);
                         for (int x = vertexSideCount - interpolationMargin; x < z + 1; x++)
@@ -467,7 +471,7 @@ namespace Map
                                 bGradPerp: bGradPerp,
                                 bGradDir: new Vector2(1, 1));
                         }
-                    }
+                    });
                     break;
 
                 default:
