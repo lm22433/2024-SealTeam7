@@ -670,12 +670,12 @@ MonoBehaviour:
     lod: 1
     colliderLod: 2
   backgroundChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
-  backgroundAverageHeight: 150
-  backgroundHeightScale: 100
+  backgroundAverageHeight: 75
+  backgroundHeightScale: 30
   backgroundNoiseScale: 0.01
   backgroundInterpolationMargin: 100
   backgroundChunkMargin: 2
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0

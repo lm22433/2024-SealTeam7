@@ -189,13 +189,8 @@ namespace Map
                     if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
                         _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
-                        if (y == 0 || y == _height || x == 0 || x == _width) {
-                            _heightMap[y * (_width + 1) + x] = 0;
-                            
-                        } else {
-                            _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
-                                _tmpImage2.Data[y, x, 0] * _heightScale, _lerpFactor);
-                        }
+                        _heightMap[y * (_width + 1) + x] = Mathf.Lerp(_heightMap[y * (_width + 1) + x], 
+                            _tmpImage2.Data[y, x, 0] * _heightScale, _lerpFactor);
                         // Debug.Log(_lerpFactor);
                         // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
                     }
