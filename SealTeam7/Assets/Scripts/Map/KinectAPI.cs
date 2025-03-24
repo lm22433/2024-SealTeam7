@@ -207,7 +207,7 @@ namespace Map
         {
             // Raw depth from kinect
             Span<ushort> depthBuffer = depthImage.GetPixels<ushort>().Span;
-
+            var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
             // Create a new image with data from the depth and colour image
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -217,11 +217,10 @@ namespace Map
                 {
                     var depth = depthBuffer[(y + _yOffsetStart) * _colourWidth + _xOffsetStart + (_width - x)];
 
-                    var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
                     // Max depth is the lowest height, so this is the height normalised to [0, 1]
                     var height = (_maximumSandDepth - depth) / depthRange;
                     _rawHeightImage.Data[y, x, 0] = height;
-
+                    
                     // depth == 0 means kinect wasn't able to get a depth for that pixel
                     // hand masking threshold is now just _minimumSandDepth
                     if (depth == 0 || height >= 1f || height < 0f)
@@ -279,30 +278,29 @@ namespace Map
             }
             BboxLeft = bboxLeftHand;
             BboxRight = bboxRightHand;
-            var vec2 = new Vector2();
+            
 
             stopwatch.Restart();
             //_tmpImage = _tmpImage.Sobel(0, 1, 3);
 
             // Write new height data to _heightMap
-            for (int y = 0; y < _height + 1; y++)
-            {
-                for (int x = 0; x < _width + 1; x++)
-                {
-                    vec2.Set(x, y);
-                    if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
-                        (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
-                    {
-                        _heightMask.Data[y, x, 0] = 1f;
-                    }
+            Parallel.For(0, _height * _width, i => { 
+                int x = i % _width;
+                int y = i / _width;
 
-                    if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
-                    {
-                        _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
-                        //_gradientMap[y, x] = _tmpImage.Data[y, x, 0];
-                    }
+                var vec2 = new Vector2(x, y);
+                if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
+                    (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
+                {
+                    _heightMask.Data[y, x, 0] = 1f;
                 }
-            }
+
+                if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
+                {
+                    _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
+                    //_gradientMap[y, x] = _tmpImage.Data[y, x, 0];
+                }
+            });
             stopwatch.Stop();
             Console.WriteLine($"Loop 2: {stopwatch.ElapsedMilliseconds} ms");
             
