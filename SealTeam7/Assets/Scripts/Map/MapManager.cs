@@ -62,6 +62,7 @@ namespace Map
         [SerializeField] private float backgroundHeightScale;
         [SerializeField] private float backgroundNoiseScale;
         [SerializeField] private int backgroundInterpolationMargin;
+        [SerializeField] private int backgroundChunkMargin;
         
         [Header("")]
         [Header("Environment Settings")]
@@ -114,9 +115,9 @@ namespace Map
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
-            for (int z = -1; z < chunkRow + 1; z++)
+            for (int z = -backgroundChunkMargin; z < chunkRow + backgroundChunkMargin; z++)
             {
-                for (int x = -1; x < chunkRow + 1; x++)
+                for (int x = -backgroundChunkMargin; x < chunkRow + backgroundChunkMargin; x++)
                 {
                     // Play region chunks
                     if (z >= 0 && z < chunkRow && x >= 0 && x < chunkRow)

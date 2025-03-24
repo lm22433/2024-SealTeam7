@@ -674,6 +674,7 @@ MonoBehaviour:
   backgroundHeightScale: 100
   backgroundNoiseScale: 0.01
   backgroundInterpolationMargin: 100
+  backgroundChunkMargin: 2
   isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
