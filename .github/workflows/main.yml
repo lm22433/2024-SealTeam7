@@ -12,23 +12,13 @@ concurrency:
 jobs:
   buildForAllSupportedPlatforms:
     name: Build Unity Project for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
         targetPlatform:
           - StandaloneWindows64
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          android: true
-          dotnet: false
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -60,7 +50,7 @@ jobs:
 
   testForAllSupportedPlatforms:
     name: Test Unity Project on ${{ matrix.targetPlatform }} in ${{ matrix.testMode }}
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions: write-all
     strategy:
       fail-fast: false
@@ -71,16 +61,6 @@ jobs:
           - playmode
           - editmode
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          android: true
-          dotnet: false
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
