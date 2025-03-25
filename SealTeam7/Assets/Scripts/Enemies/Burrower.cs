@@ -46,6 +46,8 @@ namespace Enemies
                         transform.position.z
                     );
                     
+                    transform.up = MapManager.GetInstance().GetNormal(transform.position);
+                    
                     break;
                 }
                 case EnemyState.AttackCore:
@@ -59,6 +61,7 @@ namespace Enemies
                             transform.position.z
                         );
                         
+                        _burrowing = false;
                         Rb.freezeRotation = false;
                         Rb.detectCollisions = true;
                     }
@@ -76,6 +79,7 @@ namespace Enemies
                             transform.position.z
                         );
                         
+                        _burrowing = false;
                         Rb.freezeRotation = false;
                         Rb.detectCollisions = true;
                     }
@@ -97,6 +101,7 @@ namespace Enemies
                             transform.position.z
                         );
                         
+                        _burrowing = false;
                         Rb.detectCollisions = true;
                         Rb.freezeRotation = false;
                     }

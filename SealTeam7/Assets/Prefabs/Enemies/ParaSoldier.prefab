@@ -255,7 +255,7 @@ MonoBehaviour:
   enemyType: 5
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 20
-  acceleration: 40
+  acceleration: 100
   groundedOffset: 7
   flyHeight: 0
   aimSpeed: 10
@@ -278,7 +278,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
-  State: 0
   gun: {fileID: 4797994724752532913}
 --- !u!54 &4195251952092455746
 Rigidbody:
@@ -346,6 +345,7 @@ MonoBehaviour:
   defianceThreshold: 20
   sinkFactor: 10
   fallDeathVelocityY: 40
+  jumpForce: 10
   newGrav: 4
   parachute: {fileID: 8471793977157900626}
 --- !u!1 &4459071965079726792

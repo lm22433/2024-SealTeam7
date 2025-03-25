@@ -6,13 +6,7 @@ namespace Enemies
     public class Tank : Vehicle
     {
         [SerializeField] private Transform gun;
-        [SerializeField] private ParticleSystem[] dustTrails;
-        [SerializeField] private VisualEffect smokeDmg;
-        [SerializeField] private int maxLives = 2;
-        [SerializeField] private float gracePeriod = 2.0f;
-        private float _deathTime;
-        private int _lives;
-
+        
         protected override void EnemyUpdate()
         {
             base.EnemyUpdate();

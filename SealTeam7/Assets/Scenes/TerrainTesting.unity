@@ -1640,7 +1640,7 @@ MonoBehaviour:
     lod: 1
     colliderLod: 2
     pathingLod: 10
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0

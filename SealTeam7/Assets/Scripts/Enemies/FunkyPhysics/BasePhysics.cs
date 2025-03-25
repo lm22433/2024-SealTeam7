@@ -11,6 +11,7 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float defianceThreshold;
         [SerializeField] protected float sinkFactor;
         [SerializeField] protected float fallDeathVelocityY;
+        [SerializeField] protected float jumpForce = 10f;
         protected Enemy Self;
         protected Rigidbody Rb;
         
@@ -41,7 +42,7 @@ namespace Enemies.FunkyPhysics
                     velocity = velocity.normalized;
                     //Debug.Log(velocity);
                     Rb.linearVelocity = Vector3.zero;
-                    Rb.AddForce(sinkFactor * 75.0f * velocity, ForceMode.Impulse);
+                    Rb.AddForce(sinkFactor * jumpForce * velocity, ForceMode.Impulse);
                 }
                 else
                 {
