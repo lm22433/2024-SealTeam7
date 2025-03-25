@@ -14,7 +14,7 @@ namespace Enemies.FunkyPhysics
         protected Enemy Self;
         protected Rigidbody Rb;
         protected bool Grounded;
-        
+
         protected virtual void Start()
         {
             Rb = GetComponent<Rigidbody>();
@@ -26,7 +26,7 @@ namespace Enemies.FunkyPhysics
             if (!GameManager.GetInstance().IsGameActive()) return;
 
             Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
-            
+
             //WOULD DIE BURIED
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
             {
@@ -42,17 +42,17 @@ namespace Enemies.FunkyPhysics
         private void FixedUpdate()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
+
             if (Rb.linearVelocity.y > defianceThreshold && Grounded)
             {
                 Physics.Raycast(transform.position, Vector3.down, out var hit, groundedOffset * 2.0f);
                 Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
             }
-            
+
             EnemyFixedUpdate();
         }
 
-        protected virtual void EnemyUpdate() {}
-        protected virtual void EnemyFixedUpdate() {}
+        protected virtual void EnemyUpdate() { }
+        protected virtual void EnemyFixedUpdate() { }
     }
 }

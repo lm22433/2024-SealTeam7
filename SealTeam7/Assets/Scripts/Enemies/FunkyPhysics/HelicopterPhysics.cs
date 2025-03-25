@@ -14,10 +14,10 @@ namespace Enemies.FunkyPhysics
         protected override void EnemyUpdate()
         {
             if (Grounded && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
-            
+
             mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
             subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
-            
+
             if (Self.IsDying && !_exploded)
             {
                 RaycastHit[] objs = Physics.SphereCastAll(transform.position, 50.0f, transform.forward, 1.0f);

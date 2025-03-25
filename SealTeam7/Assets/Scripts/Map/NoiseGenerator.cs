@@ -17,7 +17,7 @@ namespace Map
         private readonly float _speed;
         private readonly float _noiseScale;
         private readonly float _heightScale;
-        
+
         private float[,] _heightMap;
         // private float2[,] _gradientMap;
         // private Image<Gray, float> _heightImage;
@@ -25,7 +25,7 @@ namespace Map
         // private Image<Gray, float> _gradientZ;
         // private Image<Gray, float> _squareGradient;
         // private Image<Gray, float> _gradientMagnitude;
-        
+
         private bool _running;
         private float _time;
 
@@ -36,7 +36,7 @@ namespace Map
             _noiseScale = noiseScale;
             _heightScale = heightScale;
             _time = 0f;
-            
+
             _heightMap = heightMap;
             // _gradientMap = gradientMap;
             // _heightImage = new Image<Gray, float>(size + 1, size + 1);
@@ -44,9 +44,9 @@ namespace Map
             // _gradientZ = new Image<Gray, float>(size + 1, size + 1);
             // _squareGradient = new Image<Gray, float>(size + 1, size + 1);
             // _gradientMagnitude = new Image<Gray, float>(size + 1, size + 1);
-            
+
             _running = true;
-            
+
             Task.Run(UpdateNoise);
         }
 
@@ -54,7 +54,7 @@ namespace Map
         {
             _running = false;
         }
-        
+
         public void AdvanceTime(float deltaTime)
         {
             _time += deltaTime;
@@ -74,7 +74,7 @@ namespace Map
                         _heightMap[y, x] = 50f + 0.5f * _heightScale * Mathf.PerlinNoise(perlinX, perlinY);
                     }
                 }
-                
+
                 /*CvInvoke.Sobel(_heightImage, _gradientX, DepthType.Default, 1, 0);
                 CvInvoke.Sobel(_heightImage, _gradientZ, DepthType.Default, 0, 1);
                 

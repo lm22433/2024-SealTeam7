@@ -19,7 +19,7 @@ namespace Map
         private Image _transformedDepthImage;
         private float[,] _heightMap;
         private float2[,] _gradientMap;
-        
+
         /*
          * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
          * Get a pixel with:
@@ -31,7 +31,7 @@ namespace Map
         private Image<Gray, float> _tmpImage2;
         private Image<Gray, float> _tmpImage3;
         private Image<Gray, float> _tmpImage4;
-        
+
         private readonly Mat _dilationKernel;
         private readonly System.Drawing.Point _defaultAnchor;
         private readonly MCvScalar _scalarOne;
@@ -40,7 +40,7 @@ namespace Map
         private readonly int _minimumSandDepth;
         private readonly int _maximumSandDepth;
         private readonly int _colourWidth;
-        private readonly int _colourHeight;        
+        private readonly int _colourHeight;
         private readonly int _width;
         private readonly int _height;
         private readonly int _xOffsetStart;
@@ -53,7 +53,7 @@ namespace Map
         private int _kernelSize;
         private float _gaussianStrength;
 
-        public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
+        public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth,
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int kernelSize, float gaussianStrength)
         {
             _heightScale = heightScale;
@@ -70,7 +70,7 @@ namespace Map
             _gradientMap = gradientMap;
             _kernelSize = kernelSize;
             _gaussianStrength = gaussianStrength;
-            
+
             _tmpImage1 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage2 = new Image<Gray, float>(_width + 1, _height + 1);
             _tmpImage3 = new Image<Gray, float>(_width + 1, _height + 1);
@@ -78,7 +78,7 @@ namespace Map
             _dilationKernel = Mat.Ones(100, 100, DepthType.Cv8U, 1);
             _defaultAnchor = new System.Drawing.Point(-1, -1);
             _scalarOne = new MCvScalar(1f);
-            
+
             if (minimumSandDepth > maximumSandDepth)
             {
                 Debug.LogError("Minimum depth is greater than maximum depth");
@@ -108,7 +108,7 @@ namespace Map
             _running = true;
             _getCaptureTask = Task.Run(GetCaptureTask);
         }
-        
+
         public void StopKinect()
         {
             _running = false;
@@ -121,26 +121,29 @@ namespace Map
             _tmpImage3.Dispose();
             _dilationKernel.Dispose();
         }
-        
+
         private void GetCaptureTask()
         {
             // Initialise Python stuff - this blocks for 5-10s
             PythonManager.Connect();
             PythonManager.StartInference();
-            
+
             while (_running)
             {
                 //if (!GameManager.GetInstance().IsGameActive()) continue;
-                
-                try {
+
+                try
+                {
                     using Capture capture = _kinect.GetCapture();
                     UpdateHeightMap(capture);
                     PythonManager.SendColorImage(capture.Color);
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     Debug.Log(e);
                 }
             }
-            
+
             PythonManager.StopInference();
             PythonManager.Disconnect();
         }
@@ -176,12 +179,12 @@ namespace Map
                     }
                 }
             }
-            
+
             // Generate a mask where pixels likely to be of a hand/arm are set to 1
             CvInvoke.Threshold(_tmpImage1, _tmpImage2, 0.8, 1, ThresholdType.Binary);
-            
+
             // Dilate the mask (extend it slightly along its borders)
-            CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1, 
+            CvInvoke.Dilate(_tmpImage2, _tmpImage3, _dilationKernel, _defaultAnchor, iterations: 1,
                 BorderType.Default, _scalarOne);
 
             CvInvoke.GaussianBlur(_tmpImage1, _tmpImage2, new System.Drawing.Size(_kernelSize, _kernelSize), _gaussianStrength);
@@ -195,10 +198,13 @@ namespace Map
                     if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
                         _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
-                        if (y == 0 || y == _height || x == 0 || x == _width) {
+                        if (y == 0 || y == _height || x == 0 || x == _width)
+                        {
                             _heightMap[y, x] = 0;
-                            
-                        } else {
+
+                        }
+                        else
+                        {
                             _heightMap[y, x] = Mathf.Lerp(_heightMap[y, x], _tmpImage2.Data[y, x, 0] * _heightScale, _lerpFactor);
                             _gradientMap[y, x] = _tmpImage4.Data[y, x, 0];
                         }

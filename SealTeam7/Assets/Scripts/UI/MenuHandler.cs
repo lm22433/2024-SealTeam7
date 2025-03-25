@@ -32,16 +32,19 @@ namespace UI
         private bool _isGameRunning = false;
         private bool _isGracefulShutdown = false;
 
-        private void Awake() {
+        private void Awake()
+        {
             mainMenu.SetActive(true);
             settingsMenu.SetActive(false);
         }
 
-        private void Start() {
+        private void Start()
+        {
             mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
         }
 
-        private void OnApplicationQuit() {
+        private void OnApplicationQuit()
+        {
             _isGracefulShutdown = true;
 
             mainMenuMusic.Stop(gameObject);
@@ -49,44 +52,55 @@ namespace UI
             gameAmbience.Stop(gameObject);
         }
 
-        void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
-            if (!_isGameRunning && !_isGracefulShutdown) {
+        void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info)
+        {
+            if (!_isGameRunning && !_isGracefulShutdown)
+            {
                 mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
             }
         }
 
-        void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
-            if (_isGameRunning && !_isGracefulShutdown) {
+        void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info)
+        {
+            if (_isGameRunning && !_isGracefulShutdown)
+            {
                 gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
             }
         }
 
         void Update()
         {
-            if (Input.GetKeyDown("escape")) {
+            if (Input.GetKeyDown("escape"))
+            {
                 PauseGame();
             }
 
-            if (Input.GetKeyDown("r")) {
+            if (Input.GetKeyDown("r"))
+            {
                 GameManager.GetInstance().StartGame();
             }
         }
 
-        private void PauseGame() {
+        private void PauseGame()
+        {
             _paused = !_paused;
             GameManager.GetInstance().GameActive = !_paused;
             Time.timeScale = (_paused) ? 0 : 1;
-            
+
             scoreUI.SetActive(!_paused);
-            if (_paused) {
+            if (_paused)
+            {
                 OnSettingButtonClicked();
-            } else{
+            }
+            else
+            {
                 settingsMenu.SetActive(false);
             }
-                
+
         }
-        
-        private void InitialiseSettings() {
+
+        private void InitialiseSettings()
+        {
             List<string> difficultyNames = difficulties.Select(diff => diff.difficultyName).ToList();
 
             difficultyDropdown.ClearOptions();
@@ -103,17 +117,18 @@ namespace UI
             durationSlider.value = currentDuration;
             durationSlider.onValueChanged.AddListener(_ =>
             {
-                currentDuration = (int) durationSlider.value;
+                currentDuration = (int)durationSlider.value;
 
                 var seconds = (currentDuration % 60 < 10) ? $"0{currentDuration % 60}" : $"{currentDuration % 60}";
                 durationSliderText.SetText($"{currentDuration / 60}:{seconds}");
-                
+
                 GameManager.GetInstance().SetGameDuration(currentDuration);
             });
 
         }
 
-        public void OnPlayButtonClicked() {
+        public void OnPlayButtonClicked()
+        {
             mainMenuMusic.Stop(gameObject, 200, AkCurveInterpolation.AkCurveInterpolation_Exp1);
             introMusic.Post(gameObject);
             gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
@@ -130,25 +145,31 @@ namespace UI
 
         }
 
-        public void OnSettingButtonClicked() {
+        public void OnSettingButtonClicked()
+        {
             mainMenu.SetActive(false);
             settingsMenu.SetActive(true);
 
             InitialiseSettings();
         }
 
-        public void OnBackButtonClicked() {
-            if (_isGameRunning) {
+        public void OnBackButtonClicked()
+        {
+            if (_isGameRunning)
+            {
                 PauseGame();
 
-            } else {
+            }
+            else
+            {
                 mainMenu.SetActive(true);
                 settingsMenu.SetActive(false);
             }
 
         }
 
-        public void OnExitButtonClicked() {
+        public void OnExitButtonClicked()
+        {
             Application.Quit();
         }
     }

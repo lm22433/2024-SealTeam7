@@ -9,12 +9,12 @@ namespace Enemies
     {
         [SerializeField] private Transform gun;
 
-		protected override void Start()
-		{
-			base.Start();
-			DeathDuration = 0.5f;
-			buriedAmount = 0.25f;
-		}
+        protected override void Start()
+        {
+            base.Start();
+            DeathDuration = 0.5f;
+            buriedAmount = 0.25f;
+        }
 
         protected override float Heuristic(Node start, Node end)
         {
@@ -27,20 +27,20 @@ namespace Enemies
             switch (State)
             {
                 case EnemyState.Moving:
-                {
-                    gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, 0f);
-                    break;
-                }
+                    {
+                        gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.identity, aimSpeed * Time.deltaTime);
+                        TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, 0f);
+                        break;
+                    }
                 case EnemyState.AttackCore:
                 case EnemyState.AttackHands:
-                {
-                    var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
-                    TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
-                    gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, 0f);
-                    break;
-                }
+                    {
+                        var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
+                        TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
+                        gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
+                        TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, 0f);
+                        break;
+                    }
             }
         }
     }

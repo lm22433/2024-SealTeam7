@@ -10,7 +10,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Enemies
-{   
+{
     public struct PathRequest
     {
         public Vector3 Start;
@@ -29,7 +29,7 @@ namespace Enemies
 
     public class EnemyManager : MonoBehaviour
     {
-        [Header("Spawn Settings")] 
+        [Header("Spawn Settings")]
         [SerializeField] private float initialStartDelay = 10f;
         [SerializeField] private Transform[] spawnPoints;
         [SerializeField] private int maxEnemyCount;
@@ -38,7 +38,7 @@ namespace Enemies
         [Header("Game Settings")]
         [SerializeField] public PlayerCore godlyCore;
         [SerializeField] public PlayerHands godlyHands;
-        
+
         [Header("Pathing Settings")]
         [SerializeField] private float mapUpdateInterval;
         [SerializeField] private int pathingDepth;
@@ -46,9 +46,9 @@ namespace Enemies
 
         [Header("Enemies")]
         [SerializeField] private EnemyData[] enemyData;
-            
+
         [HideInInspector] public float sqrMaxEnemyDistance;
-        
+
         private float _lastSpawn;
         private float _lastMapUpdate;
         private int _enemyCount;
@@ -65,7 +65,7 @@ namespace Enemies
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
-            
+
             sqrMaxEnemyDistance = maxEnemyDistance * maxEnemyDistance;
             _pathFinder = new PathFinder(MapManager.GetInstance().GetMapSize(), MapManager.GetInstance().GetMapSpacing(), MapManager.GetInstance().GetPathingLodFactor());
             _pathRequestQueue = new Queue<PathRequest>();
@@ -94,7 +94,7 @@ namespace Enemies
         }
 
         public void StartSpawning() => StartCoroutine(SpawnWaves());
-        
+
         public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
 
         private void PathThread()
@@ -120,29 +120,29 @@ namespace Enemies
         private IEnumerator SpawnWaves()
         {
             yield return new WaitForSeconds(initialStartDelay);
-            
+
             while (GameManager.GetInstance().GameActive)
             {
                 _currentWave++;
-                
+
                 int waveEnemyGroups = _difficulty.GetWaveEnemyGroupCount(_currentWave);
                 float spawnDelay = _difficulty.GetWaveSpawnDelay(_currentWave);
                 float waveTimeLimit = _difficulty.GetWaveTimeLimit(_currentWave);
 
                 float waveStartTime = Time.time;
-                
+
                 Debug.Log($"Wave {_currentWave} - Enemy Groups: {waveEnemyGroups}, Spawn Delay: {spawnDelay:F2}s, Time Limit: {waveTimeLimit:F2}s");
 
                 for (int i = 0; i < waveEnemyGroups; i++)
                 {
                     yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
-                    
+
                     Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
-                    
+
                     EnemyData chosenEnemy = _difficulty.GetRandomEnemy(enemyData, _currentWave);
                     if (chosenEnemy == null) continue;
                     int finalGroupSize = Mathf.Min(chosenEnemy.GetGroupSpawnSize(_difficulty, _currentWave), maxEnemyCount - _enemyCount);
-                    
+
                     for (int j = 0; j < finalGroupSize; j++)
                     {
                         Vector2 spawnOffset2D = Random.insideUnitCircle.normalized * chosenEnemy.groupSpacing;
@@ -155,11 +155,11 @@ namespace Enemies
                             _enemyCount++;
                         }
                     }
-                    
+
                     yield return new WaitForSeconds(spawnDelay);
                     if (Time.time - waveStartTime >= waveTimeLimit) break;
                 }
-                
+
                 while (_enemyCount > 0 && (Time.time - waveStartTime) < waveTimeLimit)
                 {
                     yield return null;
@@ -172,11 +172,11 @@ namespace Enemies
                 }
             }
         }
-        
+
         private void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
+
             _lastMapUpdate += Time.deltaTime;
             if (_lastMapUpdate > mapUpdateInterval)
             {
@@ -185,7 +185,7 @@ namespace Enemies
                 _pathFinder.UpdateGradient(ref MapManager.GetInstance().GetGradientMap());
             }
         }
-        
+
         public static EnemyManager GetInstance() => _instance;
     }
 }

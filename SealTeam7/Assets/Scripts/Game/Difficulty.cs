@@ -14,43 +14,43 @@ namespace Game
         Hard,
         Impossible
     }
-    
+
     [CreateAssetMenu(fileName = "New Difficulty", menuName = "Game/Difficulty")]
     public class Difficulty : ScriptableObject
     {
         public string difficultyName;
         public DifficultyType difficultyType;
 
-        [Header("Enemy Group Scaling")] 
+        [Header("Enemy Group Scaling")]
         public int initialGroupCount;
         public float growthFactor;
         public float exponent;
 
-        [Header("Spawn Delay Scaling")] 
+        [Header("Spawn Delay Scaling")]
         public float initialSpawnDelay;
         public float minimumSpawnDelay;
         public float decayFactor;
-        
+
         [Header("Wave Time Limit Scaling")]
         public float initialWaveTimeLimit;
         public float minimumWaveTimeLimit;
         public float timeReductionPerWave;
-        
-        public int GetWaveEnemyGroupCount(int currentWave) => 
+
+        public int GetWaveEnemyGroupCount(int currentWave) =>
             Mathf.FloorToInt(initialGroupCount + growthFactor * Mathf.Pow(currentWave, exponent));
-        
-        public float GetWaveSpawnDelay(int currentWave) => 
+
+        public float GetWaveSpawnDelay(int currentWave) =>
             Mathf.Max(initialSpawnDelay * Mathf.Exp(-decayFactor * currentWave), minimumSpawnDelay);
-        
+
         public float GetWaveTimeLimit(int currentWave) =>
             Mathf.Max(initialWaveTimeLimit - (timeReductionPerWave * currentWave), minimumWaveTimeLimit);
-        
+
         public EnemyData GetRandomEnemy(EnemyData[] enemyData, int currentWave)
         {
             List<EnemyData> availableEnemies = enemyData.Where(e => currentWave >= e.startingWave).ToList();
             if (availableEnemies.Count == 0)
                 throw new Exception("No enemies are available. You are stupid.");
-            
+
             Dictionary<EnemyData, float> weightedChances = new Dictionary<EnemyData, float>();
             float totalWeight = 0f;
 
@@ -62,7 +62,7 @@ namespace Game
             }
 
             if (totalWeight <= 0) throw new Exception("Total weights are less than 0. Impossible!");
-            
+
             float randomValue = Random.Range(0f, totalWeight);
             float cumulativeWeight = 0f;
 

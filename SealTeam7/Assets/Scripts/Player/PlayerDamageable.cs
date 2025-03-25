@@ -5,7 +5,7 @@ namespace Player
 {
     public abstract class PlayerDamageable : MonoBehaviour
     {
-        [Header("Armour Settings")] 
+        [Header("Armour Settings")]
         [SerializeField, Range(0, 20)] protected int armour;
 
         public void TakeDamage(int damage)

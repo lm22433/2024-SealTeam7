@@ -6,7 +6,7 @@ namespace Enemies
     public class EnemyPool : MonoBehaviour
     {
         private static EnemyPool _instance;
-        
+
         private readonly Dictionary<EnemyType, Queue<GameObject>> _enemyPool = new();
         private readonly Dictionary<EnemyType, GameObject> _prefabs = new();
 
@@ -36,7 +36,7 @@ namespace Enemies
         public GameObject GetFromPool(EnemyData enemyData, Vector3 spawnPosition, Quaternion spawnRotation)
         {
             EnemyType type = enemyData.enemyType;
-            
+
             if (!_enemyPool.ContainsKey(type) || _enemyPool[type].Count == 0)
             {
                 if (!_prefabs.TryGetValue(type, out GameObject enemyPrefab))

@@ -11,24 +11,24 @@ namespace Enemies
         public GameObject prefab;
         public EnemyType enemyType;
         public float groupSpacing;
-    
+
         [Header("Wave Settings")]
         public int startingWave;
 
-        [Header("Group Spawn Size Scaling")] 
+        [Header("Group Spawn Size Scaling")]
         public int baseGroupSpawnSize;
         public float groupSpawnSizeGrowthRate;
 
-        [Header("Spawn Chance Scaling")] 
+        [Header("Spawn Chance Scaling")]
         public float maxSpawnChance;
         public float spawnChanceGrowthRate;
-        
+
         public int GetGroupSpawnSize(Difficulty difficulty, int currentWave) =>
             Mathf.RoundToInt(baseGroupSpawnSize + groupSpawnSizeGrowthRate * Mathf.Log(currentWave - startingWave + 1, 2) * GetDifficultyMultiplier(difficulty.difficultyType));
 
         public float GetGroupSpawnChance(Difficulty difficulty, int currentWave) =>
             maxSpawnChance * 1.0f / (1.0f + Mathf.Exp(-spawnChanceGrowthRate * (currentWave - startingWave - 5))) * GetDifficultyMultiplier(difficulty.difficultyType);
-        
+
         public static float GetDifficultyMultiplier(DifficultyType difficultyType) =>
             difficultyType switch
             {

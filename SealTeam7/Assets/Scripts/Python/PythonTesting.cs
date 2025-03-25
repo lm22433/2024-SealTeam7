@@ -42,12 +42,12 @@ namespace Python
                     var capture = _kinect.GetCapture();
                     // stopwatch.Stop();
                     // Debug.Log($"Kinect.GetCapture: {stopwatch.ElapsedMilliseconds} ms");
-                
+
                     // stopwatch.Restart();
                     PythonManager.SendColorImage(capture.Color);
                     // stopwatch.Stop();
                     // Debug.Log($"PythonManager.SendColorImage: {stopwatch.ElapsedMilliseconds} ms");
-                
+
                     capture.Dispose();
                 }
                 catch (AzureKinectException e)

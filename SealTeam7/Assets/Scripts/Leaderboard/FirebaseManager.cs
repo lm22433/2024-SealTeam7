@@ -13,12 +13,12 @@ namespace Leaderboard
         private static FirebaseManager _instance;
 
         private DatabaseReference _databaseReference;
-        
+
         private void Awake()
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
-            
+
             if (!env.TryParseEnvironmentVariable("FIREBASE_APP_CHECK_DEBUG_TOKEN", out string firebaseAppCheckDebugToken))
             {
                 Debug.LogError("Could not find environment variable FIREBASE_APP_CHECK_DEBUG_TOKEN.");
@@ -60,5 +60,5 @@ namespace Leaderboard
                     }
                 });
         }
-    } 
+    }
 }

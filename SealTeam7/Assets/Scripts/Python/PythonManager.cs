@@ -73,7 +73,7 @@ namespace Python
             _stopReceivingMessages = false;
             _receiveMessagesThread = new Thread(ReceiveInferenceResults);
             _receiveMessagesThread.Start();
-            
+
             HandLandmarks = new HandLandmarks
             {
                 Left = null,
@@ -81,7 +81,7 @@ namespace Python
             };
             _leftHandLandmarks = new Vector3[20];
             _rightHandLandmarks = new Vector3[20];
-            
+
             Debug.Log("Connected.");
             return true;
         }
@@ -149,9 +149,10 @@ namespace Python
         // {
         //     return _sandboxObjects.ToArray();
         // }
-        
-        
-        public static HandLandmarks HandLandmarks { 
+
+
+        public static HandLandmarks HandLandmarks
+        {
             get => _handLandmarks;
             private set => _handLandmarks = value;
         }
