@@ -16,7 +16,7 @@ namespace Enemies
 
         protected override float Heuristic(Node start, Node end)
         {
-            return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 50f;
+            return Mathf.Max(start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y, 0f) * 100f;
         }
         
         protected override void EnemyUpdate()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Enemies
 {
-    public class AerialSpawner : Enemy
+    public class AerialSpawner : Aircraft
     {
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private EnemyData spawnee;
@@ -17,7 +17,6 @@ namespace Enemies
             
             LastAttack = attackInterval - 2.0f;
             var mapSize = MapManager.GetInstance().GetMapSize() * MapManager.GetInstance().GetMapSpacing();
-            transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
             _oppositePosition = new Vector3(mapSize - transform.position.x, flyHeight, mapSize - transform.position.z);
         }
 
@@ -45,12 +44,6 @@ namespace Enemies
         protected override void EnemyUpdate()
         {
             if ((transform.position - TargetPosition).sqrMagnitude < 1000f) EnemyManager.Kill(this);
-        }
-
-        protected override void EnemyFixedUpdate()
-        {
-            if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
-            if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
         }
     }
 }

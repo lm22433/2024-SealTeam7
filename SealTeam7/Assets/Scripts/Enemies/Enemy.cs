@@ -120,8 +120,8 @@ namespace Enemies
         {
             gunFireSound.Post(gameObject);
 
-            GameObject obj = ProjectilePool.GetInstance().GetFromPool(projectileType, muzzle.position,
-                Quaternion.LookRotation(TargetPosition - muzzle.position));
+            GameObject obj = ProjectilePool.GetInstance().GetFromPool(projectileType, muzzle?.position ?? transform.position,
+                Quaternion.LookRotation(TargetPosition - (muzzle?.position ?? transform.position)));
             obj.transform.parent = EnemyManager.transform;
 
             obj.TryGetComponent(out Projectile proj);
