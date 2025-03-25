@@ -836,12 +836,12 @@ MonoBehaviour:
     pathingLod: 10
   bgChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
   bgAverageHeight: 150
-  bgBaseHeightScale: 100
+  bgBaseHeightScale: 50
   bgBaseNoiseScale: 0.01
-  bgRoughnessHeightScale: 10
-  bgRoughnessNoiseScale: 0.1
+  bgRoughnessHeightScale: 5
+  bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
-  bgChunkMargin: 2
+  bgChunkMargin: 1
   isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
@@ -2544,19 +2544,19 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0]
+      propertyPath: 'difficulties.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 56ddbcfd438354956822f2ccc98c0b9d, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[1]
+      propertyPath: 'difficulties.Array.data[1]'
       value: 
       objectReference: {fileID: 11400000, guid: a0c59461ebefa4ef49d1eea75c4e00a4, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[2]
+      propertyPath: 'difficulties.Array.data[2]'
       value: 
       objectReference: {fileID: 11400000, guid: 407dc5d3de3ec4fb0a953ee65e70ada2, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3]
+      propertyPath: 'difficulties.Array.data[3]'
       value: 
       objectReference: {fileID: 11400000, guid: 9a1d2f5961a384b7e98107e560110632, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}

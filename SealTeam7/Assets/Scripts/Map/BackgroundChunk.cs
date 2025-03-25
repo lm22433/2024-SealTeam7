@@ -62,7 +62,6 @@ namespace Map
         private int _vertexSideCount;
         private int _colliderLodFactor;
         private int _colliderVertexSideCount;
-        private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
 
         private float _averageHeight;
@@ -89,11 +88,8 @@ namespace Map
             _colliderMesh = new Mesh { name = "Generated Collider Mesh", indexFormat = IndexFormat.UInt32 };
             _colliderMesh.MarkDynamic();
             _meshFilter = GetComponent<MeshFilter>();
-            _meshCollider = GetComponent<MeshCollider>();
             UpdateMesh();
             _meshFilter.sharedMesh = _mesh;
-            _meshCollider.sharedMesh = _colliderMesh;
-            if (!_settings.ColliderEnabled) _meshCollider.enabled = false;
             
             _interpolationMargin = (int)((_settings.InterpolationMargin / (float)_settings.Size) * (_vertexSideCount - 1));
             _colliderInterpolationMargin = (int)((_settings.InterpolationMargin / (float)_settings.Size) * (_colliderVertexSideCount - 1));
@@ -116,16 +112,14 @@ namespace Map
                 _colliderLodFactor, _settings.InterpolationDirection);
 
             _mesh.SetVertices(_savedMeshData.Vertices);
-            _mesh.RecalculateNormals();
+            // _mesh.RecalculateNormals();
             //if (!_recalcedTangents) _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
 
             _colliderMesh.SetVertices(_savedMeshData.ColliderVertices);
             _colliderMesh.RecalculateBounds();
 
-            _savedMeshData.Normals = _mesh.normals;
-            
-            if (_meshCollider.enabled) _meshCollider.sharedMesh = _colliderMesh;
+            // _savedMeshData.Normals = _mesh.normals;
         }
 
         private void InterpolateMargin(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int lodFactor, 
