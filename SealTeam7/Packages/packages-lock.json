@@ -33,7 +33,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collections": {
-      "version": "2.5.3",
+      "version": "2.5.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -53,7 +53,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.35",
+      "version": "3.0.34",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -240,7 +240,7 @@
       }
     },
     "com.unity.visualscripting": {
-      "version": "1.9.6",
+      "version": "1.9.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {

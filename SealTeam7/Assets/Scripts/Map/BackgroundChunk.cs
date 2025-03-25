@@ -3,6 +3,7 @@ using Game;
 using UnityEngine;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using UnityEngine.Rendering;
 using Debug = UnityEngine.Debug;
 
 namespace Map
@@ -52,12 +53,15 @@ namespace Map
         }
         
         private BackgroundChunkSettings _settings;
-        private float[] _heightMap;
+        private float[,] _heightMap;
         
         private Mesh _mesh;
         private Mesh _colliderMesh;
-        private MeshData _meshData;
-        private MeshData _colliderMeshData;
+        private SavedMeshData _savedMeshData;
+        private int _lodFactor;
+        private int _vertexSideCount;
+        private int _colliderLodFactor;
+        private int _colliderVertexSideCount;
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
 
@@ -70,25 +74,19 @@ namespace Map
         private int _colliderInterpolationMargin;
         private int _heightMapWidth;
 
-        public void Setup(BackgroundChunkSettings s, ref float[] heightMap)
+        public void Setup(BackgroundChunkSettings s, ref float[,] heightMap)
         {
             _settings = s;
             
-            _meshData = new MeshData
-            {
-                LODFactor = _settings.LODInfo.lod == 0 ? 1 : _settings.LODInfo.lod * 2,
-                VertexSideCount = _settings.Size / (_settings.LODInfo.lod == 0 ? 1 : _settings.LODInfo.lod * 2) + 1,
-            };
+            _lodFactor = _settings.LODInfo.lod == 0 ? 1 : _settings.LODInfo.lod * 2;
+            _vertexSideCount = _settings.Size / _lodFactor + 1;
 
-            _colliderMeshData = new MeshData
-            {
-                LODFactor = _settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2,
-                VertexSideCount = _settings.Size / (_settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2) + 1,
-            };
+            _colliderLodFactor = _settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2;
+            _colliderVertexSideCount = _settings.Size / _colliderLodFactor + 1;
             
-            _mesh = new Mesh { name = "Generated Mesh" };
+            _mesh = new Mesh { name = "Generated Mesh", indexFormat = IndexFormat.UInt32 };
             _mesh.MarkDynamic();
-            _colliderMesh = new Mesh { name = "Generated Collider Mesh" };
+            _colliderMesh = new Mesh { name = "Generated Collider Mesh", indexFormat = IndexFormat.UInt32 };
             _colliderMesh.MarkDynamic();
             _meshFilter = GetComponent<MeshFilter>();
             _meshCollider = GetComponent<MeshCollider>();
@@ -97,8 +95,8 @@ namespace Map
             _meshCollider.sharedMesh = _colliderMesh;
             if (!_settings.ColliderEnabled) _meshCollider.enabled = false;
             
-            _interpolationMargin = (int)((_settings.InterpolationMargin / (float)_settings.Size) * (_meshData.VertexSideCount - 1));
-            _colliderInterpolationMargin = (int)((_settings.InterpolationMargin / (float)_settings.Size) * (_colliderMeshData.VertexSideCount - 1));
+            _interpolationMargin = (int)((_settings.InterpolationMargin / (float)_settings.Size) * (_vertexSideCount - 1));
+            _colliderInterpolationMargin = (int)((_settings.InterpolationMargin / (float)_settings.Size) * (_colliderVertexSideCount - 1));
             _heightMap = heightMap;
             _heightMapWidth = (int)(_settings.MapSize / _settings.Spacing + 1);
         }
@@ -112,19 +110,20 @@ namespace Map
 
         private void UpdateHeights()
         {
-            InterpolateMargin(_meshData.Vertices, _interpolationMargin, _meshData.VertexSideCount, 
-                _meshData.LODFactor, _settings.InterpolationDirection);
-            InterpolateMargin(_colliderMeshData.Vertices, _colliderInterpolationMargin, _colliderMeshData.VertexSideCount, 
-                _colliderMeshData.LODFactor, _settings.InterpolationDirection);
+            InterpolateMargin(_savedMeshData.Vertices, _interpolationMargin, _vertexSideCount, 
+                _lodFactor, _settings.InterpolationDirection);
+            InterpolateMargin(_savedMeshData.ColliderVertices, _colliderInterpolationMargin, _colliderVertexSideCount, 
+                _colliderLodFactor, _settings.InterpolationDirection);
 
-            _mesh.SetVertices(_meshData.Vertices);
+            _mesh.SetVertices(_savedMeshData.Vertices);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateTangents();
+            //if (!_recalcedTangents) _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
-            
-            _colliderMesh.SetVertices(_colliderMeshData.Vertices);
-            _colliderMesh.RecalculateNormals();
+
+            _colliderMesh.SetVertices(_savedMeshData.ColliderVertices);
             _colliderMesh.RecalculateBounds();
+
+            _savedMeshData.Normals = _mesh.normals;
             
             if (_meshCollider.enabled) _meshCollider.sharedMesh = _colliderMesh;
         }
@@ -485,11 +484,11 @@ namespace Map
             var a = vertices[aZ + aX*vertexSideCount].y;
             var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
             var aGrad = 0; //(a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
-            var b = _heightMap[bZ*_heightMapWidth + bX];
-            var bNext = _heightMap[bNextZ*_heightMapWidth + bNextX];
+            var b = _heightMap[bZ, bX];
+            var bNext = _heightMap[bNextZ, bNextX];
             var bGrad = 0; //(bNext - b) / _settings.Spacing * interpolationMargin;
 
-            // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
+            // if (vertices.Equals(_savedMeshData.ColliderVertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
             //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
             //     if (z == 0) Debug.Log("t: " + t);
             // }
@@ -519,14 +518,14 @@ namespace Map
             var aGradX = (a - aPrevAlongX) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var aGradZ = (a - aPrevAlongZ) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var aGrad = 0; //(aGradX + aGradZ) / Mathf.Sqrt(2);
-            var b = _heightMap[bZ*_heightMapWidth + bX];
-            var bNextAlongX = _heightMap[bZ*_heightMapWidth + bNextX];
-            var bNextAlongZ = _heightMap[bNextZ*_heightMapWidth + bX];
+            var b = _heightMap[bZ, bX];
+            var bNextAlongX = _heightMap[bZ, bNextX];
+            var bNextAlongZ = _heightMap[bNextZ, bX];
             var bGradX = (bNextAlongX - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var bGradZ = (bNextAlongZ - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var bGrad = 0; //(bGradX + bGradZ) / Mathf.Sqrt(2);
 
-            // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
+            // if (vertices.Equals(_savedMeshData.ColliderVertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
             //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
             //     if (z == 0) Debug.Log("t: " + t);
             // }
@@ -592,14 +591,14 @@ namespace Map
 
         private void UpdateMesh()
         {
-            var numberOfVertices = _meshData.VertexSideCount * _meshData.VertexSideCount;
-            var numberOfTriangles = (_meshData.VertexSideCount - 1) * (_meshData.VertexSideCount - 1) * 6;
+            var numberOfVertices = _vertexSideCount * _vertexSideCount;
+            var numberOfTriangles = (_vertexSideCount - 1) * (_vertexSideCount - 1) * 6;
             var vertices = new Vector3[numberOfVertices];
             var triangles = new int[numberOfTriangles];
             var uvs = new Vector2[numberOfVertices];
             
-            var colliderNumberOfVertices = _colliderMeshData.VertexSideCount * _colliderMeshData.VertexSideCount;
-            var colliderNumberOfTriangles = (_colliderMeshData.VertexSideCount - 1) * (_colliderMeshData.VertexSideCount - 1) * 6;
+            var colliderNumberOfVertices = _colliderVertexSideCount * _colliderVertexSideCount;
+            var colliderNumberOfTriangles = (_colliderVertexSideCount - 1) * (_colliderVertexSideCount - 1) * 6;
             var colliderVertices = new Vector3[colliderNumberOfVertices];
             var colliderTriangles = new int[colliderNumberOfTriangles];
 
@@ -610,8 +609,8 @@ namespace Map
 
             for (int i = 0; i < numberOfVertices; i++)
             {
-                var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
-                var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
+                var x = i / _vertexSideCount * _lodFactor;
+                var z = i % _vertexSideCount * _lodFactor;
                 var perlinX = x + xChunkOffset + xExtraOffset;
                 var perlinY = z + zChunkOffset + zExtraOffset;
                 var y = Mathf.PerlinNoise(perlinX*_settings.BaseNoiseScale, perlinY*_settings.BaseNoiseScale) 
@@ -619,13 +618,13 @@ namespace Map
                 var yRoughness = Mathf.PerlinNoise(perlinX*_settings.RoughnessNoiseScale, perlinY*_settings.RoughnessNoiseScale) 
                     *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
                 vertices[i] = new Vector3(x * _settings.Spacing, y + yRoughness, z * _settings.Spacing);
-                uvs[i] = new Vector2((float) x / _meshData.VertexSideCount, (float) z / _meshData.VertexSideCount);
+                uvs[i] = new Vector2((float) x / _vertexSideCount, (float) z / _vertexSideCount);
             }
             
             for (int i = 0; i < colliderNumberOfVertices; i++)
             {
-                var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
+                var x = i / _colliderVertexSideCount * _colliderLodFactor;
+                var z = i % _colliderVertexSideCount * _colliderLodFactor;
                 var perlinX = x + xChunkOffset + xExtraOffset;
                 var perlinY = z + zChunkOffset + zExtraOffset;
                 var y = Mathf.PerlinNoise(perlinX*_settings.BaseNoiseScale, perlinY*_settings.BaseNoiseScale) 
@@ -638,31 +637,25 @@ namespace Map
             for (int i = 0; i < numberOfTriangles; i++)
             {
                 var baseIndex = i / 6;
-                baseIndex += baseIndex / (_meshData.VertexSideCount - 1);
+                baseIndex += baseIndex / (_vertexSideCount - 1);
                 triangles[i] =
                     i % 3 == 0 ? baseIndex :
-                    i % 6 - 4 == 0 || i % 6 - 2 == 0 ? baseIndex + _meshData.VertexSideCount + 1 :
+                    i % 6 - 4 == 0 || i % 6 - 2 == 0 ? baseIndex + _vertexSideCount + 1 :
                     i % 6 - 1 == 0 ? baseIndex + 1 :
-                    i % 6 - 5 == 0 ? baseIndex + _meshData.VertexSideCount : -1;
+                    i % 6 - 5 == 0 ? baseIndex + _vertexSideCount : -1;
             }
             
             for (int i = 0; i < colliderNumberOfTriangles; i++)
             {
                 var baseIndex = i / 6;
-                baseIndex += baseIndex / (_colliderMeshData.VertexSideCount - 1);
+                baseIndex += baseIndex / (_colliderVertexSideCount - 1);
                 colliderTriangles[i] =
                     i % 3 == 0 ? baseIndex :
-                    i % 6 - 4 == 0 || i % 6 - 2 == 0 ? baseIndex + _colliderMeshData.VertexSideCount + 1 :
+                    i % 6 - 4 == 0 || i % 6 - 2 == 0 ? baseIndex + _colliderVertexSideCount + 1 :
                     i % 6 - 1 == 0 ? baseIndex + 1 :
-                    i % 6 - 5 == 0 ? baseIndex + _colliderMeshData.VertexSideCount : -1;
+                    i % 6 - 5 == 0 ? baseIndex + _colliderVertexSideCount : -1;
             }
 
-            _meshData.Vertices = vertices;
-            _meshData.Triangles = triangles;
-            _meshData.UVs = uvs;
-            _colliderMeshData.Vertices = colliderVertices;
-            _colliderMeshData.Triangles = colliderTriangles;
-            
             _mesh.Clear();
             _mesh.SetVertices(vertices);
             _mesh.SetTriangles(triangles, 0);
@@ -673,7 +666,10 @@ namespace Map
             _colliderMesh.Clear();
             _colliderMesh.SetVertices(colliderVertices);
             _colliderMesh.SetTriangles(colliderTriangles, 0);
-            _colliderMesh.RecalculateNormals();
+            
+            _savedMeshData.Vertices = vertices;
+            _savedMeshData.Normals = _mesh.normals;
+            _savedMeshData.ColliderVertices = colliderVertices;
         }
     }
 }
