@@ -11,21 +11,21 @@ namespace Tests.EditMode
         {
             EditorSceneManager.OpenScene("Assets/Scenes/TerrainTesting.unity");
         }
-    
+
         [Test]
         public void VerifyGameManagerExistsInScene()
         {
             GameObject gameObject = GameObject.Find("GameManager");
             Assert.That(gameObject, Is.Not.Null);
         }
-    
+
         [Test]
         public void VerifyMapManagerExistsInScene()
         {
             GameObject gameObject = GameObject.Find("MapManager");
             Assert.That(gameObject, Is.Not.Null);
         }
-    
+
         [Test]
         public void VerifyEnemyManagerExistsInScene()
         {

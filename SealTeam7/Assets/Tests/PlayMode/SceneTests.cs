@@ -10,7 +10,7 @@ namespace Tests.PlayMode
     {
         [OneTimeSetUp]
         public void OneTimeSetup() => SceneManager.LoadScene("Assets/Scenes/TerrainTesting.unity", LoadSceneMode.Single);
-        
+
         [UnityTest]
         public IEnumerator VerifyGameManagerExistsInScene()
         {
@@ -18,7 +18,7 @@ namespace Tests.PlayMode
             Assert.That(gameObject, Is.Not.Null);
             yield return null;
         }
-    
+
         [UnityTest]
         public IEnumerator VerifyMapManagerExistsInScene()
         {
@@ -26,7 +26,7 @@ namespace Tests.PlayMode
             Assert.That(gameObject, Is.Not.Null);
             yield return null;
         }
-    
+
         [UnityTest]
         public IEnumerator VerifyEnemyManagerExistsInScene()
         {

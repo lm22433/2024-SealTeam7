@@ -13,7 +13,7 @@ namespace Tests.EditMode
             float normal = EnemyData.GetDifficultyMultiplier(DifficultyType.Normal);
             float hard = EnemyData.GetDifficultyMultiplier(DifficultyType.Hard);
             float impossible = EnemyData.GetDifficultyMultiplier(DifficultyType.Impossible);
-            
+
             Assert.AreEqual(0.8f, easy);
             Assert.AreEqual(1.0f, normal);
             Assert.AreEqual(1.2f, hard);
