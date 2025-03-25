@@ -9998,8 +9998,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityDefiance: 5
-  defianceThreshold: 20
-  sinkFactor: 10
+  defianceThreshold: 5
+  sinkFactor: 5
   fallDeathVelocityY: 40
 --- !u!54 &828698031663403021
 Rigidbody:

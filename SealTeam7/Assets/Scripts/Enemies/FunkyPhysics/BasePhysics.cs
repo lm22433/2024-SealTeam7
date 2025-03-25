@@ -1,5 +1,6 @@
 ﻿using Game;
 using Map;
+using Enemies.Utils;
 using UnityEngine;
 
 namespace Enemies.FunkyPhysics
@@ -24,10 +25,29 @@ namespace Enemies.FunkyPhysics
             if (!GameManager.GetInstance().IsGameActive()) return;
             
             //WOULD DIE BURIED
-            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
+            if (transform.position.y <= MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
             {
-                Self.Buried = Self.BuriedAmount;
-                Self.SetupDeath();
+                float flyXx = LaplaceDistribution.Sample(0f, 2.0f);
+                if (-0.8f < flyXx && flyXx < 0.8f)
+                {
+                    transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + 1.0f, transform.position.z);
+                    float flyXz = LaplaceDistribution.Sample(0f, 2.0f);
+                    float flyYx = LaplaceDistribution.ProbabilityDensity(flyXx, 0f, 2.0f);
+                    float flyYz = LaplaceDistribution.ProbabilityDensity(flyYx, 0f, 2.0f);
+                    Vector3 flyVectorX = new Vector3(flyXx, flyYx, 0f);
+                    Vector3 flyVectorZ = new Vector3(0f, flyYz, flyXz);
+                    Vector3 velocity = flyVectorX + flyVectorZ;
+                    velocity.y = velocity.y / 2.0f;
+                    velocity = velocity.normalized;
+                    //Debug.Log(velocity);
+                    Rb.linearVelocity = Vector3.zero;
+                    Rb.AddForce(sinkFactor * 75.0f * velocity, ForceMode.Impulse);
+                }
+                else
+                {
+                    Self.Buried = Self.BuriedAmount;
+                    Self.SetupDeath();
+                }
             }
             //WOULD DIE FALL DMG
             if (-Rb.linearVelocity.y >= fallDeathVelocityY && Self.Grounded && !Self.IsDying) Self.SetupDeath();
