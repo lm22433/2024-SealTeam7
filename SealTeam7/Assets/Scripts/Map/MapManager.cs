@@ -86,6 +86,7 @@ namespace Map
         private float[,] _heightMap;
         private float2[,] _gradientMap;
         private List<Chunk> _chunks;
+        private List<BackgroundChunk> _bgChunks;
         private float _mapSpacing;
 
         private static MapManager _instance;
@@ -97,6 +98,7 @@ namespace Map
 
             _mapSpacing = (float) mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
+            _bgChunks = new List<BackgroundChunk>(chunkRow);
             _heightMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
             _gradientMap = new float2[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
 
@@ -128,7 +130,7 @@ namespace Map
                 InterpolationMargin = bgInterpolationMargin
             };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, ref _gradientMap, kernelSize, gaussianStrength);
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, ref _gradientMap, kernelSize, gaussianStrength, OnHeightUpdate);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, ref _gradientMap);
 
             for (int z = -bgChunkMargin; z < chunkRow + bgChunkMargin; z++)
@@ -164,8 +166,22 @@ namespace Map
                         else if (x >= 0 && x < chunkRow && z == chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.BottomEdge;
                         else backgroundChunkSettings.InterpolationDirection = InterpolationDirection.None;
                         chunk.Setup(backgroundChunkSettings, ref _heightMap);
+                        _bgChunks.Add(chunk);
                     }
                 }
+            }
+        }
+
+        private void OnHeightUpdate()
+        {
+            foreach (var chunk in _chunks)
+            {
+                chunk.UpdateHeights();
+            }
+
+            foreach (var chunk in _bgChunks)
+            {
+                chunk.UpdateHeights();
             }
         }
 

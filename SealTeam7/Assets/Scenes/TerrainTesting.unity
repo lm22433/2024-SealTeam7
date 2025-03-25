@@ -816,8 +816,8 @@ MonoBehaviour:
   height: 880
   xOffsetStart: 480
   xOffsetEnd: 1360
-  yOffsetStart: 100
-  yOffsetEnd: 980
+  yOffsetStart: 10
+  yOffsetEnd: 890
   minimumSandDepth: 720
   maximumSandDepth: 1180
   irThreshold: 255
@@ -832,16 +832,16 @@ MonoBehaviour:
   lerpFactor: 0.2
   lodInfo:
     lod: 1
-    colliderLod: 2
+    colliderLod: 4
     pathingLod: 10
   bgChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
   bgAverageHeight: 150
-  bgBaseHeightScale: 100
+  bgBaseHeightScale: 50
   bgBaseNoiseScale: 0.01
-  bgRoughnessHeightScale: 10
-  bgRoughnessNoiseScale: 0.1
+  bgRoughnessHeightScale: 5
+  bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
-  bgChunkMargin: 2
+  bgChunkMargin: 1
   isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
@@ -1375,7 +1375,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1201632856
 Transform:
   m_ObjectHideFlags: 0
@@ -1386,8 +1386,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 240, y: 37, z: 240}
-  m_LocalScale: {x: 153.2025, y: 153.2025, z: 179.84442}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 400, y: 400, z: 469.56003}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 594167917}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2544,19 +2544,19 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[0]
+      propertyPath: 'difficulties.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 56ddbcfd438354956822f2ccc98c0b9d, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[1]
+      propertyPath: 'difficulties.Array.data[1]'
       value: 
       objectReference: {fileID: 11400000, guid: a0c59461ebefa4ef49d1eea75c4e00a4, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[2]
+      propertyPath: 'difficulties.Array.data[2]'
       value: 
       objectReference: {fileID: 11400000, guid: 407dc5d3de3ec4fb0a953ee65e70ada2, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
-      propertyPath: difficulties.Array.data[3]
+      propertyPath: 'difficulties.Array.data[3]'
       value: 
       objectReference: {fileID: 11400000, guid: 9a1d2f5961a384b7e98107e560110632, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
