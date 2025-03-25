@@ -14,32 +14,40 @@ namespace UI
         [SerializeField] private int currentDifficulty;
         [SerializeField, Range(0f, 600f)] private int maxGameDuration = 600;
         [SerializeField] private int currentDuration = 180;
+        [SerializeField] private bool endlessMode = false;
+        [SerializeField] private bool sandboxMode = false;
+        [SerializeField] private bool handTracking = true;
 
         [Header("UI References")]
         [SerializeField] private GameObject mainMenu;
         [SerializeField] private GameObject settingsMenu;
         [SerializeField] private GameObject playerHUD;
 
-        [Header("Settings Menu References")] 
+        [Header("Settings Menu References")]
         [SerializeField] private GameObject gameSettings;
         [SerializeField] private GameObject audioSettings;
         [SerializeField] private GameObject debugSettings;
         [SerializeField] private Button gameSettingsButton;
         [SerializeField] private Button audioSettingsButton;
         [SerializeField] private Button debugSettingsButton;
-        [SerializeField] private TMP_Dropdown difficultyDropdown;
         [SerializeField] private Slider durationSlider;
         [SerializeField] private TMP_Text durationSliderText;
+        [SerializeField] private TMP_Dropdown difficultyDropdown;
+        [SerializeField] private Button endlessModeButton;
+        [SerializeField] private Button sandboxModeButton;
+        [SerializeField] private Button handTrackingButton;
 
         [Header("Sprites")] 
         [SerializeField] private Sprite defaultButtonSprite;
         [SerializeField] private Sprite highlightedButtonSprite;
+        [SerializeField] private Sprite enabledButtonSprite;
+        [SerializeField] private Sprite disabledButtonSprite;
 
         [Header("Music Settings")]
         [SerializeField] private AK.Wwise.Event mainMenuMusic;
         [SerializeField] private AK.Wwise.Event introMusic;
         [SerializeField] private AK.Wwise.Event gameAmbience;
-
+        
         private bool _paused;
         private bool _isGameRunning = false;
         private bool _isGracefulShutdown = false;
@@ -120,8 +128,6 @@ namespace UI
 
                 var seconds = (currentDuration % 60 < 10) ? $"0{currentDuration % 60}" : $"{currentDuration % 60}";
                 durationSliderText.SetText($"{currentDuration / 60}:{seconds}");
-                
-                GameManager.GetInstance().SetGameDuration(currentDuration);
             });
 
         }
@@ -140,7 +146,6 @@ namespace UI
             playerHUD.SetActive(true);
 
             _isGameRunning = true;
-
         }
 
         public void OnSettingButtonClicked() {
@@ -170,6 +175,10 @@ namespace UI
             gameSettingsButton.image.sprite = highlightedButtonSprite;
             audioSettingsButton.image.sprite = defaultButtonSprite;
             debugSettingsButton.image.sprite = defaultButtonSprite;
+            
+            endlessModeButton.image.sprite = endlessMode ? enabledButtonSprite : disabledButtonSprite;
+            sandboxModeButton.image.sprite = sandboxMode ? enabledButtonSprite : disabledButtonSprite;
+            handTrackingButton.image.sprite = handTracking ? enabledButtonSprite : disabledButtonSprite;
         }
         
         public void OnAudioSettingsButtonClicked()
@@ -192,6 +201,24 @@ namespace UI
             gameSettingsButton.image.sprite = defaultButtonSprite;
             audioSettingsButton.image.sprite = defaultButtonSprite;
             debugSettingsButton.image.sprite = highlightedButtonSprite;
+        }
+        
+        public void OnEndlessModeButtonClicked()
+        {
+            endlessMode = !endlessMode;
+            endlessModeButton.image.sprite = endlessMode ? enabledButtonSprite : disabledButtonSprite;
+        }
+        
+        public void OnSandboxModeButtonClicked()
+        {
+            sandboxMode = !sandboxMode;
+            sandboxModeButton.image.sprite = sandboxMode ? enabledButtonSprite : disabledButtonSprite;
+        }
+        
+        public void OnHandTrackingButtonClicked()
+        {
+            handTracking = !handTracking;
+            handTrackingButton.image.sprite = handTracking ? enabledButtonSprite : disabledButtonSprite;
         }
 
         public void OnExitButtonClicked() {
