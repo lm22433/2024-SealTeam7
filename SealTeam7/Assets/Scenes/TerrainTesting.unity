@@ -816,8 +816,8 @@ MonoBehaviour:
   height: 880
   xOffsetStart: 480
   xOffsetEnd: 1360
-  yOffsetStart: 100
-  yOffsetEnd: 980
+  yOffsetStart: 10
+  yOffsetEnd: 890
   minimumSandDepth: 720
   maximumSandDepth: 1180
   irThreshold: 255
@@ -832,7 +832,7 @@ MonoBehaviour:
   lerpFactor: 0.2
   lodInfo:
     lod: 1
-    colliderLod: 2
+    colliderLod: 4
     pathingLod: 10
   bgChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
   bgAverageHeight: 150
@@ -840,7 +840,7 @@ MonoBehaviour:
   bgBaseNoiseScale: 0.01
   bgRoughnessHeightScale: 5
   bgRoughnessNoiseScale: 0.05
-  bgInterpolationMargin: 100
+  bgInterpolationMargin: 20
   bgChunkMargin: 1
   isKinectPresent: 1
   colliderEnabled: 1

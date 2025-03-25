@@ -52,10 +52,12 @@ namespace Map
         private Task _getCaptureTask;
         private int _kernelSize;
         private float _gaussianStrength;
+        private Action _onUpdateHeights;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int kernelSize, float gaussianStrength)
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int kernelSize, float gaussianStrength, Action onUpdateHeights)
         {
+            _onUpdateHeights = onUpdateHeights;
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;
             _minimumSandDepth = minimumSandDepth;
@@ -203,6 +205,8 @@ namespace Map
                     // Otherwise height is kept the same for that pixel
                 }
             }
+            
+            _onUpdateHeights();
         }
     }
 }

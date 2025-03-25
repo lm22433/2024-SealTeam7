@@ -72,6 +72,9 @@ namespace Map
         // Margin width measured as number of edges
         private int _colliderInterpolationMargin;
         private int _heightMapWidth;
+        private float[,] _perlinRoughness;
+        private bool _recalcedTangents;
+        private bool _meshNeedsUpdate;
 
         public void Setup(BackgroundChunkSettings s, ref float[,] heightMap)
         {
@@ -82,6 +85,8 @@ namespace Map
 
             _colliderLodFactor = _settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2;
             _colliderVertexSideCount = _settings.Size / _colliderLodFactor + 1;
+            
+            _perlinRoughness = new float[_settings.MapSize + 1, _settings.MapSize + 1];
             
             _mesh = new Mesh { name = "Generated Mesh", indexFormat = IndexFormat.UInt32 };
             _mesh.MarkDynamic();
@@ -99,27 +104,37 @@ namespace Map
 
         private void Update()
         {
-            if (!GameManager.GetInstance().IsGameActive()) return;
+            if (!GameManager.GetInstance().IsGameActive())
+            {
+                _recalcedTangents = false;
+                return;
+            }
             
-            UpdateHeights();
+            if (_meshNeedsUpdate)
+            {
+                // _savedMeshData.Normals = _mesh.normals;
+                _mesh.SetVertices(_savedMeshData.Vertices);
+                // _mesh.RecalculateNormals();
+                if (!_recalcedTangents) _mesh.RecalculateTangents();
+                _mesh.RecalculateBounds();
+
+                _colliderMesh.SetVertices(_savedMeshData.ColliderVertices);
+                _colliderMesh.RecalculateBounds();
+
+                _meshNeedsUpdate = false;
+            }
+
+            _recalcedTangents = true;
         }
 
-        private void UpdateHeights()
+        public void UpdateHeights()
         {
             InterpolateMargin(_savedMeshData.Vertices, _interpolationMargin, _vertexSideCount, 
                 _lodFactor, _settings.InterpolationDirection);
             InterpolateMargin(_savedMeshData.ColliderVertices, _colliderInterpolationMargin, _colliderVertexSideCount, 
                 _colliderLodFactor, _settings.InterpolationDirection);
-
-            _mesh.SetVertices(_savedMeshData.Vertices);
-            // _mesh.RecalculateNormals();
-            //if (!_recalcedTangents) _mesh.RecalculateTangents();
-            _mesh.RecalculateBounds();
-
-            _colliderMesh.SetVertices(_savedMeshData.ColliderVertices);
-            _colliderMesh.RecalculateBounds();
-
-            // _savedMeshData.Normals = _mesh.normals;
+            
+            _meshNeedsUpdate = true;
         }
 
         private void InterpolateMargin(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int lodFactor, 
@@ -493,8 +508,7 @@ namespace Map
             float yRoughness;
             if (z != 0 && x != 0 && z != vertexSideCount - 1 && x != vertexSideCount - 1)
             {
-                yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale)
-                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+                yRoughness = _perlinRoughness[z * lodFactor, x * lodFactor];
             }
             else yRoughness = 0;
             
@@ -530,8 +544,7 @@ namespace Map
             float yRoughness;
             if (z != 0 && x != 0 && z != vertexSideCount - 1 && x != vertexSideCount - 1)
             {
-                yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale)
-                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+                yRoughness = _perlinRoughness[z * lodFactor, x * lodFactor];
             }
             else yRoughness = 0;
             
@@ -575,8 +588,7 @@ namespace Map
             float yRoughness;
             if (z != 0 && x != 0 && z != vertexSideCount - 1 && x != vertexSideCount - 1)
             {
-                yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale)
-                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+                yRoughness = _perlinRoughness[z * lodFactor, x * lodFactor];
             }
             else yRoughness = 0;
             
@@ -601,6 +613,17 @@ namespace Map
             int zExtraOffset = 5 * _settings.Size;  // Ensures positive region of Perlin noise
             int xExtraOffset = 5 * _settings.Size;
 
+            for (int i = 0; i < (_settings.MapSize + 1) * (_settings.MapSize + 1); i++)
+            {
+                var x = i / (_settings.MapSize + 1);
+                var z = i % (_settings.MapSize + 1);
+                var perlinX = x + xChunkOffset + xExtraOffset;
+                var perlinY = z + zChunkOffset + zExtraOffset;
+                var yRoughness = Mathf.PerlinNoise(perlinX*_settings.RoughnessNoiseScale, perlinY*_settings.RoughnessNoiseScale) 
+                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+                _perlinRoughness[z,x] = yRoughness;
+            }
+            
             for (int i = 0; i < numberOfVertices; i++)
             {
                 var x = i / _vertexSideCount * _lodFactor;
@@ -609,8 +632,14 @@ namespace Map
                 var perlinY = z + zChunkOffset + zExtraOffset;
                 var y = Mathf.PerlinNoise(perlinX*_settings.BaseNoiseScale, perlinY*_settings.BaseNoiseScale) 
                     *_settings.BaseHeightScale - _settings.BaseHeightScale/2 + _settings.AverageHeight;
-                var yRoughness = Mathf.PerlinNoise(perlinX*_settings.RoughnessNoiseScale, perlinY*_settings.RoughnessNoiseScale) 
-                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+                
+                float yRoughness;
+                if (z != 0 && x != 0 && z != _vertexSideCount - 1 && x != _vertexSideCount - 1)
+                {
+                    yRoughness = _perlinRoughness[z, x];
+                }
+                else yRoughness = 0;
+                
                 vertices[i] = new Vector3(x * _settings.Spacing, y + yRoughness, z * _settings.Spacing);
                 uvs[i] = new Vector2((float) x / _vertexSideCount, (float) z / _vertexSideCount);
             }
@@ -623,8 +652,14 @@ namespace Map
                 var perlinY = z + zChunkOffset + zExtraOffset;
                 var y = Mathf.PerlinNoise(perlinX*_settings.BaseNoiseScale, perlinY*_settings.BaseNoiseScale) 
                     *_settings.BaseHeightScale - _settings.BaseHeightScale/2 + _settings.AverageHeight;
-                var yRoughness = Mathf.PerlinNoise(perlinX*_settings.RoughnessNoiseScale, perlinY*_settings.RoughnessNoiseScale) 
-                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+                
+                float yRoughness;
+                if (z != 0 && x != 0 && z != _colliderVertexSideCount - 1 && x != _colliderVertexSideCount - 1)
+                {
+                    yRoughness = _perlinRoughness[z, x];
+                }
+                else yRoughness = 0;
+
                 colliderVertices[i] = new Vector3(x * _settings.Spacing, y + yRoughness, z * _settings.Spacing);
             }
 
