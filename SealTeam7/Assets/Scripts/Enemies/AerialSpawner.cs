@@ -36,15 +36,19 @@ namespace Enemies
             TargetPosition = _oppositePosition;
         }
 
+        protected override void UpdateState()
+        {
+            if (State is EnemyState.Dying) return;
+            if (State is not EnemyState.Idle) State = EnemyState.MoveAndAttack;
+        }
+
         protected override void EnemyUpdate()
         {
             if ((transform.position - TargetPosition).sqrMagnitude < 1000f) EnemyManager.Kill(this);
-            TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
         }
 
         protected override void EnemyFixedUpdate()
         {
-            if (State is not (EnemyState.Moving or EnemyState.Dying) && !DisallowMovement) Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);
             if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
             if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
         }
