@@ -19,9 +19,21 @@ namespace UI
         [SerializeField] private GameObject mainMenu;
         [SerializeField] private GameObject settingsMenu;
         [SerializeField] private GameObject playerHUD;
+
+        [Header("Settings Menu References")] 
+        [SerializeField] private GameObject gameSettings;
+        [SerializeField] private GameObject audioSettings;
+        [SerializeField] private GameObject debugSettings;
+        [SerializeField] private Button gameSettingsButton;
+        [SerializeField] private Button audioSettingsButton;
+        [SerializeField] private Button debugSettingsButton;
         [SerializeField] private TMP_Dropdown difficultyDropdown;
         [SerializeField] private Slider durationSlider;
         [SerializeField] private TMP_Text durationSliderText;
+
+        [Header("Sprites")] 
+        [SerializeField] private Sprite defaultButtonSprite;
+        [SerializeField] private Sprite highlightedButtonSprite;
 
         [Header("Music Settings")]
         [SerializeField] private AK.Wwise.Event mainMenuMusic;
@@ -134,7 +146,8 @@ namespace UI
         public void OnSettingButtonClicked() {
             mainMenu.SetActive(false);
             settingsMenu.SetActive(true);
-
+            OnGameSettingsButtonClicked();
+            
             InitialiseSettings();
         }
 
@@ -146,6 +159,39 @@ namespace UI
                 mainMenu.SetActive(true);
                 settingsMenu.SetActive(false);
             }
+        }
+
+        public void OnGameSettingsButtonClicked()
+        {
+            gameSettings.SetActive(true);
+            audioSettings.SetActive(false);
+            debugSettings.SetActive(false);
+            
+            gameSettingsButton.image.sprite = highlightedButtonSprite;
+            audioSettingsButton.image.sprite = defaultButtonSprite;
+            debugSettingsButton.image.sprite = defaultButtonSprite;
+        }
+        
+        public void OnAudioSettingsButtonClicked()
+        {
+            gameSettings.SetActive(false);
+            audioSettings.SetActive(true);
+            debugSettings.SetActive(false);
+            
+            gameSettingsButton.image.sprite = defaultButtonSprite;
+            audioSettingsButton.image.sprite = highlightedButtonSprite;
+            debugSettingsButton.image.sprite = defaultButtonSprite;
+        }
+        
+        public void OnDebugSettingsButtonClicked()
+        {
+            gameSettings.SetActive(false);
+            audioSettings.SetActive(false);
+            debugSettings.SetActive(true);
+            
+            gameSettingsButton.image.sprite = defaultButtonSprite;
+            audioSettingsButton.image.sprite = defaultButtonSprite;
+            debugSettingsButton.image.sprite = highlightedButtonSprite;
         }
 
         public void OnExitButtonClicked() {
