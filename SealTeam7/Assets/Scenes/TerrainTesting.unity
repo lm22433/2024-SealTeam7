@@ -840,7 +840,7 @@ MonoBehaviour:
   bgBaseNoiseScale: 0.01
   bgRoughnessHeightScale: 5
   bgRoughnessNoiseScale: 0.05
-  bgInterpolationMargin: 20
+  bgInterpolationMargin: 100
   bgChunkMargin: 1
   isKinectPresent: 1
   colliderEnabled: 1
@@ -1375,7 +1375,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1201632856
 Transform:
   m_ObjectHideFlags: 0
@@ -1386,8 +1386,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 240, y: 37, z: 240}
-  m_LocalScale: {x: 153.2025, y: 153.2025, z: 179.84442}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 400, y: 400, z: 469.56003}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 594167917}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
