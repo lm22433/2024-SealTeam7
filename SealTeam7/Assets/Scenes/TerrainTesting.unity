@@ -1622,8 +1622,8 @@ MonoBehaviour:
   height: 880
   xOffsetStart: 480
   xOffsetEnd: 1360
-  yOffsetStart: 100
-  yOffsetEnd: 980
+  yOffsetStart: 10
+  yOffsetEnd: 890
   minimumSandDepth: 720
   maximumSandDepth: 1180
   irThreshold: 255
@@ -1640,7 +1640,7 @@ MonoBehaviour:
     lod: 1
     colliderLod: 2
     pathingLod: 10
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0

@@ -119,6 +119,11 @@ namespace Map
 
         private void OnApplicationQuit()
         {
+            Quit();
+        }
+
+        public void Quit()
+        {
             if (isKinectPresent) _kinect.StopKinect();
             else _noiseGenerator.Stop();
         }

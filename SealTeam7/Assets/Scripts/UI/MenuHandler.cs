@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game;
+using Map;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -69,6 +70,7 @@ namespace UI
             }
 
             if (Input.GetKeyDown("r")) {
+                MapManager.GetInstance().Quit();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
