@@ -1,5 +1,6 @@
 using Map;
 using UnityEngine;
+using UnityEditor;
 
 public class HandReconstruction : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class HandReconstruction : MonoBehaviour
     [SerializeField] private float _lerpFactor;
     [SerializeField] private float _thresholdDst;
     [SerializeField, Range(0,1)] private int _handNum;
-    [SerializeField] private Vector3[] positions_offset;
+    [SerializeField] private float[] positions_offset_y;
 
     [Header("Shader Calibration")]
     [SerializeField, Range(0,1)] private Material handMaterial;
@@ -30,19 +31,26 @@ public class HandReconstruction : MonoBehaviour
 
     [SerializeField] private float handStartFadeSpeed;
     [SerializeField] private float handMaxFadeSpeed;
-    float handSpeed = 0;
+    [SerializeField] private float speedTimeMeasure;
+    [SerializeField] float handSpeed = 0;
 
     void Start()
     {
         positions = new Vector3[21];
         lastPosition = Vector3.zero;
 
-    }
+        HandSpeedTimer();
 
-    private void Update() {
+    }
+    public IEnumerator HandSpeedTimer()
+    {
+        yield return new WaitForSeconds(speedTimeMeasure);
+        
         handSpeed = Vector3.Distance(positions[0], lastPosition) / Time.deltaTime;
         lastPosition = positions[0];
+        HandSpeedTimer();
     }
+    
 
     // Update is called once per frame
     private void FixedUpdate()
@@ -51,7 +59,6 @@ public class HandReconstruction : MonoBehaviour
         var tempPositions = mapManager.GetHandPositions(_handNum);
 
         if (tempPositions != null) {   
-
             nullFrameCount = 0;
 
             if (handSpeed > handStartFadeSpeed) {
@@ -65,8 +72,9 @@ public class HandReconstruction : MonoBehaviour
             }
 
             for(int i = 0; i < tempPositions.Length; i++) {
-                positions[i] = tempPositions[i];// + positions_offset[i];
+                positions[i] = tempPositions[i] + positions_offset_y[i] * -transform.up;
             }
+            
         } else {
             if (nullFrameCount >= maxFramesWithoutHand) {
                 float alpha = _renderer.material.GetFloat("_TransparancyScalar");
@@ -76,7 +84,7 @@ public class HandReconstruction : MonoBehaviour
             }
             nullFrameCount++;
         }
-
+        
         //Hand direction about the Y axis
         Vector3 targetDir = positions[9] - positions[0];
         gameObject.transform.localPosition = positions[0];
@@ -154,15 +162,17 @@ public class HandReconstruction : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Vector3 targetDir = positions[6] - positions[5];
+        if (EditorApplication.isPlaying) {
+            Vector3 targetDir = positions[6] - positions[5];
 
-        Gizmos.color = Color.black;
-        Gizmos.DrawLine(positions[5], positions[5] + targetDir);
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(positions[0], positions[0] + transform.right * 10);
+            Gizmos.color = Color.black;
+            Gizmos.DrawLine(positions[5], positions[5] + targetDir);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(positions[0], positions[0] + transform.right * 10);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(positions[5], 2);
-        Gizmos.DrawSphere(positions[6], 2);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(positions[5], 2);
+            Gizmos.DrawSphere(positions[6], 2);
+        }
     }
 }

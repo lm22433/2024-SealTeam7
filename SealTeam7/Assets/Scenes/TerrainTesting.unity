@@ -583,10 +583,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
-      propertyPath: fadeRate
-      value: 0.005
-      objectReference: {fileID: 0}
-    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: mapManager
       value: 
       objectReference: {fileID: 594167918}
@@ -1274,10 +1270,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1221557467}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
-      propertyPath: fadeRate
-      value: 0.005
-      objectReference: {fileID: 0}
-    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: mapManager
       value: 
       objectReference: {fileID: 594167918}
@@ -1879,7 +1871,7 @@ MonoBehaviour:
   yOffsetEnd: 985
   minimumSandDepth: 720
   maximumSandDepth: 1180
-  blurRadius: 1
+  blurRadius: 2
   blurSigma: 5
   minLerpFactor: 0.1
   maxLerpFactor: 0.7

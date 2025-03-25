@@ -182,39 +182,40 @@ MonoBehaviour:
   - {fileID: 88024523701351980}
   mapManager: {fileID: 0}
   hand: {fileID: 0}
-  _lerpFactor: 1
+  _lerpFactor: 0.9
   _thresholdDst: 0
   _handNum: 0
-  positions_offset:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: -1, z: 0}
-  - {x: 0, y: -2, z: 0}
-  - {x: 0, y: -4, z: 0}
-  - {x: 0, y: -6, z: 0}
-  - {x: 0, y: -2, z: 0}
-  - {x: 0, y: -4, z: 0}
-  - {x: 0, y: -6, z: 0}
-  - {x: 0, y: -8, z: 0}
-  - {x: 0, y: -2, z: 0}
-  - {x: 0, y: -4, z: 0}
-  - {x: 0, y: -6, z: 0}
-  - {x: 0, y: -8, z: 0}
-  - {x: 0, y: -2, z: 0}
-  - {x: 0, y: -4, z: 0}
-  - {x: 0, y: -6, z: 0}
-  - {x: 0, y: -8, z: 0}
-  - {x: 0, y: -2, z: 0}
-  - {x: 0, y: -4, z: 0}
-  - {x: 0, y: -6, z: 0}
-  - {x: 0, y: -8, z: 0}
+  positions_offset_y:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - -8
+  - -16
+  - -24
+  - -32
+  - -8
+  - -16
+  - -24
+  - -32
+  - -8
+  - -16
+  - -24
+  - -32
+  - -4
+  - -8
+  - -16
+  - -24
   handMaterial: {fileID: 0}
   maxHandSpeed: 0
-  maxFramesWithoutHand: 25
+  maxFramesWithoutHand: 10
   startAlpha: 0.1
-  fadeRate: 0.01
+  fadeRate: 0.08
   _renderer: {fileID: 2433431767938355854}
   handStartFadeSpeed: 600
   handMaxFadeSpeed: 2000
+  handSpeed: 0
 --- !u!114 &6961489748271865038
 MonoBehaviour:
   m_ObjectHideFlags: 0
