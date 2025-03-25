@@ -24,13 +24,13 @@ namespace Enemies
         public float spawnChanceGrowthRate;
         
         public int GetGroupSpawnSize(Difficulty difficulty, int currentWave) =>
-            Mathf.RoundToInt(baseGroupSpawnSize + groupSpawnSizeGrowthRate * Mathf.Log(currentWave - startingWave + 1, 2) * GetDifficultyMultiplier(difficulty));
+            Mathf.RoundToInt(baseGroupSpawnSize + groupSpawnSizeGrowthRate * Mathf.Log(currentWave - startingWave + 1, 2) * GetDifficultyMultiplier(difficulty.difficultyType));
 
         public float GetGroupSpawnChance(Difficulty difficulty, int currentWave) =>
-            maxSpawnChance * 1.0f / (1.0f + Mathf.Exp(-spawnChanceGrowthRate * (currentWave - startingWave - 5))) * GetDifficultyMultiplier(difficulty);
+            maxSpawnChance * 1.0f / (1.0f + Mathf.Exp(-spawnChanceGrowthRate * (currentWave - startingWave - 5))) * GetDifficultyMultiplier(difficulty.difficultyType);
         
-        private static float GetDifficultyMultiplier(Difficulty difficulty) =>
-            difficulty.difficultyType switch
+        public static float GetDifficultyMultiplier(DifficultyType difficultyType) =>
+            difficultyType switch
             {
                 DifficultyType.Easy => 0.8f,
                 DifficultyType.Normal => 1.0f,
