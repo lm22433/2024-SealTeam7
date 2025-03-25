@@ -187,5 +187,7 @@ namespace Enemies
         }
         
         public static EnemyManager GetInstance() => _instance;
+        
+        public int GetWave() => _currentWave;
     }
 }

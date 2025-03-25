@@ -23,6 +23,7 @@ namespace Game
         [Header("UI objects")]
         [SerializeField] private TMP_Text scoreText;
         [SerializeField] private TMP_Text timerText;
+        [SerializeField] private TMP_Text waveText;
         [SerializeField] private GameObject healthBar;
         [SerializeField] private TMP_Text gameoverScoreText;
         [SerializeField] private TMP_Text gameoverText;
@@ -72,9 +73,15 @@ namespace Game
 
         private void UIUpdate()
         {
-            scoreText.SetText($"Score: {_score}");
-            var seconds = (_timer % 60 < 10) ? $"0{(int) (_timer % 60)}" : $"{(int) (_timer % 60)}";
-            timerText.SetText($"{(int) _timer / 60}:{seconds}");
+            scoreText.SetText($"{_score}");
+
+            int wave = EnemyManager.GetInstance().GetWave();
+            waveText.SetText(wave < 10 ? $"0{wave}" : $"{wave}");
+
+            int minutes = (int) _timer / 60;
+            int seconds = (int) _timer % 60;
+            String secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
+            timerText.SetText($"{minutes}:{secondsStr}");
 
             healthBar.transform.localScale = new Vector3((float) _health / maxHealth, 1, 1);
         }
