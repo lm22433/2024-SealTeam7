@@ -18,7 +18,7 @@ namespace UI
         [Header("UI References")]
         [SerializeField] private GameObject mainMenu;
         [SerializeField] private GameObject settingsMenu;
-        [SerializeField] private GameObject scoreUI;
+        [SerializeField] private GameObject playerHUD;
         [SerializeField] private TMP_Dropdown difficultyDropdown;
         [SerializeField] private Slider durationSlider;
         [SerializeField] private TMP_Text durationSliderText;
@@ -35,6 +35,7 @@ namespace UI
         private void Awake() {
             mainMenu.SetActive(true);
             settingsMenu.SetActive(false);
+            playerHUD.SetActive(false);
         }
 
         private void Start() {
@@ -77,7 +78,7 @@ namespace UI
             GameManager.GetInstance().GameActive = !_paused;
             Time.timeScale = (_paused) ? 0 : 1;
             
-            scoreUI.SetActive(!_paused);
+            playerHUD.SetActive(!_paused);
             if (_paused) {
                 OnSettingButtonClicked();
             } else{
@@ -124,7 +125,7 @@ namespace UI
             GameManager.GetInstance().StartGame();
 
             mainMenu.SetActive(false);
-            scoreUI.SetActive(true);
+            playerHUD.SetActive(true);
 
             _isGameRunning = true;
 
