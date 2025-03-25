@@ -9957,7 +9957,7 @@ MonoBehaviour:
   aimSpeed: 5
   attackRange: 200
   attackInterval: 20
-  stopShootingThreshold: 40
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 10
   attackDamage: 2
   killScore: 600
@@ -9979,7 +9979,7 @@ MonoBehaviour:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
   smokeDmg: {fileID: 763469492654417899}
-  maxLives: 2
+  maxLives: 1
   gracePeriod: 3
 --- !u!114 &3729924882987787105
 MonoBehaviour:
@@ -9994,8 +9994,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityDefiance: 5
-  defianceThreshold: 20
-  sinkFactor: 8
+  defianceThreshold: 5
+  sinkFactor: 5
   fallDeathVelocityY: 40
 --- !u!54 &828698031663403021
 Rigidbody:
