@@ -28,7 +28,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: SealTeam7/Library
-          key: Library-${{ hashFiles('SealTeam7/Assets/**', 'SealTeam7/Packages/**', 'ProjectSettings/**') }}
+          key: Library-SealTeam7
           restore-keys: |
             Library-
       - name: Build Unity Project
@@ -68,7 +68,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: SealTeam7/Library
-          key: Library-${{ hashFiles('SealTeam7/Assets/**', 'SealTeam7/Packages/**', 'ProjectSettings/**') }}
+          key: Library-SealTeam7
           restore-keys: |
             Library-
       - uses: game-ci/unity-test-runner@v4
