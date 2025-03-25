@@ -9908,10 +9908,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2013928995460809366}
-  - component: {fileID: 2160884965212251979}
+  - component: {fileID: 7972159656344753823}
   - component: {fileID: 3729924882987787105}
   - component: {fileID: 828698031663403021}
-  - component: {fileID: 7972159656344753823}
   m_Layer: 0
   m_Name: Necromancer
   m_TagString: Untagged
@@ -9929,7 +9928,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7362902396208400761}
@@ -9940,51 +9939,52 @@ Transform:
   - {fileID: 2116003830417067928}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2160884965212251979
+--- !u!114 &7972159656344753823
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2772852043545815630}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3621541cf99b6b345b8042e97bb680f7, type: 3}
+  m_Script: {fileID: 11500000, guid: 15753a01d5e77a84784384607be1e5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 8
+  enemyType: 14
   forceOffset: {x: 0, y: -1, z: 1}
   moveSpeed: 15
   acceleration: 100
-  groundedOffset: 7
+  groundedOffset: 8
   flyHeight: 0
   aimSpeed: 5
   attackRange: 100
   attackInterval: 10
-  stopShootingThreshold: 40
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 10
   attackDamage: 2
   killScore: 600
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 45913116891892241}
-  muzzle: {fileID: 45913116891892241}
+  muzzle: {fileID: 0}
   projectileType: 0
   projectile: {fileID: 0}
   gunFireSound:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 7bc4b69af44bb3849ab50f6da32645d1, type: 2}
+    WwiseObjectReference: {fileID: 11400000, guid: 3f97d12f1f6264347b4b282d0a44b6a5, type: 2}
   deathSoundEffect:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  spawnee: {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
+  State: 0
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
   smokeDmg: {fileID: 763469492654417899}
-  maxLives: 2
-  gracePeriod: 3
+  necroRing: {fileID: 1121272664299780957}
+  maxLives: 1
+  gracePeriod: 2
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9998,8 +9998,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityDefiance: 5
-  defianceThreshold: 5
-  sinkFactor: 5
+  defianceThreshold: 20
+  sinkFactor: 8
   fallDeathVelocityY: 40
 --- !u!54 &828698031663403021
 Rigidbody:
@@ -10028,51 +10028,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &7972159656344753823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2772852043545815630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15753a01d5e77a84784384607be1e5ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyType: 14
-  forceOffset: {x: 0, y: -1, z: 1}
-  moveSpeed: 15
-  acceleration: 100
-  groundedOffset: 7
-  flyHeight: 0
-  aimSpeed: 5
-  attackRange: 100
-  attackInterval: 10
-  stopShootingThreshold: 40
-  coreTargetHeightOffset: 10
-  attackDamage: 2
-  killScore: 600
-  deathParticles: {fileID: 1735578503178218476}
-  model: {fileID: 45913116891892241}
-  muzzle: {fileID: 0}
-  projectileType: 0
-  projectile: {fileID: 0}
-  gunFireSound:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  deathSoundEffect:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  dustTrails:
-  - {fileID: 2423127030068606280}
-  - {fileID: 552652031790891173}
-  smokeDmg: {fileID: 763469492654417899}
-  necroRing: {fileID: 1121272664299780957}
-  maxLives: 1
-  gracePeriod: 2
 --- !u!1 &3514074279943303811
 GameObject:
   m_ObjectHideFlags: 0

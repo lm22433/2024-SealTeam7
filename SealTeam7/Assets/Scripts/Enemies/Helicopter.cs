@@ -1,5 +1,4 @@
 using Enemies.Utils;
-using Player;
 using UnityEngine;
 
 namespace Enemies
@@ -31,7 +30,7 @@ namespace Enemies
         
         protected override float Heuristic(Node start, Node end)
         {
-            return start.WorldPos.y > flyHeight - 10f ? 10000f : 0f;
+            return start.WorldPos.y > flyHeight - 20f ? 1000000000f : 0f;
         }
         
         protected override void EnemyUpdate()
@@ -41,7 +40,8 @@ namespace Enemies
                 case EnemyState.AttackCore:
                 {
                     TargetPosition = new Vector3(TargetPosition.x, flyHeight, TargetPosition.z);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x,
+                    TargetRotation = Quaternion.Euler(
+                        transform.eulerAngles.x,
                         Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
                         transform.eulerAngles.z);
                     break;
@@ -52,11 +52,6 @@ namespace Enemies
                         transform.eulerAngles.x,
                         Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
                         transform.eulerAngles.z);
-                    break;
-                }
-                case EnemyState.Moving:
-                {
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, transform.eulerAngles.z);
                     break;
                 }
             }

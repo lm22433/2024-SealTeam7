@@ -9726,7 +9726,7 @@ MonoBehaviour:
   aimSpeed: 5
   attackRange: 250
   attackInterval: 5
-  stopShootingThreshold: 40
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 10
   attackDamage: 5
   killScore: 400

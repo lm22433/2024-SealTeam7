@@ -1,8 +1,6 @@
 using Enemies.Utils;
 using Map;
-using Player;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace Enemies
@@ -58,7 +56,6 @@ namespace Enemies
                 case EnemyState.Moving:
                 {
                     gun.localRotation = Quaternion.Slerp(gun.localRotation, Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) - transform.position).eulerAngles.y, transform.eulerAngles.z);
                     
                     if (DisallowMovement || Rb.position.y > MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
                     {
@@ -76,8 +73,8 @@ namespace Enemies
                 case EnemyState.AttackHands:
                 {
                     var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x - transform.eulerAngles.x;
-                    TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
-                    gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
+                    var gunRotation = Quaternion.Euler(xAngle, 0f, 0f);
+                    gun.localRotation = Quaternion.Slerp(gun.localRotation, gunRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
                     TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
                     break;
                 }

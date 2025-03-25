@@ -13,10 +13,16 @@ namespace Enemies
         [SerializeField] private float drillSpeed;
         [SerializeField] private ParticleSystem[] dustTrails;
         [SerializeField] private float burrowDepth;
+        private bool _burrowing;
         
         protected override float Heuristic(Node start, Node end)
         {
             return 0f;
+        }
+
+        protected override void Attack(PlayerDamageable toDamage)
+        {
+            toDamage.TakeDamage(attackDamage);
         }
         
         protected override void EnemyUpdate()
@@ -29,94 +35,107 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
-                    var coreTarget = new Vector3(
-                        EnemyManager.godlyCore.transform.position.x,
-                        MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset,
-                        EnemyManager.godlyCore.transform.position.z
-                    );
-                    
-                    if ((coreTarget - transform.position).sqrMagnitude > SqrAttackRange + stopShootingThreshold)
+                    if (!_burrowing)
                     {
-                        transform.position = new Vector3(transform.position.x,
-                            MapManager.GetInstance().GetHeight(transform.position) - burrowDepth, transform.position.z);
+                        _burrowing = true;
                         Rb.freezeRotation = true;
                         Rb.detectCollisions = false;
                     }
+                    
+                    transform.position = new Vector3(
+                        transform.position.x,
+                        MapManager.GetInstance().GetHeight(transform.position) - burrowDepth,
+                        transform.position.z
+                    );
 
-                    drill.localRotation = Quaternion.Slerp(drill.localRotation,
-                        Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x,
-                        Quaternion.LookRotation((Path.Length > 0 ? Path[PathIndex] : TargetPosition) -
-                                                transform.position).eulerAngles.y, transform.eulerAngles.z);
+                    drill.localRotation = Quaternion.Slerp(
+                        drill.localRotation,
+                        Quaternion.AngleAxis(-90, Vector3.right),
+                        aimSpeed * Time.deltaTime
+                    );
 
                     if (DisallowMovement || !Grounded)
                     {
                         foreach (var dustTrail in dustTrails)
-                            if (dustTrail.isPlaying)
-                                dustTrail.Stop();
+                            if (dustTrail.isPlaying) dustTrail.Stop();
                     }
                     else
                     {
                         foreach (var dustTrail in dustTrails)
-                            if (!dustTrail.isPlaying)
-                                dustTrail.Play();
+                            if (!dustTrail.isPlaying) dustTrail.Play();
                     }
 
                     break;
-            }
+                }
                 case EnemyState.AttackCore:
-                    if (Grounded)
+                {
+                    if (_burrowing)
                     {
                         Rb.linearVelocity = Vector3.zero;
-                        transform.position = new Vector3(transform.position.x,
+                        transform.position = new Vector3(
+                            transform.position.x,
                             MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
-                            transform.position.z);
+                            transform.position.z
+                        );
+                        
+                        Rb.freezeRotation = false;
+                        Rb.detectCollisions = true;
                     }
+                    
+                    TargetRotation = Quaternion.Euler(
+                        transform.eulerAngles.x,
+                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
+                        transform.eulerAngles.z
+                    );
 
-                    Rb.freezeRotation = false;
-                    Rb.detectCollisions = true;
                     break;
+                }
                 case EnemyState.AttackHands:
                 {
-                    if (Grounded)
+                    if (_burrowing)
                     {
                         Rb.linearVelocity = Vector3.zero;
-                        transform.position = new Vector3(transform.position.x,
+                        transform.position = new Vector3(
+                            transform.position.x,
                             MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
-                            transform.position.z);
+                            transform.position.z
+                        );
+                        
+                        Rb.freezeRotation = false;
+                        Rb.detectCollisions = true;
                     }
 
-                    Rb.freezeRotation = false;
-                    Rb.detectCollisions = true;
-
-                    var xAngle = Quaternion.LookRotation(TargetPosition - drill.position).eulerAngles.x -
-                                 transform.eulerAngles.x;
-                    TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
-                    drill.localRotation = Quaternion.Slerp(drill.localRotation,
-                        TargetRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x,
+                    var xAngle = Quaternion.LookRotation(TargetPosition - drill.position).eulerAngles.x - transform.eulerAngles.x;
+                    var drillRotation = Quaternion.Euler(xAngle, 0f, 0f);
+                    drill.localRotation = Quaternion.Slerp(drill.localRotation, drillRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
+                    TargetRotation = Quaternion.Euler(
+                        transform.eulerAngles.x,
                         Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
+                        transform.eulerAngles.z
+                    );
+                    
                     break;
                 }
                 case EnemyState.Dying:
                 {
                     foreach (var dustTrail in dustTrails)
-                        if (dustTrail.isPlaying)
-                            dustTrail.Stop();
+                        if (dustTrail.isPlaying) dustTrail.Stop();
                     break;
                 }
                 case EnemyState.Idle:
                 {
-                    if (Grounded)
+                    if (_burrowing)
                     {
                         Rb.linearVelocity = Vector3.zero;
-                        transform.position = new Vector3(transform.position.x,
+                        transform.position = new Vector3(
+                            transform.position.x,
                             MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
-                            transform.position.z);
+                            transform.position.z
+                        );
+                        
+                        Rb.detectCollisions = true;
+                        Rb.freezeRotation = false;
                     }
-                    Rb.detectCollisions = true;
-                    Rb.freezeRotation = false;
                     break;
                 }
             }

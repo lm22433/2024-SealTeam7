@@ -89,7 +89,7 @@ MonoBehaviour:
   aimSpeed: 10
   attackRange: 125
   attackInterval: 0.2
-  stopShootingThreshold: 20
+  stopMovingThreshold: 40
   coreTargetHeightOffset: 4
   attackDamage: 1
   killScore: 200
@@ -106,6 +106,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
+  State: 0
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
