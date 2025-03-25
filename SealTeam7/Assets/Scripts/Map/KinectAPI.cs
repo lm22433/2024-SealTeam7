@@ -52,10 +52,12 @@ namespace Map
         private Task _getCaptureTask;
         private int _kernelSize;
         private float _gaussianStrength;
+        private Action _onUpdateHeights;
 
         public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int kernelSize, float gaussianStrength)
+                int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int kernelSize, float gaussianStrength, Action onUpdateHeights)
         {
+            _onUpdateHeights = onUpdateHeights;
             _heightScale = heightScale;
             _lerpFactor = lerpFactor;
             _minimumSandDepth = minimumSandDepth;
@@ -195,19 +197,16 @@ namespace Map
                     if (_tmpImage3.Data[y, x, 0] == 0f &&  // if pixel is not part of the hand mask
                         _tmpImage1.Data[y, x, 0] != 0.5f)  // if the Kinect was able to get a depth for that pixel
                     {
-                        if (y == 0 || y == _height || x == 0 || x == _width) {
-                            _heightMap[y, x] = 0;
-                            
-                        } else {
-                            _heightMap[y, x] = Mathf.Lerp(_heightMap[y, x], _tmpImage2.Data[y, x, 0] * _heightScale, _lerpFactor);
-                            _gradientMap[y, x] = _tmpImage4.Data[y, x, 0];
-                        }
+                        _heightMap[y, x] = Mathf.Lerp(_heightMap[y, x], _tmpImage2.Data[y, x, 0] * _heightScale, _lerpFactor);
+                        _gradientMap[y, x] = _tmpImage4.Data[y, x, 0];
                         // Debug.Log(_lerpFactor);
                         // _heightMap[y * (_width + 1) + x] = _tmpImage1.Data[y, x, 0] * _heightScale;
                     }
                     // Otherwise height is kept the same for that pixel
                 }
             }
+            
+            _onUpdateHeights();
         }
     }
 }
