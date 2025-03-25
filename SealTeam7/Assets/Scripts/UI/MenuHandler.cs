@@ -15,9 +15,9 @@ namespace UI
         [SerializeField, Range(0f, 600f)] private int maxGameDuration = 600;
         [SerializeField] private int currentDuration = 180;
 
-        [Header("UI Containers")]
-        [SerializeField] private GameObject settingsMenu;
+        [Header("UI References")]
         [SerializeField] private GameObject mainMenu;
+        [SerializeField] private GameObject settingsMenu;
         [SerializeField] private GameObject scoreUI;
         [SerializeField] private TMP_Dropdown difficultyDropdown;
         [SerializeField] private Slider durationSlider;
@@ -145,7 +145,6 @@ namespace UI
                 mainMenu.SetActive(true);
                 settingsMenu.SetActive(false);
             }
-
         }
 
         public void OnExitButtonClicked() {
