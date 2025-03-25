@@ -1626,21 +1626,21 @@ MonoBehaviour:
   yOffsetEnd: 980
   minimumSandDepth: 720
   maximumSandDepth: 1180
-  irThreshold: 255
-  similarityThreshold: 0.5
-  kernelSize: 5
-  gaussianStrength: 10
+  irThreshold: 0
+  similarityThreshold: 0
+  kernelSize: 0
+  gaussianStrength: 0
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 880
   chunkRow: 1
   chunkSize: 880
   heightScale: 450
-  lerpFactor: 0.2
+  lerpFactor: 0
   lodInfo:
     lod: 1
     colliderLod: 2
     pathingLod: 10
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -3245,7 +3245,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1459446451}
-  - component: {fileID: 1459446452}
   m_Layer: 0
   m_Name: BattleCamHolder
   m_TagString: Untagged
@@ -3273,25 +3272,6 @@ Transform:
   - {fileID: 1223096302}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1459446452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1459446450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68a24b8b17aacde40885a7405c0c00c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleCameras: []
-  cameraTiles: []
-  currentMainCamera: 0
-  scrollingHeadlines: {fileID: 0}
-  maxScroll: 0
-  currentScroll: 0
-  scrollSpeed: 0
 --- !u!1001 &1553743016
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6178,6 +6158,62 @@ PrefabInstance:
     - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
       propertyPath: maxScroll
       value: 6000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: renderTextures.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: 'renderTextures.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8400000, guid: 00a1ad15e161fc54b810e46e20f5dc76, type: 2}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: 'renderTextures.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8400000, guid: 367a4121dda8a3040aca3a39b512bca5, type: 2}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: 'renderTextures.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8400000, guid: 51b33c2bee19e3a4d84a9fcf29e37c35, type: 2}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: 'renderTextures.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8400000, guid: b97ca32b008c94b4b9246819f862c48a, type: 2}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.data[0].cam
+      value: 
+      objectReference: {fileID: 1670133128}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.data[1].cam
+      value: 
+      objectReference: {fileID: 1611950257}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.data[2].cam
+      value: 
+      objectReference: {fileID: 2138895157}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.data[3].cam
+      value: 
+      objectReference: {fileID: 1873638902}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.data[0].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.data[1].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.data[2].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2067069610408811847, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: battleCameras.Array.data[3].isActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2221962745650451027, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
       propertyPath: m_AnchorMax.y

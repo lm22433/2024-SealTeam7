@@ -702,9 +702,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68a24b8b17aacde40885a7405c0c00c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleCameras: []
-  cameraTiles: []
+  renderTextures: []
   currentMainCamera: 0
+  minCameraWaitTime: 10
+  maxCameraWaitTime: 20
   scrollingHeadlines: {fileID: 8988012405306851708}
   maxScroll: 6000
   currentScroll: 0
