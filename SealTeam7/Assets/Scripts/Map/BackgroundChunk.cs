@@ -30,8 +30,10 @@ namespace Map
         public LODInfo LODInfo;
         public bool ColliderEnabled;
         public float AverageHeight;
-        public float HeightScale;
-        public float NoiseScale;
+        public float BaseHeightScale;
+        public float BaseNoiseScale;
+        public float RoughnessHeightScale;
+        public float RoughnessNoiseScale;
         public InterpolationDirection InterpolationDirection;
         // Margin width measured in world units
         public int InterpolationMargin;
@@ -39,7 +41,7 @@ namespace Map
 
     public class BackgroundChunk : MonoBehaviour
     {
-        internal struct InterpolateMarginDiagonalKernelReturnType
+        private struct InterpolateMarginDiagonalKernelReturnType
         {
             public float GradPerpInner;
             public float GradPerpOuter;
@@ -143,7 +145,7 @@ namespace Map
                         {
                             // t always increases towards the centre, so a is always on the background chunk and b is always on the
                             // play region chunk
-                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: z,
                                 aX: interpolationMargin,
                                 aPrevZ: z,
@@ -163,7 +165,7 @@ namespace Map
                     {
                         for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount; x++)
                         {
-                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x, 
                                 aZ: z, 
                                 aX: vertexSideCount - interpolationMargin - 1, 
                                 aPrevZ: z, 
@@ -183,7 +185,7 @@ namespace Map
                     {
                         for (int x = 0; x < vertexSideCount; x++)
                         {
-                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x, 
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x, 
                                 aZ: interpolationMargin, 
                                 aX: x, 
                                 aPrevZ: interpolationMargin + 1, 
@@ -204,7 +206,7 @@ namespace Map
                         for (int x = 0; x < vertexSideCount; x++)
                         {
                             // if (x == 0) Debug.Log("t: " + (z - (vertexSideCount - interpolationMargin - 1)) / (float)interpolationMargin);
-                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginEdgeKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: vertexSideCount - interpolationMargin - 1,
                                 aX: x,
                                 aPrevZ: vertexSideCount - interpolationMargin - 2,
@@ -225,7 +227,7 @@ namespace Map
                     for (int z = 0; z < interpolationMargin; z++)
                     {
                         // Returned dkrt is the same for all iterations
-                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, 
+                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, 
                             z: z, 
                             x: z, 
                             aZ: interpolationMargin, 
@@ -245,7 +247,7 @@ namespace Map
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, z/(float)interpolationMargin);
                         for (int x = z; x < interpolationMargin; x++)
                         {
-                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: z,
                                 aX: interpolationMargin,
                                 aPrevZ: z,
@@ -266,7 +268,7 @@ namespace Map
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, x/(float)interpolationMargin);
                         for (int z = x; z < interpolationMargin; z++)
                         {
-                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: interpolationMargin,
                                 aX: x,
                                 aPrevZ: interpolationMargin + 1,
@@ -289,7 +291,7 @@ namespace Map
                     for (int z = 0; z < interpolationMargin; z++)
                     {
                         // Returned dkrt is the same for all iterations
-                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, 
+                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, 
                             z: z, 
                             x: vertexSideCount - 1 - z, 
                             aZ: interpolationMargin, 
@@ -309,7 +311,7 @@ namespace Map
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, z/(float)interpolationMargin);
                         for (int x = vertexSideCount - interpolationMargin; x < vertexSideCount - z; x++)
                         {
-                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: z,
                                 aX: vertexSideCount - interpolationMargin - 1,
                                 aPrevZ: z,
@@ -330,7 +332,7 @@ namespace Map
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - x)/(float)interpolationMargin);
                         for (int z = vertexSideCount - 1 - x; z < interpolationMargin; z++)
                         {
-                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: interpolationMargin,
                                 aX: x,
                                 aPrevZ: interpolationMargin + 1,
@@ -353,7 +355,7 @@ namespace Map
                     for (int x = 0; x < interpolationMargin; x++)
                     {
                         // Returned dkrt is the same for all iterations
-                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, 
+                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, 
                             z: vertexSideCount - 1 - x, 
                             x: x, 
                             aZ: vertexSideCount - interpolationMargin - 1, 
@@ -373,7 +375,7 @@ namespace Map
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, x/(float)interpolationMargin);
                         for (int z = vertexSideCount - interpolationMargin; z < vertexSideCount - x; z++)
                         {
-                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: vertexSideCount - interpolationMargin - 1,
                                 aX: x,
                                 aPrevZ: vertexSideCount - interpolationMargin - 2,
@@ -394,7 +396,7 @@ namespace Map
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - z)/(float)interpolationMargin);
                         for (int x = vertexSideCount - 1 - z; x < interpolationMargin; x++)
                         {
-                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: z,
                                 aX: interpolationMargin,
                                 aPrevZ: z,
@@ -417,7 +419,7 @@ namespace Map
                     for (int i = 0; i < interpolationMargin; i++)
                     {
                         // Returned dkrt is the same for all iterations
-                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, 
+                        dkrt = InterpolateMarginDiagonalKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, 
                             z: vertexSideCount - interpolationMargin + i, 
                             x: vertexSideCount - interpolationMargin + i, 
                             aZ: vertexSideCount - interpolationMargin - 1, 
@@ -437,7 +439,7 @@ namespace Map
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - x)/(float)interpolationMargin);
                         for (int z = vertexSideCount - interpolationMargin; z < x + 1; z++)
                         {
-                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: vertexSideCount - interpolationMargin - 1,
                                 aX: x,
                                 aPrevZ: vertexSideCount - interpolationMargin - 2,
@@ -458,7 +460,7 @@ namespace Map
                         var bGradPerp = Mathf.SmoothStep(dkrt.GradPerpInner, dkrt.GradPerpOuter, (vertexSideCount - 1 - z)/(float)interpolationMargin);
                         for (int x = vertexSideCount - interpolationMargin; x < z + 1; x++)
                         {
-                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, z, x,
+                            InterpolateMarginTriangleKernel(vertices, interpolationMargin, vertexSideCount, lodFactor, z, x,
                                 aZ: z,
                                 aX: vertexSideCount - interpolationMargin - 1,
                                 aPrevZ: z,
@@ -473,14 +475,10 @@ namespace Map
                         }
                     });
                     break;
-
-                default:
-                    // Not possible
-                    break;
             }
         }
 
-        private void InterpolateMarginEdgeKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
+        private void InterpolateMarginEdgeKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, int lodFactor, int z, int x,
             int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, int bNextZ, int bNextX, float t)
         {
             // vertices is z-major, heightMap is x-major
@@ -498,11 +496,13 @@ namespace Map
 
             // Cubic Hermite interpolation
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
-            vertices[z + x*vertexSideCount].y = y;
+            var yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale) 
+                *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            vertices[z + x*vertexSideCount].y = y + yRoughness;
         }
         
         private InterpolateMarginDiagonalKernelReturnType InterpolateMarginDiagonalKernel(
-            Vector3[] vertices, int interpolationMargin, int vertexSideCount, int z, int x,
+            Vector3[] vertices, int interpolationMargin, int vertexSideCount, int lodFactor, int z, int x,
             int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, int bNextZ, int bNextX, float t)
         {
             // vertices is z-major, heightMap is x-major
@@ -526,7 +526,9 @@ namespace Map
 
             // Cubic Hermite interpolation
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
-            vertices[z + x*vertexSideCount].y = y;
+            var yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale) 
+                *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            vertices[z + x*vertexSideCount].y = y + yRoughness;
             
             // Perpendicular gradients only need to be calculated once so I do them here
             var gradPerpInner = (bGradX - bGradZ) / 2;  // Extra factor of sqrt 2 to scale gradient properly
@@ -544,7 +546,7 @@ namespace Map
         }
         
         private void InterpolateMarginTriangleKernel(Vector3[] vertices, int interpolationMargin, int vertexSideCount, 
-            int z, int x, int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, float t, int tUnitLength,
+            int lodFactor, int z, int x, int aZ, int aX, int aPrevZ, int aPrevX, int bZ, int bX, float t, int tUnitLength,
             InterpolateMarginDiagonalKernelReturnType dkrt, float bGradPerp, Vector2 bGradDir)
         {
             var diagT = tUnitLength/(float)interpolationMargin;
@@ -562,7 +564,9 @@ namespace Map
             
             // Cubic Hermite interpolation
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
-            vertices[z + x*vertexSideCount].y = y;
+            var yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale) 
+                *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            vertices[z + x*vertexSideCount].y = y + yRoughness;
         }
 
         private void UpdateMesh()
@@ -587,11 +591,13 @@ namespace Map
             {
                 var x = i / _meshData.VertexSideCount * _meshData.LODFactor;
                 var z = i % _meshData.VertexSideCount * _meshData.LODFactor;
-                var perlinX = (x + xChunkOffset + xExtraOffset) * _settings.NoiseScale;
-                var perlinY = (z + zChunkOffset + zExtraOffset) * _settings.NoiseScale;
-                var y = Mathf.PerlinNoise(perlinX, perlinY) * _settings.HeightScale
-                    - (_settings.HeightScale / 2) + _settings.AverageHeight;
-                vertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
+                var perlinX = x + xChunkOffset + xExtraOffset;
+                var perlinY = z + zChunkOffset + zExtraOffset;
+                var y = Mathf.PerlinNoise(perlinX*_settings.BaseNoiseScale, perlinY*_settings.BaseNoiseScale) 
+                    *_settings.BaseHeightScale - _settings.BaseHeightScale/2 + _settings.AverageHeight;
+                var yRoughness = Mathf.PerlinNoise(perlinX*_settings.RoughnessNoiseScale, perlinY*_settings.RoughnessNoiseScale) 
+                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+                vertices[i] = new Vector3(x * _settings.Spacing, y + yRoughness, z * _settings.Spacing);
                 uvs[i] = new Vector2((float) x / _meshData.VertexSideCount, (float) z / _meshData.VertexSideCount);
             }
             
@@ -599,11 +605,13 @@ namespace Map
             {
                 var x = i / _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
                 var z = i % _colliderMeshData.VertexSideCount * _colliderMeshData.LODFactor;
-                var perlinX = (x + xChunkOffset + xExtraOffset) * _settings.NoiseScale;
-                var perlinY = (z + zChunkOffset + zExtraOffset) * _settings.NoiseScale;
-                var y = Mathf.PerlinNoise(perlinX, perlinY) * _settings.HeightScale 
-                    - (_settings.HeightScale / 2) + _settings.AverageHeight;
-                colliderVertices[i] = new Vector3(x * _settings.Spacing, y, z * _settings.Spacing);
+                var perlinX = x + xChunkOffset + xExtraOffset;
+                var perlinY = z + zChunkOffset + zExtraOffset;
+                var y = Mathf.PerlinNoise(perlinX*_settings.BaseNoiseScale, perlinY*_settings.BaseNoiseScale) 
+                    *_settings.BaseHeightScale - _settings.BaseHeightScale/2 + _settings.AverageHeight;
+                var yRoughness = Mathf.PerlinNoise(perlinX*_settings.RoughnessNoiseScale, perlinY*_settings.RoughnessNoiseScale) 
+                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+                colliderVertices[i] = new Vector3(x * _settings.Spacing, y + yRoughness, z * _settings.Spacing);
             }
 
             for (int i = 0; i < numberOfTriangles; i++)

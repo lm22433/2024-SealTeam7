@@ -54,15 +54,18 @@ namespace Map
         [SerializeField] private float lerpFactor;
         [SerializeField] private LODInfo lodInfo;
 
+        [FormerlySerializedAs("backgroundChunkPrefab")]
         [Header("")]
         [Header("Infinite Sand Settings")]
         [Header("")]
-        [SerializeField] private GameObject backgroundChunkPrefab;
-        [SerializeField] private float backgroundAverageHeight;
-        [SerializeField] private float backgroundHeightScale;
-        [SerializeField] private float backgroundNoiseScale;
-        [SerializeField] private int backgroundInterpolationMargin;
-        [SerializeField] private int backgroundChunkMargin;
+        [SerializeField] private GameObject bgChunkPrefab;
+        [SerializeField] private float bgAverageHeight;
+        [SerializeField] private float bgBaseHeightScale;
+        [SerializeField] private float bgBaseNoiseScale;
+        [SerializeField] private float bgRoughnessHeightScale;
+        [SerializeField] private float bgRoughnessNoiseScale;
+        [SerializeField] private int bgInterpolationMargin;
+        [SerializeField] private int bgChunkMargin;
         
         [Header("")]
         [Header("Environment Settings")]
@@ -106,18 +109,20 @@ namespace Map
                 Spacing = _mapSpacing,
                 LODInfo = lodInfo,
                 ColliderEnabled = colliderEnabled,
-                AverageHeight = backgroundAverageHeight,
-                HeightScale = backgroundHeightScale,
-                NoiseScale = backgroundNoiseScale,
-                InterpolationMargin = backgroundInterpolationMargin
+                AverageHeight = bgAverageHeight,
+                BaseHeightScale = bgBaseHeightScale,
+                BaseNoiseScale = bgBaseNoiseScale,
+                RoughnessHeightScale = bgRoughnessHeightScale,
+                RoughnessNoiseScale = bgRoughnessNoiseScale,
+                InterpolationMargin = bgInterpolationMargin
             };
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap);
 
-            for (int z = -backgroundChunkMargin; z < chunkRow + backgroundChunkMargin; z++)
+            for (int z = -bgChunkMargin; z < chunkRow + bgChunkMargin; z++)
             {
-                for (int x = -backgroundChunkMargin; x < chunkRow + backgroundChunkMargin; x++)
+                for (int x = -bgChunkMargin; x < chunkRow + bgChunkMargin; x++)
                 {
                     // Play region chunks
                     if (z >= 0 && z < chunkRow && x >= 0 && x < chunkRow)
@@ -132,7 +137,7 @@ namespace Map
                     // Background chunks
                     else
                     {
-                        var chunk = Instantiate(backgroundChunkPrefab,
+                        var chunk = Instantiate(bgChunkPrefab,
                             new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing),
                             Quaternion.identity, chunkParent.transform).GetComponent<BackgroundChunk>();
                         backgroundChunkSettings.X = x;
