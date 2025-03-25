@@ -484,10 +484,10 @@ namespace Map
             // vertices is z-major, heightMap is x-major
             var a = vertices[aZ + aX*vertexSideCount].y;
             var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
-            var aGrad = (a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
+            var aGrad = 0; //(a - aPrev) / _settings.Spacing * interpolationMargin;  // Gradient is difference in y per unit of t
             var b = _heightMap[bZ*_heightMapWidth + bX];
             var bNext = _heightMap[bNextZ*_heightMapWidth + bNextX];
-            var bGrad = (bNext - b) / _settings.Spacing * interpolationMargin;
+            var bGrad = 0; //(bNext - b) / _settings.Spacing * interpolationMargin;
 
             // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
             //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
@@ -496,8 +496,15 @@ namespace Map
 
             // Cubic Hermite interpolation
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
-            var yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale) 
-                *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            
+            float yRoughness;
+            if (z != 0 && x != 0 && z != vertexSideCount - 1 && x != vertexSideCount - 1)
+            {
+                yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale)
+                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            }
+            else yRoughness = 0;
+            
             vertices[z + x*vertexSideCount].y = y + yRoughness;
         }
         
@@ -511,13 +518,13 @@ namespace Map
             var aPrevAlongZ = vertices[aPrevZ + aX*vertexSideCount].y;
             var aGradX = (a - aPrevAlongX) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var aGradZ = (a - aPrevAlongZ) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
-            var aGrad = (aGradX + aGradZ) / Mathf.Sqrt(2);
+            var aGrad = 0; //(aGradX + aGradZ) / Mathf.Sqrt(2);
             var b = _heightMap[bZ*_heightMapWidth + bX];
             var bNextAlongX = _heightMap[bZ*_heightMapWidth + bNextX];
             var bNextAlongZ = _heightMap[bNextZ*_heightMapWidth + bX];
             var bGradX = (bNextAlongX - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
             var bGradZ = (bNextAlongZ - b) / _settings.Spacing * (interpolationMargin * Mathf.Sqrt(2));
-            var bGrad = (bGradX + bGradZ) / Mathf.Sqrt(2);
+            var bGrad = 0; //(bGradX + bGradZ) / Mathf.Sqrt(2);
 
             // if (vertices.Equals(_colliderMeshData.Vertices) && interpolationDirection == InterpolationDirection.LeftEdge) {
             //     if (z == 0) Debug.Log("a: " + a + " aPrev: " + aPrev + " m_a: " + aGrad + " b: " + b + " bNext: " + bNext + " m_b: " + bGrad + " spacing: " + _settings.Spacing);
@@ -526,8 +533,15 @@ namespace Map
 
             // Cubic Hermite interpolation
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
-            var yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale) 
-                *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            
+            float yRoughness;
+            if (z != 0 && x != 0 && z != vertexSideCount - 1 && x != vertexSideCount - 1)
+            {
+                yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale)
+                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            }
+            else yRoughness = 0;
+            
             vertices[z + x*vertexSideCount].y = y + yRoughness;
             
             // Perpendicular gradients only need to be calculated once so I do them here
@@ -554,18 +568,25 @@ namespace Map
                             (6*(dkrt.A - dkrt.B) + 3*dkrt.AGrad + 3*dkrt.BGrad)*diagT*diagT;
             var bGradParaScaled = bGradPara / interpolationMargin * tUnitLength / Mathf.Sqrt(2);
             var bGradPerpScaled = bGradPerp / interpolationMargin * tUnitLength;
-            var bGrad = (bGradDir.x*bGradParaScaled + bGradDir.y*bGradPerpScaled) / Mathf.Sqrt(2);
+            var bGrad = 0; //(bGradDir.x*bGradParaScaled + bGradDir.y*bGradPerpScaled) / Mathf.Sqrt(2);
             
             // vertices is z-major, heightMap is x-major
             var a = vertices[aZ + aX*vertexSideCount].y;
             var aPrev = vertices[aPrevZ + aPrevX*vertexSideCount].y;
-            var aGrad = (a - aPrev) / _settings.Spacing * tUnitLength;  // Gradient is difference in y per unit of t
+            var aGrad = 0; //(a - aPrev) / _settings.Spacing * tUnitLength;  // Gradient is difference in y per unit of t
             var b = vertices[bZ + bX*vertexSideCount].y;
             
             // Cubic Hermite interpolation
             var y = a + aGrad * t + (3 * (b - a) - 2 * aGrad - bGrad) * t * t + (2 * (a - b) + aGrad + bGrad) * t * t * t;
-            var yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale) 
-                *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            
+            float yRoughness;
+            if (z != 0 && x != 0 && z != vertexSideCount - 1 && x != vertexSideCount - 1)
+            {
+                yRoughness = Mathf.PerlinNoise(x*lodFactor*_settings.RoughnessNoiseScale, z*lodFactor*_settings.RoughnessNoiseScale)
+                    *_settings.RoughnessHeightScale - _settings.RoughnessHeightScale/2;
+            }
+            else yRoughness = 0;
+            
             vertices[z + x*vertexSideCount].y = y + yRoughness;
         }
 
