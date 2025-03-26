@@ -126,16 +126,16 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _TransparencyMin: 0.15
+    - _TransparencyMin: 0.08
     - _UVScale: 0.6
     - _WorkflowMode: 1
     - _ZWrite: 1
     - _offset: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _CloudColour: {r: 0.1792453, g: 0, b: 0, a: 1}
-    - _CloudDirection: {r: 0.2, g: 0.03, b: 0, a: 0}
-    - _CloudTiling: {r: 5, g: 5, b: 0, a: 0}
+    - _CloudColour: {r: 0.44025147, g: 0, b: 0, a: 1}
+    - _CloudDirection: {r: 0.1, g: 0.03, b: 0, a: 0}
+    - _CloudTiling: {r: 10, g: 10, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _IntersectionColour: {r: 3.258502, g: 0.14565527, b: 0.112715095, a: 0.68235296}
