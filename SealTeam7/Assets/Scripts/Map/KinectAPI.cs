@@ -281,24 +281,25 @@ namespace Map
             
 
             stopwatch.Restart();
-            //_tmpImage = _tmpImage.Sobel(0, 1, 3);
-
-            // Write new height data to _heightMap
-            Parallel.For(0, _height * _width, i => { 
-                int x = i % _width;
-                int y = i / _width;
-
+            Parallel.For(0, (_height + 1)*(_width + 1), i => { 
+                int x = i % (_width + 1);
+                int y = i / (_width + 1);
                 var vec2 = new Vector2(x, y);
-                if ((handLandmarks.Left != null && (bboxLeftHand.Contains(vec2) || bboxLeftWrist.Contains(vec2))) || 
-                    (handLandmarks.Right != null && (bboxRightHand.Contains(vec2) || bboxRightWrist.Contains(vec2))))
-                {
-                    _heightMask.Data[y, x, 0] = 1f;
-                }
 
-                if (_heightMask.Data[y, x, 0] == 0f)  // if pixel is not part of the hand mask
+                // if pixel is not part of the arm mask or the hand/wrist mask
+                if (_heightMask.Data[y, x, 0] == 0f && 
+                    (handLandmarks.Left == null || (!bboxLeftHand.Contains(vec2) && !bboxLeftWrist.Contains(vec2))) && 
+                    (handLandmarks.Right == null || (!bboxRightHand.Contains(vec2) && !bboxRightWrist.Contains(vec2))))  
                 {
-                    _maskedHeightImage.Data[y, x, 0] = _rawHeightImage.Data[y, x, 0];
-                    //_gradientMap[y, x] = _tmpImage.Data[y, x, 0];
+                    // Apply adaptive lerping
+                    var currentHeight = _heightMap[y, x];
+                    var newHeight = _rawHeightImage.Data[y, x, 0] * _heightScale;
+                    var distance = Mathf.Abs(currentHeight - newHeight);
+                    // Debug.Log("distance: " + distance);
+                    // var lerpFactor = Mathf.Clamp(distance / 30f, _minLerpFactor, _maxLerpFactor);
+                    var lerpFactor = distance < 15f ? _minLerpFactor : _maxLerpFactor;
+                    // Debug.Log("Lerp factor: " + lerpFactor);
+                    _maskedHeightImage.Data[y, x, 0] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
                 }
             });
             stopwatch.Stop();
@@ -312,19 +313,12 @@ namespace Map
 
             stopwatch.Restart();
             // Write new height data to _heightMap
-            Parallel.For(0, _height * _width, i => { 
-                int x = i % _width;
-                int y = i / _width;
-
-                var currentHeight = _heightMap[y, x];
-                var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
-                var distance = Mathf.Abs(currentHeight - newHeight);
-                var lerpFactor = Mathf.Clamp(distance / 50f, _minLerpFactor, _maxLerpFactor);
-                // Debug.Log("Lerp factor: " + lerpFactor);
-                _heightMap[y, x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
+            Parallel.For(0, (_height + 1)*(_width + 1), i => { 
+                int x = i % (_width + 1);
+                int y = i / (_width + 1);
+                _heightMap[y, x] = _tmpImage.Data[y, x, 0];
   
             });
-            
             stopwatch.Stop();
             Console.WriteLine($"Loop 3: {stopwatch.ElapsedMilliseconds} ms");
         }
