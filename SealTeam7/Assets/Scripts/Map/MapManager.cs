@@ -247,6 +247,33 @@ namespace Map
                     }
                     Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMax), Vector3.up * 1000f);
                 }
+                
+                // Draw wrist bounding boxes
+                Gizmos.color = Color.yellow;
+                if (_kinect.BboxLeftWrist.HasValue)
+                {
+                    var bb = _kinect.BboxLeftWrist.Value;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Gizmos.DrawRay(new Vector3(bb.xMin + (i/4f)*bb.width, 0, bb.yMin), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMin, 0, bb.yMin + ((i+1)/4f)*bb.height), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMin + ((i+1)/4f)*bb.width, 0, bb.yMax), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMin + (i/4f)*bb.height), Vector3.up * 1000f);
+                    }
+                    Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMax), Vector3.up * 1000f);
+                }
+                if (_kinect.BboxRightWrist.HasValue)
+                {
+                    var bb = _kinect.BboxRightWrist.Value;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Gizmos.DrawRay(new Vector3(bb.xMin + (i/4f)*bb.width, 0, bb.yMin), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMin, 0, bb.yMin + ((i+1)/4f)*bb.height), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMin + ((i+1)/4f)*bb.width, 0, bb.yMax), Vector3.up * 1000f);
+                        Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMin + (i/4f)*bb.height), Vector3.up * 1000f);
+                    }
+                    Gizmos.DrawRay(new Vector3(bb.xMax, 0, bb.yMax), Vector3.up * 1000f);
+                }
 
                 // Draw hand landmarks
                 /* TODO Think about which landmark(s) to use for finding y coordinate. Consider that if the region around the landmark is

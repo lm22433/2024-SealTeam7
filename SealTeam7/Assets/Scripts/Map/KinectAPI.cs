@@ -62,6 +62,8 @@ namespace Map
         // public for gizmos
         public Rect? BboxLeft = null;
         public Rect? BboxRight = null;
+        public Rect? BboxLeftWrist = null;
+        public Rect? BboxRightWrist = null;
         public HandLandmarks HandLandmarks;
         public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
@@ -258,10 +260,11 @@ namespace Map
                 bboxLeftHand.xMax = handLandmarks.Left.Max(p => p.x) + paddingHand;
                 bboxLeftHand.yMin = handLandmarks.Left.Min(p => p.z) - paddingHand;
                 bboxLeftHand.yMax = handLandmarks.Left.Max(p => p.z) + paddingHand;
-                bboxLeftWrist.xMin = handLandmarks.Left[0].x - paddingWrist;
-                bboxLeftWrist.xMax = handLandmarks.Left[0].x + paddingWrist;
-                bboxLeftWrist.yMin = handLandmarks.Left[0].z - paddingWrist;
-                bboxLeftWrist.yMax = handLandmarks.Left[0].z + paddingWrist;
+                var wristCentre = handLandmarks.Left[0] + (handLandmarks.Left[0] - handLandmarks.Left[9]);
+                bboxLeftWrist.xMin = wristCentre.x - paddingWrist;
+                bboxLeftWrist.xMax = wristCentre.x + paddingWrist;
+                bboxLeftWrist.yMin = wristCentre.z - paddingWrist;
+                bboxLeftWrist.yMax = wristCentre.z + paddingWrist;
                 // Debug.Log($"Left hand bbox: {bboxLeft}");
             }
             if (handLandmarks.Right != null)
@@ -270,14 +273,17 @@ namespace Map
                 bboxRightHand.xMax = handLandmarks.Right.Max(p => p.x) + paddingHand;
                 bboxRightHand.yMin = handLandmarks.Right.Min(p => p.z) - paddingHand;
                 bboxRightHand.yMax = handLandmarks.Right.Max(p => p.z) + paddingHand;
-                bboxRightWrist.xMin = handLandmarks.Right[0].x - paddingWrist;
-                bboxRightWrist.xMax = handLandmarks.Right[0].x + paddingWrist;
-                bboxRightWrist.yMin = handLandmarks.Right[0].z - paddingWrist;
-                bboxRightWrist.yMax = handLandmarks.Right[0].z + paddingWrist;
+                var wristCentre = handLandmarks.Right[0] + (handLandmarks.Right[0] - handLandmarks.Right[9]);
+                bboxRightWrist.xMin = wristCentre.x - paddingWrist;
+                bboxRightWrist.xMax = wristCentre.x + paddingWrist;
+                bboxRightWrist.yMin = wristCentre.z - paddingWrist;
+                bboxRightWrist.yMax = wristCentre.z + paddingWrist;
                 // Debug.Log($"Right hand bbox: {bboxRight}");
             }
             BboxLeft = bboxLeftHand;
             BboxRight = bboxRightHand;
+            BboxLeftWrist = bboxLeftWrist;
+            BboxRightWrist = bboxRightWrist;
             
 
             stopwatch.Restart();
