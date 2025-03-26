@@ -2,6 +2,7 @@ using System;
 using Effects;
 using Enemies;
 using TMPro;
+using UI;
 using UnityEngine;
 
 namespace Game
@@ -121,6 +122,7 @@ namespace Game
             _isGameOver = true;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
 
+            MenuManager.GetInstance().TriggerGameOverMenu(false);
             EnemyPool.GetInstance().ClearPool();
         }
 
@@ -132,7 +134,8 @@ namespace Game
             Debug.Log($"You died! Score: {_score} Total Kills: {_totalKills}");
 
             _isGameOver = true;
-
+            
+            MenuManager.GetInstance().TriggerGameOverMenu(true);
             EnemyPool.GetInstance().ClearPool();
         }
 

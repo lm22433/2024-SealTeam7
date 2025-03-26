@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class MenuHandler : MonoBehaviour
+    public class MenuManager : MonoBehaviour
     {
         [Header("Game Settings")]
         [SerializeField] private Difficulty[] difficulties;
@@ -22,6 +22,7 @@ namespace UI
         [SerializeField] private GameObject mainMenu;
         [SerializeField] private GameObject settingsMenu;
         [SerializeField] private GameObject playerHUD;
+        [SerializeField] private GameObject gameOverMenu;
 
         [Header("Settings Menu References")]
         [SerializeField] private GameObject gameSettings;
@@ -36,6 +37,9 @@ namespace UI
         [SerializeField] private Button endlessModeButton;
         [SerializeField] private Button sandboxModeButton;
         [SerializeField] private Button handTrackingButton;
+        
+        [Header("Game Over Menu Settings")]
+        [SerializeField] private TMP_Text gameOverTitleText;
 
         [Header("Sprites")] 
         [SerializeField] private Sprite defaultButtonSprite;
@@ -47,22 +51,31 @@ namespace UI
         [SerializeField] private AK.Wwise.Event mainMenuMusic;
         [SerializeField] private AK.Wwise.Event introMusic;
         [SerializeField] private AK.Wwise.Event gameAmbience;
-        
+
+        private static MenuManager _instance;
+
         private bool _paused;
         private bool _isGameRunning = false;
         private bool _isGracefulShutdown = false;
 
-        private void Awake() {
+        private void Awake()
+        {
+            if (_instance == null) _instance = this;
+            else Destroy(gameObject);
+
             mainMenu.SetActive(true);
             settingsMenu.SetActive(false);
             playerHUD.SetActive(false);
+            gameOverMenu.SetActive(false);
         }
 
-        private void Start() {
+        private void Start()
+        {
             mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
         }
 
-        private void OnApplicationQuit() {
+        private void OnApplicationQuit()
+        {
             _isGracefulShutdown = true;
 
             mainMenuMusic.Stop(gameObject);
@@ -70,44 +83,54 @@ namespace UI
             gameAmbience.Stop(gameObject);
         }
 
-        void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
-            if (!_isGameRunning && !_isGracefulShutdown) {
+        void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info)
+        {
+            if (!_isGameRunning && !_isGracefulShutdown)
+            {
                 mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
             }
         }
 
-        void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
-            if (_isGameRunning && !_isGracefulShutdown) {
+        void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info)
+        {
+            if (_isGameRunning && !_isGracefulShutdown)
+            {
                 gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
             }
         }
 
         void Update()
         {
-            if (Input.GetKeyDown("escape")) {
+            if (Input.GetKeyDown("escape"))
+            {
                 PauseGame();
             }
 
-            if (Input.GetKeyDown("r")) {
+            if (Input.GetKeyDown("r"))
+            {
                 GameManager.GetInstance().StartGame();
             }
         }
 
-        private void PauseGame() {
+        private void PauseGame()
+        {
             _paused = !_paused;
             GameManager.GetInstance().GameActive = !_paused;
             Time.timeScale = (_paused) ? 0 : 1;
-            
+
             playerHUD.SetActive(!_paused);
-            if (_paused) {
+            if (_paused)
+            {
                 OnSettingButtonClicked();
-            } else{
+            }
+            else
+            {
                 settingsMenu.SetActive(false);
             }
-                
         }
-        
-        private void InitialiseSettings() {
+
+        private void InitialiseSettings()
+        {
             List<string> difficultyNames = difficulties.Select(diff => diff.difficultyName).ToList();
 
             difficultyDropdown.ClearOptions();
@@ -115,24 +138,31 @@ namespace UI
             difficultyDropdown.value = currentDifficulty;
             difficultyDropdown.RefreshShownValue();
 
-            difficultyDropdown.onValueChanged.AddListener(_ =>
-            {
-                currentDifficulty = difficultyDropdown.value;
-            });
+            difficultyDropdown.onValueChanged.AddListener(_ => { currentDifficulty = difficultyDropdown.value; });
 
             durationSlider.maxValue = maxGameDuration;
             durationSlider.value = currentDuration;
             durationSlider.onValueChanged.AddListener(_ =>
             {
-                currentDuration = (int) durationSlider.value;
+                currentDuration = (int)durationSlider.value;
 
                 var seconds = (currentDuration % 60 < 10) ? $"0{currentDuration % 60}" : $"{currentDuration % 60}";
                 durationSliderText.SetText($"{currentDuration / 60}:{seconds}");
             });
-
         }
 
-        public void OnPlayButtonClicked() {
+        public void TriggerGameOverMenu(bool died)
+        {
+            mainMenu.SetActive(false);
+            settingsMenu.SetActive(false);
+            playerHUD.SetActive(false);
+            gameOverMenu.SetActive(true);
+            
+            gameOverTitleText.SetText(died ? "YOU DIED!" : "GAME OVER!");
+        }
+
+        public void OnPlayButtonClicked()
+        {
             mainMenuMusic.Stop(gameObject, 200, AkCurveInterpolation.AkCurveInterpolation_Exp1);
             introMusic.Post(gameObject);
             gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
@@ -148,19 +178,23 @@ namespace UI
             _isGameRunning = true;
         }
 
-        public void OnSettingButtonClicked() {
+        public void OnSettingButtonClicked()
+        {
             mainMenu.SetActive(false);
             settingsMenu.SetActive(true);
             OnGameSettingsButtonClicked();
-            
+
             InitialiseSettings();
         }
 
-        public void OnBackButtonClicked() {
-            if (_isGameRunning) {
+        public void OnBackButtonClicked()
+        {
+            if (_isGameRunning)
+            {
                 PauseGame();
-
-            } else {
+            }
+            else
+            {
                 mainMenu.SetActive(true);
                 settingsMenu.SetActive(false);
             }
@@ -171,58 +205,58 @@ namespace UI
             gameSettings.SetActive(true);
             audioSettings.SetActive(false);
             debugSettings.SetActive(false);
-            
+
             gameSettingsButton.image.sprite = highlightedButtonSprite;
             audioSettingsButton.image.sprite = defaultButtonSprite;
             debugSettingsButton.image.sprite = defaultButtonSprite;
-            
+
             endlessModeButton.image.sprite = endlessMode ? enabledButtonSprite : disabledButtonSprite;
             sandboxModeButton.image.sprite = sandboxMode ? enabledButtonSprite : disabledButtonSprite;
             handTrackingButton.image.sprite = handTracking ? enabledButtonSprite : disabledButtonSprite;
         }
-        
+
         public void OnAudioSettingsButtonClicked()
         {
             gameSettings.SetActive(false);
             audioSettings.SetActive(true);
             debugSettings.SetActive(false);
-            
+
             gameSettingsButton.image.sprite = defaultButtonSprite;
             audioSettingsButton.image.sprite = highlightedButtonSprite;
             debugSettingsButton.image.sprite = defaultButtonSprite;
         }
-        
+
         public void OnDebugSettingsButtonClicked()
         {
             gameSettings.SetActive(false);
             audioSettings.SetActive(false);
             debugSettings.SetActive(true);
-            
+
             gameSettingsButton.image.sprite = defaultButtonSprite;
             audioSettingsButton.image.sprite = defaultButtonSprite;
             debugSettingsButton.image.sprite = highlightedButtonSprite;
         }
-        
+
         public void OnEndlessModeButtonClicked()
         {
             endlessMode = !endlessMode;
             endlessModeButton.image.sprite = endlessMode ? enabledButtonSprite : disabledButtonSprite;
         }
-        
+
         public void OnSandboxModeButtonClicked()
         {
             sandboxMode = !sandboxMode;
             sandboxModeButton.image.sprite = sandboxMode ? enabledButtonSprite : disabledButtonSprite;
         }
-        
+
         public void OnHandTrackingButtonClicked()
         {
             handTracking = !handTracking;
             handTrackingButton.image.sprite = handTracking ? enabledButtonSprite : disabledButtonSprite;
         }
 
-        public void OnExitButtonClicked() {
-            Application.Quit();
-        }
+        public void OnExitButtonClicked() => Application.Quit();
+
+        public static MenuManager GetInstance() => _instance;
     }
 }
