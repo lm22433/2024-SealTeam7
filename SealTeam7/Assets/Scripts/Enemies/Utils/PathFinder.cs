@@ -15,8 +15,6 @@ namespace Enemies.Utils
         public int2 Index;
         public Node Parent;
         public Vector3 WorldPos;
-        public float GradientX;
-        public float GradientZ;
         public readonly List<int2> NeighbourIndices;
 
         public Node(int2 index, Vector3 worldPos, List<int2> neighbours)
@@ -73,12 +71,6 @@ namespace Enemies.Utils
 
         private static float Distance(Node current, Node goal, Func<Node, Node, float> heuristic)
         {
-            // Gradient Map not working?
-            
-            // var distance = goal.WorldPos - current.WorldPos;
-            // var angle = Mathf.Atan2(distance.z, distance.x) * Mathf.Rad2Deg;
-            // var gradientWeightOld = (current.GradientX * Mathf.Cos(angle) + current.GradientZ * Mathf.Sin(angle)) * 100f;
-
             float distanceWeight;
             var heuristicWeight = heuristic(current, goal);
             
@@ -120,18 +112,6 @@ namespace Enemies.Utils
                 for (int x = 0; x < _map.GetLength(1); x++)
                 {
                     _map[z, x].WorldPos.y = heights[z * heights.GetLength(0) / _map.GetLength(0), x * heights.GetLength(1) / _map.GetLength(1)];
-                }
-            }
-        }
-        
-        public void UpdateGradient(ref float2[,] grads)
-        {
-            for (int z = 0; z < _map.GetLength(0); z++)
-            {
-                for (int x = 0; x < _map.GetLength(1); x++)
-                {
-                    _map[z, x].GradientZ = grads[z * grads.GetLength(0) / _map.GetLength(0), x * grads.GetLength(1) / _map.GetLength(1)].x;
-                    _map[z, x].GradientX = grads[z * grads.GetLength(0) / _map.GetLength(0), x * grads.GetLength(1) / _map.GetLength(1)].y;
                 }
             }
         }

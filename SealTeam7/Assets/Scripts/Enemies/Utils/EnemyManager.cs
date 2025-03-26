@@ -220,7 +220,6 @@ namespace Enemies.Utils
             {
                 _lastMapUpdate = 0;
                 _pathFinder.UpdateMap(ref MapManager.GetInstance().GetHeightMap());
-                _pathFinder.UpdateGradient(ref MapManager.GetInstance().GetGradientMap());
             }
         }
         

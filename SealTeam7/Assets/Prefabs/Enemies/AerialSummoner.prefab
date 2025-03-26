@@ -54,11 +54,11 @@ MonoBehaviour:
   moveSpeed: 20
   acceleration: 20
   groundedOffset: 5
-  flyHeight: 300
+  flyHeight: 400
   aimSpeed: 10
   attackRange: 0
   attackInterval: 12
-  stopShootingThreshold: 150
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 0
   attackDamage: 2
   killScore: 0
@@ -93,6 +93,7 @@ MonoBehaviour:
   defianceThreshold: 0
   sinkFactor: 0
   fallDeathVelocityY: 0
+  jumpForce: 10
   mainPropeller: {fileID: 1213454741650169418}
   subPropeller: {fileID: 3281944060087321159}
   propellerSpeed: 1000
