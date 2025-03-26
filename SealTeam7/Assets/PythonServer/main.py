@@ -45,7 +45,7 @@ def timer(name):
     start = time.time()
     yield
     end = time.time()
-    # print(f"{name}: {int((end - start)*1000)} ms")
+    print(f"{name}: {int((end - start)*1000)} ms")
     
 def get_path(path):
     dir = os.path.dirname(os.path.abspath(__file__))
@@ -108,12 +108,13 @@ with GestureRecognizer.create_from_options(gesture_recognizer_options) as gestur
     try:
         while not shutdown_flag:
             # Wait for new frame with a timeout to check shutdown flag
-            result = win32event.WaitForSingleObject(ready_event, 100)  # 100ms timeout
-            if result == win32event.WAIT_TIMEOUT:
-                continue
-            elif result != win32event.WAIT_OBJECT_0:
-                # This should never happen
-                raise Exception("WaitForSingleObject returned unexpected result: " + str(result))
+            with timer("Waiting for c#"):
+                result = win32event.WaitForSingleObject(ready_event, 100)  # 100ms timeout
+                if result == win32event.WAIT_TIMEOUT:
+                    continue
+                elif result != win32event.WAIT_OBJECT_0:
+                    # This should never happen
+                    raise Exceptionption("WaitForSingleObject returned unexpected result: " + str(result))
 
             # Read the frame
             with timer("Reading frame"):
