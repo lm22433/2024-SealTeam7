@@ -834,15 +834,15 @@ MonoBehaviour:
     lod: 1
     colliderLod: 4
     pathingLod: 10
-  bgChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
-  bgAverageHeight: 150
-  bgBaseHeightScale: 50
-  bgBaseNoiseScale: 0.01
-  bgRoughnessHeightScale: 5
-  bgRoughnessNoiseScale: 0.05
-  bgInterpolationMargin: 100
-  bgChunkMargin: 1
-  isKinectPresent: 1
+  bgChunkPrefab: {fileID: 0}
+  bgAverageHeight: 0
+  bgBaseHeightScale: 0
+  bgBaseNoiseScale: 0
+  bgRoughnessHeightScale: 0
+  bgRoughnessNoiseScale: 0
+  bgInterpolationMargin: 0
+  bgChunkMargin: 0
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
