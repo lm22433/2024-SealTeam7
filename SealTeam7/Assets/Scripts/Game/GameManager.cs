@@ -25,8 +25,6 @@ namespace Game
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private GameObject healthBar;
-        [SerializeField] private TMP_Text gameoverScoreText;
-        [SerializeField] private TMP_Text gameoverText;
 
         [Header("Sound Options")]
         [SerializeField] private AK.Wwise.Event celebrationFanfare;
@@ -103,8 +101,6 @@ namespace Game
             _lastSurvivalBonusTime = Time.time;
 
             EnemyManager.GetInstance().StartSpawning();
-
-            gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(false);
             
             Debug.Log("Game started!");
         }
@@ -125,10 +121,6 @@ namespace Game
             _isGameOver = true;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
 
-            gameoverText.SetText("Game over!");
-            gameoverScoreText.SetText($"Score: {_score}");
-            gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
-
             EnemyPool.GetInstance().ClearPool();
         }
 
@@ -140,9 +132,6 @@ namespace Game
             Debug.Log($"You died! Score: {_score} Total Kills: {_totalKills}");
 
             _isGameOver = true;
-            gameoverScoreText.SetText($"Score: {_score}");
-            gameoverText.SetText("You died :(");
-            gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(true);
 
             EnemyPool.GetInstance().ClearPool();
         }
