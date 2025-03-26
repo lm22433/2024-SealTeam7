@@ -319,7 +319,8 @@ namespace Map
                 var currentHeight = _heightMap[y, x];
                 var newHeight = _tmpImage.Data[y, x, 0] * _heightScale;
                 var distance = Mathf.Abs(currentHeight - newHeight);
-                var lerpFactor = Mathf.Clamp(distance / 10f, _minLerpFactor, _maxLerpFactor);
+                var lerpFactor = Mathf.Clamp(distance / 50f, _minLerpFactor, _maxLerpFactor);
+                // Debug.Log("Lerp factor: " + lerpFactor);
                 _heightMap[y, x] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
   
             });

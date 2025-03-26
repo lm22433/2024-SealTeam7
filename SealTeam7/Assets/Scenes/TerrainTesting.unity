@@ -1871,10 +1871,10 @@ MonoBehaviour:
   yOffsetEnd: 985
   minimumSandDepth: 850
   maximumSandDepth: 1180
-  blurRadius: 2
-  blurSigma: 5
-  minLerpFactor: 0.1
-  maxLerpFactor: 0.7
+  blurRadius: 1
+  blurSigma: 1
+  minLerpFactor: 0.01
+  maxLerpFactor: 1
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 880
   chunkRow: 1
