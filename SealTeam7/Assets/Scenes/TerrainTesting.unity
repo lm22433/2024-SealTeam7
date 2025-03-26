@@ -1869,7 +1869,7 @@ MonoBehaviour:
   xOffsetEnd: 1360
   yOffsetStart: 105
   yOffsetEnd: 985
-  minimumSandDepth: 720
+  minimumSandDepth: 850
   maximumSandDepth: 1180
   blurRadius: 2
   blurSigma: 5
