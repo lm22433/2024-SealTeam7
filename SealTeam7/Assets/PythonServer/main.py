@@ -1,5 +1,7 @@
 print("Initialising server...")
 
+import argparse
+import sys
 import struct
 import mmap
 import time
@@ -7,12 +9,12 @@ import signal
 import os
 from contextlib import contextmanager
 
-import win32event
 import cv2
 import mediapipe as mp
 import numpy as np
 from mediapipe.tasks.python import BaseOptions
 from mediapipe.tasks.python.vision import *
+
 
 # Configuration
 COLOUR_IMAGE_FULL_WIDTH = 1920
@@ -29,6 +31,91 @@ DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
 GESTURE_RECOGNITION_MODEL_PATH = 'hand_landmarking_model.task'
 VISUALISE_INFERENCE_RESULTS = False
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
+
+
+class IPC:
+    def __init__(self, platform):
+        self.platform = platform
+        self.colour_image_buffer = None
+        self.hand_landmarks_buffer = None
+        # self.gestures_buffer = None
+            
+    def wait_ready(self):
+        pass
+    
+    def set_done(self):
+        pass
+
+    def close(self):
+        self.colour_image_buffer.close()
+        self.hand_landmarks_buffer.close()
+        # self.gestures_buffer.close()
+
+   
+class WindowsIPC(IPC):
+    def __init__(self):
+        super().__init__('windows')
+        import win32event
+        self.__ready_event = win32event.CreateEvent(None, 0, 0, READY_EVENT_NAME)
+        self.__done_event = win32event.CreateEvent(None, 0, 0, DONE_EVENT_NAME)
+        self.colour_image_buffer = mmap.mmap(-1, 1920 * 1080 * 3, access=mmap.ACCESS_WRITE, tagname="colour_image")
+        self.hand_landmarks_buffer = mmap.mmap(-1, 21 * 3 * 2 * 4, access=mmap.ACCESS_WRITE, tagname="hand_landmarks")
+        # self.gestures_buffer = mmap.mmap(-1, 2 * 4, access=mmap.ACCESS_WRITE, tagname="gestures")
+        
+    def wait_ready(self):
+        while not shutdown_flag:
+            # Wait for new frame with a timeout to check shutdown flag
+            result = win32event.WaitForSingleObject(self.__ready_event, 100)  # 100ms timeout
+            if result == win32event.WAIT_TIMEOUT:
+                continue  # Continue waiting
+            elif result != win32event.WAIT_OBJECT_0:
+                # This should never happen
+                raise Exception("WaitForSingleObject returned unexpected result: " + str(result))
+            else:
+                break  # Done waiting
+                
+    def set_done(self):
+        win32event.SetEvent(self.__done_event)
+        
+    def close(self):
+        super().close()
+                
+                
+class LinuxIPC(IPC):
+    def __init__(self):
+        super().__init__('linux')
+        import posix_ipc
+        self.__ready_event = posix_ipc.Semaphore(READY_EVENT_NAME, posix_ipc.O_CREAT, initial_value=0)
+        self.__done_event = posix_ipc.Semaphore(DONE_EVENT_NAME, posix_ipc.O_CREAT, initial_value=0)
+        # TODO: linux doesn't support tagname, so I think I need to specify fileno
+        self.colour_image_buffer = mmap.mmap(-1, 1920 * 1080 * 3, access=mmap.ACCESS_WRITE, tagname="colour_image")
+        self.hand_landmarks_buffer = mmap.mmap(-1, 21 * 3 * 2 * 4, access=mmap.ACCESS_WRITE, tagname="hand_landmarks")
+        # self.gestures_buffer = mmap.mmap(-1, 2 * 4, access=mmap.ACCESS_WRITE, tagname="gestures")
+        
+    def wait_ready(self):
+        while not shutdown_flag:
+            # Wait for new frame with a timeout to check shutdown flag
+            try:
+                self.__ready_event.acquire(100)  # wait for 100ms at a time
+                break  # Done waiting
+            except posix_ipc.BusyError:
+                continue  # Continue waiting
+                
+    def set_done(self):
+        self.__done_event.release()
+        
+    def close(self):
+        self.__ready_event.close()
+        self.__done_event.close()
+        super().close()
+
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Shifting Sands hand landmarking server.')
+parser.add_argument('--platform', choices=['windows', 'linux'], required=True, help='Platform to run the server on ("windows" or "linux").')
+args = parser.parse_args()
+
+ipc = WindowsIPC() if args.platform == 'windows' else LinuxIPC()
 
 # Global flag for graceful shutdown
 shutdown_flag = False
