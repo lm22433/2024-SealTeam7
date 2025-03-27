@@ -147,7 +147,7 @@ def get_path(path):
     return os.path.join(dir, path)
 
 gesture_recognizer_options = HandLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path=get_path(GESTURE_RECOGNITION_MODEL_PATH)),
+    base_options=BaseOptions(model_asset_path=get_path(GESTURE_RECOGNITION_MODEL_PATH), delegate=BaseOptions.Delegate.GPU),
     running_mode=RunningMode.VIDEO,
     num_hands=2,
     min_hand_detection_confidence=0.05,
