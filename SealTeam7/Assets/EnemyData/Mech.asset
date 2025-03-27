@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7eb84f4a579217946a2f6ca9ce3bdfd0, type: 3}
-  m_Name: Soldier
+  m_Name: Mech
   m_EditorClassIdentifier: 
-  prefab: {fileID: 3438950281418470787, guid: 962012538330bd44cb02fd4d3b551c22, type: 3}
-  enemyType: 0
+  prefab: {fileID: 2772852043545815630, guid: 191fdb4075577364ea803550cba94bc0, type: 3}
+  enemyType: 15
   groupSpacing: 1.2
-  startingWave: 5
-  baseGroupSpawnSize: 5
-  groupSpawnSizeGrowthRate: 3
+  startingWave: 1
+  baseGroupSpawnSize: 1
+  groupSpawnSizeGrowthRate: 0.1
   maxSpawnChance: 0.8
   spawnChanceGrowthRate: 0.1
