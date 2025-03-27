@@ -58,11 +58,12 @@ class WindowsIPC(IPC):
         import win32event
         self.__ready_event = win32event.CreateEvent(None, 0, 0, READY_EVENT_NAME)
         self.__done_event = win32event.CreateEvent(None, 0, 0, DONE_EVENT_NAME)
-        self.colour_image_buffer = mmap.mmap(-1, 1920 * 1080 * 3, access=mmap.ACCESS_WRITE, tagname="colour_image")
-        self.hand_landmarks_buffer = mmap.mmap(-1, 21 * 3 * 2 * 4, access=mmap.ACCESS_WRITE, tagname="hand_landmarks")
+        self.colour_image_buffer = mmap.mmap(-1, 1920 * 1080 * 3, access=mmap.ACCESS_WRITE, tagname=COLOUR_IMAGE_FILE_NAME)
+        self.hand_landmarks_buffer = mmap.mmap(-1, 21 * 3 * 2 * 4, access=mmap.ACCESS_WRITE, tagname=HAND_LANDMARKS_FILE_NAME)
         # self.gestures_buffer = mmap.mmap(-1, 2 * 4, access=mmap.ACCESS_WRITE, tagname="gestures")
         
     def wait_ready(self):
+        import win32event
         while not shutdown_flag:
             # Wait for new frame with a timeout to check shutdown flag
             result = win32event.WaitForSingleObject(self.__ready_event, 100)  # 100ms timeout
@@ -75,6 +76,7 @@ class WindowsIPC(IPC):
                 break  # Done waiting
                 
     def set_done(self):
+        import win32event
         win32event.SetEvent(self.__done_event)
         
     def close(self):
@@ -87,12 +89,16 @@ class LinuxIPC(IPC):
         import posix_ipc
         self.__ready_event = posix_ipc.Semaphore(READY_EVENT_NAME, posix_ipc.O_CREAT, initial_value=0)
         self.__done_event = posix_ipc.Semaphore(DONE_EVENT_NAME, posix_ipc.O_CREAT, initial_value=0)
-        # TODO: linux doesn't support tagname, so I think I need to specify fileno
-        self.colour_image_buffer = mmap.mmap(-1, 1920 * 1080 * 3, access=mmap.ACCESS_WRITE, tagname="colour_image")
-        self.hand_landmarks_buffer = mmap.mmap(-1, 21 * 3 * 2 * 4, access=mmap.ACCESS_WRITE, tagname="hand_landmarks")
+        self.__colour_image_shm = posix_ipc.SharedMemory(COLOUR_IMAGE_FILE_NAME, posix_ipc.O_CREX, size=COLOUR_IMAGE_FULL_SIZE)
+        self.__hand_landmarks_shm = posix_ipc.SharedMemory(HAND_LANDMARKS_FILE_NAME, posix_ipc.O_CREX, size=HAND_LANDMARKS_SIZE)
+        self.colour_image_buffer = mmap.mmap(self.__colour_image_shm.fd, COLOUR_IMAGE_FULL_SIZE, access=mmap.ACCESS_WRITE)
+        self.hand_landmarks_buffer = mmap.mmap(self.__hand_landmarks_shm.fd, HAND_LANDMARKS_SIZE, access=mmap.ACCESS_WRITE)
+        self.__colour_image_shm.close_fd()
+        self.__hand_landmarks_shm.close_fd()
         # self.gestures_buffer = mmap.mmap(-1, 2 * 4, access=mmap.ACCESS_WRITE, tagname="gestures")
         
     def wait_ready(self):
+        import posix_ipc
         while not shutdown_flag:
             # Wait for new frame with a timeout to check shutdown flag
             try:
@@ -108,6 +114,8 @@ class LinuxIPC(IPC):
         self.__ready_event.close()
         self.__done_event.close()
         super().close()
+        self.__colour_image_shm.unlink()
+        self.__hand_landmarks_shm.unlink()
 
 
 # Parse command line arguments
@@ -137,15 +145,6 @@ def timer(name):
 def get_path(path):
     dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(dir, path)
-
-# Create events
-ready_event = win32event.CreateEvent(None, 0, 0, READY_EVENT_NAME)
-done_event = win32event.CreateEvent(None, 0, 0, DONE_EVENT_NAME)
-
-# Initialise the mapping
-colour_image_buffer = mmap.mmap(-1, COLOUR_IMAGE_FULL_SIZE, access=mmap.ACCESS_WRITE, tagname=COLOUR_IMAGE_FILE_NAME)
-hand_landmarks_buffer = mmap.mmap(-1, HAND_LANDMARKS_SIZE, access=mmap.ACCESS_WRITE, tagname=HAND_LANDMARKS_FILE_NAME)
-gestures_buffer = mmap.mmap(-1, GESTURES_SIZE, access=mmap.ACCESS_WRITE, tagname=GESTURES_FILE_NAME)
 
 gesture_recognizer_options = HandLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=get_path(GESTURE_RECOGNITION_MODEL_PATH)),
@@ -195,18 +194,12 @@ with HandLandmarker.create_from_options(gesture_recognizer_options) as gesture_r
 
     try:
         while not shutdown_flag:
-            # Wait for new frame with a timeout to check shutdown flag
-            result = win32event.WaitForSingleObject(ready_event, 100)  # 100ms timeout
-            if result == win32event.WAIT_TIMEOUT:
-                continue
-            elif result != win32event.WAIT_OBJECT_0:
-                # This should never happen
-                raise Exception("WaitForSingleObject returned unexpected result: " + str(result))
+            ipc.wait_ready()
 
             # Read the frame
             with timer("Reading frame"):
-                colour_image_buffer.seek(0)
-                colour_image_data = np.frombuffer(colour_image_buffer, dtype=np.uint8).reshape(
+                ipc.colour_image_buffer.seek(0)
+                colour_image_data = np.frombuffer(ipc.colour_image_buffer, dtype=np.uint8).reshape(
                     (COLOUR_IMAGE_FULL_HEIGHT, COLOUR_IMAGE_FULL_WIDTH, COLOUR_IMAGE_NUM_CHANNELS))
 
             # Perform hand landmarking and gesture recognition
@@ -383,16 +376,16 @@ with HandLandmarker.create_from_options(gesture_recognizer_options) as gesture_r
             # Write the hand landmarks and gestures
             with timer("Writing results"):
                 # Write hand landmarks
-                hand_landmarks_buffer.seek(0)
+                ipc.hand_landmarks_buffer.seek(0)
                 for i, hand in enumerate((left, right)):
                     if hand is None:
                         zeros = np.zeros((21, 3))
                         for j in range(21):
-                            struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4, 
+                            struct.pack_into("<fff", ipc.hand_landmarks_buffer, i*21*3*4 + j*3*4, 
                                            zeros[j, 0], zeros[j, 1], zeros[j, 2])
                     else:
                         for j in range(21):
-                            struct.pack_into("<fff", hand_landmarks_buffer, i*21*3*4 + j*3*4,
+                            struct.pack_into("<fff", ipc.hand_landmarks_buffer, i*21*3*4 + j*3*4,
                                            hand[j, 0], hand[j, 1], hand[j, 2])
                 
                 # Write gestures
@@ -400,13 +393,11 @@ with HandLandmarker.create_from_options(gesture_recognizer_options) as gesture_r
                 # struct.pack_into("<ii", gestures_buffer, 0, left_gesture, right_gesture)
 
             if not shutdown_flag:
-                win32event.SetEvent(done_event)
+                ipc.set_done()
 
     finally:
         # Clean up
         cv2.destroyAllWindows()
         if "mp_image" in vars(): del mp_image
         if "colour_image_data" in vars(): del colour_image_data
-        colour_image_buffer.close()
-        hand_landmarks_buffer.close()
-        gestures_buffer.close()
+        ipc.close()
