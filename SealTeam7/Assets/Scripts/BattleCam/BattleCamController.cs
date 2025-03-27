@@ -14,6 +14,13 @@ public class BattleCamController : MonoBehaviour
     {
         public GameObject cam;
         public bool isActive;
+        public int currentTexture;
+
+        public BattleCamera(GameObject cam, bool isActive, int i) {
+            this.cam = cam;
+            this.isActive = isActive;
+            this.currentTexture = i;
+        }
     }
 
     [Header("Game Objects")]
@@ -36,14 +43,18 @@ public class BattleCamController : MonoBehaviour
     void Start()
     {
         //Display.displays[1].Activate();
-
+        swapCameraPositions();
         StartCoroutine(waitToChangeCameraPositions());
     }
 
     private void FixedUpdate() {
         scrollHeading();
 
-
+        for(int i = 0; i < battleCameras.Count; i++) {
+            if (battleCameras[i].currentTexture != -1 & !battleCameras[i].isActive) {
+                rawImages[i].texture = staticRender;
+            }
+        }
     }
 
     private IEnumerator waitToChangeCameraPositions()
@@ -57,12 +68,14 @@ public class BattleCamController : MonoBehaviour
 
     private void swapCameraPositions() {
         List<BattleCamera> subCamera = new List<BattleCamera>();
+        List<int> refIndex = new List<int>();
 
         for(int i = 0; i < battleCameras.Count; i++) {
             battleCameras[i].cam.GetComponent<Camera>().targetTexture = null;
 
             if (battleCameras[i].isActive) {
                 subCamera.Add(battleCameras[i]);
+                refIndex.Add(i);
             }
         }
         
@@ -74,7 +87,16 @@ public class BattleCamController : MonoBehaviour
 
                 subCamera[index].cam.GetComponent<Camera>().targetTexture = renderTextures[i];
                 rawImages[i].texture = renderTextures[i];
+                battleCameras[refIndex[index]] = new BattleCamera(
+                    subCamera[index].cam,
+                    subCamera[index].isActive,
+                    i
+                );
+
+                Debug.Log(battleCameras[refIndex[index]].currentTexture);
+
                 subCamera.RemoveAt(index);
+                
             }
         }
 
