@@ -5,6 +5,7 @@ using TMPro;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderKeywordFilter;
 
 public class BattleCamController : MonoBehaviour
 {
@@ -53,10 +54,15 @@ public class BattleCamController : MonoBehaviour
 
     private void swapCameraPositions() {
         List<BattleCamera> subCamera = new List<BattleCamera>(battleCameras);
+
+        for(int i = 0; i < subCamera.Count; i++) {
+            if (!subCamera[i].isActive) {
+                subCamera.RemoveAt(i);
+            }
+        }
         
         for(int i = 0; i < renderTextures.Length; i++) {
-            int index = (int)UnityEngine.Random.Range(0, renderTextures.Length);
-            Debug.Log(index);
+            int index = (int)UnityEngine.Random.Range(0, subCamera.Count);
 
             subCamera[index].cam.GetComponent<Camera>().targetTexture = renderTextures[i];
             subCamera.RemoveAt(index);
