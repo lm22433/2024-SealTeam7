@@ -18,8 +18,11 @@ public class BattleCamController : MonoBehaviour
 
     [Header("Game Objects")]
     [SerializeField] private RenderTexture[] renderTextures;
+    [SerializeField] private RawImage[] rawImages;
     [SerializeField] private List<BattleCamera> battleCameras = new List<BattleCamera>();
     [SerializeField] private int currentMainCamera = 0;
+
+    [SerializeField] private RenderTexture staticRender;
 
     [SerializeField, Range(10f, 100f)] private float minCameraWaitTime;
     [SerializeField, Range(10f, 100f)] private float maxCameraWaitTime;
@@ -53,19 +56,26 @@ public class BattleCamController : MonoBehaviour
     }
 
     private void swapCameraPositions() {
-        List<BattleCamera> subCamera = new List<BattleCamera>(battleCameras);
+        List<BattleCamera> subCamera = new List<BattleCamera>();
 
-        for(int i = 0; i < subCamera.Count; i++) {
-            if (!subCamera[i].isActive) {
-                subCamera.RemoveAt(i);
+        for(int i = 0; i < battleCameras.Count; i++) {
+            battleCameras[i].cam.GetComponent<Camera>().targetTexture = null;
+
+            if (battleCameras[i].isActive) {
+                subCamera.Add(battleCameras[i]);
             }
         }
         
         for(int i = 0; i < renderTextures.Length; i++) {
-            int index = (int)UnityEngine.Random.Range(0, subCamera.Count);
+            if (subCamera.Count <= 0) {
+                rawImages[i].texture = staticRender;
+            } else {
+                int index = (int)UnityEngine.Random.Range(0, subCamera.Count);
 
-            subCamera[index].cam.GetComponent<Camera>().targetTexture = renderTextures[i];
-            subCamera.RemoveAt(index);
+                subCamera[index].cam.GetComponent<Camera>().targetTexture = renderTextures[i];
+                rawImages[i].texture = renderTextures[i];
+                subCamera.RemoveAt(index);
+            }
         }
 
 
