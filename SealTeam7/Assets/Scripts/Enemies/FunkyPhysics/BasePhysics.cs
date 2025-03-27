@@ -14,6 +14,7 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float jumpForce = 10f;
         [SerializeField] protected float laplaceLocation = 0.0f;
         [SerializeField] protected float laplaceScale = 2.0f;
+        [SerializeField] protected float yeetThreshold = 0.8f;
         protected Enemy Self;
         protected Rigidbody Rb;
         
@@ -31,7 +32,7 @@ namespace Enemies.FunkyPhysics
             if (transform.position.y <= MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
             {
                 float flyXx = LaplaceDistribution.Sample(laplaceLocation, laplaceScale);
-                if (-0.8f < flyXx && flyXx < 0.8f)
+                if (-yeetThreshold < flyXx && flyXx < yeetThreshold)
                 {
                     transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + 1.0f, transform.position.z);
                     float flyXz = LaplaceDistribution.Sample(laplaceLocation, laplaceScale);
