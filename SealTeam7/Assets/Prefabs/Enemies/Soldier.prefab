@@ -86,7 +86,7 @@ MonoBehaviour:
   acceleration: 100
   groundedOffset: 7
   flyHeight: 0
-  aimSpeed: 10
+  aimSpeed: 20
   attackRange: 100
   attackInterval: 1
   stopMovingThreshold: 60
@@ -106,6 +106,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
+  State: 0
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:

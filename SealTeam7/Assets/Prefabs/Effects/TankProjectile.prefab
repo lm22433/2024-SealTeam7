@@ -196,6 +196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 200
+  trail: {fileID: 7357470039650453994}
   projectileType: 3
 --- !u!1 &6654765245243653100
 GameObject:

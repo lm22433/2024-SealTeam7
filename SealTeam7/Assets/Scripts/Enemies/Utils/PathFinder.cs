@@ -79,7 +79,7 @@ namespace Enemies.Utils
             if (dstX > dstZ) distanceWeight = 10f * (math.SQRT2 * dstZ + (dstX - dstZ));
             else distanceWeight = 10f * (math.SQRT2 * dstX + (dstZ - dstX));
             
-            return distanceWeight + heuristicWeight;
+            return 10f * distanceWeight + heuristicWeight;
         }
         
         private static Vector3[] ReconstructPath(Node start, Node end)

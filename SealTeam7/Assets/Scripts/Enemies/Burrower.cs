@@ -2,8 +2,6 @@ using Enemies.Utils;
 using Map;
 using Player;
 using UnityEngine;
-using System;
-using UnityEngine.VFX;
 
 namespace Enemies
 {
@@ -26,6 +24,9 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
+            Rb.freezeRotation = _burrowing;
+            Rb.detectCollisions = !_burrowing;
+            
             DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
             drill.Rotate(Time.deltaTime * drillSpeed * Vector3.forward);
             
@@ -33,12 +34,7 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
-                    if (!_burrowing)
-                    {
-                        _burrowing = true;
-                        Rb.freezeRotation = true;
-                        Rb.detectCollisions = false;
-                    }
+                    if (!_burrowing) _burrowing = true;
                     
                     transform.position = new Vector3(
                         transform.position.x,
@@ -46,7 +42,12 @@ namespace Enemies
                         transform.position.z
                     );
                     
-                    transform.up = MapManager.GetInstance().GetNormal(transform.position);
+                    TargetDirection = (Path[PathIndex] - new Vector3(
+                        transform.position.x,
+                        MapManager.GetInstance().GetHeight(transform.position),
+                        transform.position.z
+                    )).normalized;
+                    TargetRotation = Quaternion.LookRotation(TargetDirection, MapManager.GetInstance().GetNormal(transform.position));
                     
                     break;
                 }
@@ -62,8 +63,6 @@ namespace Enemies
                         );
                         
                         _burrowing = false;
-                        Rb.freezeRotation = false;
-                        Rb.detectCollisions = true;
                     }
 
                     break;
@@ -80,8 +79,6 @@ namespace Enemies
                         );
                         
                         _burrowing = false;
-                        Rb.freezeRotation = false;
-                        Rb.detectCollisions = true;
                     }
 
                     var xAngle = Quaternion.LookRotation(TargetPosition - drill.position).eulerAngles.x - transform.eulerAngles.x;
@@ -102,8 +99,6 @@ namespace Enemies
                         );
                         
                         _burrowing = false;
-                        Rb.detectCollisions = true;
-                        Rb.freezeRotation = false;
                     }
                     break;
                 }

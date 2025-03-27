@@ -117,6 +117,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4797994724752532913}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1905095068289288712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4121728789607564128}
+  m_Layer: 0
+  m_Name: Gun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4121728789607564128
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905095068289288712}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4797994724752532913}
+  m_Father: {fileID: 5048275269237373199}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2089989342194838051
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,7 +290,7 @@ MonoBehaviour:
   acceleration: 100
   groundedOffset: 7
   flyHeight: 0
-  aimSpeed: 10
+  aimSpeed: 20
   attackRange: 100
   attackInterval: 1
   stopMovingThreshold: 60
@@ -278,7 +310,8 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
-  gun: {fileID: 4797994724752532913}
+  State: 0
+  gun: {fileID: 4121728789607564128}
 --- !u!54 &4195251952092455746
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -639,8 +672,8 @@ Transform:
   - {fileID: 3227087716269079436}
   - {fileID: 4359227014593521262}
   - {fileID: 3065141508538551240}
-  - {fileID: 4797994724752532913}
   - {fileID: 3692420584497498482}
+  - {fileID: 4121728789607564128}
   m_Father: {fileID: 2009848768158169250}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &6408983562744472360
@@ -655,7 +688,7 @@ GameObject:
   - component: {fileID: 5869765654115437350}
   - component: {fileID: 3826024771308601725}
   m_Layer: 0
-  m_Name: Gun
+  m_Name: GunModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -670,12 +703,12 @@ Transform:
   m_GameObject: {fileID: 6408983562744472360}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.9000003, y: 0.3, z: 1}
-  m_LocalScale: {x: 0.19999999, y: 0.6, z: 1.1999998}
+  m_LocalPosition: {x: -0.90000045, y: 0.3, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.6, z: 1.1999998}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1551213479543639856}
-  m_Father: {fileID: 5048275269237373199}
+  m_Father: {fileID: 4121728789607564128}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5869765654115437350
 MeshFilter:

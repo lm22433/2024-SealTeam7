@@ -125,12 +125,11 @@ namespace Enemies
             obj.transform.parent = EnemyManager.transform;
 
             obj.TryGetComponent(out Projectile proj);
+            proj.Init();
             proj.projectileType = projectileType;
             proj.TargetPosition = TargetPosition;
             proj.ToDamage = toDamage;
             proj.Damage = attackDamage;
-            
-            ProjectilePool.GetInstance().ReturnToPool(projectileType, obj, 3f);
         }
 
         protected abstract float Heuristic(Node start, Node end);
@@ -195,7 +194,7 @@ namespace Enemies
 
         private void FollowPath()
         {
-            if (Path.Length > 0 && PathIndex < Path.Length - 1)
+            if (Path.Length > 0 && PathIndex < Path.Length - 1 && State is EnemyState.Moving or EnemyState.MoveAndAttack)
             {
                 if (LastPathFind >= PathFindInterval)
                 {
@@ -264,7 +263,7 @@ namespace Enemies
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
-            if (!DisallowMovement) Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, TargetRotation.normalized, aimSpeed * Time.fixedDeltaTime));
+            if (!DisallowMovement) Rb.rotation = Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime);
             
             switch (State)
             {

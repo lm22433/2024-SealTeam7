@@ -86,7 +86,7 @@ MonoBehaviour:
   moveSpeed: 15
   acceleration: 20
   groundedOffset: 5
-  flyHeight: 270
+  flyHeight: 225
   aimSpeed: 10
   attackRange: 110
   attackInterval: 2
@@ -107,6 +107,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  State: 0
   helicopterSound:
     idInternal: 0
     valueGuidInternal: 
