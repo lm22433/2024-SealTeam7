@@ -61,7 +61,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 8, y: 8, z: 8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1150560966112247641}
@@ -81,19 +81,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309dac9d4c44f1b4fb414807a7fdbeaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 10
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 15
   acceleration: 20
-  aimSpeed: 5
+  groundedOffset: 5
+  flyHeight: 225
+  aimSpeed: 10
   attackRange: 110
   attackInterval: 2
-  stopShootingThreshold: 20
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 0
   attackDamage: 8
   killScore: 500
   deathParticles: {fileID: 4793043602501896030}
   model: {fileID: 1150560966112247641}
   muzzle: {fileID: 8302181914671201879}
+  projectileType: 4
   projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
   gunFireSound:
     idInternal: 0
@@ -103,11 +107,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  buried: 0
-  buriedAmount: 0.5
-  flyHeight: 165
-  muzzle: {fileID: 8302181914671201879}
-  projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
+  State: 0
   helicopterSound:
     idInternal: 0
     valueGuidInternal: 
@@ -127,8 +127,8 @@ MonoBehaviour:
   gravityDefiance: 0
   defianceThreshold: 0
   sinkFactor: 0
-  groundedOffset: 5
   fallDeathVelocityY: 60
+  jumpForce: 10
   mainPropeller: {fileID: 5474418017215342941}
   subPropeller: {fileID: 3727117144722257347}
   propellerSpeed: 1000

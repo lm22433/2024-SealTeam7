@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Hard
   m_EditorClassIdentifier: 
   difficultyName: Hard
-  initialGroupCount: 8
-  growthFactor: 1.2
+  difficultyType: 2
+  initialGroupCount: 12
+  growthFactor: 1.4
   exponent: 0.75
-  initialSpawnDelay: 1
-  minimumSpawnDelay: 0.35
-  decayFactor: 0.15
-  initialWaveTimeLimit: 20
-  minimumWaveTimeLimit: 10
-  timeReductionPerWave: 1.2
-  enemyData: []
+  initialSpawnDelay: 0.8
+  minimumSpawnDelay: 0.25
+  decayFactor: 0.18
+  initialWaveTimeLimit: 15
+  minimumWaveTimeLimit: 8
+  timeReductionPerWave: 2

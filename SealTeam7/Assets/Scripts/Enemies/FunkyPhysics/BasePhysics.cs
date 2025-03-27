@@ -1,5 +1,6 @@
 ﻿using Game;
 using Map;
+using Enemies.Utils;
 using UnityEngine;
 
 namespace Enemies.FunkyPhysics
@@ -9,11 +10,13 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float gravityDefiance;
         [SerializeField] protected float defianceThreshold;
         [SerializeField] protected float sinkFactor;
-        [SerializeField] protected float groundedOffset;
         [SerializeField] protected float fallDeathVelocityY;
+        [SerializeField] protected float jumpForce = 10f;
+        [SerializeField] protected float laplaceLocation = 0.0f;
+        [SerializeField] protected float laplaceScale = 2.0f;
+        [SerializeField] protected float yeetThreshold = 0.8f;
         protected Enemy Self;
         protected Rigidbody Rb;
-        protected bool Grounded;
         
         protected virtual void Start()
         {
@@ -21,20 +24,36 @@ namespace Enemies.FunkyPhysics
             Self = GetComponent<Enemy>();
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-
-            Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
             
             //WOULD DIE BURIED
-            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
+            if (transform.position.y <= MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
             {
-                Self.buried = Self.buriedAmount;
-                EnemyManager.GetInstance().Kill(Self);
+                float flyXx = LaplaceDistribution.Sample(laplaceLocation, laplaceScale);
+                if (-yeetThreshold < flyXx && flyXx < yeetThreshold)
+                {
+                    transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + 1.0f, transform.position.z);
+                    float flyXz = LaplaceDistribution.Sample(laplaceLocation, laplaceScale);
+                    float flyYx = LaplaceDistribution.ProbabilityDensity(flyXx, laplaceLocation, laplaceScale);
+                    float flyYz = LaplaceDistribution.ProbabilityDensity(flyYx, laplaceLocation, laplaceScale);
+                    Vector3 flyVectorX = new Vector3(flyXx, flyYx, 0f);
+                    Vector3 flyVectorZ = new Vector3(0f, flyYz, flyXz);
+                    Vector3 velocity = flyVectorX + flyVectorZ;
+                    velocity.y = velocity.y / 2.0f;
+                    velocity = velocity.normalized;
+                    Rb.linearVelocity = Vector3.zero;
+                    Rb.AddForce(sinkFactor * jumpForce * velocity, ForceMode.Impulse);
+                }
+                else
+                {
+                    Self.Buried = Self.BuriedAmount;
+                    Self.SetupDeath();
+                }
             }
             //WOULD DIE FALL DMG
-            if (-Rb.linearVelocity.y >= fallDeathVelocityY && Grounded && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
+            if (-Rb.linearVelocity.y >= fallDeathVelocityY && Self.Grounded && !Self.IsDying) Self.SetupDeath();
 
             EnemyUpdate();
         }
@@ -43,9 +62,9 @@ namespace Enemies.FunkyPhysics
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
-            if (Rb.linearVelocity.y > defianceThreshold && Grounded)
+            if (Rb.linearVelocity.y > defianceThreshold && Self.Grounded)
             {
-                Physics.Raycast(transform.position, Vector3.down, out var hit, groundedOffset * 2.0f);
+                Physics.Raycast(transform.position, Vector3.down, out var hit, Self.transform.localScale.y * 2.0f);
                 Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
             }
             

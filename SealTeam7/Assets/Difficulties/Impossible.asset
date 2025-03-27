@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Impossible
   m_EditorClassIdentifier: 
   difficultyName: IMPOSSIBLE
-  initialGroupCount: 10
-  growthFactor: 1.3
+  difficultyType: 3
+  initialGroupCount: 15
+  growthFactor: 1.5
   exponent: 0.8
-  initialSpawnDelay: 1
-  minimumSpawnDelay: 0.3
-  decayFactor: 0.15
-  initialWaveTimeLimit: 15
+  initialSpawnDelay: 0.75
+  minimumSpawnDelay: 0.2
+  decayFactor: 0.2
+  initialWaveTimeLimit: 12
   minimumWaveTimeLimit: 8
-  timeReductionPerWave: 1.5
-  enemyData: []
+  timeReductionPerWave: 2.5
