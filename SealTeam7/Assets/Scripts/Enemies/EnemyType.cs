@@ -14,4 +14,13 @@ namespace Enemies
         Chinook,
         Mech
     }
+
+    public enum EnemyCategory
+    {
+        Regular,
+        Special,
+        Heavy,
+        Ranged,
+        Spawner
+    }
 }

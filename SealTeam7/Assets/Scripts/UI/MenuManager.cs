@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Enemies;
 using Game;
 using TMPro;
 using UnityEngine;
@@ -40,6 +42,16 @@ namespace UI
         
         [Header("Game Over Menu Settings")]
         [SerializeField] private TMP_Text gameOverTitleText;
+        [SerializeField] private TMP_Text finalScoreText;
+        [SerializeField] private TMP_Text enemiesKilledText;
+        [SerializeField] private TMP_Text wavesClearedText;
+        [SerializeField] private TMP_Text timeSurvivedText;
+        [SerializeField] private TMP_Text damageTakenText;
+        [SerializeField] private TMP_Text regularEnemiesKilledText;
+        [SerializeField] private TMP_Text specialEnemiesKilledText;
+        [SerializeField] private TMP_Text heavyEnemiesKilledText;
+        [SerializeField] private TMP_Text rangedEnemiesKilledText;
+        [SerializeField] private TMP_Text spawnerEnemiesKilledText;
 
         [Header("Sprites")] 
         [SerializeField] private Sprite defaultButtonSprite;
@@ -151,7 +163,25 @@ namespace UI
             });
         }
 
-        public void TriggerGameOverMenu(bool died)
+        private EnemyCategory GetEnemyCategoryFromEnemyType(EnemyType enemyType) =>
+            enemyType switch
+            {
+                EnemyType.Soldier => EnemyCategory.Regular,
+                EnemyType.Parachutist => EnemyCategory.Special,
+                EnemyType.FastSoldier => EnemyCategory.Special,
+                EnemyType.SniperSoldier => EnemyCategory.Ranged,
+                EnemyType.LmgSoldier => EnemyCategory.Regular,
+                EnemyType.RpgSoldier => EnemyCategory.Regular,
+                EnemyType.Tank => EnemyCategory.Heavy,
+                EnemyType.KamikazePlane => EnemyCategory.Special,
+                EnemyType.Helicopter => EnemyCategory.Heavy,
+                EnemyType.Chinook => EnemyCategory.Spawner,
+                EnemyType.Mech => EnemyCategory.Heavy,
+                _ => throw new ArgumentOutOfRangeException(nameof(enemyType), enemyType, null)
+            };
+
+        // TODO: Add a way to get time survived
+        public void TriggerGameOverMenu(bool died, int finalScore, int enemiesKilled, int wavesCleared, float timeSurvived, int damageTaken, Dictionary<EnemyType, int> detailedEnemiesKilled)
         {
             mainMenu.SetActive(false);
             settingsMenu.SetActive(false);
@@ -159,6 +189,27 @@ namespace UI
             gameOverMenu.SetActive(true);
             
             gameOverTitleText.SetText(died ? "YOU DIED!" : "GAME OVER!");
+            
+            finalScoreText.SetText($"{finalScore}");
+            enemiesKilledText.SetText($"{enemiesKilled}");
+            wavesClearedText.SetText($"{wavesCleared}");
+            int minutes = (int) timeSurvived / 60;
+            int seconds = (int) timeSurvived % 60;
+            string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
+            timeSurvivedText.SetText($"{minutes}:{secondsStr}");
+            damageTakenText.SetText($"{damageTaken}");
+            
+            Dictionary<EnemyCategory, int> categoryDict = detailedEnemiesKilled
+                .GroupBy(kvp => GetEnemyCategoryFromEnemyType(kvp.Key))
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Sum(kvp => kvp.Value)
+                );
+            regularEnemiesKilledText.SetText($"{categoryDict[EnemyCategory.Regular]}");
+            specialEnemiesKilledText.SetText($"{categoryDict[EnemyCategory.Special]}");
+            heavyEnemiesKilledText.SetText($"{categoryDict[EnemyCategory.Heavy]}");
+            rangedEnemiesKilledText.SetText($"{categoryDict[EnemyCategory.Ranged]}");
+            spawnerEnemiesKilledText.SetText($"{categoryDict[EnemyCategory.Spawner]}");
         }
 
         public void OnPlayButtonClicked()

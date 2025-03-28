@@ -61,6 +61,8 @@ namespace Enemies
         private static EnemyManager _instance;
         private Difficulty _difficulty;
         private int _currentWave;
+        private int _enemiesKilled;
+        private readonly Dictionary<EnemyType, int> _enemiesKilledDetailed = new();
 
         private void Awake()
         {
@@ -89,6 +91,9 @@ namespace Enemies
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
+            _enemiesKilled++;
+            if (!_enemiesKilledDetailed.TryAdd(enemy.enemyType, 1))
+                _enemiesKilledDetailed[enemy.enemyType]++;
             GameManager.GetInstance().RegisterKill(enemy.killScore);
             enemy.SetupDeath();
             EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
@@ -193,5 +198,7 @@ namespace Enemies
         public static EnemyManager GetInstance() => _instance;
         
         public int GetWave() => _currentWave;
+        public int GetEnemiesKilled() => _enemiesKilled;
+        public Dictionary<EnemyType, int> GetEnemiesKilledDetailed() => _enemiesKilledDetailed;
     }
 }

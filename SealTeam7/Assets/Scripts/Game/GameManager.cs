@@ -34,6 +34,7 @@ namespace Game
 
         private bool _gameActive;
         private float _timer;
+        private float _timeSurvived;
 		private int _totalKills;
         private int _score;
         private int _health;
@@ -60,6 +61,7 @@ namespace Game
             if (!_gameActive) return;
             
             _timer -= Time.deltaTime;
+            _timeSurvived += Time.deltaTime;
             
             if (Time.time - _lastSurvivalBonusTime >= survivalBonusInterval)
             {
@@ -82,7 +84,7 @@ namespace Game
 
             int minutes = (int) _timer / 60;
             int seconds = (int) _timer % 60;
-            String secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
+            string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
             timerText.SetText($"{minutes}:{secondsStr}");
 
             healthBar.transform.localScale = new Vector3(
@@ -131,7 +133,15 @@ namespace Game
             _isGameOver = true;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
 
-            MenuManager.GetInstance().TriggerGameOverMenu(false);
+            MenuManager.GetInstance().TriggerGameOverMenu(
+                false,
+                _score,
+                EnemyManager.GetInstance().GetEnemiesKilled(),
+                EnemyManager.GetInstance().GetWave(),
+                _timeSurvived,
+                maxHealth - _health,
+            EnemyManager.GetInstance().GetEnemiesKilledDetailed()
+            );
             EnemyPool.GetInstance().ClearPool();
         }
 
@@ -143,8 +153,16 @@ namespace Game
             Debug.Log($"You died! Score: {_score} Total Kills: {_totalKills}");
 
             _isGameOver = true;
-            
-            MenuManager.GetInstance().TriggerGameOverMenu(true);
+
+            MenuManager.GetInstance().TriggerGameOverMenu(
+                true,
+                _score,
+                EnemyManager.GetInstance().GetEnemiesKilled(),
+                EnemyManager.GetInstance().GetWave(),
+                _timeSurvived,
+                maxHealth - _health,
+                EnemyManager.GetInstance().GetEnemiesKilledDetailed()
+            );
             EnemyPool.GetInstance().ClearPool();
         }
 
