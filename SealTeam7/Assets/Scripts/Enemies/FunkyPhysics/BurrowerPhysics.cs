@@ -14,18 +14,23 @@ namespace Enemies.FunkyPhysics
             
             if (!GameManager.GetInstance().IsGameActive()) return;
 
-            //WOULD DIE FALL DMG
+            // WOULD DIE FALL DMG
             if (-Rb.linearVelocity.y >= fallDeathVelocityY && transform.position.y >= MapManager.GetInstance().GetHeight(transform.position) && Self.Grounded && !Self.IsDying)
             {
                 Self.SetupDeath();
             }
+            // WOULD DIE EXPOSED
+            if (transform.position.y >= MapManager.GetInstance().GetHeight(transform.position) && ((Burrower) Self).Burrowing && !Self.IsDying)
+            {
+                Self.SetupDeath();
+            }
+            
             EnemyUpdate();
         }
 
         protected override void EnemyUpdate()
         {
-            if (Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0f &&
-                Self.Grounded && !Self.IsDying)
+            if (Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0f && Self.Grounded && !Self.IsDying)
             {
                 Self.SetupDeath();
             }
