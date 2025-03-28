@@ -176,8 +176,10 @@ namespace UI
             GameManager.GetInstance().StartGame();
 
             mainMenu.SetActive(false);
+            settingsMenu.SetActive(false);
             playerHUD.SetActive(true);
-
+            gameOverMenu.SetActive(false);
+            
             _isGameRunning = true;
         }
 

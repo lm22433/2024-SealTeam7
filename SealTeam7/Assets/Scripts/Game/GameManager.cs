@@ -107,6 +107,12 @@ namespace Game
             EnemyManager.GetInstance().StartSpawning();
             
             Debug.Log("Game started!");
+            Debug.Log("Difficulty: " + _difficulty.difficultyName);
+            Debug.Log("Game Duration: " + gameDuration);
+            Debug.Log("Health: " + _health);
+            Debug.Log("Sandbox Mode: " + _sandboxMode);
+            Debug.Log("Endless Mode: " + _endlessMode);
+            Debug.Log("Hand Tracking: " + _handTracking);
         }
         
         private void EndGame()
