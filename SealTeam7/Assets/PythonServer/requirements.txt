@@ -1,4 +1,4 @@
 opencv-python
 mediapipe
 numpy
-pywin32
+posix_ipc

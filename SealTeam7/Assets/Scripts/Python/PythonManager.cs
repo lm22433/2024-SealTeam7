@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
 using System.Threading;
-using Microsoft.Azure.Kinect.Sensor;
+using K4AdotNet.Sensor;
 using Microsoft.Win32.SafeHandles;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -89,7 +89,9 @@ namespace Python
                 return _handLandmarks;
             }
 
-            var kinectImage = colourImage.Memory.Span;
+            // var kinectImage = colourImage.Memory.Span;
+            byte[] tempBuffer = new byte[colourImage.HeightPixels * colourImage.WidthPixels];
+            colourImage.CopyTo(tempBuffer);
             
             // Write the colour image to the memory mapped file as RGB
             // Debug.Log($"kinect image length: {kinectImage.Length}, colour image buffer size: {_colourImageBufferStream.Capacity}");
@@ -97,10 +99,10 @@ namespace Python
             stopwatch.Start();
             byte* destPtr = null;
             _colourImageViewHandle.AcquirePointer(ref destPtr);
-            fixed (byte* srcPtr = kinectImage)
+            fixed (byte* srcPtr = tempBuffer)
             {
                 byte* src = srcPtr;
-                for (int i = 0; i < kinectImage.Length; i += 4)
+                for (int i = 0; i < tempBuffer.Length; i += 4)
                 {
                     *destPtr++ = *(src + 2);  // R
                     *destPtr++ = *(src + 1);  // G

@@ -29,7 +29,7 @@ namespace Game
         [SerializeField] private TMP_Text gameoverText;
 
         [Header("Sound Options")]
-        [SerializeField] private AK.Wwise.Event celebrationFanfare;
+        // [SerializeField] private AK.Wwise.Event celebrationFanfare;
 
         private static GameManager _instance;
         
@@ -106,7 +106,7 @@ namespace Game
 
             if (_isGameOver) return;
             
-            celebrationFanfare.Post(gameObject);
+            // celebrationFanfare.Post(gameObject);
 
             int completionBonus = (_health / maxHealth) * completionBonusScore;
             _score += completionBonus;

@@ -24,7 +24,7 @@ namespace Enemies
         
         protected override void Attack(PlayerDamageable toDamage)
         {
-            gunFireSound.Post(gameObject);
+            // gunFireSound.Post(gameObject);
             
             toDamage.TakeDamage(attackDamage);
             killScore = 0;

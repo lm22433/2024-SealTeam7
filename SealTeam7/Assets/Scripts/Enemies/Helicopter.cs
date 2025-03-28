@@ -6,28 +6,28 @@ namespace Enemies
 {
     public class Helicopter : Enemy
     {
-        [SerializeField] private AK.Wwise.Event helicopterSound;
+        // [SerializeField] private AK.Wwise.Event helicopterSound;
         private bool _isGracefulShutdown;
 
         public override void Init()
         {
             base.Init();
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
-            helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
+            // helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
         }
 
         private void OnDestroy() {
         
             _isGracefulShutdown = true;
 
-            helicopterSound.Stop(gameObject);
+            // helicopterSound.Stop(gameObject);
         }
 
-        void SoundEffectCallback(object in_cookie, AkCallbackType in_type, object in_info){
-            if (!_isGracefulShutdown) {
-                helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
-            }
-        }
+        // void SoundEffectCallback(object in_cookie, AkCallbackType in_type, object in_info){
+        //     if (!_isGracefulShutdown) {
+        //         helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
+        //     }
+        // }
         
         protected override float Heuristic(Node start, Node end)
         {

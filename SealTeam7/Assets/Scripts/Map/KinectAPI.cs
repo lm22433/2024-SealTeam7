@@ -3,11 +3,13 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Emgu.CV;  // need to install Emgu.CV on NuGet and Emgu.CV.runtime.windows if on windows
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-using Microsoft.Azure.Kinect.Sensor;
+using Game;
+using K4AdotNet.Sensor;
 using Python;
 using Debug = UnityEngine.Debug;
 using Unity.Mathematics;
@@ -104,22 +106,31 @@ namespace Map
             // Configure camera modes
             _kinect.StartCameras(new DeviceConfiguration
             {
-                ColorFormat = ImageFormat.ColorBGRA32,
+                ColorFormat = ImageFormat.ColorBgra32,
                 ColorResolution = ColorResolution.R1080p,
-                DepthMode = DepthMode.NFOV_Unbinned,
-                SynchronizedImagesOnly = true,
-                CameraFPS = FPS.FPS30
+                DepthMode = DepthMode.NarrowViewUnbinned,
+                SynchronizedImagesOnly = false,
+                CameraFps = FrameRate.Thirty,
             });
 
-            Debug.Log("AKDK Serial Number: " + _kinect.SerialNum);
+            Debug.Log("AKDK Serial Number: " + _kinect.SerialNumber);
 
             // Initialize the transformation engine
-            _transformation = _kinect.GetCalibration().CreateTransformation();
-            _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
-            _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+            // _transformation = _kinect.GetCalibration().CreateTransformation();
+            // _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
+            // _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
+            // _transformedDepthImage = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight,
+            //     _colourWidth * sizeof(UInt16));
+            
+            // Initialize the transformation engine
+            _kinect.GetCalibration(DepthMode.NarrowViewUnbinned, ColorResolution.R1080p, out var calibration);
+            _transformation = calibration.CreateTransformation();
+            _colourWidth = calibration.ColorCameraCalibration.ResolutionWidth;
+            _colourHeight = calibration.ColorCameraCalibration.ResolutionHeight;
             _transformedDepthImage = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight,
                 _colourWidth * sizeof(UInt16));
-
+            
+            Debug.Log("sTARTING TASK");
             _running = true;
             _getCaptureTask = Task.Run(GetCaptureTask);
         }
@@ -158,26 +169,28 @@ namespace Map
         
         private void GetCaptureTask()
         {
-            PythonManager.Initialize();
+            // PythonManager.Initialize();
             
             while (_running)
             {
-                //if (!GameManager.GetInstance().IsGameActive()) continue;
+                // if (!GameManager.GetInstance().IsGameActive()) continue;
                 
                 try
                 {
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
+                    Debug.Log("Attempting to grab capture from Kinect!");
                     using Capture capture = _kinect.GetCapture();
+                    Debug.Log("Successfully grabbed capture from Kinect!");
 
-                    _transformation.DepthImageToColorCamera(capture, _transformedDepthImage);
+                    _transformation.DepthImageToColorCamera(capture.DepthImage, _transformedDepthImage);
                     stopwatch.Stop();
                     Console.WriteLine($"Get Capture: {stopwatch.ElapsedMilliseconds} ms");
-                    
-                    if (PythonManager.IsInitialized) {
-                        
+
+                    if (PythonManager.IsInitialized)
+                    {
                         stopwatch.Restart();
-                        var hl = PythonManager.ProcessFrame(capture.Color);
+                        var hl = PythonManager.ProcessFrame(capture.ColorImage);
                         stopwatch.Stop();
                         Console.WriteLine($"Process Frame: {stopwatch.ElapsedMilliseconds} ms");
 
@@ -188,7 +201,7 @@ namespace Map
                         else _rightHandAbsentCount = 0;
                         if (_leftHandAbsentCount is >= 1 and <= 2) continue;
                         if (_rightHandAbsentCount is >= 1 and <= 2) continue;
-                        
+
                         // Saves adjusted hand landmarks to HandLandmarks
                         UpdateHandLandmarks(hl, _transformedDepthImage);
                     }
@@ -207,8 +220,13 @@ namespace Map
 
         private void UpdateHeightMap(Image depthImage, HandLandmarks handLandmarks)
         {
+            Debug.Log($"{depthImage.HeightPixels} {depthImage.WidthPixels}");
+            
             // Raw depth from kinect
-            Span<ushort> depthBuffer = depthImage.GetPixels<ushort>().Span;
+            short[] tempBuffer = new short[depthImage.HeightPixels * depthImage.WidthPixels];
+            depthImage.CopyTo(tempBuffer);
+            Span<short> depthBuffer = tempBuffer.AsSpan();
+            
             var depthRange = (float)(_maximumSandDepth - _minimumSandDepth);
             // Create a new image with data from the depth and colour image
             var stopwatch = new Stopwatch();
@@ -331,12 +349,19 @@ namespace Map
 
         private void UpdateHandLandmarks(HandLandmarks handLandmarks, Image depthImage)
         {
-            float? leftHandDepth = handLandmarks.Left == null 
-                ? null 
-                : depthImage.GetPixel<ushort>((int)handLandmarks.Left[0].z, 1920 - (int)handLandmarks.Left[0].x);
-            float? rightHandDepth = handLandmarks.Right == null
+            // Raw depth from kinect
+            short[] depthBuffer = new short[depthImage.HeightPixels * depthImage.WidthPixels];
+            depthImage.CopyTo(depthBuffer);
+
+            float? leftHandDepth = handLandmarks.Left == null
                 ? null
-                : depthImage.GetPixel<ushort>((int)handLandmarks.Right[0].z, 1920 - (int)handLandmarks.Right[0].x);
+                : depthBuffer[(int)handLandmarks.Left[0].z * depthImage.WidthPixels + 1920 - (int)handLandmarks.Left[0].x];
+                // : depthImage.GetPixel((int)handLandmarks.Left[0].z, 1920 - (int)handLandmarks.Left[0].x);
+                float? rightHandDepth = handLandmarks.Right == null
+                    ? null
+                    : depthBuffer[
+                        (int)handLandmarks.Right[0].z * depthImage.WidthPixels + 1920 - (int)handLandmarks.Right[0].x];
+                // : depthImage.GetPixel<ushort>((int)handLandmarks.Right[0].z, 1920 - (int)handLandmarks.Right[0].x);
             var depthRange = _maximumSandDepth - _minimumSandDepth;
             
             var offsetLeft = new Vector3();
@@ -354,7 +379,7 @@ namespace Map
                     (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
                     -_yOffsetStart);
             }
-
+        
             const float handYScaling = 1.5f;
             HandLandmarks = new HandLandmarks
             {
@@ -364,5 +389,6 @@ namespace Map
                     new Vector3(p.x + offsetRight.x, p.y*handYScaling + offsetRight.y, p.z + offsetRight.z)).ToArray()
             };
         }
+        
     }
 }
