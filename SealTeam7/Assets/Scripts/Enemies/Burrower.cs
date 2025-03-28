@@ -10,7 +10,9 @@ namespace Enemies
         [SerializeField] private Transform drill;
         [SerializeField] private float drillSpeed;
         [SerializeField] private float burrowDepth;
+        [SerializeField] private float diveSpeed = 1f;
         protected internal bool Burrowing;
+        private float _newHeight;
 
         public override void Init()
         {
@@ -30,6 +32,8 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
+            if (State is EnemyState.Dying) return;
+            
             coreTargetHeightOffset = Burrowing ? -burrowDepth : 0f;
             Debug.Log(State);
             DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
@@ -42,15 +46,7 @@ namespace Enemies
                     if (!Burrowing && Grounded)
                     {
                         Burrowing = true;
-                    }
-
-                    if (Burrowing)
-                    {
-                        transform.position = new Vector3(
-                            transform.position.x,
-                            burrowDepth,
-                            transform.position.z
-                        );
+                        _newHeight = burrowDepth;
                     }
                     
                     break;
@@ -61,19 +57,20 @@ namespace Enemies
                 {
                     if (Burrowing)
                     {
-                        Rb.linearVelocity = Vector3.zero;
-                        transform.position = new Vector3(
-                            transform.position.x,
-                            MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
-                            transform.position.z
-                        );
-                        
                         Burrowing = false;
+                        _newHeight = MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
+                        Rb.linearVelocity = Vector3.zero;
                     }
 
                     break;
                 }
             }
+            
+            transform.position = new Vector3(
+                transform.position.x,
+                Mathf.Lerp(transform.position.y, _newHeight, diveSpeed * Time.deltaTime),
+                transform.position.z
+            );
             
             Grounded = !Burrowing && Grounded;
             Rb.freezeRotation = Burrowing;
