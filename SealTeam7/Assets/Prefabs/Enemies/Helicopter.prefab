@@ -107,7 +107,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  State: 0
   helicopterSound:
     idInternal: 0
     valueGuidInternal: 
@@ -129,8 +128,12 @@ MonoBehaviour:
   sinkFactor: 0
   fallDeathVelocityY: 60
   jumpForce: 10
-  mainPropeller: {fileID: 5474418017215342941}
-  subPropeller: {fileID: 3727117144722257347}
+  laplaceLocation: 0
+  laplaceScale: 2
+  yeetThreshold: 0.8
+  props:
+  - {fileID: 5474418017215342941}
+  - {fileID: 3727117144722257347}
   propellerSpeed: 1000
 --- !u!54 &7202123808863129688
 Rigidbody:

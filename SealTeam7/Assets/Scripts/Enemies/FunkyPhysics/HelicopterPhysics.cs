@@ -7,8 +7,7 @@ namespace Enemies.FunkyPhysics
 {
     public class HelicopterPhysics : BasePhysics
     {
-        [SerializeField] private Transform mainPropeller;
-        [SerializeField] private Transform subPropeller;
+        [SerializeField] private Transform[] props;
         [SerializeField] private float propellerSpeed;
         private bool _exploded;
 
@@ -16,8 +15,7 @@ namespace Enemies.FunkyPhysics
         {
             if (Self.Grounded && !Self.IsDying) Self.SetupDeath();
             
-            mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
-            subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
+            foreach (var prop in props) prop.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
             
             if (Self.IsDying && !_exploded)
             {
