@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Enemies.Utils;
 using Game;
+using JetBrains.Annotations;
 using Map;
 using Player;
 using UnityEngine;
@@ -93,7 +94,10 @@ namespace Enemies
             EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
         }
 
-        public void StartSpawning() => StartCoroutine(SpawnWaves());
+        public void StartSpawning() 
+        {
+            if (!GameManager.GetInstance().IsSandboxMode()) StartCoroutine(SpawnWaves());
+        }
         
         public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
 
@@ -121,7 +125,7 @@ namespace Enemies
         {
             yield return new WaitForSeconds(initialStartDelay);
             
-            while (GameManager.GetInstance().GameActive)
+            while (GameManager.GetInstance().IsGameActive())
             {
                 _currentWave++;
                 

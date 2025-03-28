@@ -31,12 +31,15 @@ namespace Game
         [SerializeField] private AK.Wwise.Event celebrationFanfare;
 
         private static GameManager _instance;
-        
-        public bool GameActive {get; set;}
+
+        private bool _gameActive;
         private float _timer;
 		private int _totalKills;
         private int _score;
         private int _health;
+        private bool _sandboxMode;
+        private bool _endlessMode;
+        private bool _handTracking;
 
         private Difficulty _difficulty;
         
@@ -54,7 +57,7 @@ namespace Game
 
         private void Update()
         {
-            if (!GameActive) return;
+            if (!_gameActive) return;
             
             _timer -= Time.deltaTime;
             
@@ -94,7 +97,7 @@ namespace Game
             EnemyPool.GetInstance().ClearPool();
             EnemyManager.GetInstance().SetDifficulty(_difficulty);
             
-            GameActive = true;
+            _gameActive = true;
             _timer = gameDuration;
             _score = 0;
             _health = maxHealth;
@@ -108,7 +111,7 @@ namespace Game
         
         private void EndGame()
         {
-            if (!GameActive) throw new Exception("Game has not started yet, how can it end dummy?");
+            if (!_gameActive) throw new Exception("Game has not started yet, how can it end dummy?");
 
             if (_isGameOver) return;
             
@@ -118,7 +121,7 @@ namespace Game
             _score += completionBonus;
             Debug.Log($"Completion Bonus! +{completionBonus} points");
             
-            GameActive = false;
+            _gameActive = false;
             _isGameOver = true;
             Debug.Log($"Game Over! Score: {_score} Total Kills: {_totalKills}");
 
@@ -128,9 +131,9 @@ namespace Game
 
         private void Die()
         {
-            if (!GameActive) throw new Exception("Game has not started yet, how have you died dummy!");
+            if (!_gameActive) throw new Exception("Game has not started yet, how have you died dummy!");
             
-            GameActive = false;
+            _gameActive = false;
             Debug.Log($"You died! Score: {_score} Total Kills: {_totalKills}");
 
             _isGameOver = true;
@@ -141,7 +144,7 @@ namespace Game
 
         public void ApplyWaveClearedEarlyBonus()
         {
-            if (!GameActive) throw new Exception("Game has not started yet, how can you clear a wave dummy?");
+            if (!_gameActive) throw new Exception("Game has not started yet, how can you clear a wave dummy?");
 
             _score += waveClearedEarlyBonusScore;
             Debug.Log($"Wave cleared early! +{waveClearedEarlyBonusScore} points");
@@ -149,7 +152,7 @@ namespace Game
         
         public void TakeDamage(int damage)
         {
-            if (!GameActive) throw new Exception("Game has not started yet, how can you take damage dummy?");
+            if (!_gameActive) throw new Exception("Game has not started yet, how can you take damage dummy?");
             
             _health -= damage;
             DamageEffectManager.GetInstance().ScreenDamageEffect(damage / 10.0f);
@@ -164,7 +167,7 @@ namespace Game
 
         public void RegisterKill(int basePoints, float multiplier = 1.0f)
         {
-            if (!GameActive) throw new Exception("Game has not started yet, how have you killed something dummy?");
+            if (!_gameActive) throw new Exception("Game has not started yet, how have you killed something dummy?");
             
             int points = Mathf.RoundToInt(basePoints * multiplier);
             _score += points;
@@ -173,12 +176,19 @@ namespace Game
             Debug.Log($"Killed something! +{points} points");
         }
 
+        public void SetGameActive(bool isGameActive) => _gameActive = isGameActive;
         public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
         public void SetGameDuration(int time) => gameDuration = time;
+        public void SetSandboxMode(bool isSandboxMode) => _sandboxMode = isSandboxMode;
+        public void SetEndlessMode(bool isEndlessMode) => _endlessMode = isEndlessMode;
+        public void SetHandTracking(bool isHandTracking) => _handTracking = isHandTracking; 
         
         public static GameManager GetInstance() => _instance;
-        public bool IsGameActive() => GameActive;
+        public bool IsGameActive() => _gameActive;
         public float GetTimer() => _timer;
         public int GetScore() => _score;
+        public bool IsSandboxMode() => _sandboxMode;
+        public bool IsEndlessMode() => _endlessMode;
+        public bool IsHandTracking() => _handTracking;
     }
 }

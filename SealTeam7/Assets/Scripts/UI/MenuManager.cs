@@ -115,7 +115,7 @@ namespace UI
         private void PauseGame()
         {
             _paused = !_paused;
-            GameManager.GetInstance().GameActive = !_paused;
+            GameManager.GetInstance().SetGameActive(!_paused);
             Time.timeScale = (_paused) ? 0 : 1;
 
             playerHUD.SetActive(!_paused);
@@ -169,6 +169,9 @@ namespace UI
 
             GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty]);
             GameManager.GetInstance().SetGameDuration(currentDuration);
+            GameManager.GetInstance().SetEndlessMode(endlessMode);
+            GameManager.GetInstance().SetSandboxMode(sandboxMode);
+            GameManager.GetInstance().SetHandTracking(handTracking);
 
             GameManager.GetInstance().StartGame();
 
