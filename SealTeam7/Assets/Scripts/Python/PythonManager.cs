@@ -49,7 +49,7 @@ namespace Python
             }
             catch (Exception ex) {
                 Debug.LogError($"Error initialising PythonManager: {ex.GetType().Name}: {ex.Message}");
-                // Debug.LogError($"{ex.StackTrace}");
+                Debug.LogError($"{ex.StackTrace}");
                 return false;
             }
         }
@@ -62,7 +62,7 @@ namespace Python
             }
 
             // var kinectImage = colourImage.Memory.Span;
-            byte[] tempBuffer = new byte[colourImage.HeightPixels * colourImage.WidthPixels];
+            byte[] tempBuffer = new byte[colourImage.SizeBytes];
             colourImage.CopyTo(tempBuffer);
             
             // Write the colour image to the memory mapped file as RGB
@@ -76,11 +76,13 @@ namespace Python
                 for (int i = 0; i < tempBuffer.Length; i += 4)
                 {
                     *destPtr++ = *(src + 2);  // R
+                    // Debug.Log($"destPtr-1: {*(destPtr-1)}");
                     *destPtr++ = *(src + 1);  // G
                     *destPtr++ = *src;        // B
                     src += 4;              // Skip to next pixel (including alpha)
                 }
             }
+            
             _ipc.ReleaseColourImagePtr();
             stopwatch.Stop();
             Debug.Log($"Writing colour image to memory mapped file: {stopwatch.ElapsedMilliseconds} ms");

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO.MemoryMappedFiles;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
 using UnityEngine;
-using Vector3 = System.Numerics.Vector3;
-using Mono.Unix.Native;
 
 namespace Python
 {
@@ -102,8 +101,8 @@ namespace Python
         private readonly int _colourImageShmId;
         private readonly int _handLandmarksShmId;
         private readonly int _gesturesShmId;
-        private readonly int _readySemId;
-        private readonly int _doneSemId;
+        private readonly void* _readySemId;
+        private readonly void* _doneSemId;
         private byte* _colourImagePtr;
         private byte* _handLandmarksPtr;
         private byte* _gesturesPtr;
@@ -111,18 +110,20 @@ namespace Python
         public LinuxIPC()
         {
             // Open shared memory segments
-            _colourImageShmId = Syscall.shmget(Syscall.ftok("/dev/shm/" + ColourImageFileName, 1), 0, Permissions.S_IRUSR | Permissions.S_IWUSR);
-            _handLandmarksShmId = Syscall.shmget(Syscall.ftok("/dev/shm/" + HandLandmarksFileName, 1), 0, Permissions.S_IRUSR);
-            _gesturesShmId = Syscall.shmget(Syscall.ftok("/dev/shm/" + GesturesFileName, 1), 0, Permissions.S_IRUSR);
-
+            int colourImageShmFd = shm_open("/" + ColourImageFileName, 0x0002, 0644);  // read/write
+            int handLandmarksShmFd = shm_open("/" + HandLandmarksFileName, 0x0000, 0644); // read only
+            
             // Attach shared memory segments
-            _colourImagePtr = (byte*)Syscall.shmatt(_colourImageShmId, IntPtr.Zero, 0);
-            _handLandmarksPtr = (byte*)Syscall.shmatt(_handLandmarksShmId, IntPtr.Zero, 0);
-            _gesturesPtr = (byte*)Syscall.shmatt(_gesturesShmId, IntPtr.Zero, 0);
-
+            _colourImagePtr = (byte*)mmap(null, 1920*1080*3, 0x1 | 0x2, 0x1 | 0x20, colourImageShmFd, 0);
+            _handLandmarksPtr = (byte*)mmap(null, 21*3*2*4, 0x1 | 0x2, 0x1 | 0x20, handLandmarksShmFd, 0);
+            
+            // Close file descriptors
+            close(colourImageShmFd);
+            close(handLandmarksShmFd);
+            
             // Open semaphores
-            _readySemId = Syscall.semget(Syscall.ftok("/dev/shm/" + ReadyEventName, 1), 1, Permissions.S_IRUSR | Permissions.S_IWUSR);
-            _doneSemId = Syscall.semget(Syscall.ftok("/dev/shm/" + DoneEventName, 1), 1, Permissions.S_IRUSR | Permissions.S_IWUSR);
+            _readySemId = sem_open("/" + ReadyEventName, 0x0000);
+            _doneSemId = sem_open("/" + DoneEventName, 0x0000);
         }
 
         public override byte* AcquireColourImagePtr()
@@ -145,32 +146,40 @@ namespace Python
 
         public override void SetReady()
         {
-            var semBuf = new SemBuf
-            {
-                sem_num = 0,
-                sem_op = 1,
-                sem_flg = 0
-            };
-            Syscall.semop(_readySemId, new[] { semBuf }, 1);
+            sem_post(_readySemId);
         }
-
+        
         public override void WaitDone()
         {
-            var semBuf = new SemBuf
-            {
-                sem_num = 0,
-                sem_op = -1,
-                sem_flg = 0
-            };
-            Syscall.semop(_doneSemId, new[] { semBuf }, 1);
+            sem_wait(_doneSemId);
         }
 
         public override void Dispose()
         {
             // Detach shared memory segments
-            Syscall.shmdt((IntPtr)_colourImagePtr);
-            Syscall.shmdt((IntPtr)_handLandmarksPtr);
-            Syscall.shmdt((IntPtr)_gesturesPtr);
+            munmap(_colourImagePtr, 1920 * 1080 * 3);
+            munmap(_handLandmarksPtr, 21 * 3 * 2 * 4);
         }
+        
+        [DllImport("libc", SetLastError = true)]
+        private static extern int shm_open(string name, int oflag, int mode);
+        
+        [DllImport("libc", SetLastError = true)]
+        public static extern void* mmap(void* addr, uint length, int prot, int flags, int fd, uint offset);
+
+        [DllImport("libc", SetLastError = true)]
+        public static extern int close(int fd);
+
+        [DllImport("libc", SetLastError = true)]
+        public static extern int munmap(void* addr, uint len);
+
+        [DllImport("libc", SetLastError = true)]
+        public static extern void* sem_open(string name, int oflag);
+
+        [DllImport("libc", SetLastError = true)]
+        public static extern int sem_post(void* sem);
+        
+        [DllImport("libc", SetLastError = true)]
+        public static extern int sem_wait(void* sem);
     }
 }

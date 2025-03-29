@@ -89,8 +89,8 @@ class LinuxIPC(IPC):
         import posix_ipc
         self.__ready_event = posix_ipc.Semaphore(READY_EVENT_NAME, posix_ipc.O_CREAT, initial_value=0)
         self.__done_event = posix_ipc.Semaphore(DONE_EVENT_NAME, posix_ipc.O_CREAT, initial_value=0)
-        self.__colour_image_shm = posix_ipc.SharedMemory(COLOUR_IMAGE_FILE_NAME, posix_ipc.O_CREX, size=COLOUR_IMAGE_FULL_SIZE)
-        self.__hand_landmarks_shm = posix_ipc.SharedMemory(HAND_LANDMARKS_FILE_NAME, posix_ipc.O_CREX, size=HAND_LANDMARKS_SIZE)
+        self.__colour_image_shm = posix_ipc.SharedMemory(COLOUR_IMAGE_FILE_NAME, posix_ipc.O_CREAT, size=COLOUR_IMAGE_FULL_SIZE)
+        self.__hand_landmarks_shm = posix_ipc.SharedMemory(HAND_LANDMARKS_FILE_NAME, posix_ipc.O_CREAT, size=HAND_LANDMARKS_SIZE)
         self.colour_image_buffer = mmap.mmap(self.__colour_image_shm.fd, COLOUR_IMAGE_FULL_SIZE, access=mmap.ACCESS_WRITE)
         self.hand_landmarks_buffer = mmap.mmap(self.__hand_landmarks_shm.fd, HAND_LANDMARKS_SIZE, access=mmap.ACCESS_WRITE)
         self.__colour_image_shm.close_fd()

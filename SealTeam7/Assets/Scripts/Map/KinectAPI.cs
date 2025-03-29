@@ -169,7 +169,7 @@ namespace Map
         
         private void GetCaptureTask()
         {
-            // PythonManager.Initialize();
+            PythonManager.Initialize();
             
             while (_running)
             {
