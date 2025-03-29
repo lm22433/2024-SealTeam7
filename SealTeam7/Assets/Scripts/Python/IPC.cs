@@ -1,0 +1,176 @@
+﻿using System;
+using System.IO.MemoryMappedFiles;
+using System.Threading;
+using Microsoft.Win32.SafeHandles;
+using UnityEngine;
+using Vector3 = System.Numerics.Vector3;
+using Mono.Unix.Native;
+
+namespace Python
+{
+    public abstract unsafe class IPC : IDisposable
+    {
+        protected const string ColourImageFileName = "colour_image";
+        protected const string HandLandmarksFileName = "hand_landmarks";
+        protected const string GesturesFileName = "gestures";
+        protected const string ReadyEventName = "SealTeam7ColourImageReady";
+        protected const string DoneEventName = "SealTeam7HandLandmarksDone";
+
+        public abstract byte* AcquireColourImagePtr();
+        public abstract void ReleaseColourImagePtr();
+        public abstract void ReadHandLandmarksArray(int start, Vector3[] handLandmarks);
+        public abstract void SetReady();
+        public abstract void WaitDone();
+        public abstract void Dispose();
+    }
+
+
+    public unsafe class WindowsIPC : IPC
+    {
+        private readonly MemoryMappedFile _colourImageMemory;
+        private readonly MemoryMappedFile _handLandmarksMemory;
+        private readonly MemoryMappedFile _gesturesMemory;
+        private readonly MemoryMappedViewAccessor _colourImageViewAccessor;
+        private readonly SafeMemoryMappedViewHandle _colourImageViewHandle;
+        private readonly MemoryMappedViewAccessor _handLandmarksViewAccessor;
+        private readonly SafeMemoryMappedViewHandle _handLandmarksViewHandle;
+        private readonly MemoryMappedViewAccessor _gesturesViewAccessor;
+        private readonly SafeMemoryMappedViewHandle _gesturesViewHandle;
+        private readonly EventWaitHandle _readyEvent;
+        private readonly EventWaitHandle _doneEvent;
+        
+        public WindowsIPC()
+        {
+            _colourImageMemory = MemoryMappedFile.OpenExisting(ColourImageFileName, MemoryMappedFileRights.Write);
+            _handLandmarksMemory = MemoryMappedFile.OpenExisting(HandLandmarksFileName, MemoryMappedFileRights.Read);
+            _gesturesMemory = MemoryMappedFile.OpenExisting(GesturesFileName, MemoryMappedFileRights.Read);
+            _colourImageViewAccessor = _colourImageMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Write);
+            _colourImageViewHandle = _colourImageViewAccessor.SafeMemoryMappedViewHandle;
+            _handLandmarksViewAccessor = _handLandmarksMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
+            _handLandmarksViewHandle = _handLandmarksViewAccessor.SafeMemoryMappedViewHandle;
+            _gesturesViewAccessor = _gesturesMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
+            _gesturesViewHandle = _gesturesViewAccessor.SafeMemoryMappedViewHandle;
+            _readyEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ReadyEventName);
+            _doneEvent = new EventWaitHandle(false, EventResetMode.AutoReset, DoneEventName);
+        }
+
+        public override byte* AcquireColourImagePtr()
+        {
+            byte* ptr = null;
+            _colourImageViewHandle.AcquirePointer(ref ptr);
+            return ptr;
+        }
+        
+        public override void ReleaseColourImagePtr()
+        {
+            _colourImageViewHandle.ReleasePointer();
+        }
+        
+        public override void ReadHandLandmarksArray(int start, Vector3[] handLandmarks)
+        {
+            _handLandmarksViewAccessor.ReadArray(start, handLandmarks, 0, 21);
+        }
+        
+        public override void SetReady()
+        {
+            _readyEvent.Set();
+        }
+        
+        public override void WaitDone()
+        {
+            _doneEvent.WaitOne();
+        }
+        
+        public override void Dispose()
+        {
+            _colourImageViewHandle.Dispose();
+            _colourImageViewAccessor.Dispose();
+            _handLandmarksViewHandle.Dispose();
+            _handLandmarksViewAccessor.Dispose();
+            _gesturesViewHandle.Dispose();
+            _gesturesViewAccessor.Dispose();
+            _colourImageMemory.Dispose();
+            _handLandmarksMemory.Dispose();
+            _gesturesMemory.Dispose();
+            _readyEvent.Dispose();
+            _doneEvent.Dispose();
+        }
+    }
+
+    public unsafe class LinuxIPC : IPC
+    {
+        private readonly int _colourImageShmId;
+        private readonly int _handLandmarksShmId;
+        private readonly int _gesturesShmId;
+        private readonly int _readySemId;
+        private readonly int _doneSemId;
+        private byte* _colourImagePtr;
+        private byte* _handLandmarksPtr;
+        private byte* _gesturesPtr;
+
+        public LinuxIPC()
+        {
+            // Open shared memory segments
+            _colourImageShmId = Syscall.shmget(Syscall.ftok("/dev/shm/" + ColourImageFileName, 1), 0, Permissions.S_IRUSR | Permissions.S_IWUSR);
+            _handLandmarksShmId = Syscall.shmget(Syscall.ftok("/dev/shm/" + HandLandmarksFileName, 1), 0, Permissions.S_IRUSR);
+            _gesturesShmId = Syscall.shmget(Syscall.ftok("/dev/shm/" + GesturesFileName, 1), 0, Permissions.S_IRUSR);
+
+            // Attach shared memory segments
+            _colourImagePtr = (byte*)Syscall.shmatt(_colourImageShmId, IntPtr.Zero, 0);
+            _handLandmarksPtr = (byte*)Syscall.shmatt(_handLandmarksShmId, IntPtr.Zero, 0);
+            _gesturesPtr = (byte*)Syscall.shmatt(_gesturesShmId, IntPtr.Zero, 0);
+
+            // Open semaphores
+            _readySemId = Syscall.semget(Syscall.ftok("/dev/shm/" + ReadyEventName, 1), 1, Permissions.S_IRUSR | Permissions.S_IWUSR);
+            _doneSemId = Syscall.semget(Syscall.ftok("/dev/shm/" + DoneEventName, 1), 1, Permissions.S_IRUSR | Permissions.S_IWUSR);
+        }
+
+        public override byte* AcquireColourImagePtr()
+        {
+            return _colourImagePtr;
+        }
+
+        public override void ReleaseColourImagePtr()
+        {
+            // No need to release pointer as it's managed by the class
+        }
+
+        public override void ReadHandLandmarksArray(int start, Vector3[] handLandmarks)
+        {
+            fixed (Vector3* destPtr = handLandmarks)
+            {
+                Buffer.MemoryCopy(_handLandmarksPtr + start, destPtr, handLandmarks.Length * sizeof(Vector3), handLandmarks.Length * sizeof(Vector3));
+            }
+        }
+
+        public override void SetReady()
+        {
+            var semBuf = new SemBuf
+            {
+                sem_num = 0,
+                sem_op = 1,
+                sem_flg = 0
+            };
+            Syscall.semop(_readySemId, new[] { semBuf }, 1);
+        }
+
+        public override void WaitDone()
+        {
+            var semBuf = new SemBuf
+            {
+                sem_num = 0,
+                sem_op = -1,
+                sem_flg = 0
+            };
+            Syscall.semop(_doneSemId, new[] { semBuf }, 1);
+        }
+
+        public override void Dispose()
+        {
+            // Detach shared memory segments
+            Syscall.shmdt((IntPtr)_colourImagePtr);
+            Syscall.shmdt((IntPtr)_handLandmarksPtr);
+            Syscall.shmdt((IntPtr)_gesturesPtr);
+        }
+    }
+}
