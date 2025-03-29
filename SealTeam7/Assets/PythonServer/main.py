@@ -29,7 +29,7 @@ GESTURES_FILE_NAME = "gestures"
 READY_EVENT_NAME = "SealTeam7ColourImageReady"
 DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
 GESTURE_RECOGNITION_MODEL_PATH = 'hand_landmarking_model.task'
-VISUALISE_INFERENCE_RESULTS = True
+VISUALISE_INFERENCE_RESULTS = False
 """Display the video overlaid with hand landmarks and bounding boxes around detected objects"""
 
 
