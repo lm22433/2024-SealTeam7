@@ -135,23 +135,8 @@ namespace Map
             _getCaptureTask = Task.Run(GetCaptureTask);
         }
         
-        public Vector3[] GetHandPositions(int hand) {
-            Vector3[] positions;
-
-            if (hand == 0) {
-                positions = HandLandmarks.Right;
-            } else {
-                positions = HandLandmarks.Left;
-            }
-
-            if (positions != null) {
-                return positions;
-            }
-
-                
-            return null;
-
-        }
+        public Vector3[] GetHandPositions(int hand) => hand == 0 ? HandLandmarks.Right : HandLandmarks.Left;
+        
 
         public void StopKinect()
         {
