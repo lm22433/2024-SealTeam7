@@ -27,6 +27,7 @@ public class BattleCamController : MonoBehaviour
     [SerializeField] private RenderTexture[] renderTextures;
     [SerializeField] private RawImage[] rawImages;
     [SerializeField] private List<BattleCamera> battleCameras = new List<BattleCamera>();
+    [SerializeField] private List<GameObject> camHolderPoints = new List<GameObject>();
     [SerializeField] private int currentMainCamera = 0;
 
     [SerializeField] private RenderTexture staticRender;
@@ -43,8 +44,13 @@ public class BattleCamController : MonoBehaviour
     void Start()
     {
         //Display.displays[1].Activate();
+        assignCamerasToHolders();
         swapCameraPositions();
         StartCoroutine(waitToChangeCameraPositions());
+    }
+
+    public void RegisterCamHolder(GameObject cam) {
+        camHolderPoints.Add(cam);
     }
 
     private void FixedUpdate() {
@@ -62,8 +68,44 @@ public class BattleCamController : MonoBehaviour
         int wait_time = (int)UnityEngine.Random.Range(minCameraWaitTime, maxCameraWaitTime);
         yield return new WaitForSeconds (wait_time);
 
+        assignCamerasToHolders();
         swapCameraPositions();
         StartCoroutine(waitToChangeCameraPositions());
+    }
+
+
+    private void assignCamerasToHolders() {
+        for(int i = 0; i < camHolderPoints.Count; i++) {
+            if (camHolderPoints[i] == null) {
+                camHolderPoints.RemoveAt(i);
+            }
+        }
+
+        List<GameObject> tempHolders = new List<GameObject>(camHolderPoints);
+
+        for(int i = 0; i < battleCameras.Count; i++) {
+            if (tempHolders.Count <= 0) {
+                battleCameras[i] = new BattleCamera(
+                    battleCameras[i].cam,
+                    false,
+                    -1
+                );
+            } else {
+                int index = (int)UnityEngine.Random.Range(0, tempHolders.Count);
+
+                battleCameras[i] = new BattleCamera(
+                    battleCameras[i].cam,
+                    true,
+                    -1
+                );
+
+                battleCameras[i].cam.gameObject.transform.SetParent(tempHolders[index].transform);
+                battleCameras[i].cam.gameObject.transform.position = tempHolders[index].transform.position;
+                battleCameras[i].cam.gameObject.transform.rotation = tempHolders[index].transform.rotation;
+
+                tempHolders.RemoveAt(index);
+            }
+        }
     }
 
     private void swapCameraPositions() {
@@ -92,8 +134,6 @@ public class BattleCamController : MonoBehaviour
                     subCamera[index].isActive,
                     i
                 );
-
-                Debug.Log(battleCameras[refIndex[index]].currentTexture);
 
                 subCamera.RemoveAt(index);
                 
