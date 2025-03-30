@@ -88,7 +88,7 @@ MonoBehaviour:
   groundedOffset: 5
   flyHeight: 250
   aimSpeed: 10
-  attackRange: 500
+  attackRange: 180
   attackInterval: 20
   stopMovingThreshold: 0
   coreTargetHeightOffset: 0

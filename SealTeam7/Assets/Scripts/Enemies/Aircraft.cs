@@ -26,7 +26,7 @@ namespace Enemies
                     TargetRotation = Quaternion.Euler(
                         transform.eulerAngles.x,
                         Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
+                        transform.eulerAngles.z).normalized;
                     break;
                 }
                 case EnemyState.AttackHands:
@@ -34,7 +34,7 @@ namespace Enemies
                     TargetRotation = Quaternion.Euler(
                         transform.eulerAngles.x,
                         Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
+                        transform.eulerAngles.z).normalized;
                     break;
                 }
             }

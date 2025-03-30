@@ -216,7 +216,7 @@ namespace Enemies
                 TargetDirection = Vector3.ProjectOnPlane(TargetPosition - transform.position, Vector3.up).normalized;
             }
             
-            if (State is EnemyState.Moving or EnemyState.MoveAndAttack) TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetDirection).eulerAngles.y, transform.eulerAngles.z);
+            if (State is EnemyState.Moving or EnemyState.MoveAndAttack) TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetDirection).eulerAngles.y, transform.eulerAngles.z).normalized;
         }
 
         private void RequestPath()

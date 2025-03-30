@@ -68,7 +68,7 @@ namespace Enemies
                 case EnemyState.AttackCore:
                 case EnemyState.AttackHands:
                 {
-                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z);
+                    TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, transform.eulerAngles.z).normalized;
                     break;
                 }
                 case EnemyState.Dying:
