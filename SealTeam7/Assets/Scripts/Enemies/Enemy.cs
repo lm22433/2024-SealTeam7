@@ -246,7 +246,7 @@ namespace Enemies
 			}
 
             if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance) EnemyManager.Kill(this);
-            Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
+            Grounded = transform.position.y < (MapManager.GetInstance().GetHeight(transform.position) + groundedOffset);
             
             UpdateState();
             UpdateTarget();

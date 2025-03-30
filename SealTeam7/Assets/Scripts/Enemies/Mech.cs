@@ -10,6 +10,14 @@ namespace Enemies
         [SerializeField] private GameObject Msphere;
         [SerializeField] private Rigidbody primaryRB;
         [SerializeField] private LayerMask whatIsGround;
+        
+        [Header("Movement")]
+        [SerializeField] private float rollSpeed;
+        [SerializeField] private float tolerance;
+        [SerializeField] private Transform NW;
+        [SerializeField] private Transform NE;
+        [SerializeField] private Transform SW;
+        [SerializeField] private Transform SE;
         private float attackDelay;        
         public override void Init() 
         {
@@ -17,7 +25,7 @@ namespace Enemies
             DeathDuration = 3.0f;
             BuriedAmount = 3.0f;
             attackDelay = 0.0f;
-            State = EnemyState.AttackCore;
+            State = EnemyState.Moving;
         }
 
         protected override float Heuristic(Node start, Node end)
@@ -59,18 +67,18 @@ namespace Enemies
             //     
             // }
 
-            if (Grounded) 
-            {
-                var normal = MapManager.GetInstance().GetNormal(transform.position);
-                normal.y = 0;
-                Debug.Log(normal);
-                primaryRB.AddForce(normal.normalized * 9800f, ForceMode.Impulse);
-            }
+            // if (Grounded) 
+            // {
+            //     var normal = MapManager.GetInstance().GetNormal(transform.position);
+            //     normal.y = 0;
+            //     Debug.Log(normal);
+            //     primaryRB.AddForce(normal.normalized * 9800f, ForceMode.Impulse);
+            // }
 
-            if (transform.position.y < (MapManager.GetInstance().GetHeight(transform.position) + groundedOffset))
+            if (transform.position.y < (MapManager.GetInstance().GetHeight(transform.position) + (transform.lossyScale.y * 0.6f)))
             {
                 primaryRB.linearVelocity = Vector3.zero;
-                transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);
+                transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + (transform.lossyScale.y), transform.position.z);
             }
 
             // gun rotation
@@ -80,6 +88,23 @@ namespace Enemies
                 {
                     Mmodel.SetActive(false);
                     Msphere.SetActive(true);
+                    if (Grounded)
+                    {
+                        float nwHeight = MapManager.GetInstance().GetHeight(Msphere.transform.position + NW.localPosition);
+                        float neHeight = MapManager.GetInstance().GetHeight(Msphere.transform.position + NE.localPosition);
+                        float swHeight = MapManager.GetInstance().GetHeight(Msphere.transform.position + SW.localPosition);
+                        float seHeight = MapManager.GetInstance().GetHeight(Msphere.transform.position + SE.localPosition);
+                        float sum = nwHeight +neHeight +swHeight +seHeight;
+                        nwHeight = 1 - (nwHeight / sum);
+                        neHeight = 1 - (neHeight / sum);
+                        swHeight = 1 - (swHeight / sum);
+                        seHeight = 1 - (seHeight / sum);
+                        Vector3 dir = (NW.localPosition * nwHeight) + (NE.localPosition * neHeight) + (SW.localPosition * swHeight) + (SE.localPosition * seHeight);
+                        if (dir.magnitude >= tolerance) dir = dir.normalized;
+                        else dir = Vector3.zero;
+                        primaryRB.AddForce(dir * rollSpeed, ForceMode.VelocityChange);
+                        //primaryRB.AddForce(Vector3.down * 9.81f, ForceMode.Acceleration);
+                    }
                     break;
                 }
                 case EnemyState.AttackCore:
