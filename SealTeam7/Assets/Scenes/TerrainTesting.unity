@@ -746,7 +746,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebec780f5c86d1648ba56d359f3cf70b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Collider: {fileID: 0}
 --- !u!114 &584457531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -759,10 +758,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1896a2dc3f7261d408dd349071874665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDefaultListener: 1
-  bOverrideScalingFactor: 0
-  scalingFactor: -1
-  listenerId: 0
 --- !u!114 &584457532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -775,19 +770,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f934ae95fc0df69429752beb25e9414c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_listeners:
-    initialListenerList:
-    - {fileID: 584457531}
-    useDefaultListeners: 1
-  isEnvironmentAware: 1
-  isStaticObject: 0
-  usePositionOffsetData: 0
-  m_positionOffsetData:
-    KeepMe: 0
-    positionOffset: {x: 0, y: 0, z: 0}
-  scalingFactor: 1
-  m_posOffsetData: {fileID: 0}
-  listenerMask: 1
 --- !u!1 &594167916
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,7 +818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e80c33a85ba44c0a2d2df75b5a8cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.01
+  noiseSpeed: 0.1
   noiseScale: 0.01
   width: 880
   height: 880
@@ -867,7 +849,7 @@ MonoBehaviour:
   bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
   bgChunkMargin: 1
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -1396,19 +1378,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1726945304556743973d45e1243379b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InitializationSettings: {fileID: 11400000, guid: 3d7f81213100fa44c9499a3d60c0797e, type: 2}
-  basePath: 
-  language: 
-  defaultPoolSize: 0
-  lowerPoolSize: 0
-  streamingPoolSize: 0
-  memoryCutoffThreshold: 0
-  monitorPoolSize: 0
-  monitorQueuePoolSize: 0
-  callbackManagerBufferSize: 0
-  spatialAudioPoolSize: 0
-  maxSoundPropagationDepth: 0
-  engineLogging: 0
 --- !u!4 &1017560462
 Transform:
   m_ObjectHideFlags: 0
@@ -1436,19 +1405,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37e0e330f47f9534faf8104b25bd1f10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerList: ae8d9d44
-  useOtherObject: 0
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 73a5fb2c5989b674f9b967d2b01f5b30, type: 2}
-  decodeBank: 0
-  overrideLoadSetting: 0
-  loadAsynchronous: 0
-  saveDecodedBank: 0
-  unloadTriggerList: 958ca0ea
-  bankNameInternal: 
-  valueGuidInternal: 
 --- !u!114 &1129775591 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5268268820810764970, guid: 8b9d59a30f67c9049b450b86cfcb14d7, type: 3}
@@ -3521,10 +3477,6 @@ MonoBehaviour:
   healthBar: {fileID: 363072743}
   gameoverScoreText: {fileID: 1386844821}
   gameoverText: {fileID: 2136132640}
-  celebrationFanfare:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 3f97d12f1f6264347b4b282d0a44b6a5, type: 2}
 --- !u!4 &2004182967
 Transform:
   m_ObjectHideFlags: 0

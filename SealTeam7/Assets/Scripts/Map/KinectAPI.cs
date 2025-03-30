@@ -332,6 +332,8 @@ namespace Map
             });
             stopwatch.Stop();
             Console.WriteLine($"Loop 3: {stopwatch.ElapsedMilliseconds} ms");
+
+            _onHeightUpdate();
         }
 
         private void UpdateHandLandmarks(HandLandmarks handLandmarks, Image depthImage)

@@ -37,6 +37,7 @@ public class HandReconstruction : MonoBehaviour
 
     void Start()
     {
+        mapManager = MapManager.GetInstance();
         positions = new Vector3[21];
         lastPosition = Vector3.zero;
 
