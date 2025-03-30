@@ -4848,7 +4848,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &45913116891892241
 Transform:
   m_ObjectHideFlags: 0
@@ -4882,6 +4882,7 @@ GameObject:
   - component: {fileID: 3729924882987787105}
   - component: {fileID: 828698031663403021}
   - component: {fileID: 6593816498915057954}
+  - component: {fileID: -2564026639180763837}
   m_Layer: 0
   m_Name: Mech
   m_TagString: Untagged
@@ -4899,8 +4900,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8530385386723807346}
   - {fileID: 6830327269556584354}
@@ -4939,8 +4940,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2772852043545815630}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0.2
+  m_Mass: 10
+  m_Drag: 0
   m_AngularDrag: 0.1
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -4956,8 +4957,8 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 2
+  m_Constraints: 112
+  m_CollisionDetection: 1
 --- !u!114 &6593816498915057954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4965,14 +4966,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2772852043545815630}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8fe2a01f0935b34495b224444b78e45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 0
+  enemyType: 15
   forceOffset: {x: 0, y: 0, z: 0}
-  moveSpeed: 10
+  moveSpeed: 0
   acceleration: 12
   groundedOffset: 5
   flyHeight: 0
@@ -4999,6 +5000,21 @@ MonoBehaviour:
   Mmodel: {fileID: 858161197960073387}
   Msphere: {fileID: 3529544802325209347}
   primaryRB: {fileID: 828698031663403021}
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 1024
+--- !u!114 &-2564026639180763837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772852043545815630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed2bcae8d9c848778cf672a51e02ce15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3403126707289189192
 GameObject:
   m_ObjectHideFlags: 0
@@ -5127,7 +5143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1049595686323502698
 Transform:
   m_ObjectHideFlags: 0
@@ -5203,7 +5219,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3529544802325209347}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: d223a85fd2b6d2155bb00a5e846146d1, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

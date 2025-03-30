@@ -9,6 +9,7 @@ namespace Enemies
         [SerializeField] private GameObject Mmodel;
         [SerializeField] private GameObject Msphere;
         [SerializeField] private Rigidbody primaryRB;
+        [SerializeField] private LayerMask whatIsGround;
         private float attackDelay;        
         public override void Init() 
         {
@@ -37,12 +38,41 @@ namespace Enemies
 
         protected override void EnemyUpdate()
         {
+            //primaryRB.AddForce(Vector3.down * 9.8f, ForceMode.Acceleration);
+            // test.y = 0;
+            // test.Normalize();
+            //primaryRB.AddForce(test * 20f, ForceMode.Impulse);
+            
             DisallowShooting = !Grounded;
-            if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)
+            // Debug.Log($"transform.position.y = {transform.position.y} --- (MapManager.GetInstance().GetHeight(transform.position) + groundedOffset) = ${(MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)}");
+            // if (transform.position.y < (MapManager.GetInstance().GetHeight(transform.position) + groundedOffset))
+            // {
+            //     // Debug.Log("REEEEEEEE");
+            //     // Debug.Log(Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit2, transform.lossyScale.y, whatIsGround));
+            //     // transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);
+            //     // var test2 = Vector3.up;
+            //     // Debug.Log("REEEEEEEE2");
+            //     // test2.y = 0f;
+            //     // test2.Normalize();
+            //     // primaryRB.AddForce(test2 * 900f, ForceMode.Impulse);
+            //     // Debug.Log(hit2.normal);
+            //     
+            // }
+
+            if (Grounded) 
             {
+                var normal = MapManager.GetInstance().GetNormal(transform.position);
+                normal.y = 0;
+                Debug.Log(normal);
+                primaryRB.AddForce(normal.normalized * 9800f, ForceMode.Impulse);
+            }
+
+            if (transform.position.y < (MapManager.GetInstance().GetHeight(transform.position) + groundedOffset))
+            {
+                primaryRB.linearVelocity = Vector3.zero;
                 transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) + groundedOffset, transform.position.z);
             }
-            
+
             // gun rotation
             switch (State)
             {
