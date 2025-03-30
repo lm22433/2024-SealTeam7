@@ -23,8 +23,8 @@ namespace Map
         private readonly Transformation _transformation;
         private Image _transformedDepthImage;
         private float[,] _heightMap;
-        private float2[,] _gradientMap;
-        
+        private float[,] _gradientMap;
+
         /*
          * This replaces _tempHeightMap. It's an Image (from EmguCV, C# bindings for OpenCV).
          * Get a pixel with:
@@ -56,6 +56,8 @@ namespace Map
         private readonly Size _gaussianKernelSize;
         private readonly float _gaussianKernelSigma;
 
+        private Action _onHeightUpdate;
+
         private bool _running;
         private Task _getCaptureTask;
         private int _leftHandAbsentCount = 0;
@@ -70,8 +72,9 @@ namespace Map
         public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
         public KinectAPI(float heightScale, float minLerpFactor, float maxLerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, ref float2[,] gradientMap, int gaussianKernelRadius, float gaussianKernelSigma)
+                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, int gaussianKernelRadius, float gaussianKernelSigma, Action onHeightUpdate)
         {
+            _onHeightUpdate = onHeightUpdate;
             _heightScale = heightScale;
             _minLerpFactor = minLerpFactor;
             _maxLerpFactor = maxLerpFactor;
@@ -91,7 +94,6 @@ namespace Map
             _tmpImage = new Image<Gray, float>(_width + 1, _height + 1);
             _dilationKernel = Mat.Ones(50, 50, DepthType.Cv8U, 1);
             _defaultAnchor = new Point(-1, -1);
-            _gradientMap = gradientMap;
             _scalarOne = new MCvScalar(1f);
             _gaussianKernelSize = new Size(gaussianKernelRadius * 2 + 1, gaussianKernelRadius * 2 + 1);
             _gaussianKernelSigma = gaussianKernelSigma;
