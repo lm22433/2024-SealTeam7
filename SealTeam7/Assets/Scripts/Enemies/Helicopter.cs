@@ -19,12 +19,12 @@ namespace Enemies
             // helicopterSound.Stop(gameObject);
         }
 
-        void SoundEffectCallback(object in_cookie, AkCallbackType in_type, object in_info)
-        {
-            if (!_isGracefulShutdown)
-            {
-                // helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
-            }
-        }
+        // void SoundEffectCallback(object in_cookie, AkCallbackType in_type, object in_info)
+        // {
+        //     if (!_isGracefulShutdown)
+        //     {
+        //         helicopterSound.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, SoundEffectCallback);
+        //     }
+        // }
     }
 }
