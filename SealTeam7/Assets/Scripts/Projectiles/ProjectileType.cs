@@ -4,6 +4,7 @@ namespace Projectiles
     {
         NoProjectile,
         SoldierProjectile,
+        SniperProjectile,
         TankProjectile,
         HelicopterProjectile,
     }

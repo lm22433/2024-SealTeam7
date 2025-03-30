@@ -1,6 +1,4 @@
 using Enemies.Utils;
-using Map;
-using Player;
 using UnityEngine;
 
 namespace Enemies
@@ -18,7 +16,7 @@ namespace Enemies
 
         protected override float Heuristic(Node start, Node end)
         {
-            return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 50f;
+            return Mathf.Max(start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y, 0f) * 100f;
         }
         
         protected override void EnemyUpdate()
@@ -37,9 +35,9 @@ namespace Enemies
                 case EnemyState.AttackHands:
                 {
                     var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
-                    TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
-                    gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, 0f);
+                    var gunRotation = Quaternion.Euler(xAngle, 0f, 0f);
+                    gun.localRotation = Quaternion.Slerp(gun.localRotation, gunRotation, aimSpeed * Time.deltaTime);
+                    TargetRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(TargetPosition - transform.position, Vector3.up));
                     break;
                 }
             }
