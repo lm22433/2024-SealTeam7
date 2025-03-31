@@ -177,4 +177,6 @@ public class BattleCamController : MonoBehaviour
             currentScroll = 0;
         }
     }
+
+    public static BattleCamController GetInstance() => _instance;
 }

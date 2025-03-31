@@ -280,6 +280,8 @@ MonoBehaviour:
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
   gun: {fileID: 4797994724752532913}
+  cameraSpwanChance: 1
+  cameraHolder: {fileID: 7559947880653144430}
 --- !u!54 &4195251952092455746
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -640,6 +642,7 @@ Transform:
   - {fileID: 4359227014593521262}
   - {fileID: 3065141508538551240}
   - {fileID: 3692420584497498482}
+  - {fileID: 1527697578504500882}
   m_Father: {fileID: 2009848768158169250}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &6408983562744472360
@@ -5531,6 +5534,37 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &7559947880653144430
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1527697578504500882}
+  m_Layer: 0
+  m_Name: CamHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1527697578504500882
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7559947880653144430}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.048943665, y: -0.7054109, z: 0.048943665, w: 0.7054109}
+  m_LocalPosition: {x: -1.5700114, y: 0.8899997, z: -0.000009298325}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5048275269237373199}
+  m_LocalEulerAnglesHint: {x: 7.938, y: -90, z: 0}
 --- !u!1 &8471793977157900626
 GameObject:
   m_ObjectHideFlags: 0

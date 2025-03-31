@@ -8,12 +8,24 @@ namespace Enemies
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
+        [SerializeField] private float cameraSpwanChance = 0.01f;
+        [SerializeField] private GameObject cameraHolder;
         
         public override void Init() 
         {
             base.Init();
             DeathDuration = 0.5f;
             BuriedAmount = 0.25f;
+
+            if (cameraHolder != null) {
+                float probability = UnityEngine.Random.Range(0, 1000);
+                probability = probability / 100;
+
+                if (probability <= cameraSpwanChance) {
+                    BattleCamController.GetInstance().RegisterCamHolder(cameraHolder);
+                }
+            }
+
         }
 
         protected override float Heuristic(Node start, Node end)
