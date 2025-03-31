@@ -30,8 +30,8 @@ namespace BattleCam {
         [Header("Game Objects")]
         [SerializeField] private RenderTexture[] renderTextures;
         [SerializeField] private RawImage[] rawImages;
-        [SerializeField] private List<BattleCamera> battleCameras = new List<BattleCamera>();
-        [SerializeField] private List<GameObject> camHolderPoints = new List<GameObject>();
+        [SerializeField] private List<BattleCamera> battleCameras = new();
+        [SerializeField] private List<GameObject> camHolderPoints = new();
 
         [SerializeField] private RenderTexture staticRender;
         [SerializeField] private GameObject breakingNewsTransition;
@@ -51,7 +51,7 @@ namespace BattleCam {
 
         private static BattleCamController _instance;
 
-        void Awake()
+        private void Awake()
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
@@ -59,13 +59,13 @@ namespace BattleCam {
             breakingNewsTransition.SetActive(true);
         }
 
-        void Start()
+        private void Start()
         {
             for (int i = 1; i < Display.displays.Length; i++) {
                 Display.displays[i].Activate();
             }
 
-            assignCamerasToHolders();
+            AssignCamerasToHolders();
             SwapCameraPositions();
             StartCoroutine(WaitToChangeCameraPositions());
         }
@@ -103,13 +103,13 @@ namespace BattleCam {
             int waitTime = (int)UnityEngine.Random.Range(minCameraWaitTime, maxCameraWaitTime);
             yield return new WaitForSeconds (waitTime);
 
-            assignCamerasToHolders();
+            AssignCamerasToHolders();
             SwapCameraPositions();
             StartCoroutine(WaitToChangeCameraPositions());
         }
 
 
-        private void assignCamerasToHolders() {
+        private void AssignCamerasToHolders() {
             for(int i = 0; i < camHolderPoints.Count; i++) {
                 if (camHolderPoints[i] == null) {
                     camHolderPoints.RemoveAt(i);
