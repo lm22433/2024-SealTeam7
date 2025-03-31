@@ -86,7 +86,7 @@ MonoBehaviour:
   acceleration: 100
   groundedOffset: 7
   flyHeight: 0
-  aimSpeed: 20
+  aimSpeed: 100
   attackRange: 100
   attackInterval: 1
   stopMovingThreshold: 60
@@ -106,7 +106,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
-  State: 0
   gun: {fileID: 4797994724752532913}
   cameraSpwanChance: 2
   cameraHolder: {fileID: 3442655919550094419}
@@ -127,6 +126,9 @@ MonoBehaviour:
   sinkFactor: 10
   fallDeathVelocityY: 40
   jumpForce: 10
+  laplaceLocation: 0
+  laplaceScale: 2
+  yeetThreshold: 0.8
 --- !u!54 &4195251952092455746
 Rigidbody:
   m_ObjectHideFlags: 0

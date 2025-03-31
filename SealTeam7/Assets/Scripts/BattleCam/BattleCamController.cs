@@ -82,7 +82,7 @@ public class BattleCamController : MonoBehaviour
         scrollHeading();
 
         for(int i = 0; i < battleCameras.Count; i++) {
-            if (battleCameras[i].currentTexture != -1 & !battleCameras[i].isActive) {
+            if (battleCameras[i].currentTexture != -1 && !battleCameras[i].isActive) {
                 rawImages[i].texture = staticRender;
             }
         }
