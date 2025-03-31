@@ -13,19 +13,13 @@ MonoBehaviour:
   m_Name: Easy
   m_EditorClassIdentifier: 
   difficultyName: Easy
-  initialGroupCount: 4
-  growthFactor: 1
-  exponent: 0.65
-  initialSpawnDelay: 1.5
-  minimumSpawnDelay: 0.5
-  decayFactor: 0.05
-  initialWaveTimeLimit: 30
-  minimumWaveTimeLimit: 15
-  timeReductionPerWave: 0.8
-  enemyData:
-  - {fileID: 11400000, guid: 48fcae14540e510498a8ca0e7911261c, type: 2}
-  - {fileID: 11400000, guid: 46cb815e1632b2d44a7f27e801930935, type: 2}
-  - {fileID: 11400000, guid: 8dac9d03a92f5b54d90f651c248933e8, type: 2}
-  - {fileID: 11400000, guid: d7aadd3a0f6d58d49919079d90613b3a, type: 2}
-  - {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
-  - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
+  difficultyType: 0
+  initialGroupCount: 6
+  growthFactor: 1.2
+  exponent: 0.7
+  initialSpawnDelay: 1.2
+  minimumSpawnDelay: 0.4
+  decayFactor: 0.07
+  initialWaveTimeLimit: 20
+  minimumWaveTimeLimit: 12
+  timeReductionPerWave: 1.2

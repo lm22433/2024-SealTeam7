@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game;
+using Map;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI
@@ -75,9 +77,9 @@ namespace UI
                 PauseGame();
             }
 
-            if (Input.GetKeyDown("r"))
-            {
-                GameManager.GetInstance().StartGame();
+            if (Input.GetKeyDown("r")) {
+                MapManager.GetInstance().Quit();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
 

@@ -38,6 +38,7 @@ namespace Map
         private MeshCollider _meshCollider;
         private MeshFilter _meshFilter;
         private bool _recalcedTangents;
+        private bool _meshNeedsUpdate;
 
         public void Setup(ChunkSettings s, ref float[,] heightMap)
         {
@@ -80,11 +81,26 @@ namespace Map
                 return;
             }
 
-            UpdateHeights();
+            if (_meshNeedsUpdate)
+            {
+                _mesh.SetVertices(_savedMesh.Vertices);
+                _mesh.RecalculateNormals();
+                _savedMesh.Normals = _mesh.normals;
+                
+                if (!_recalcedTangents) _mesh.RecalculateTangents();
+                _mesh.RecalculateBounds();
+                
+                _colliderMesh.SetVertices(_savedMesh.ColliderVertices);
+                _colliderMesh.RecalculateBounds();
+                
+                if (_meshCollider.enabled) _meshCollider.sharedMesh = _colliderMesh;
+                
+                _meshNeedsUpdate = false;
+            }
             _recalcedTangents = true;
         }
 
-        private void UpdateHeights()
+        public void UpdateHeights()
         {
             var numberOfVertices = _vertexSideCount * _vertexSideCount;
             var vertices = _savedMesh.Vertices;
@@ -109,19 +125,10 @@ namespace Map
                 colliderVertices[i].y = _heightMap[z + zChunkOffset, xChunkOffset + x];
             }
 
-            _mesh.SetVertices(vertices);
-            _mesh.RecalculateNormals();
-            if (!_recalcedTangents) _mesh.RecalculateTangents();
-            _mesh.RecalculateBounds();
-
-            _colliderMesh.SetVertices(colliderVertices);
-            _colliderMesh.RecalculateBounds();
-
             _savedMesh.Vertices = vertices;
-            _savedMesh.Normals = _mesh.normals;
             _savedMesh.ColliderVertices = colliderVertices;
-
-            if (_meshCollider.enabled) _meshCollider.sharedMesh = _colliderMesh;
+            
+            _meshNeedsUpdate = true;
         }
 
         private void UpdateMesh()
