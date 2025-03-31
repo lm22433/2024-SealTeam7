@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using UnityEditor.ShaderKeywordFilter;
 
 using Game;
+using Unity.VisualScripting;
 
 public class BattleCamController : MonoBehaviour
 {
@@ -17,11 +18,13 @@ public class BattleCamController : MonoBehaviour
         public GameObject cam;
         public bool isActive;
         public int currentTexture;
+        public GameObject parent;
 
-        public BattleCamera(GameObject cam, bool isActive, int i) {
+        public BattleCamera(GameObject cam, bool isActive, int i, GameObject parent) {
             this.cam = cam;
             this.isActive = isActive;
             this.currentTexture = i;
+            this.parent = parent;
         }
     }
 
@@ -38,6 +41,7 @@ public class BattleCamController : MonoBehaviour
     [SerializeField] private int currentMainCamera = 0;
     [SerializeField, Range(10f, 100f)] private float minCameraWaitTime;
     [SerializeField, Range(10f, 100f)] private float maxCameraWaitTime;
+    [SerializeField] private int maxCameraCarriers = 20;
 
     [Header("Scrolling Headlines")]
     [SerializeField] private TMP_Text scrollingHeadlines;
@@ -66,8 +70,10 @@ public class BattleCamController : MonoBehaviour
         StartCoroutine(waitToChangeCameraPositions());
     }
 
-    public void RegisterCamHolder(GameObject cam) {
-        camHolderPoints.Add(cam);
+    public void RegisterCamHolder(GameObject camHolder) {
+        if (camHolderPoints.Count <= maxCameraCarriers) {
+            camHolderPoints.Add(camHolder);
+        }
     }
 
     private void Update() {
@@ -82,7 +88,8 @@ public class BattleCamController : MonoBehaviour
         scrollHeading();
 
         for(int i = 0; i < battleCameras.Count; i++) {
-            if (battleCameras[i].currentTexture != -1 & !battleCameras[i].isActive) {
+            if (battleCameras[i].currentTexture == -1 && !battleCameras[i].isActive 
+                || battleCameras[i].parent == null || !battleCameras[i].parent.activeInHierarchy) {
                 rawImages[i].texture = staticRender;
             }
         }
@@ -113,7 +120,8 @@ public class BattleCamController : MonoBehaviour
                 battleCameras[i] = new BattleCamera(
                     battleCameras[i].cam,
                     false,
-                    -1
+                    -1,
+                    null
                 );
             } else {
                 int index = (int)UnityEngine.Random.Range(0, tempHolders.Count);
@@ -121,7 +129,8 @@ public class BattleCamController : MonoBehaviour
                 battleCameras[i] = new BattleCamera(
                     battleCameras[i].cam,
                     true,
-                    -1
+                    -1,
+                    tempHolders[index]
                 );
 
                 battleCameras[i].cam.gameObject.transform.SetParent(tempHolders[index].transform);
@@ -156,8 +165,9 @@ public class BattleCamController : MonoBehaviour
                 rawImages[i].texture = renderTextures[i];
                 battleCameras[refIndex[index]] = new BattleCamera(
                     subCamera[index].cam,
-                    subCamera[index].isActive,
-                    i
+                    true,
+                    i,
+                    subCamera[index].parent
                 );
 
                 subCamera.RemoveAt(index);

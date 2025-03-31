@@ -532,7 +532,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -1918,7 +1918,7 @@ MonoBehaviour:
     lod: 1
     colliderLod: 2
     pathingLod: 10
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -3927,15 +3927,19 @@ MonoBehaviour:
   - cam: {fileID: 1670133128}
     isActive: 1
     currentTexture: 0
+    parent: {fileID: 0}
   - cam: {fileID: 1611950257}
     isActive: 1
     currentTexture: 0
+    parent: {fileID: 0}
   - cam: {fileID: 2138895157}
     isActive: 1
     currentTexture: 0
+    parent: {fileID: 0}
   - cam: {fileID: 1873638902}
     isActive: 1
     currentTexture: 0
+    parent: {fileID: 0}
   camHolderPoints:
   - {fileID: 1177215234}
   - {fileID: 534202877}
@@ -3944,6 +3948,7 @@ MonoBehaviour:
   currentMainCamera: 0
   minCameraWaitTime: 10
   maxCameraWaitTime: 20
+  maxCameraCarriers: 20
   scrollingHeadlines: {fileID: 2104969906}
   maxScroll: 8000
   currentScroll: 0
@@ -4331,7 +4336,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 7}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 143146236}
