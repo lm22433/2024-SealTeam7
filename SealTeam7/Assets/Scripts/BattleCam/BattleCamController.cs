@@ -7,6 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.ShaderKeywordFilter;
 
+using Game;
+
 public class BattleCamController : MonoBehaviour
 {
     [Serializable]
@@ -28,10 +30,12 @@ public class BattleCamController : MonoBehaviour
     [SerializeField] private RawImage[] rawImages;
     [SerializeField] private List<BattleCamera> battleCameras = new List<BattleCamera>();
     [SerializeField] private List<GameObject> camHolderPoints = new List<GameObject>();
-    [SerializeField] private int currentMainCamera = 0;
 
     [SerializeField] private RenderTexture staticRender;
+    [SerializeField] private GameObject breakingNewsTransition;
 
+    [Header("Camera Change Parameters")]
+    [SerializeField] private int currentMainCamera = 0;
     [SerializeField, Range(10f, 100f)] private float minCameraWaitTime;
     [SerializeField, Range(10f, 100f)] private float maxCameraWaitTime;
 
@@ -41,9 +45,22 @@ public class BattleCamController : MonoBehaviour
     [SerializeField] private float currentScroll = 0;
     [SerializeField] private float scrollSpeed;
 
+    private static BattleCamController _instance;
+
+    void Awake()
+    {
+        if (_instance == null) _instance = this;
+        else Destroy(gameObject);
+
+        breakingNewsTransition.SetActive(true);
+    }
+
     void Start()
     {
-        //Display.displays[1].Activate();
+        for (int i = 1; i < Display.displays.Length; i++) {
+            Display.displays[i].Activate();
+        }
+
         assignCamerasToHolders();
         swapCameraPositions();
         StartCoroutine(waitToChangeCameraPositions());
@@ -51,6 +68,14 @@ public class BattleCamController : MonoBehaviour
 
     public void RegisterCamHolder(GameObject cam) {
         camHolderPoints.Add(cam);
+    }
+
+    private void Update() {
+        if (GameManager.GetInstance().GameActive) {
+            breakingNewsTransition.SetActive(false);
+        } else {
+            breakingNewsTransition.SetActive(true);
+        }   
     }
 
     private void FixedUpdate() {

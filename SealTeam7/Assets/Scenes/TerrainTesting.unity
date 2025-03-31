@@ -854,6 +854,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed2bcae8d9c848778cf672a51e02ce15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &291663097 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1490806247883846084, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+  m_PrefabInstance: {fileID: 5389352900630991005}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &319000644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3885,8 +3890,9 @@ MonoBehaviour:
   camHolderPoints:
   - {fileID: 1177215234}
   - {fileID: 534202877}
-  currentMainCamera: 0
   staticRender: {fileID: 8400000, guid: 76a31560327766c4ca903503d5d45b2a, type: 2}
+  breakingNewsTransition: {fileID: 291663097}
+  currentMainCamera: 0
   minCameraWaitTime: 10
   maxCameraWaitTime: 20
   scrollingHeadlines: {fileID: 2104969906}
