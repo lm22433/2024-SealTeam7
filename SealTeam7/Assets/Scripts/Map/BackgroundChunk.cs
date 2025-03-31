@@ -115,7 +115,7 @@ namespace Map
                 // _savedMeshData.Normals = _mesh.normals;
                 _mesh.SetVertices(_savedMeshData.Vertices);
                 // _mesh.RecalculateNormals();
-                if (!_recalcedTangents) _mesh.RecalculateTangents();
+                // if (!_recalcedTangents) _mesh.RecalculateTangents();
                 _mesh.RecalculateBounds();
 
                 _colliderMesh.SetVertices(_savedMeshData.ColliderVertices);
@@ -690,7 +690,7 @@ namespace Map
             _mesh.SetTriangles(triangles, 0);
             _mesh.SetUVs(0, uvs);
             _mesh.RecalculateNormals();
-            _mesh.RecalculateTangents();
+            // _mesh.RecalculateTangents();
             
             _colliderMesh.Clear();
             _colliderMesh.SetVertices(colliderVertices);
