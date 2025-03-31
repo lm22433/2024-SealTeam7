@@ -163,7 +163,7 @@ namespace UI
             });
         }
 
-        private EnemyCategory GetEnemyCategoryFromEnemyType(EnemyType enemyType) =>
+        private static EnemyCategory GetEnemyCategoryFromEnemyType(EnemyType enemyType) =>
             enemyType switch
             {
                 EnemyType.Soldier => EnemyCategory.Regular,
@@ -199,12 +199,16 @@ namespace UI
             timeSurvivedText.SetText($"{minutes}:{secondsStr}");
             damageTakenText.SetText($"{damageTaken}");
             
-            Dictionary<EnemyCategory, int> categoryDict = detailedEnemiesKilled
-                .GroupBy(kvp => GetEnemyCategoryFromEnemyType(kvp.Key))
-                .ToDictionary(
-                    group => group.Key,
-                    group => group.Sum(kvp => kvp.Value)
-                );
+            Dictionary<EnemyCategory, int> categoryDict = Enum.GetValues(typeof(EnemyCategory))
+                .Cast<EnemyCategory>()
+                .ToDictionary(category => category, _ => 0);
+
+            foreach (var group in detailedEnemiesKilled
+                         .GroupBy(kvp => GetEnemyCategoryFromEnemyType(kvp.Key)))
+            {
+                categoryDict[group.Key] = group.Sum(kvp => kvp.Value);
+            }
+            
             regularEnemiesKilledText.SetText($"{categoryDict[EnemyCategory.Regular]}");
             specialEnemiesKilledText.SetText($"{categoryDict[EnemyCategory.Special]}");
             heavyEnemiesKilledText.SetText($"{categoryDict[EnemyCategory.Heavy]}");
