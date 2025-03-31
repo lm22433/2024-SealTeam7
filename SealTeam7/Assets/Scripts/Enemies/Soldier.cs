@@ -1,5 +1,6 @@
 using Enemies.Utils;
 using UnityEngine;
+using BattleCam;
 
 namespace Enemies
 {
