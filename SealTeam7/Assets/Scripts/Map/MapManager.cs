@@ -56,6 +56,18 @@ namespace Map
         [SerializeField] private float heightScale;
         [SerializeField] private float lerpFactor;
         [SerializeField] private LODInfo lodInfo;
+
+        [Header("")]
+        [Header("Infinite Sand Settings")]
+        [Header("")]
+        [SerializeField] private GameObject bgChunkPrefab;
+        [SerializeField] private float bgAverageHeight;
+        [SerializeField] private float bgBaseHeightScale;
+        [SerializeField] private float bgBaseNoiseScale;
+        [SerializeField] private float bgRoughnessHeightScale;
+        [SerializeField] private float bgRoughnessNoiseScale;
+        [SerializeField] private int bgInterpolationMargin;
+        [SerializeField] private int bgChunkMargin;
         
         [Header("")]
         [Header("Environment Settings")]
@@ -74,6 +86,7 @@ namespace Map
         private float[,] _heightMap;
         private float2[,] _gradientMap;
         private List<Chunk> _chunks;
+        private List<BackgroundChunk> _bgChunks;
         private float _mapSpacing;
 
         private static MapManager _instance;
@@ -85,6 +98,7 @@ namespace Map
 
             _mapSpacing = (float) mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
+            _bgChunks = new List<BackgroundChunk>(chunkRow);
             _heightMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
             _gradientMap = new float2[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
 
@@ -100,20 +114,74 @@ namespace Map
                 LODInfo = lodInfo,
                 ColliderEnabled = colliderEnabled
             };
+
+            BackgroundChunkSettings backgroundChunkSettings = new BackgroundChunkSettings
+            {
+                Size = chunkSize,
+                MapSize = mapSize,
+                Spacing = _mapSpacing,
+                LODInfo = lodInfo,
+                ColliderEnabled = colliderEnabled,
+                AverageHeight = bgAverageHeight,
+                BaseHeightScale = bgBaseHeightScale,
+                BaseNoiseScale = bgBaseNoiseScale,
+                RoughnessHeightScale = bgRoughnessHeightScale,
+                RoughnessNoiseScale = bgRoughnessNoiseScale,
+                InterpolationMargin = bgInterpolationMargin
+            };
             
-            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, ref _gradientMap, kernelSize, gaussianStrength);
+            if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, ref _gradientMap, kernelSize, gaussianStrength, OnHeightUpdate);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, ref _gradientMap);
 
-            for (int z = 0; z < chunkRow; z++)
+            for (int z = -bgChunkMargin; z < chunkRow + bgChunkMargin; z++)
             {
-                for (int x = 0; x < chunkRow; x++)
+                for (int x = -bgChunkMargin; x < chunkRow + bgChunkMargin; x++)
                 {
-                    var chunk = Instantiate(chunkPrefab, new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing), Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
-                    chunkSettings.X = x;
-                    chunkSettings.Z = z;
-                    chunk.Setup(chunkSettings, ref _heightMap);
-                    _chunks.Add(chunk);
+                    // Play region chunks
+                    if (z >= 0 && z < chunkRow && x >= 0 && x < chunkRow)
+                    {
+                        var chunk = Instantiate(chunkPrefab,
+                            new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing),
+                            Quaternion.identity, chunkParent.transform).GetComponent<Chunk>();
+                        chunkSettings.X = x;
+                        chunkSettings.Z = z;
+                        chunk.Setup(chunkSettings, ref _heightMap);
+                        _chunks.Add(chunk);
+                    }
+                    // Background chunks
+                    else
+                    {
+                        var chunk = Instantiate(bgChunkPrefab,
+                            new Vector3(x * chunkSize * _mapSpacing, 0f, z * chunkSize * _mapSpacing),
+                            Quaternion.identity, chunkParent.transform).GetComponent<BackgroundChunk>();
+                        backgroundChunkSettings.X = x;
+                        backgroundChunkSettings.Z = z;
+                        if (x == -1 && z == -1) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.TopRightCorner;
+                        else if (x == -1 && z == chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.BottomRightCorner;
+                        else if (x == chunkRow && z == -1) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.TopLeftCorner;
+                        else if (x == chunkRow && z == chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.BottomLeftCorner;
+                        else if (x == -1 && z >= 0 && z < chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.RightEdge;
+                        else if (x == chunkRow && z >= 0 && z < chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.LeftEdge;
+                        else if (x >= 0 && x < chunkRow && z == -1) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.TopEdge;
+                        else if (x >= 0 && x < chunkRow && z == chunkRow) backgroundChunkSettings.InterpolationDirection = InterpolationDirection.BottomEdge;
+                        else backgroundChunkSettings.InterpolationDirection = InterpolationDirection.None;
+                        chunk.Setup(backgroundChunkSettings, ref _heightMap);
+                        _bgChunks.Add(chunk);
+                    }
                 }
+            }
+        }
+
+        private void OnHeightUpdate()
+        {
+            foreach (var chunk in _chunks)
+            {
+                chunk.UpdateHeights();
+            }
+
+            foreach (var chunk in _bgChunks)
+            {
+                chunk.UpdateHeights();
             }
         }
 
