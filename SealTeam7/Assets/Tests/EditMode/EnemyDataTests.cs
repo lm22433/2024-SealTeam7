@@ -1,4 +1,4 @@
-﻿using Enemies;
+﻿using Enemies.Utils;
 using Game;
 using NUnit.Framework;
 
