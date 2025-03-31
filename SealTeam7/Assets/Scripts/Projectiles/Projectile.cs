@@ -15,7 +15,7 @@ namespace Projectiles
         public PlayerDamageable ToDamage { get; set; }
         public int Damage { get; set; }
         public ProjectileType projectileType;
-        
+
         private Vector3 _startPosition;
 
         public void Init()

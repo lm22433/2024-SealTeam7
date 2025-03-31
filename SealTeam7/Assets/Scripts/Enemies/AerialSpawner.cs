@@ -14,7 +14,7 @@ namespace Enemies
         public override void Init()
         {
             base.Init();
-            
+
             LastAttack = attackInterval - 2.0f;
             var mapSize = MapManager.GetInstance().GetMapSize() * MapManager.GetInstance().GetMapSpacing();
             _oppositePosition = new Vector3(mapSize - transform.position.x, flyHeight, mapSize - transform.position.z);
@@ -24,7 +24,7 @@ namespace Enemies
         {
             return 1 / (start.WorldPos - EnemyManager.godlyCore.transform.position).sqrMagnitude * 1000f;
         }
-        
+
         protected override void Attack(PlayerDamageable toDamage)
         {
             EnemyManager.SpawnerSpawn(spawnPoint.position, spawnee, attackDamage);

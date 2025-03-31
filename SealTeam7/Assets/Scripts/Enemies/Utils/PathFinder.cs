@@ -78,7 +78,7 @@ namespace Enemies.Utils
             var dstZ = Mathf.Abs(current.WorldPos.z - goal.WorldPos.z);
             if (dstX > dstZ) distanceWeight = 10f * (math.SQRT2 * dstZ + (dstX - dstZ));
             else distanceWeight = 10f * (math.SQRT2 * dstX + (dstZ - dstX));
-            
+
             return 10f * distanceWeight + heuristicWeight;
         }
 

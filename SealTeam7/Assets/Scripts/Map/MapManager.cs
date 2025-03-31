@@ -68,7 +68,7 @@ namespace Map
         [SerializeField] private float bgRoughnessNoiseScale;
         [SerializeField] private int bgInterpolationMargin;
         [SerializeField] private int bgChunkMargin;
-        
+
         [Header("")]
         [Header("Environment Settings")]
         [Header("")]
@@ -127,9 +127,9 @@ namespace Map
                 RoughnessNoiseScale = bgRoughnessNoiseScale,
                 InterpolationMargin = bgInterpolationMargin
             };
-            
+
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength, OnHeightUpdate);
-            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, OnHeightUpdate);
+            else _noiseGenerator = new NoiseGenerator((int)(mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, OnHeightUpdate);
 
             for (int z = -bgChunkMargin; z < chunkRow + bgChunkMargin; z++)
             {

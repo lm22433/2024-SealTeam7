@@ -86,15 +86,15 @@ namespace Map
                 _mesh.SetVertices(_savedMesh.Vertices);
                 _mesh.RecalculateNormals();
                 _savedMesh.Normals = _mesh.normals;
-                
+
                 if (!_recalcedTangents) _mesh.RecalculateTangents();
                 _mesh.RecalculateBounds();
-                
+
                 _colliderMesh.SetVertices(_savedMesh.ColliderVertices);
                 _colliderMesh.RecalculateBounds();
-                
+
                 if (_meshCollider.enabled) _meshCollider.sharedMesh = _colliderMesh;
-                
+
                 _meshNeedsUpdate = false;
             }
             _recalcedTangents = true;
@@ -127,7 +127,7 @@ namespace Map
 
             _savedMesh.Vertices = vertices;
             _savedMesh.ColliderVertices = colliderVertices;
-            
+
             _meshNeedsUpdate = true;
         }
 

@@ -10,33 +10,33 @@ namespace Enemies
             base.Init();
             transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
         }
-        
+
         protected override float Heuristic(Node start, Node end)
         {
             return start.WorldPos.y > flyHeight - 20f ? 1000000000f : 0f;
         }
-        
+
         protected override void EnemyUpdate()
         {
             switch (State)
             {
                 case EnemyState.AttackCore:
-                {
-                    TargetPosition = new Vector3(TargetPosition.x, flyHeight, TargetPosition.z);
-                    TargetRotation = Quaternion.Euler(
-                        transform.eulerAngles.x,
-                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
-                    break;
-                }
+                    {
+                        TargetPosition = new Vector3(TargetPosition.x, flyHeight, TargetPosition.z);
+                        TargetRotation = Quaternion.Euler(
+                            transform.eulerAngles.x,
+                            Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
+                            transform.eulerAngles.z);
+                        break;
+                    }
                 case EnemyState.AttackHands:
-                {
-                    TargetRotation = Quaternion.Euler(
-                        transform.eulerAngles.x,
-                        Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
-                    break;
-                }
+                    {
+                        TargetRotation = Quaternion.Euler(
+                            transform.eulerAngles.x,
+                            Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
+                            transform.eulerAngles.z);
+                        break;
+                    }
             }
         }
 

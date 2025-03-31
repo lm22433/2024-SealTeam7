@@ -18,7 +18,7 @@ namespace Map
         private readonly float _noiseScale;
         private readonly float _heightScale;
         private readonly Action _onHeightUpdate;
-        
+
         private float[,] _heightMap;
 
         private bool _running;
@@ -34,7 +34,7 @@ namespace Map
             _time = 0f;
 
             _heightMap = heightMap;
-            
+
             _running = true;
 
             Task.Run(UpdateNoise);

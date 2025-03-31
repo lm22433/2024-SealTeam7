@@ -24,12 +24,12 @@ namespace Enemies
             switch (State)
             {
                 case EnemyState.Moving:
-                {
-                    if (!trail.isPlaying) trail.Play();
-                    if (!smokeTrail.isPlaying) smokeTrail.Play();
-                    chargeParticles.Stop();
-                    break;
-                }
+                    {
+                        if (!trail.isPlaying) trail.Play();
+                        if (!smokeTrail.isPlaying) smokeTrail.Play();
+                        chargeParticles.Stop();
+                        break;
+                    }
                 case EnemyState.AttackCore:
                     {
                         if (!chargeParticles.isPlaying) chargeParticles.Play();

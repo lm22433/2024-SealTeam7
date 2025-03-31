@@ -17,7 +17,7 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float yeetThreshold = 0.8f;
         protected Enemy Self;
         protected Rigidbody Rb;
-        
+
         protected virtual void Start()
         {
             Rb = GetComponent<Rigidbody>();
@@ -27,7 +27,7 @@ namespace Enemies.FunkyPhysics
         protected virtual void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
+
             //WOULD DIE BURIED
             if (transform.position.y <= MapManager.GetInstance().GetHeight(transform.position) - sinkFactor && !Self.IsDying)
             {
@@ -61,7 +61,7 @@ namespace Enemies.FunkyPhysics
         private void FixedUpdate()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
+
             if (Rb.linearVelocity.y > defianceThreshold && Self.Grounded)
             {
                 Physics.Raycast(transform.position, Vector3.down, out var hit, Self.transform.localScale.y * 2.0f);

@@ -11,7 +11,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Enemies.Utils
-{   
+{
     public struct PathRequest
     {
         public Vector3 Start;
@@ -39,7 +39,7 @@ namespace Enemies.Utils
         [Header("Game Settings")]
         [SerializeField] public PlayerCore godlyCore;
         [SerializeField] public PlayerHands[] godlyHands;
-        
+
         [Header("Pathing Settings")]
         [SerializeField] private float mapUpdateInterval;
         [SerializeField] private int pathingDepth;
@@ -188,7 +188,7 @@ namespace Enemies.Utils
                 _enemyCount++;
             }
         }
-        
+
         private void GetDataFromDeadEnemy(Enemy enemy)
         {
             if (enemy.enemyType is EnemyType.Necromancer) return;
@@ -210,7 +210,7 @@ namespace Enemies.Utils
             enemy.transform.SetParent(transform);
             _enemyCount++;
         }
-        
+
         private void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;

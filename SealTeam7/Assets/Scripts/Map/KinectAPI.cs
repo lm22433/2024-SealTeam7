@@ -29,7 +29,7 @@ namespace Map
         private Image<Gray, float> _tmpImage1;
         private Image<Gray, float> _tmpImage2;
         private Image<Gray, float> _tmpImage3;
-        
+
         private readonly Mat _dilationKernel;
         private readonly System.Drawing.Point _defaultAnchor;
         private readonly MCvScalar _scalarOne;
@@ -45,7 +45,7 @@ namespace Map
         private readonly int _xOffsetEnd;
         private readonly int _yOffsetStart;
         private readonly int _yOffsetEnd;
-        
+
         private readonly Task _getCaptureTask;
         private readonly int _kernelSize;
         private readonly float _gaussianStrength;
@@ -53,7 +53,7 @@ namespace Map
 
         private bool _running;
 
-        public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth, 
+        public KinectAPI(float heightScale, float lerpFactor, int minimumSandDepth, int maximumSandDepth,
                 int irThreshold, float similarityThreshold, int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, int kernelSize, float gaussianStrength, Action onHeightUpdate)
         {
             _onHeightUpdate = onHeightUpdate;
@@ -203,7 +203,7 @@ namespace Map
                     // Otherwise height is kept the same for that pixel
                 }
             }
-            
+
             _onHeightUpdate();
         }
     }

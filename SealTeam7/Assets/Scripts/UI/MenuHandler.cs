@@ -77,7 +77,8 @@ namespace UI
                 PauseGame();
             }
 
-            if (Input.GetKeyDown("r")) {
+            if (Input.GetKeyDown("r"))
+            {
                 MapManager.GetInstance().Quit();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
