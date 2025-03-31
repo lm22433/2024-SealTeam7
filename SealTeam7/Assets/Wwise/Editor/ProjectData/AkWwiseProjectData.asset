@@ -24,7 +24,7 @@ MonoBehaviour:
     ParentPath: Virtual Acoustics\Default Work Unit
     guid: 76a473b25f12254387b2d2effe838a1c
     GuidInternal: 
-    m_lastTime: -8584594489342786676
+    m_lastTime: -8584586077926037721
     List: []
   - PhysicalPath: Virtual Acoustics\Factory Acoustic Textures.wwu
     PathAndIcons:
@@ -37,7 +37,7 @@ MonoBehaviour:
     ParentPath: Virtual Acoustics\Factory Acoustic Textures
     guid: 6b663d46a83ca54f8b4a5fef12b883f6
     GuidInternal: 
-    m_lastTime: -8584594489342770277
+    m_lastTime: -8584586077926037721
     List:
     - name: Acoustic_Banner
       guid: f2532d2fccda8e408b8898b1b52a26d6
@@ -303,7 +303,7 @@ MonoBehaviour:
     ParentPath: Master-Mixer Hierarchy\Default Work Unit
     guid: 4a01854a4134a748a243656b4ea7b322
     GuidInternal: 
-    m_lastTime: -8584593937119240615
+    m_lastTime: -8584586077933330601
     List:
     - name: Master Audio Bus
       guid: d8a41415a61d2a41a17e75ca0c2149f3
@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584588720855248043
+    m_lastTime: -8584586077926037721
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,7 +359,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584588720869434170
+    m_lastTime: -8584586077947133081
     List:
     - name: Play_CelebrationFanfare
       guid: 7ed2308a1913644f89ddfcb21e99f0ec
@@ -543,7 +543,7 @@ MonoBehaviour:
     ParentPath: Game Parameters\Default Work Unit
     guid: 2e780babed503147b9b6cf23803de159
     GuidInternal: 
-    m_lastTime: -8584588720869404109
+    m_lastTime: -8584586077947133081
     List: []
   - PhysicalPath: Game Parameters\Factory Soundseed Air Game Syncs.wwu
     PathAndIcons:
@@ -556,7 +556,7 @@ MonoBehaviour:
     ParentPath: Game Parameters\Factory Soundseed Air Game Syncs
     guid: 5577163b42fb8b4598bf96f557afb3b9
     GuidInternal: 
-    m_lastTime: -8584594489366221820
+    m_lastTime: -8584586077947133081
     List:
     - name: SS_Air_Fear
       guid: 59062ef746431c4ea1b1dab46a05101e
@@ -710,7 +710,7 @@ MonoBehaviour:
     ParentPath: States\Default Work Unit
     guid: 03586206aeda5e44b44c482f9b18344d
     GuidInternal: 
-    m_lastTime: -8584594489342818352
+    m_lastTime: -8584586077926037721
     List:
     - name: SoundEffectStates
       guid: 2de3c5b5b40367479020adc5ea53ae72
@@ -758,7 +758,7 @@ MonoBehaviour:
     ParentPath: Switches\Default Work Unit
     guid: 80c61d96623170488863251c92fe0e01
     GuidInternal: 
-    m_lastTime: -8584594489342807848
+    m_lastTime: -8584586077926037721
     List: []
   TriggerWwu:
   - PhysicalPath: Triggers\Default Work Unit.wwu
@@ -772,7 +772,7 @@ MonoBehaviour:
     ParentPath: Triggers\Default Work Unit
     guid: 14eb39570f5ef94bb89d95e20d684ae2
     GuidInternal: 
-    m_lastTime: -8584594489342797400
+    m_lastTime: -8584586077926037721
     List: []
   ExpandedFileSystemItemIds: 
   ExpandedWaapiItemIds: 
