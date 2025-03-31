@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6243655954288260642}
   - component: {fileID: 7688312983481324512}
   - component: {fileID: 6288105543793975865}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GameOver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 3659400004042030249}
   - component: {fileID: 2360994693879665226}
   - component: {fileID: 5268268820810764970}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 5715808055237285373}
   - component: {fileID: 8817658184922310056}
   - component: {fileID: 668113739243147032}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Row
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 706755617741098111}
   - component: {fileID: 4829872159465304511}
   - component: {fileID: 6483378217678938839}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 4523825351927812956}
   - component: {fileID: 4282987892632322353}
   - component: {fileID: 5600329414363053494}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GameoverText (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -573,7 +573,7 @@ GameObject:
   - component: {fileID: 3349511709693217823}
   - component: {fileID: 7592221937392477363}
   - component: {fileID: 173013866890914070}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Timer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -709,7 +709,7 @@ GameObject:
   - component: {fileID: 7853282602037913892}
   - component: {fileID: 7199057205371587786}
   - component: {fileID: 6640473484610584922}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: FinalScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -845,7 +845,7 @@ GameObject:
   - component: {fileID: 5467577259743273685}
   - component: {fileID: 8946588756327631223}
   - component: {fileID: 7684061989767451873}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GameoverText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -982,7 +982,7 @@ GameObject:
   - component: {fileID: 8510059645687211270}
   - component: {fileID: 489328567965811274}
   - component: {fileID: 4256809547100955823}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1083,7 +1083,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1723350142681545587}
   - component: {fileID: 3129197373006428967}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1147,7 +1147,7 @@ GameObject:
   - component: {fileID: 337521344452805744}
   - component: {fileID: 1016805818537493265}
   - component: {fileID: 6770123060855789788}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ScoreUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -23,6 +23,10 @@ namespace Enemies.Utils
         public float maxSpawnChance;
         public float spawnChanceGrowthRate;
         
+        [Header("Tooltip")][Multiline]
+        public string tooltipText;
+        public bool tooltipShown;
+        
         public int GetGroupSpawnSize(Difficulty difficulty, int currentWave) =>
             Mathf.RoundToInt(baseGroupSpawnSize + groupSpawnSizeGrowthRate * Mathf.Log(currentWave - startingWave + 1, 2) * GetDifficultyMultiplier(difficulty));
 

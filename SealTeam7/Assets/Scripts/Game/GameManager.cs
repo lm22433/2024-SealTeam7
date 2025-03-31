@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Effects;
 using Enemies;
 using Enemies.Utils;
@@ -27,6 +28,8 @@ namespace Game
         [SerializeField] private GameObject healthBar;
         [SerializeField] private TMP_Text gameoverScoreText;
         [SerializeField] private TMP_Text gameoverText;
+        [SerializeField] private GameObject tooltipPrefab;
+        [SerializeField] private Transform tooltipContainer;
 
         [Header("Sound Options")]
         [SerializeField] private AK.Wwise.Event celebrationFanfare;
@@ -78,6 +81,13 @@ namespace Game
             timerText.SetText($"{(int) _timer / 60}:{seconds}");
 
             healthBar.transform.localScale = new Vector3((float) _health / maxHealth, 1, 1);
+        }
+
+        public void DisplayEnemyTooltip(EnemyData newEnemy)
+        {
+            var toolTip = Instantiate(tooltipPrefab, tooltipContainer);
+            toolTip.GetComponentInChildren<TMP_Text>().text = newEnemy.name + ": \n" + newEnemy.tooltipText;
+            Destroy(toolTip, 5f);
         }
 
         public void StartGame()

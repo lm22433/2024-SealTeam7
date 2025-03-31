@@ -57,7 +57,6 @@ namespace Enemies.Utils
         private PathFinder _pathFinder;
         private ConcurrentQueue<PathRequest> _pathRequestQueue;
         private bool _running;
-        private EnemyData[] _enemyTypes;
         private static EnemyManager _instance;
         private Difficulty _difficulty;
         private int _currentWave;
@@ -86,6 +85,7 @@ namespace Enemies.Utils
                 Enemy enemy = data.prefab.GetComponent<Enemy>();
                 ProjectilePool.GetInstance().RegisterProjectile(enemy.projectileType, enemy.projectile);
                 if (data.enemyType is EnemyType.Soldier) lastDeadEnemy = data;
+                data.tooltipShown = false;
             }
         }
 
@@ -145,6 +145,13 @@ namespace Enemies.Utils
                     
                     EnemyData chosenEnemy = _difficulty.GetRandomEnemy(enemyData, _currentWave);
                     if (!chosenEnemy) continue;
+                    
+                    if (!chosenEnemy.tooltipShown)
+                    {
+                        GameManager.GetInstance().DisplayEnemyTooltip(chosenEnemy);
+                        chosenEnemy.tooltipShown = true;
+                    }
+                    
                     int finalGroupSize = Mathf.Min(chosenEnemy.GetGroupSpawnSize(_difficulty, _currentWave), maxEnemyCount - _enemyCount);
                     
                     for (int j = 0; j < finalGroupSize; j++)
