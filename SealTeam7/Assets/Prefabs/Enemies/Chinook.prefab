@@ -61,7 +61,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 8, y: 8, z: 8}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5641211790423320392}
@@ -86,18 +86,18 @@ MonoBehaviour:
   moveSpeed: 10
   acceleration: 20
   groundedOffset: 5
-  flyHeight: 200
+  flyHeight: 250
   aimSpeed: 10
   attackRange: 500
-  attackInterval: 10
-  stopShootingThreshold: 20
+  attackInterval: 20
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 0
   attackDamage: 16
   killScore: 750
   deathParticles: {fileID: 4793043602501896030}
   model: {fileID: 5641211790423320392}
   muzzle: {fileID: 8302181914671201879}
-  projectileType: 3
+  projectileType: 4
   projectile: {fileID: 4591771593478182790, guid: 4b0ff9d247d61944696f906f47874dc3, type: 3}
   gunFireSound:
     idInternal: 0
@@ -107,6 +107,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  State: 0
   helicopterSound:
     idInternal: 0
     valueGuidInternal: 
@@ -115,10 +116,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
   - {fileID: 11400000, guid: 8dac9d03a92f5b54d90f651c248933e8, type: 2}
   - {fileID: 11400000, guid: 46cb815e1632b2d44a7f27e801930935, type: 2}
-  - {fileID: 11400000, guid: 11214c7990501be48a622d04de42f72d, type: 2}
   - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
   - {fileID: 11400000, guid: 1cfb98aa5d8fbc44fb31853b5efdc409, type: 2}
-  - {fileID: 11400000, guid: e1562d7a103d9ee4d806e6412cf4505b, type: 2}
   spawnCount: 1
 --- !u!114 &2280521706687957157
 MonoBehaviour:
@@ -136,6 +135,7 @@ MonoBehaviour:
   defianceThreshold: 0
   sinkFactor: 0
   fallDeathVelocityY: 60
+  jumpForce: 10
   mainPropeller: {fileID: 5184208950113074523}
   subPropeller: {fileID: 8550081513951055953}
   propellerSpeed: 1000
@@ -195,6 +195,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4198281567830001334}
     m_Modifications:
+    - target: {fileID: -8727834642589982591, guid: 493bb76646237446b986364b1941f33b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 69.73569
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 493bb76646237446b986364b1941f33b, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2
@@ -251,6 +255,18 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -5861409178561632961, guid: 493bb76646237446b986364b1941f33b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 69.73569
+      objectReference: {fileID: 0}
+    - target: {fileID: -4862009073159969417, guid: 493bb76646237446b986364b1941f33b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: -2.9934764
+      objectReference: {fileID: 0}
+    - target: {fileID: -4862009073159969417, guid: 493bb76646237446b986364b1941f33b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.332
+      objectReference: {fileID: 0}
     - target: {fileID: -2702319009635270420, guid: 493bb76646237446b986364b1941f33b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -266,6 +282,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 493bb76646237446b986364b1941f33b, type: 3}
       propertyPath: m_Name
       value: Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 1815886565211289664, guid: 493bb76646237446b986364b1941f33b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 57.785713
       objectReference: {fileID: 0}
     - target: {fileID: 4940084009053915941, guid: 493bb76646237446b986364b1941f33b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

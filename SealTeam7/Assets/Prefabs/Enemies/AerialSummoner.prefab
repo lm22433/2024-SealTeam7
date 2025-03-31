@@ -54,16 +54,18 @@ MonoBehaviour:
   moveSpeed: 20
   acceleration: 20
   groundedOffset: 5
+  flyHeight: 330
   aimSpeed: 10
-  attackRange: 1000
+  attackRange: 0
   attackInterval: 12
-  stopShootingThreshold: 150
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 0
   attackDamage: 2
   killScore: 0
   deathParticles: {fileID: 4858304961345967028}
   model: {fileID: 5102378100835869772}
   muzzle: {fileID: 0}
+  projectileType: 0
   projectile: {fileID: 0}
   gunFireSound:
     idInternal: 0
@@ -73,7 +75,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  flyHeight: 300
+  State: 0
   spawnPoint: {fileID: 214597990731930319}
   spawnee: {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
 --- !u!114 &377835221181255017
@@ -92,6 +94,7 @@ MonoBehaviour:
   defianceThreshold: 0
   sinkFactor: 0
   fallDeathVelocityY: 0
+  jumpForce: 10
   mainPropeller: {fileID: 1213454741650169418}
   subPropeller: {fileID: 3281944060087321159}
   propellerSpeed: 1000

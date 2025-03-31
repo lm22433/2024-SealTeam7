@@ -9,6 +9,8 @@ using UnityEditor.ShaderKeywordFilter;
 
 using Game;
 using Unity.VisualScripting;
+using System;
+
 
 public class BattleCamController : MonoBehaviour
 {
@@ -48,6 +50,7 @@ public class BattleCamController : MonoBehaviour
     [SerializeField] private float maxScroll;
     [SerializeField] private float currentScroll = 0;
     [SerializeField] private float scrollSpeed;
+    [SerializeField] private TMP_Text timeText;
 
     private static BattleCamController _instance;
 
@@ -93,6 +96,9 @@ public class BattleCamController : MonoBehaviour
                 rawImages[i].texture = staticRender;
             }
         }
+
+        DateTime now = DateTime.Now;
+        timeText.SetText($"{now.Hour}:{now.Minute}");
     }
 
     private IEnumerator waitToChangeCameraPositions()

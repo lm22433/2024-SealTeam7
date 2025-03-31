@@ -10023,7 +10023,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 215798221103486408}
@@ -10046,18 +10046,19 @@ MonoBehaviour:
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 25
   acceleration: 20
-  groundedOffset: 5
-  flyHeight: 170
+  groundedOffset: 4
+  flyHeight: 210
   aimSpeed: 10
   attackRange: 20
   attackInterval: 0
-  stopShootingThreshold: 0
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 0
   attackDamage: 20
   killScore: 450
   deathParticles: {fileID: 7215728415125685304}
   model: {fileID: 215798221103486408}
   muzzle: {fileID: 0}
+  projectileType: 0
   projectile: {fileID: 0}
   gunFireSound:
     idInternal: 0
@@ -10067,6 +10068,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  State: 0
   trail: {fileID: 1909296849060166712}
   smokeTrail: {fileID: 5142695930952748652}
   chargeParticles: {fileID: 3731027767439547899}
@@ -10086,6 +10088,7 @@ MonoBehaviour:
   defianceThreshold: 0
   sinkFactor: 0
   fallDeathVelocityY: 40
+  jumpForce: 10
 --- !u!54 &6172217153580324171
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10111,7 +10114,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!1 &6618999416180000760
 GameObject:

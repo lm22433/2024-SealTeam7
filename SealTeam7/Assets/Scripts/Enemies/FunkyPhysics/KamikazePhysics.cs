@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using Map;
-using Game;
 
 namespace Enemies.FunkyPhysics
 {
@@ -21,6 +19,11 @@ namespace Enemies.FunkyPhysics
                 }
                 _exploded = true;
 			}
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Ground")) Self.SetupDeath();
         }
     }
 }
