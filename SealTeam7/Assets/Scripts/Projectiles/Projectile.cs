@@ -10,7 +10,7 @@ namespace Projectiles
     public class Projectile : MonoBehaviour
     {
         [SerializeField] private float speed;
-        [SerializeField] [CanBeNull] private TrailRenderer trail;
+        [SerializeField][CanBeNull] private TrailRenderer trail;
         public Vector3 TargetPosition { get; set; }
         public PlayerDamageable ToDamage { get; set; }
         public int Damage { get; set; }
