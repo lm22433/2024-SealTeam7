@@ -6,12 +6,12 @@ namespace Enemies
 {
     public class Chinook : Aircraft
     {
-                
+
         [SerializeField] private AK.Wwise.Event helicopterSound;
         [SerializeField] private EnemyData[] spawnableEnemies;
         [SerializeField] private int spawnCount;
         private bool _isGracefulShutdown;
-        
+
         protected override void Attack(PlayerDamageable toDamage)
         {
             base.Attack(toDamage);

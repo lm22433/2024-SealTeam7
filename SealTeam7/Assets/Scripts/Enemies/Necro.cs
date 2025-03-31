@@ -17,7 +17,7 @@ namespace Enemies
             //necroRing.Play();
             LastAttack = attackInterval - 2.0f;
         }
-        
+
         // public override void SetupDeath()
         // {
         //     necroRing.Stop();

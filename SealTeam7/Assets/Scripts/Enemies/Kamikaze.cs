@@ -1,4 +1,4 @@
-﻿using Enemies.Utils;
+using Enemies.Utils;
 using Player;
 using UnityEngine;
 
@@ -13,7 +13,7 @@ namespace Enemies
         protected override void Attack(PlayerDamageable toDamage)
         {
             gunFireSound.Post(gameObject);
-            
+
             toDamage.TakeDamage(attackDamage);
             killScore = 0;
             SetupDeath();
@@ -24,34 +24,34 @@ namespace Enemies
             switch (State)
             {
                 case EnemyState.Moving:
-                {
-                    if (!trail.isPlaying) trail.Play();
-                    if (!smokeTrail.isPlaying) smokeTrail.Play();
-                    chargeParticles.Stop();
-                    break;
-                }
+                    {
+                        if (!trail.isPlaying) trail.Play();
+                        if (!smokeTrail.isPlaying) smokeTrail.Play();
+                        chargeParticles.Stop();
+                        break;
+                    }
                 case EnemyState.AttackCore:
-                {
-                    if(!chargeParticles.isPlaying) chargeParticles.Play();
-                    smokeTrail.Stop();
-                    Rb.linearVelocity = new Vector3 (0,0,0);
-                    break;
-                }
+                    {
+                        if (!chargeParticles.isPlaying) chargeParticles.Play();
+                        smokeTrail.Stop();
+                        Rb.linearVelocity = new Vector3(0, 0, 0);
+                        break;
+                    }
                 case EnemyState.AttackHands:
-                {
-                    if (!chargeParticles.isPlaying) chargeParticles.Play();
-                    smokeTrail.Stop();
-                    Rb.linearVelocity = new Vector3 (0,0,0);
-                    break;
-                }
+                    {
+                        if (!chargeParticles.isPlaying) chargeParticles.Play();
+                        smokeTrail.Stop();
+                        Rb.linearVelocity = new Vector3(0, 0, 0);
+                        break;
+                    }
             }
         }
 
         public override void SetupDeath()
-		{
-			base.SetupDeath();
+        {
+            base.SetupDeath();
             trail.Stop();
             smokeTrail.Stop();
-		}
+        }
     }
 }

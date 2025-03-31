@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
@@ -29,20 +29,20 @@ namespace Enemies.Utils
             return other != null && Index.Equals(other.Index);
         }
     }
-    
+
     public class PathFinder
     {
         private readonly int _size;
         private readonly int _lodFactor;
         private readonly float _mapSpacing;
         private Node[,] _map;
-            
+
         public PathFinder(int size, float mapSpacing, int lodFactor)
         {
             _size = size / lodFactor;
             _mapSpacing = mapSpacing;
             _lodFactor = lodFactor;
-            
+
             CreateMap(_size, _mapSpacing, _lodFactor);
         }
 
@@ -54,16 +54,16 @@ namespace Enemies.Utils
                 for (int x = 0; x < size + 1; x++)
                 {
                     var neighbours = new List<int2>();
-                    
-                    if (z - 1 >= 0)                           neighbours.Add(new int2(z - 1, x));
-                    if (z + 1 < size + 1)                     neighbours.Add(new int2(z + 1, x));
-                    if (x - 1 >= 0)                           neighbours.Add(new int2(z, x - 1));
-                    if (x + 1 < size + 1)                     neighbours.Add(new int2(z, x + 1));
+
+                    if (z - 1 >= 0) neighbours.Add(new int2(z - 1, x));
+                    if (z + 1 < size + 1) neighbours.Add(new int2(z + 1, x));
+                    if (x - 1 >= 0) neighbours.Add(new int2(z, x - 1));
+                    if (x + 1 < size + 1) neighbours.Add(new int2(z, x + 1));
                     if (x + 1 < size + 1 && z + 1 < size + 1) neighbours.Add(new int2(z + 1, x + 1));
-                    if (x + 1 < size + 1 && z - 1 >= 0)       neighbours.Add(new int2(z - 1, x + 1));
-                    if (x - 1 >= 0 && z + 1 < size + 1)       neighbours.Add(new int2(z + 1, x - 1));
-                    if (x - 1 >= 0 && z - 1 >= 0)             neighbours.Add(new int2(z - 1, x - 1));
-                    
+                    if (x + 1 < size + 1 && z - 1 >= 0) neighbours.Add(new int2(z - 1, x + 1));
+                    if (x - 1 >= 0 && z + 1 < size + 1) neighbours.Add(new int2(z + 1, x - 1));
+                    if (x - 1 >= 0 && z - 1 >= 0) neighbours.Add(new int2(z - 1, x - 1));
+
                     _map[z, x] = new Node(new int2(z, x), new Vector3(x * mapSpacing * lodFactor, 0f, z * mapSpacing * lodFactor), neighbours);
                 }
             }
@@ -73,15 +73,15 @@ namespace Enemies.Utils
         {
             float distanceWeight;
             var heuristicWeight = heuristic(current, goal);
-            
+
             var dstX = Mathf.Abs(current.WorldPos.x - goal.WorldPos.x);
             var dstZ = Mathf.Abs(current.WorldPos.z - goal.WorldPos.z);
             if (dstX > dstZ) distanceWeight = 10f * (math.SQRT2 * dstZ + (dstX - dstZ));
             else distanceWeight = 10f * (math.SQRT2 * dstX + (dstZ - dstX));
-            
+
             return 10f * distanceWeight + heuristicWeight;
         }
-        
+
         private static Vector3[] ReconstructPath(Node start, Node end)
         {
             var nodePath = new List<Node>();
@@ -92,7 +92,7 @@ namespace Enemies.Utils
                 nodePath.Add(current);
                 current = current.Parent;
             }
-            
+
             nodePath.Reverse();
 
             var vecPath = new Vector3[nodePath.Count];
@@ -101,10 +101,10 @@ namespace Enemies.Utils
             {
                 vecPath[index++] = node.WorldPos;
             }
-            
+
             return vecPath;
         }
-        
+
         public void UpdateMap(ref float[,] heights)
         {
             for (int z = 0; z < _map.GetLength(0); z++)
@@ -124,12 +124,12 @@ namespace Enemies.Utils
             percentZ = Mathf.Clamp01(percentZ);
             return _map[Mathf.RoundToInt(percentZ * _size), Mathf.RoundToInt(percentX * _size)];
         }
-        
+
         public void FindPathAsync(Vector3 startPos, Vector3 goalPos, int depth, Func<Node, Node, float> heuristic, Action<Vector3[]> setPath)
         {
             var start = NodeFromWorldPos(startPos);
             var goal = NodeFromWorldPos(goalPos);
-            
+
             var openSet = new List<Node> { start };
             var closedSet = new HashSet<Node>();
 
@@ -150,18 +150,18 @@ namespace Enemies.Utils
                 {
                     var neighbour = _map[neighbourIndex.x, neighbourIndex.y];
                     if (neighbour.Equals(null) || closedSet.Contains(neighbour)) continue;
-                    
+
                     var tentativeGScore = current.GScore + Distance(current, neighbour, heuristic);
                     if (openSet.Contains(neighbour) && tentativeGScore > neighbour.GScore) continue;
-                    
+
                     neighbour.Parent = current;
                     neighbour.GScore = tentativeGScore;
                     neighbour.HScore = Distance(neighbour, goal, heuristic);
-                        
+
                     if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
                 }
             }
-            
+
             setPath(Array.Empty<Vector3>());
         }
     }

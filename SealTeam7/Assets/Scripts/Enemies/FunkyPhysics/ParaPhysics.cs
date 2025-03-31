@@ -18,7 +18,7 @@ namespace Enemies.FunkyPhysics
         }
 
         protected override void EnemyFixedUpdate()
-        {            
+        {
             if (!Self.Grounded && _falling) Rb.AddForce(_newGravity, ForceMode.Acceleration);
             else if (_falling)
             {

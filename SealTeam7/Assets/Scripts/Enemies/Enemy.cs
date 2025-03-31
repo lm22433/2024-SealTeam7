@@ -6,7 +6,6 @@ using Map;
 using Player;
 using Projectiles;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace Enemies
@@ -20,18 +19,18 @@ namespace Enemies
         Idle,
         Dying
     }
-    
+
     public abstract class Enemy : MonoBehaviour
     {
         [SerializeField] protected internal EnemyType enemyType;
-        
+
         [Header("Movement")]
         [SerializeField] protected Vector3 forceOffset;
         [SerializeField] protected float moveSpeed;
         [SerializeField] protected float acceleration;
         [SerializeField] protected float groundedOffset;
         [SerializeField] protected float flyHeight;
-        
+
         [Header("Attacking")]
         [SerializeField] protected float aimSpeed;
         [SerializeField] protected float attackRange;
@@ -40,7 +39,7 @@ namespace Enemies
         [SerializeField] protected float coreTargetHeightOffset;
         [SerializeField] protected int attackDamage;
         [SerializeField] protected internal int killScore;
-        
+
         [Header("Visual Effects")]
         [SerializeField] private VisualEffect deathParticles;
         [SerializeField] private Transform model;
@@ -68,7 +67,7 @@ namespace Enemies
         protected int PathIndex;
         protected float PathFindInterval;
         protected float LastPathFind;
-		protected float DeathDuration;
+        protected float DeathDuration;
         protected internal bool Grounded;
         protected internal float Buried;
         protected internal float BuriedAmount = 0.5f;
@@ -98,10 +97,10 @@ namespace Enemies
             DeathDuration = 3.0f;
         }
 
-		public virtual void SetupDeath()
+        public virtual void SetupDeath()
         {
             if (State == EnemyState.Dying) return;
-            
+
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
             {
                 transform.position = new Vector3(
@@ -109,12 +108,12 @@ namespace Enemies
                     MapManager.GetInstance().GetHeight(transform.position),
                     transform.position.z);
             }
-            
+
             model.gameObject.SetActive(false);
             deathSoundEffect.Post(gameObject);
             deathParticles.Play();
-			State = EnemyState.Dying;
-		}
+            State = EnemyState.Dying;
+        }
 
         protected virtual void Attack(PlayerDamageable toDamage)
         {
@@ -133,24 +132,24 @@ namespace Enemies
         }
 
         protected abstract float Heuristic(Node start, Node end);
-        protected virtual void EnemyUpdate() {}
-        protected virtual void EnemyFixedUpdate() {}
-        
+        protected virtual void EnemyUpdate() { }
+        protected virtual void EnemyFixedUpdate() { }
+
         protected virtual void UpdateState()
         {
-			if (State is EnemyState.Dying) return;
-            
+            if (State is EnemyState.Dying) return;
+
             var coreTarget = new Vector3(
                 EnemyManager.godlyCore.transform.position.x,
                 flyHeight == 0 ? MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset : flyHeight,
                 EnemyManager.godlyCore.transform.position.z
             );
-            
+
             if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange - SqrStopMovingThreshold && !DisallowShooting) State = EnemyState.AttackCore;
             else if ((coreTarget - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting) State = EnemyState.MoveAndAttack;
             else if (State is not EnemyState.Idle) State = EnemyState.Moving;
-            
-            foreach (var hand in EnemyManager.godlyHands.Select((value, index) => new {value, index}))
+
+            foreach (var hand in EnemyManager.godlyHands.Select((value, index) => new { value, index }))
             {
                 if ((hand.value.transform.position - transform.position).sqrMagnitude < SqrAttackRange && !DisallowShooting)
                 {
@@ -167,19 +166,19 @@ namespace Enemies
                 case EnemyState.Moving:
                 case EnemyState.AttackCore:
                 case EnemyState.MoveAndAttack:
-                {
-                    TargetPosition = new Vector3(
-                        EnemyManager.godlyCore.transform.position.x,
-                        flyHeight == 0 ? MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset : flyHeight,
-                        EnemyManager.godlyCore.transform.position.z
-                    );
-                    break;
-                }
+                    {
+                        TargetPosition = new Vector3(
+                            EnemyManager.godlyCore.transform.position.x,
+                            flyHeight == 0 ? MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) + coreTargetHeightOffset : flyHeight,
+                            EnemyManager.godlyCore.transform.position.z
+                        );
+                        break;
+                    }
                 case EnemyState.AttackHands:
-                {
-                    TargetPosition = EnemyManager.godlyHands[_handIndex].transform.position;
-                    break;
-                }
+                    {
+                        TargetPosition = EnemyManager.godlyHands[_handIndex].transform.position;
+                        break;
+                    }
             }
         }
 
@@ -215,7 +214,7 @@ namespace Enemies
             {
                 TargetDirection = Vector3.ProjectOnPlane(TargetPosition - transform.position, Vector3.up).normalized;
             }
-            
+
             if (State is EnemyState.Moving or EnemyState.MoveAndAttack) TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetDirection).eulerAngles.y, transform.eulerAngles.z);
         }
 
@@ -235,68 +234,68 @@ namespace Enemies
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
 
-			if (State == EnemyState.Dying)
+            if (State == EnemyState.Dying)
             {
                 if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
                 {
                     transform.position = new Vector3(transform.position.x, MapManager.GetInstance().GetHeight(transform.position) - Buried, transform.position.z);
                 }
-				DeathDuration -= Time.deltaTime;
-				if (DeathDuration <= 0.0f) EnemyManager.Kill(this);
-			}
+                DeathDuration -= Time.deltaTime;
+                if (DeathDuration <= 0.0f) EnemyManager.Kill(this);
+            }
 
             if ((transform.position - EnemyManager.godlyCore.transform.position).sqrMagnitude > EnemyManager.sqrMaxEnemyDistance) EnemyManager.Kill(this);
             Grounded = transform.position.y < MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
-            
+
             UpdateState();
             UpdateTarget();
             LimitSpeed();
             FollowPath();
-            
+
             LastAttack += Time.deltaTime;
             LastPathFind += Time.deltaTime;
-            
+
             EnemyUpdate();
         }
 
         private void FixedUpdate()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
+
             if (!DisallowMovement) Rb.rotation = Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime);
-            
+
             switch (State)
             {
                 case EnemyState.Moving:
-                {
-                    if (!DisallowMovement) Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);
-                    break;
-                }
+                    {
+                        if (!DisallowMovement) Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);
+                        break;
+                    }
                 case EnemyState.MoveAndAttack:
                 case EnemyState.AttackCore:
                 case EnemyState.AttackHands:
-                {
-                    if (State is EnemyState.MoveAndAttack && !DisallowMovement)
                     {
-                        Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);
+                        if (State is EnemyState.MoveAndAttack && !DisallowMovement)
+                        {
+                            Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);
+                        }
+
+                        if (LastAttack >= attackInterval && !DisallowShooting)
+                        {
+                            LastAttack = 0f;
+                            Attack(State is EnemyState.AttackHands ? EnemyManager.godlyHands[_handIndex] : EnemyManager.godlyCore);
+                        }
+                        break;
                     }
-                    
-                    if (LastAttack >= attackInterval && !DisallowShooting)
-                    {
-                        LastAttack = 0f;
-                        Attack(State is EnemyState.AttackHands ? EnemyManager.godlyHands[_handIndex] : EnemyManager.godlyCore);
-                    }
-                    break;
-                }
             }
-            
+
             EnemyFixedUpdate();
         }
-        
+
         public void OnDrawGizmosSelected()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
+
             Gizmos.color = Color.green;
             if (Path.Length > 0) Gizmos.DrawCube(Path[PathIndex], Vector3.one);
             for (int i = PathIndex + 1; i < Path.Length; i++)

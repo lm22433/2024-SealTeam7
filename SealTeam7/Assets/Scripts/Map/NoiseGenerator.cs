@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -18,7 +18,7 @@ namespace Map
         private readonly float _noiseScale;
         private readonly float _heightScale;
         private readonly Action _onHeightUpdate;
-        
+
         private float[,] _heightMap;
 
         private bool _running;
@@ -32,11 +32,11 @@ namespace Map
             _noiseScale = noiseScale;
             _heightScale = heightScale;
             _time = 0f;
-            
+
             _heightMap = heightMap;
-            
+
             _running = true;
-            
+
             Task.Run(UpdateNoise);
         }
 
@@ -44,7 +44,7 @@ namespace Map
         {
             _running = false;
         }
-        
+
         public void AdvanceTime(float deltaTime)
         {
             _time += deltaTime;

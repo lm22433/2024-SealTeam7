@@ -30,7 +30,7 @@ namespace Projectiles
         {
             if (!_prefabs.ContainsKey(projectileType))
             {
-                _prefabs[projectileType] =  projectile;
+                _prefabs[projectileType] = projectile;
                 _projectilePool[projectileType] = new Queue<GameObject>();
             }
         }
@@ -55,14 +55,14 @@ namespace Projectiles
             projectile.SetActive(true);
             return projectile;
         }
-        
+
         public void ReturnToPool(ProjectileType projectileType, GameObject projectile)
         {
             projectile.SetActive(false);
             if (!_projectilePool.ContainsKey(projectileType)) _projectilePool[projectileType] = new Queue<GameObject>();
             _projectilePool[projectileType].Enqueue(projectile);
         }
-        
+
         public void ReturnToPool(ProjectileType projectileType, GameObject projectile, float time)
         {
             StartCoroutine(ReturnToPoolAfterDelay(projectileType, projectile, time));
@@ -73,7 +73,7 @@ namespace Projectiles
             yield return new WaitForSeconds(time);
             ReturnToPool(projectileType, projectile);
         }
-        
+
         public static ProjectilePool GetInstance() => _instance;
     }
 }

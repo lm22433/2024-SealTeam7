@@ -22,7 +22,7 @@ namespace Map
         [Header("")]
         [SerializeField] private float noiseSpeed;
         [SerializeField] private float noiseScale;
-        
+
         [Header("")]
         [Header("Kinect Settings")]
         [Header("")]
@@ -68,7 +68,7 @@ namespace Map
         [SerializeField] private float bgRoughnessNoiseScale;
         [SerializeField] private int bgInterpolationMargin;
         [SerializeField] private int bgChunkMargin;
-        
+
         [Header("")]
         [Header("Environment Settings")]
         [Header("")]
@@ -95,15 +95,15 @@ namespace Map
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
 
-            _mapSpacing = (float) mapSize / chunkRow / chunkSize;
+            _mapSpacing = (float)mapSize / chunkRow / chunkSize;
             _chunks = new List<Chunk>(chunkRow);
             _bgChunks = new List<BackgroundChunk>(chunkRow);
             _heightMap = new float[Mathf.RoundToInt(mapSize / _mapSpacing + 1), Mathf.RoundToInt(mapSize / _mapSpacing + 1)];
 
             var chunkParent = new GameObject("Chunks") { transform = { parent = transform } };
 
-            texture = new Texture2D((int) (mapSize / _mapSpacing + 1), (int) (mapSize / _mapSpacing + 1), TextureFormat.RGBA32, false);
-            
+            texture = new Texture2D((int)(mapSize / _mapSpacing + 1), (int)(mapSize / _mapSpacing + 1), TextureFormat.RGBA32, false);
+
             ChunkSettings chunkSettings = new ChunkSettings
             {
                 Size = chunkSize,
@@ -127,9 +127,9 @@ namespace Map
                 RoughnessNoiseScale = bgRoughnessNoiseScale,
                 InterpolationMargin = bgInterpolationMargin
             };
-            
+
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, lerpFactor, minimumSandDepth, maximumSandDepth, irThreshold, similarityThreshold, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, kernelSize, gaussianStrength, OnHeightUpdate);
-            else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, OnHeightUpdate);
+            else _noiseGenerator = new NoiseGenerator((int)(mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, OnHeightUpdate);
 
             for (int z = -bgChunkMargin; z < chunkRow + bgChunkMargin; z++)
             {
@@ -200,12 +200,12 @@ namespace Map
             var percentZ = position.z / (mapSize * _mapSpacing);
             percentX = Mathf.Clamp01(percentX);
             percentZ = Mathf.Clamp01(percentZ);
-            
+
             var x = percentX * mapSize;
             var z = percentZ * mapSize;
-            
+
             // BILINEAR INTERPOLATION
-            
+
             // get corners of square
             var x1 = Mathf.FloorToInt(percentX * mapSize);
             var z1 = Mathf.FloorToInt(percentZ * mapSize);
@@ -227,19 +227,19 @@ namespace Map
         public Vector3 GetNormal(Vector3 position)
         {
             var normals = _chunks[0].GetNormals();
-            
+
             var percentX = position.x / (mapSize * _mapSpacing);
             var percentZ = position.z / (mapSize * _mapSpacing);
             percentX = Mathf.Clamp01(percentX);
             percentZ = Mathf.Clamp01(percentZ);
-            
+
             var normalSideCount = Mathf.FloorToInt(Mathf.Sqrt(normals.Length) - 1);
             var x = Mathf.FloorToInt(percentX * normalSideCount);
             var z = Mathf.FloorToInt(percentZ * normalSideCount);
 
             return normals[z * (normalSideCount + 1) + x];
         }
-        
+
         private void Update()
         {
             if (takeSnapshot)
@@ -266,13 +266,13 @@ namespace Map
 
                 takeSnapshot = false;
             }
-            
+
             if (!paused && !isKinectPresent)
             {
                 _noiseGenerator.AdvanceTime(Time.deltaTime);
             }
         }
-        
+
         public static MapManager GetInstance() => _instance;
         public ref float[,] GetHeightMap() => ref _heightMap;
         public int GetMapSize() => mapSize;

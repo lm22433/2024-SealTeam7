@@ -7,7 +7,7 @@ namespace Python
     {
         public Vector3[]? Left;
         public Vector3[]? Right;
-        
+
         public override string ToString()
         {
             var left = Left == null ? "null" : $"[{string.Join(", ", Left)}]";
