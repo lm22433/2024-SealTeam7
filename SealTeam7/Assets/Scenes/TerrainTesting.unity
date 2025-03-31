@@ -3896,7 +3896,7 @@ MonoBehaviour:
   minCameraWaitTime: 10
   maxCameraWaitTime: 20
   scrollingHeadlines: {fileID: 2104969906}
-  maxScroll: 6000
+  maxScroll: 8000
   currentScroll: 0
   scrollSpeed: 1
 --- !u!1001 &1553743016
@@ -7624,6 +7624,19 @@ PrefabInstance:
     - target: {fileID: 8876355164332691043, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988012405306851708, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: m_text
+      value: "CS students drafted to fight the sand monster, unions complain   \u25CF 
+        New species of bird discovered and subsequently made extinct due to increased
+        sand in the atmosphere \u25CF   Headline writers guild goes on strike \u25CF
+        World presidents elected to command joint UN forces against newly emerged
+        sand monster \u25CF Have Glouster scientists created a new type of cheese
+        and what could this do for the local economy  "
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988012405306851708, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: m_margin.z
+      value: -5513.513
       objectReference: {fileID: 0}
     - target: {fileID: 9066660859775710875, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
       propertyPath: m_AnchorMax.y
