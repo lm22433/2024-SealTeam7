@@ -4971,7 +4971,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8994214917601464009}
@@ -4990,7 +4990,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc8d9d9336f4427bab2573a27ce6871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 50
+  speed: 100
+  trail: {fileID: 0}
+  projectileType: 4
 --- !u!1 &8258134300089666282
 GameObject:
   m_ObjectHideFlags: 0
