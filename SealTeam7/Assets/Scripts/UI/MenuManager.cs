@@ -156,11 +156,19 @@ namespace UI
             durationSlider.value = currentDuration;
             durationSlider.onValueChanged.AddListener(_ =>
             {
-                currentDuration = (int)durationSlider.value;
+                currentDuration = (int) durationSlider.value;
 
-                var seconds = (currentDuration % 60 < 10) ? $"0{currentDuration % 60}" : $"{currentDuration % 60}";
-                durationSliderText.SetText($"{currentDuration / 60}:{seconds}");
+                int minutes = currentDuration / 60;
+                int seconds = currentDuration % 60;
+                string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
+                durationSliderText.SetText($"{minutes}:{secondsStr}");
             });
+            
+            currentDuration = (int) durationSlider.value;
+            int minutes = currentDuration / 60;
+            int seconds = currentDuration % 60;
+            string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
+            durationSliderText.SetText($"{minutes}:{secondsStr}");
         }
 
         private static EnemyCategory GetEnemyCategoryFromEnemyType(EnemyType enemyType) =>
