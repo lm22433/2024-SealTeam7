@@ -86,7 +86,7 @@ MonoBehaviour:
   moveSpeed: 10
   acceleration: 20
   groundedOffset: 5
-  flyHeight: 250
+  flyHeight: 220
   aimSpeed: 10
   attackRange: 180
   attackInterval: 20

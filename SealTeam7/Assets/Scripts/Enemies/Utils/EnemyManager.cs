@@ -97,8 +97,12 @@ namespace Enemies.Utils
             EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
         }
 
-        public void StartSpawning() => StartCoroutine(SpawnWaves());
-        
+        public void StartSpawning()
+        {
+            StartCoroutine(SpawnWaves());
+            StartCoroutine(SpawnCargoPlanes());
+        }
+
         public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
 
         private void PathThread()
@@ -119,6 +123,17 @@ namespace Enemies.Utils
             if (_pathRequestQueue.Count < 1) return;
             if (!_pathRequestQueue.TryDequeue(out var request)) return;
             _pathFinder.FindPathAsync(request.Start, request.End, pathingDepth, request.Heuristic, request.Callback);
+        }
+
+        private IEnumerator SpawnCargoPlanes()
+        {
+            yield return new WaitForSeconds(initialStartDelay);
+            yield return new WaitForSeconds(30f);
+            
+            while (GameManager.GetInstance().GameActive)
+            {
+                yield return new WaitForSeconds()
+            }
         }
 
         private IEnumerator SpawnWaves()

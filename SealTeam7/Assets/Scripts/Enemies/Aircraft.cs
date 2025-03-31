@@ -45,5 +45,10 @@ namespace Enemies
             if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
             if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
         }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Ground")) SetupDeath();
+        }
     }
 }
