@@ -24,8 +24,6 @@ COLOUR_IMAGE_FULL_SIZE = COLOUR_IMAGE_FULL_WIDTH * COLOUR_IMAGE_FULL_HEIGHT * CO
 COLOUR_IMAGE_FILE_NAME = "colour_image"
 HAND_LANDMARKS_SIZE = 21 * 3 * 2 * 4  # 21 landmarks, 3 coordinates per landmark, 2 hands, 4 bytes per float
 HAND_LANDMARKS_FILE_NAME = "hand_landmarks"
-GESTURES_SIZE = 2 * 4  # 2 hands, 4 bytes per int
-GESTURES_FILE_NAME = "gestures"
 READY_EVENT_NAME = "SealTeam7ColourImageReady"
 DONE_EVENT_NAME = "SealTeam7HandLandmarksDone"
 GESTURE_RECOGNITION_MODEL_PATH = 'hand_landmarking_model.task'
@@ -146,8 +144,13 @@ def get_path(path):
     dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(dir, path)
 
-gesture_recognizer_options = HandLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path=get_path(GESTURE_RECOGNITION_MODEL_PATH), delegate=BaseOptions.Delegate.GPU),
+if args.platform == 'windows':
+    base_options = BaseOptions(model_asset_path=get_path(GESTURE_RECOGNITION_MODEL_PATH))
+else:
+    base_options = BaseOptions(model_asset_path=get_path(GESTURE_RECOGNITION_MODEL_PATH), delegate=BaseOptions.Delegate.GPU)
+
+hand_landmarker_options = HandLandmarkerOptions(
+    base_options=base_options,
     running_mode=RunningMode.VIDEO,
     num_hands=2,
     min_hand_detection_confidence=0.05,
@@ -189,7 +192,7 @@ def landmarks_to_array(landmarks):
                      landmark.y * COLOUR_IMAGE_FULL_HEIGHT] for landmark in landmarks])
     return arr
 
-with HandLandmarker.create_from_options(gesture_recognizer_options) as gesture_recognizer:
+with HandLandmarker.create_from_options(hand_landmarker_options) as gesture_recognizer:
     print("Ready.")
 
     try:

@@ -1,9 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.IO.MemoryMappedFiles;
-using System.Threading;
 using K4AdotNet.Sensor;
-using Microsoft.Win32.SafeHandles;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -14,7 +11,7 @@ namespace Python
         public static bool FlipX { get; set; } = true;
         public static bool FlipHandedness { get; set; } = false;
         public static HandLandmarks HandLandmarks => _handLandmarks;
-        public static Gestures Gestures => _gestures;
+        // public static Gestures Gestures => _gestures;
         public static bool IsInitialized { get; private set; } = false;
         
         private const int PythonImageWidth = 1920;
@@ -25,7 +22,7 @@ namespace Python
         private static Vector3[] _leftHandLandmarks;
         private static Vector3[] _rightHandLandmarks;
         private static Vector3[] _handLandmarksBuffer;  // Temporary buffer for reading hand landmarks
-        private static Gestures _gestures;
+        // private static Gestures _gestures;
 
         public static bool Initialize()
         {
@@ -43,13 +40,14 @@ namespace Python
                 _leftHandLandmarks = new Vector3[21];
                 _rightHandLandmarks = new Vector3[21];
                 _handLandmarksBuffer = new Vector3[21];
-                _gestures = new Gestures();
+                // _gestures = new Gestures();
                 IsInitialized = true;
                 return true;
             }
             catch (Exception ex) {
-                Debug.LogError($"Error initialising PythonManager: {ex.GetType().Name}: {ex.Message}");
-                Debug.LogError($"{ex.StackTrace}");
+                Debug.LogError($"Error initialising PythonManager. Is the Python server running? " +
+                               $"Error: {ex.GetType().Name}: {ex.Message}");
+                // Debug.LogError($"{ex.StackTrace}");
                 return false;
             }
         }
@@ -130,7 +128,7 @@ namespace Python
             }
 
             stopwatch.Stop();
-            Debug.Log($"Reading hand landmarks and gestures from memory mapped file: {stopwatch.ElapsedMilliseconds} ms");
+            Debug.Log($"Reading hand landmarks from memory mapped file: {stopwatch.ElapsedMilliseconds} ms");
 
             return _handLandmarks;
         }

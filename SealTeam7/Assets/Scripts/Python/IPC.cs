@@ -11,7 +11,7 @@ namespace Python
     {
         protected const string ColourImageFileName = "colour_image";
         protected const string HandLandmarksFileName = "hand_landmarks";
-        protected const string GesturesFileName = "gestures";
+        // protected const string GesturesFileName = "gestures";
         protected const string ReadyEventName = "SealTeam7ColourImageReady";
         protected const string DoneEventName = "SealTeam7HandLandmarksDone";
 
@@ -28,13 +28,13 @@ namespace Python
     {
         private readonly MemoryMappedFile _colourImageMemory;
         private readonly MemoryMappedFile _handLandmarksMemory;
-        private readonly MemoryMappedFile _gesturesMemory;
+        // private readonly MemoryMappedFile _gesturesMemory;
         private readonly MemoryMappedViewAccessor _colourImageViewAccessor;
         private readonly SafeMemoryMappedViewHandle _colourImageViewHandle;
         private readonly MemoryMappedViewAccessor _handLandmarksViewAccessor;
         private readonly SafeMemoryMappedViewHandle _handLandmarksViewHandle;
-        private readonly MemoryMappedViewAccessor _gesturesViewAccessor;
-        private readonly SafeMemoryMappedViewHandle _gesturesViewHandle;
+        // private readonly MemoryMappedViewAccessor _gesturesViewAccessor;
+        // private readonly SafeMemoryMappedViewHandle _gesturesViewHandle;
         private readonly EventWaitHandle _readyEvent;
         private readonly EventWaitHandle _doneEvent;
         
@@ -42,13 +42,13 @@ namespace Python
         {
             _colourImageMemory = MemoryMappedFile.OpenExisting(ColourImageFileName, MemoryMappedFileRights.Write);
             _handLandmarksMemory = MemoryMappedFile.OpenExisting(HandLandmarksFileName, MemoryMappedFileRights.Read);
-            _gesturesMemory = MemoryMappedFile.OpenExisting(GesturesFileName, MemoryMappedFileRights.Read);
+            // _gesturesMemory = MemoryMappedFile.OpenExisting(GesturesFileName, MemoryMappedFileRights.Read);
             _colourImageViewAccessor = _colourImageMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Write);
             _colourImageViewHandle = _colourImageViewAccessor.SafeMemoryMappedViewHandle;
             _handLandmarksViewAccessor = _handLandmarksMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
             _handLandmarksViewHandle = _handLandmarksViewAccessor.SafeMemoryMappedViewHandle;
-            _gesturesViewAccessor = _gesturesMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
-            _gesturesViewHandle = _gesturesViewAccessor.SafeMemoryMappedViewHandle;
+            // _gesturesViewAccessor = _gesturesMemory.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
+            // _gesturesViewHandle = _gesturesViewAccessor.SafeMemoryMappedViewHandle;
             _readyEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ReadyEventName);
             _doneEvent = new EventWaitHandle(false, EventResetMode.AutoReset, DoneEventName);
         }
@@ -86,11 +86,11 @@ namespace Python
             _colourImageViewAccessor.Dispose();
             _handLandmarksViewHandle.Dispose();
             _handLandmarksViewAccessor.Dispose();
-            _gesturesViewHandle.Dispose();
-            _gesturesViewAccessor.Dispose();
+            // _gesturesViewHandle.Dispose();
+            // _gesturesViewAccessor.Dispose();
             _colourImageMemory.Dispose();
             _handLandmarksMemory.Dispose();
-            _gesturesMemory.Dispose();
+            // _gesturesMemory.Dispose();
             _readyEvent.Dispose();
             _doneEvent.Dispose();
         }
