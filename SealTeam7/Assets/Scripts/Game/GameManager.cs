@@ -54,6 +54,8 @@ namespace Game
             else Destroy(gameObject);
 
             _health = maxHealth;
+            
+            Application.targetFrameRate = 30;
         }
 
         private void Update()

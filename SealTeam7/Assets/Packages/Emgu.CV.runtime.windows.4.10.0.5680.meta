@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:SealTeam7/Assets/Packages/Emgu.CV.runtime.windows.4.10.0.5680.meta
-guid: a14406db6d12988a6a0794068854f703
-========
-guid: 1e2784941054bfa40989f3f5606de48d
->>>>>>>> dev:SealTeam7/Assets/Packages/Emgu.CV.4.10.0.5680.meta
+guid: 9731180a9686eda45ba1cc8a8d10eee9
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
