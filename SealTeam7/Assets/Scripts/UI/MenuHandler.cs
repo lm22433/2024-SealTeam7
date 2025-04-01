@@ -26,9 +26,9 @@ namespace UI
         [SerializeField] private TMP_Text durationSliderText;
 
         [Header("Music Settings")]
-        // [SerializeField] private AK.Wwise.Event mainMenuMusic;
-        // [SerializeField] private AK.Wwise.Event introMusic;
-        // [SerializeField] private AK.Wwise.Event gameAmbience;
+        [SerializeField] private AK.Wwise.Event mainMenuMusic;
+        [SerializeField] private AK.Wwise.Event introMusic;
+        [SerializeField] private AK.Wwise.Event gameAmbience;
 
         private bool _paused;
         private bool _isGameRunning = false;
@@ -40,28 +40,28 @@ namespace UI
         }
 
         private void Start() {
-            // mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
+            mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
         }
 
         private void OnApplicationQuit() {
             _isGracefulShutdown = true;
 
-            // mainMenuMusic.Stop(gameObject);
-            // introMusic.Stop(gameObject);
-            // gameAmbience.Stop(gameObject);
+            mainMenuMusic.Stop(gameObject);
+            introMusic.Stop(gameObject);
+            gameAmbience.Stop(gameObject);
         }
 
-        // void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
-        //     if (!_isGameRunning && !_isGracefulShutdown) {
-        //         mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
-        //     }
-        // }
-        //
-        // void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
-        //     if (_isGameRunning && !_isGracefulShutdown) {
-        //         gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
-        //     }
-        // }
+        void MainMenuMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (!_isGameRunning && !_isGracefulShutdown) {
+                mainMenuMusic.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, MainMenuMusicCallback);
+            }
+        }
+
+        void AmbienceMusicCallback(object in_cookie, AkCallbackType in_type, object in_info){
+            if (_isGameRunning && !_isGracefulShutdown) {
+                gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
+            }
+        }
 
         void Update()
         {
@@ -117,9 +117,9 @@ namespace UI
         }
 
         public void OnPlayButtonClicked() {
-            // mainMenuMusic.Stop(gameObject, 200, AkCurveInterpolation.AkCurveInterpolation_Exp1);
-            // introMusic.Post(gameObject);
-            // gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
+            mainMenuMusic.Stop(gameObject, 200, AkCurveInterpolation.AkCurveInterpolation_Exp1);
+            introMusic.Post(gameObject);
+            gameAmbience.Post(gameObject, (uint)AkCallbackType.AK_EndOfEvent, AmbienceMusicCallback);
 
             GameManager.GetInstance().SetDifficulty(difficulties[currentDifficulty]);
             GameManager.GetInstance().SetGameDuration(currentDuration);
