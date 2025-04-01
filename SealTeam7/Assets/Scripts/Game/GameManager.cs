@@ -1,6 +1,7 @@
 using System;
 using Effects;
 using Enemies;
+using Enemies.Utils;
 using TMPro;
 using UI;
 using UnityEngine;

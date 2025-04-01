@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Map;
 using Game;
 
@@ -13,7 +14,7 @@ namespace Enemies.FunkyPhysics
 
         protected override void EnemyUpdate()
         {
-            if (Grounded && !Self.IsDying) EnemyManager.GetInstance().Kill(Self);
+            if (Self.Grounded && !Self.IsDying) Self.SetupDeath();
             
             mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
             subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
@@ -27,6 +28,11 @@ namespace Enemies.FunkyPhysics
                 }
                 _exploded = true;
             }
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Ground")) Self.SetupDeath();
         }
     }
 }
