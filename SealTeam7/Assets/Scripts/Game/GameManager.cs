@@ -82,12 +82,12 @@ namespace Game
 
             healthBar.transform.localScale = new Vector3((float) _health / maxHealth, 1, 1);
         }
-
-        public void DisplayEnemyTooltip(EnemyData newEnemy)
+        
+        public void DisplayTooltip(string text, float duration)
         {
             var toolTip = Instantiate(tooltipPrefab, tooltipContainer);
-            toolTip.GetComponentInChildren<TMP_Text>().text = newEnemy.name + ": \n" + newEnemy.tooltipText;
-            Destroy(toolTip, 5f);
+            toolTip.GetComponentInChildren<TMP_Text>().text = text;
+            Destroy(toolTip, duration);
         }
 
         public void StartGame()

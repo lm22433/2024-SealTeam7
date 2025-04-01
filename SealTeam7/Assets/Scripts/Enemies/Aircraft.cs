@@ -5,6 +5,9 @@ namespace Enemies
 {
     public class Aircraft : Enemy
     {
+        [SerializeField] private Transform[] props;
+        [SerializeField] private float propellerSpeed;
+        
         public override void Init()
         {
             base.Init();
@@ -18,6 +21,8 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
+            foreach (var prop in props) prop.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
+            
             switch (State)
             {
                 case EnemyState.AttackCore:
@@ -44,11 +49,6 @@ namespace Enemies
         {
             if (Rb.position.y > flyHeight) Rb.AddForce(Vector3.down, ForceMode.Impulse);
             if (Rb.position.y < flyHeight) Rb.AddForce(Vector3.up, ForceMode.Impulse);
-        }
-
-        private void OnCollisionEnter(Collision other)
-        {
-            if (other.gameObject.CompareTag("Ground")) SetupDeath();
         }
     }
 }

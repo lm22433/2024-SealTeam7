@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Game;
 using Map;
@@ -39,16 +40,18 @@ namespace Enemies.Utils
         [Header("Game Settings")]
         [SerializeField] public PlayerCore godlyCore;
         [SerializeField] public PlayerHands[] godlyHands;
+        [SerializeField] private float enemyTooltipDuration = 5f;
         
         [Header("Pathing Settings")]
         [SerializeField] private float mapUpdateInterval;
         [SerializeField] private int pathingDepth;
         [SerializeField] public float pathFindInterval;
 
-        [Header("Enemies")]
+        [Header("Enemies - Cargo Plane First")]
         [SerializeField] private EnemyData[] enemyData;
-            
+        
         [HideInInspector] public float sqrMaxEnemyDistance;
+        [HideInInspector] public EnemyData lastDeadEnemy;
         
         private float _lastSpawn;
         private float _lastMapUpdate;
@@ -60,7 +63,6 @@ namespace Enemies.Utils
         private static EnemyManager _instance;
         private Difficulty _difficulty;
         private int _currentWave;
-        private EnemyData lastDeadEnemy;
 
         private void Awake()
         {
@@ -128,11 +130,25 @@ namespace Enemies.Utils
         private IEnumerator SpawnCargoPlanes()
         {
             yield return new WaitForSeconds(initialStartDelay);
-            yield return new WaitForSeconds(30f);
+            yield return new WaitForSeconds(_difficulty.initialCargoPlaneDelay);
             
             while (GameManager.GetInstance().GameActive)
             {
-                yield return new WaitForSeconds()
+                yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
+                    
+                Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
+
+                var cargo = enemyData[0];
+                
+                SpawnEnemies(cargo, spawn.position, spawn.rotation);
+                
+                if (!cargo.tooltipShown)
+                {
+                    GameManager.GetInstance().DisplayTooltip(cargo.tooltipText, enemyTooltipDuration);
+                    cargo.tooltipShown = true;
+                }
+                
+                yield return new WaitForSeconds(_difficulty.cargoPlaneSpawnDelay);
             }
         }
 
@@ -163,7 +179,7 @@ namespace Enemies.Utils
                     
                     if (!chosenEnemy.tooltipShown)
                     {
-                        GameManager.GetInstance().DisplayEnemyTooltip(chosenEnemy);
+                        GameManager.GetInstance().DisplayTooltip(chosenEnemy.tooltipText, enemyTooltipDuration);
                         chosenEnemy.tooltipShown = true;
                     }
                     
@@ -173,13 +189,7 @@ namespace Enemies.Utils
                     {
                         Vector2 spawnOffset2D = Random.insideUnitCircle.normalized * chosenEnemy.groupSpacing;
                         Vector3 spawnOffset = new Vector3(spawnOffset2D.x, 4f, spawnOffset2D.y);
-                        GameObject enemy = EnemyPool.GetInstance().GetFromPool(chosenEnemy, spawn.position + spawnOffset, spawn.rotation);
-                        if (enemy != null)
-                        {
-                            enemy.GetComponent<Enemy>().Init();
-                            enemy.transform.SetParent(transform);
-                            _enemyCount++;
-                        }
+                        SpawnEnemies(chosenEnemy, spawn.position + spawnOffset, spawn.rotation);
                     }
                     
                     yield return new WaitForSeconds(spawnDelay);
@@ -199,14 +209,14 @@ namespace Enemies.Utils
             }
         }
 
-        public void SpawnerSpawn(Vector3 spawnPoint, EnemyData spawnee, int spawnCount)
+        public void SpawnEnemies(EnemyData enemy, Vector3 spawnPosition, Quaternion spawnRotation, int enemyCount = 1)
         {
-            for (int i = 0; i < spawnCount; i++)
+            for (int i = 0; i < enemyCount; i++)
             {
-                GameObject enemy = EnemyPool.GetInstance().GetFromPool(spawnee, spawnPoint, Quaternion.identity);
-                if (!enemy) continue;
-                enemy.GetComponent<Enemy>().Init();
-                enemy.transform.SetParent(transform);
+                GameObject e = EnemyPool.GetInstance().GetFromPool(enemy, spawnPosition, spawnRotation);
+                if (!e) continue;
+                e.GetComponent<Enemy>().Init();
+                e.transform.SetParent(transform);
                 _enemyCount++;
             }
         }
@@ -214,23 +224,7 @@ namespace Enemies.Utils
         private void GetDataFromDeadEnemy(Enemy enemy)
         {
             if (enemy.enemyType is EnemyType.Necromancer) return;
-            foreach (EnemyData dat in enemyData)
-            {
-                if (dat.enemyType == enemy.enemyType)
-                {
-                    lastDeadEnemy = dat;
-                    return;
-                }
-            }
-        }
-
-        public void NecroSpawn(Vector3 spawnPoint)
-        {
-            GameObject enemy = EnemyPool.GetInstance().GetFromPool(lastDeadEnemy, spawnPoint, Quaternion.identity);
-            if (!enemy) return;
-            enemy.GetComponent<Enemy>().Init();
-            enemy.transform.SetParent(transform);
-            _enemyCount++;
+            lastDeadEnemy = enemyData.FirstOrDefault(e => e.enemyType == enemy.enemyType);
         }
         
         private void Update()

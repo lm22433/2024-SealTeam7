@@ -27,7 +27,7 @@ namespace Enemies
         
         protected override void Attack(PlayerDamageable toDamage)
         {
-            EnemyManager.SpawnerSpawn(spawnPoint.position, spawnee, attackDamage);
+            EnemyManager.SpawnEnemies(spawnee, spawnPoint.position + Random.onUnitSphere * spawnee.prefab.transform.localScale.y, spawnPoint.rotation, attackDamage);
         }
 
         protected override void UpdateTarget()

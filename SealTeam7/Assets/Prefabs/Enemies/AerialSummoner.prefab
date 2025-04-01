@@ -57,7 +57,7 @@ MonoBehaviour:
   flyHeight: 330
   aimSpeed: 10
   attackRange: 0
-  attackInterval: 12
+  attackInterval: 20
   stopMovingThreshold: 0
   coreTargetHeightOffset: 0
   attackDamage: 2
@@ -75,6 +75,14 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  props:
+  - {fileID: 8744100157237833968}
+  - {fileID: 6173140407441893823}
+  - {fileID: 512093683442363986}
+  - {fileID: 6489979635338010414}
+  - {fileID: 3828986379261758688}
+  - {fileID: 3755298222267273415}
+  propellerSpeed: 1000
   spawnPoint: {fileID: 214597990731930319}
   spawnee: {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
 --- !u!114 &377835221181255017
@@ -97,14 +105,6 @@ MonoBehaviour:
   laplaceLocation: 0
   laplaceScale: 2
   yeetThreshold: 0.8
-  props:
-  - {fileID: 8744100157237833968}
-  - {fileID: 6173140407441893823}
-  - {fileID: 512093683442363986}
-  - {fileID: 6489979635338010414}
-  - {fileID: 3828986379261758688}
-  - {fileID: 3755298222267273415}
-  propellerSpeed: 1000
 --- !u!54 &781513554043923579
 Rigidbody:
   m_ObjectHideFlags: 0
