@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 3438950281418470787, guid: 3252ff332f9da98479c2156205a4816d, type: 3}
   enemyType: 5
-  groupSpacing: 2
+  groupSpacing: 0
   startingWave: -1
   baseGroupSpawnSize: 0
   groupSpawnSizeGrowthRate: 0

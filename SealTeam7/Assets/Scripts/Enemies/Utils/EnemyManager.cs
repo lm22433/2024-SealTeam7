@@ -64,6 +64,7 @@ namespace Enemies.Utils
         private int _currentWave;
         private int _enemiesKilled;
         private readonly Dictionary<EnemyType, int> _enemiesKilledDetailed = new();
+        private EnemyData lastDeadEnemy;
 
         private void Awake()
         {
@@ -87,6 +88,7 @@ namespace Enemies.Utils
                 EnemyPool.GetInstance().RegisterEnemy(data);
                 Enemy enemy = data.prefab.GetComponent<Enemy>();
                 ProjectilePool.GetInstance().RegisterProjectile(enemy.projectileType, enemy.projectile);
+                if (data.enemyType is EnemyType.Soldier) lastDeadEnemy = data;
             }
         }
 
@@ -96,6 +98,7 @@ namespace Enemies.Utils
             _enemiesKilled++;
             if (!_enemiesKilledDetailed.TryAdd(enemy.enemyType, 1))
                 _enemiesKilledDetailed[enemy.enemyType]++;
+            GetDataFromDeadEnemy(enemy);
             GameManager.GetInstance().RegisterKill(enemy.killScore);
             EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
         }
@@ -195,6 +198,28 @@ namespace Enemies.Utils
             }
         }
         
+        private void GetDataFromDeadEnemy(Enemy enemy)
+        {
+            if (enemy.enemyType is EnemyType.Necromancer) return;
+            foreach (EnemyData dat in enemyData)
+            {
+                if (dat.enemyType == enemy.enemyType)
+                {
+                    lastDeadEnemy = dat;
+                    return;
+                }
+            }
+        }
+
+        public void NecroSpawn(Vector3 spawnPoint)
+        {
+            GameObject enemy = EnemyPool.GetInstance().GetFromPool(lastDeadEnemy, spawnPoint, Quaternion.identity);
+            if (!enemy) return;
+            enemy.GetComponent<Enemy>().Init();
+            enemy.transform.SetParent(transform);
+            _enemyCount++;
+        }
+        
         private void Update()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
@@ -204,7 +229,6 @@ namespace Enemies.Utils
             {
                 _lastMapUpdate = 0;
                 _pathFinder.UpdateMap(ref MapManager.GetInstance().GetHeightMap());
-                _pathFinder.UpdateGradient(ref MapManager.GetInstance().GetGradientMap());
             }
         }
         

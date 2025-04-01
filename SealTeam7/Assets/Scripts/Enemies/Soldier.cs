@@ -1,24 +1,35 @@
 using Enemies.Utils;
-using Map;
-using Player;
 using UnityEngine;
+using BattleCam;
 
 namespace Enemies
 {
     public class Soldier : Enemy
     {
         [SerializeField] private Transform gun;
+        [SerializeField] private float cameraSpwanChance = 0.01f;
+        [SerializeField] private GameObject cameraHolder;
         
         public override void Init() 
         {
             base.Init();
             DeathDuration = 0.5f;
             BuriedAmount = 0.25f;
+
+            if (cameraHolder != null) {
+                float probability = UnityEngine.Random.Range(0, 1000);
+                probability = probability / 100;
+
+                if (probability <= cameraSpwanChance) {
+                    BattleCamController.GetInstance().RegisterCamHolder(cameraHolder);
+                }
+            }
+
         }
 
         protected override float Heuristic(Node start, Node end)
         {
-            return (start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y) * 50f;
+            return Mathf.Max(start.WorldPos.y - start.Parent?.WorldPos.y ?? start.WorldPos.y, 0f) * 100f;
         }
         
         protected override void EnemyUpdate()
@@ -37,9 +48,9 @@ namespace Enemies
                 case EnemyState.AttackHands:
                 {
                     var xAngle = Quaternion.LookRotation(TargetPosition - gun.position).eulerAngles.x;
-                    TargetRotation = Quaternion.Euler(xAngle, 0f, 0f);
-                    gun.localRotation = Quaternion.Slerp(gun.localRotation, TargetRotation, aimSpeed * Time.deltaTime);
-                    TargetRotation = Quaternion.Euler(0f, Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y, 0f);
+                    var gunRotation = Quaternion.Euler(xAngle, 0f, 0f);
+                    gun.localRotation = Quaternion.Slerp(gun.localRotation, gunRotation, aimSpeed * Time.deltaTime);
+                    TargetRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(TargetPosition - transform.position, Vector3.up));
                     break;
                 }
             }

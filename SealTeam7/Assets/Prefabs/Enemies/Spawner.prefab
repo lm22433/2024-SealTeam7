@@ -9909,7 +9909,6 @@ GameObject:
   - component: {fileID: 2160884965212251979}
   - component: {fileID: 3729924882987787105}
   - component: {fileID: 828698031663403021}
-  - component: {fileID: 3925053475800111628}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -9927,7 +9926,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7362902396208400761}
@@ -9950,20 +9949,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 8
-  forceOffset: {x: 0, y: -1, z: 1}
+  forceOffset: {x: 0, y: -2, z: 1}
   moveSpeed: 15
   acceleration: 100
-  groundedOffset: 7
+  groundedOffset: 8
+  flyHeight: 0
   aimSpeed: 5
-  attackRange: 100
-  attackInterval: 10
-  stopShootingThreshold: 40
+  attackRange: 200
+  attackInterval: 20
+  stopMovingThreshold: 0
   coreTargetHeightOffset: 10
   attackDamage: 2
   killScore: 600
   deathParticles: {fileID: 1735578503178218476}
   model: {fileID: 45913116891892241}
   muzzle: {fileID: 0}
+  projectileType: 0
   projectile: {fileID: 0}
   gunFireSound:
     idInternal: 0
@@ -9973,13 +9974,13 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  spawnee: {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
   smokeDmg: {fileID: 763469492654417899}
-  lives: 2
+  maxLives: 1
   gracePeriod: 3
+  spawnee: {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9993,9 +9994,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityDefiance: 5
-  defianceThreshold: 20
-  sinkFactor: 10
+  defianceThreshold: 5
+  sinkFactor: 5
   fallDeathVelocityY: 40
+  jumpForce: 10
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10023,49 +10025,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &3925053475800111628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2772852043545815630}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bc6c0171c084d7cb202329c32b1c168, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyType: 8
-  forceOffset: {x: 0, y: 0, z: 0}
-  moveSpeed: 15
-  acceleration: 100
-  groundedOffset: 7
-  aimSpeed: 1
-  attackRange: 100
-  attackInterval: 4
-  stopShootingThreshold: 20
-  coreTargetHeightOffset: 10
-  attackDamage: 2
-  killScore: 600
-  deathParticles: {fileID: 1735578503178218476}
-  model: {fileID: 45913116891892241}
-  muzzle: {fileID: 0}
-  projectile: {fileID: 4367590948807452066, guid: f4ad86d3785a5ed478eeb01a30af078b, type: 3}
-  gunFireSound:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: ca1dfeb612c3e19448f17f5744805fcc, type: 2}
-  deathSoundEffect:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  gun: {fileID: 0}
-  dustTrails:
-  - {fileID: 2423127030068606280}
-  - {fileID: 552652031790891173}
-  smokeDmg: {fileID: 763469492654417899}
-  lives: 2
-  gracePeriod: 3
 --- !u!1 &3860991068415625870
 GameObject:
   m_ObjectHideFlags: 0
