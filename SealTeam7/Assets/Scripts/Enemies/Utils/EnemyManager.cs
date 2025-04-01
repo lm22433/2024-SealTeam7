@@ -159,8 +159,20 @@ namespace Enemies.Utils
             {
                 GameManager.GetInstance().DisplayTooltip("Welcome to the tutorial! Bury the soldiers to protect " +
                                                          "your base. Watch out – your hands take damage too!", 10f);
+                
                 SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.Soldier), 
                     spawnPoints[5].position, spawnPoints[5].rotation, 6);
+                
+                yield return new WaitForSeconds(20f);
+                
+                GameManager.GetInstance().DisplayTooltip("These soldiers are faster and attack individually. Bury " +
+                                                         "them before they get too close!", 10f);
+                
+                SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.FastSoldier),
+                    spawnPoints[3].position, spawnPoints[3].rotation, 1);
+                yield return new WaitForSeconds(5f);
+                SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.FastSoldier),
+                    spawnPoints[7].position, spawnPoints[7].rotation, 1);
             }
 
             yield return null;
