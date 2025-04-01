@@ -331,7 +331,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 3ff9ee64e5bbcc4c998948867ef4fbd6
     GuidInternal: 
-    m_lastTime: -8584586161588589480
+    m_lastTime: -8584581044754532674
     List:
     - name: SoundEffects
       guid: aba04db98d225f469c82287d3d575d75
@@ -359,7 +359,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 3e919ce37f3a4b4eb021aaf40f66a207
     GuidInternal: 
-    m_lastTime: -8584586161603221683
+    m_lastTime: -8584581044776764859
     List:
     - name: Play_CelebrationFanfare
       guid: 7ed2308a1913644f89ddfcb21e99f0ec
@@ -543,7 +543,7 @@ MonoBehaviour:
     ParentPath: Game Parameters\Default Work Unit
     guid: 2e780babed503147b9b6cf23803de159
     GuidInternal: 
-    m_lastTime: -8584588720869404109
+    m_lastTime: -8584581044776739761
     List: []
   - PhysicalPath: Game Parameters\Factory Soundseed Air Game Syncs.wwu
     PathAndIcons:
@@ -774,9 +774,9 @@ MonoBehaviour:
     GuidInternal: 
     m_lastTime: -8584593096023913961
     List: []
-  ExpandedFileSystemItemIds: 0200000003000000
-  ExpandedWaapiItemIds: 
+  ExpandedFileSystemItemIds: 020000000300000004000000
+  ExpandedWaapiItemIds: 020000000300000004000000
   AutoSyncSelection: 0
   autoPopulateEnabled: 1
-  currentDataSource: 1
+  currentDataSource: 0
   CurrentPluginConfig: 

@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{B94DA0AB-228D-465F-9C82-287D3D575D75}",
     "Language": "SFX",
-    "Hash": "{88A14C22-CD38-E968-535D-3A8B7C47E7D6}",
+    "Hash": "{9C735FD2-69A3-5AE3-6EB6-99A75E29F103}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
     "ShortName": "SoundEffects",
     "Path": "SoundEffects.bnk",
@@ -384,6 +384,6 @@
     ]
    }
   ],
-  "FileHash": "{10412DDB-F5F0-03D7-4F27-39CB1BE60957}"
+  "FileHash": "{50406D3B-40DF-94A6-4BA1-0AFA1A8F6518}"
  }
 }
