@@ -182,7 +182,7 @@ MonoBehaviour:
   - {fileID: 88024523701351980}
   hand: {fileID: 0}
   _lerpFactor: 0.9
-  _thresholdDst: 3
+  _thresholdDst: 2
   _handNum: 0
   positions_offset_y:
   - 0

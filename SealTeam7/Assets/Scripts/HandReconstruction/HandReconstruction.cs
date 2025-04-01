@@ -32,10 +32,19 @@ public class HandReconstruction : MonoBehaviour
     [SerializeField] private float handMaxFadeSpeed;
     [SerializeField] private float speedTimeMeasure;
     [SerializeField] float handSpeed = 0;
+    
+    private Quaternion[] _boneRotations;
 
     void Start()
     {
         positions = new Vector3[21];
+        _boneRotations = new Quaternion[18];
+
+        for (int i = 0; i < bones.Length; i++)
+        {
+            _boneRotations[i] = bones[i].transform.rotation;
+        }
+        
         lastPosition = Vector3.zero;
 
         HandSpeedTimer();
@@ -71,7 +80,12 @@ public class HandReconstruction : MonoBehaviour
             }
 
             for(int i = 0; i < tempPositions.Length; i++) {
-                positions[i] = tempPositions[i] + positions_offset_y[i] * -transform.up;
+                float newDst = Mathf.Abs(Vector3.Distance(tempPositions[i] + positions_offset_y[i] * -transform.up, positions[i]));
+
+                if (newDst >= _thresholdDst)
+                {
+                    positions[i] = tempPositions[i] + positions_offset_y[i] * -transform.up;
+                }
             }
             
         } else {
@@ -150,13 +164,11 @@ public class HandReconstruction : MonoBehaviour
     }
 
 
-    private void RotateBoneToVector(int bone, int start, int end, bool isZmovable = false) {
+    private void RotateBoneToVector(int bone, int start, int end) {
         Vector3 targetDir = positions[end] - positions[start];
-        bones[bone].transform.localRotation = Quaternion.Euler(
-            Quaternion.LookRotation(targetDir.normalized, transform.up).eulerAngles.x, 
-            bones[bone].transform.rotation.y, 
-            (isZmovable) ? Quaternion.LookRotation(targetDir.normalized, bones[bone].transform.right).eulerAngles.z : bones[bone].transform.rotation.z
-        );
+        Quaternion newRotation = Quaternion.LookRotation(targetDir.normalized, transform.up);
+
+        bones[bone].transform.rotation = newRotation * _boneRotations[bone];
     }
 
 }
