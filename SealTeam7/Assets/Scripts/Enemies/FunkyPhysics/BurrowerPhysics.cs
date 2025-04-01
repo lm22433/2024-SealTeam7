@@ -25,11 +25,6 @@ namespace Enemies.FunkyPhysics
             {
                 Self.SetupDeath();
             }
-            // WOULD DIE EXPOSED
-            if (transform.position.y >= MapManager.GetInstance().GetHeight(transform.position) && ((Burrower) Self).Burrowing && !Self.IsDying)
-            {
-                Self.SetupDeath();
-            }
             
             EnemyUpdate();
         }

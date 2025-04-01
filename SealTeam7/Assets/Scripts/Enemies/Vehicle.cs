@@ -48,9 +48,9 @@ namespace Enemies
             
             DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f;
             
-            // gun rotation
             switch (State)
             {
+                case EnemyState.MoveAndAttack:
                 case EnemyState.Moving:
                 {
                     if (DisallowMovement || Rb.position.y > MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)

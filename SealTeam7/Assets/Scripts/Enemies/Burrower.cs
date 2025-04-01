@@ -18,6 +18,7 @@ namespace Enemies
         {
             base.Init();
             Burrowing = false;
+            transform.position = new Vector3(transform.position.x, burrowDepth, transform.position.z);
         }
 
         protected override float Heuristic(Node start, Node end)
@@ -34,9 +35,13 @@ namespace Enemies
         {
             base.EnemyUpdate();
             
-            coreTargetHeightOffset = Burrowing ? -burrowDepth : 0f;
-            Debug.Log(State);
-            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
+            // WOULD DIE EXPOSED
+            if (transform.position.y >= MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) && Burrowing && !IsDying && State is EnemyState.Moving)
+            {
+                SetupDeath();
+            }
+            
+            coreTargetHeightOffset = transform.position.y - MapManager.GetInstance().GetHeight(transform.position);
             drill.Rotate(Time.deltaTime * drillSpeed * Vector3.forward);
             
             switch (State)
@@ -46,7 +51,7 @@ namespace Enemies
                     if (!Burrowing && Grounded)
                     {
                         Burrowing = true;
-                        _newHeight = burrowDepth;
+                        transform.position = new Vector3(transform.position.x, burrowDepth, transform.position.z);
                     }
                     
                     break;
@@ -55,26 +60,41 @@ namespace Enemies
                 case EnemyState.AttackHands:
                 case EnemyState.Idle:
                 {
-                    if (Burrowing)
+                    if (!Burrowing && Grounded && transform.position.y <= MapManager.GetInstance().GetHeight(transform.position))
                     {
-                        Burrowing = false;
-                        _newHeight = MapManager.GetInstance().GetHeight(transform.position) + groundedOffset;
-                        Rb.linearVelocity = Vector3.zero;
+                        Burrowing = true;
                     }
-
                     break;
                 }
             }
             
-            transform.position = new Vector3(
-                transform.position.x,
-                Mathf.Lerp(transform.position.y, _newHeight, diveSpeed * Time.deltaTime),
-                transform.position.z
-            );
-            
-            //Grounded = !Burrowing && Grounded;
+            Rb.useGravity = !Burrowing;
             Rb.freezeRotation = Burrowing;
             Rb.detectCollisions = !Burrowing;
+        }
+
+        protected override void EnemyFixedUpdate()
+        {
+            switch (State)
+            {
+                case EnemyState.AttackCore:
+                case EnemyState.AttackHands:
+                case EnemyState.MoveAndAttack:
+                case EnemyState.Idle:
+                {
+                    if (Burrowing)
+                    {
+                        Rb.AddForce(Vector3.up * diveSpeed);
+                        if (!Grounded)
+                        {
+                            Rb.AddForce(Vector3.down * (2 * diveSpeed), ForceMode.Impulse);
+                            Burrowing = false;
+                        }
+                    }
+                    
+                    break;
+                }
+            }
         }
     }
 }

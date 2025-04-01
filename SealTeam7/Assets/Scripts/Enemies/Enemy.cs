@@ -57,13 +57,13 @@ namespace Enemies
         protected float SqrStopMovingThreshold;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
-        protected EnemyState State;
+        [SerializeField] protected EnemyState State;
         protected bool DisallowMovement;
         protected bool DisallowShooting;
         protected float LastAttack;
         protected Vector3 TargetPosition;
-        protected Quaternion TargetRotation;
-        protected Vector3 TargetDirection;
+        [SerializeField] protected Quaternion TargetRotation;
+        [SerializeField] protected Vector3 TargetDirection;
         protected Vector3[] Path;
         protected int PathIndex;
         protected float PathFindInterval;
