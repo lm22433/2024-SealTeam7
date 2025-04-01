@@ -93,6 +93,7 @@ namespace Game
 
             _lastSurvivalBonusTime = Time.time;
 
+            OpeningManager.GetInstance().StartOpening();
             EnemyManager.GetInstance().StartSpawning();
 
             gameoverScoreText.gameObject.transform.parent.gameObject.SetActive(false);

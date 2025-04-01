@@ -1,0 +1,101 @@
+using System;
+using System.Collections;
+using Map;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Game
+{
+    public class OpeningManager : MonoBehaviour
+    {
+        [Header("Camera Settings")]
+        [SerializeField] private Camera mainCamera;
+        [SerializeField] private Vector3 startPosition;
+        [SerializeField] private Quaternion startRotation;
+        [SerializeField] private Vector3 endPosition;
+        [SerializeField] private Quaternion endRotation;
+        [SerializeField] private float duration;
+
+        [Header("Visual Settings")] 
+        [SerializeField] private RawImage kinectFeed;
+        [SerializeField] private float kinectFeedDuration;
+        // [SerializeField] private float kinectFeedFadeDuration = 0.5f;
+        [SerializeField] private float gameViewDuration;
+        
+        private static OpeningManager _instance;
+        
+        private Texture2D _kinectFeedTexture;
+        private bool _isPlaying = false;
+
+        private void Awake()
+        {
+            if (_instance == null) _instance = this;
+            else Destroy(gameObject);
+            
+            kinectFeed.gameObject.SetActive(false);
+            mainCamera.transform.position = startPosition;
+            mainCamera.transform.rotation = startRotation;
+        }
+
+        public static OpeningManager GetInstance() => _instance;
+
+        public bool CaptureColourImage() => _isPlaying;
+
+        public void UpdateKinectFeed(K4AdotNet.Sensor.Image colourImage)
+        {
+            if (!_isPlaying || colourImage == null) return;
+            
+            int width = colourImage.WidthPixels;
+            int height = colourImage.HeightPixels;
+            
+            if (_kinectFeedTexture == null || _kinectFeedTexture.width != width || _kinectFeedTexture.height != height)
+            {
+                _kinectFeedTexture = new Texture2D(width, height, TextureFormat.BGRA32, false);
+            }
+
+            colourImage.CopyTo(_kinectFeedTexture.GetRawTextureData());
+            _kinectFeedTexture.Apply();
+            kinectFeed.texture = _kinectFeedTexture;
+        }
+
+        public void StartOpening()
+        {
+            if (_isPlaying) throw new Exception("The opening sequence is already playing!");
+            _isPlaying = true;
+            kinectFeed.gameObject.SetActive(true);
+            StartCoroutine(PlayOpeningSequence());
+        }
+        
+        private IEnumerator PlayOpeningSequence()
+        {
+            yield return new WaitForSeconds(kinectFeedDuration);
+         
+            // TODO: Fade
+            kinectFeed.gameObject.SetActive(false);
+            
+            yield return new WaitForSeconds(gameViewDuration);
+            
+            float elapsedTime = 0f;
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsedTime / duration);
+                float easedT = CubicEase(t);
+
+                mainCamera.transform.position = Vector3.Lerp(startPosition, endPosition, easedT);
+                mainCamera.transform.rotation = Quaternion.Slerp(startRotation, endRotation, easedT);
+                
+                yield return null;
+            }
+
+            mainCamera.transform.position = endPosition;
+            mainCamera.transform.rotation = endRotation;
+            _isPlaying = false;
+        }
+        
+        private static float CubicEase(float t)
+        {
+            return 1 - (1 - t) * (1 - t) * (1 - t);
+        }
+    }
+}
