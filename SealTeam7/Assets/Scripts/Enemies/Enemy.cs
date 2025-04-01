@@ -50,8 +50,8 @@ namespace Enemies
         [SerializeField] public GameObject projectile;
 
         [Header("Sound Effects")]
-        [SerializeField] protected AK.Wwise.Event gunFireSound;
-        [SerializeField] protected AK.Wwise.Event deathSoundEffect;
+        // [SerializeField] protected AK.Wwise.Event gunFireSound;
+        // [SerializeField] protected AK.Wwise.Event deathSoundEffect;
         
         protected float SqrAttackRange;
         protected float SqrStopMovingThreshold;
@@ -111,14 +111,14 @@ namespace Enemies
             }
             
             model.gameObject.SetActive(false);
-            deathSoundEffect.Post(gameObject);
+            // deathSoundEffect.Post(gameObject);
             deathParticles.Play();
 			State = EnemyState.Dying;
 		}
 
         protected virtual void Attack(PlayerDamageable toDamage)
         {
-            gunFireSound.Post(gameObject);
+            // gunFireSound.Post(gameObject);
 
             GameObject obj = ProjectilePool.GetInstance().GetFromPool(projectileType, muzzle?.position ?? transform.position,
                 Quaternion.LookRotation(TargetPosition - (muzzle?.position ?? transform.position)));
