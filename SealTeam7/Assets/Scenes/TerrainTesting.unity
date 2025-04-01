@@ -1142,7 +1142,7 @@ MonoBehaviour:
   xOffsetEnd: 1360
   yOffsetStart: 10
   yOffsetEnd: 890
-  minimumSandDepth: 720
+  minimumSandDepth: 900
   maximumSandDepth: 1180
   blurRadius: 3
   blurSigma: 5
@@ -1152,7 +1152,7 @@ MonoBehaviour:
   mapSize: 880
   chunkRow: 1
   chunkSize: 880
-  heightScale: 450
+  heightScale: 280
   lodInfo:
     lod: 1
     colliderLod: 4

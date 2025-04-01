@@ -181,13 +181,13 @@ namespace Map
                         stopwatch.Stop();
                         Console.WriteLine($"Process Frame: {stopwatch.ElapsedMilliseconds} ms");
 
-                        // Skip frame if hand is absent, up to a few frames
-                        if (hl.Left == null) _leftHandAbsentCount++;
-                        else _leftHandAbsentCount = 0;
-                        if (hl.Right == null) _rightHandAbsentCount++;
-                        else _rightHandAbsentCount = 0;
-                        if (_leftHandAbsentCount is >= 1 and <= 2) continue;
-                        if (_rightHandAbsentCount is >= 1 and <= 2) continue;
+                        // // Skip frame if hand is absent, up to a few frames
+                        // if (hl.Left == null) _leftHandAbsentCount++;
+                        // else _leftHandAbsentCount = 0;
+                        // if (hl.Right == null) _rightHandAbsentCount++;
+                        // else _rightHandAbsentCount = 0;
+                        // if (_leftHandAbsentCount is >= 1 and <= 2) continue;
+                        // if (_rightHandAbsentCount is >= 1 and <= 2) continue;
 
                         // Saves adjusted hand landmarks to HandLandmarks
                         UpdateHandLandmarks(hl, _transformedDepthImage);

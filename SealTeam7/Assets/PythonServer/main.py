@@ -134,7 +134,7 @@ def timer(name):
     start = time.time()
     yield
     end = time.time()
-    print(f"{name}: {int((end - start)*1000)} ms")
+    # print(f"{name}: {int((end - start)*1000)} ms")
     
 def get_path(path):
     dir = os.path.dirname(os.path.abspath(__file__))
