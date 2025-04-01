@@ -23,6 +23,9 @@ namespace Game
         [SerializeField] private float gameViewDuration;
         
         private static OpeningManager _instance;
+
+        private byte[] _colourImage;
+        private readonly object _lock = new();
         
         private Texture2D _kinectFeedTexture;
         private bool _isPlaying = false;
@@ -37,25 +40,42 @@ namespace Game
             mainCamera.transform.rotation = startRotation;
         }
 
-        public static OpeningManager GetInstance() => _instance;
+        private void Update()
+        {
+            if (!_isPlaying) return;
 
-        public bool CaptureColourImage() => _isPlaying;
+            if (_kinectFeedTexture == null)
+            {
+                _kinectFeedTexture = new Texture2D(1920, 1080, TextureFormat.BGRA32, false);
+                kinectFeed.texture = _kinectFeedTexture;
+            }
+
+            lock (_lock)
+            {
+                if (_colourImage != null)
+                {
+                    _kinectFeedTexture.LoadRawTextureData(_colourImage);
+                    _kinectFeedTexture.Apply();
+                }
+            }
+        }
+
+        public static OpeningManager GetInstance() => _instance;
 
         public void UpdateKinectFeed(K4AdotNet.Sensor.Image colourImage)
         {
             if (!_isPlaying || colourImage == null) return;
-            
+    
             int width = colourImage.WidthPixels;
             int height = colourImage.HeightPixels;
-            
-            if (_kinectFeedTexture == null || _kinectFeedTexture.width != width || _kinectFeedTexture.height != height)
+    
+            lock (_lock)
             {
-                _kinectFeedTexture = new Texture2D(width, height, TextureFormat.BGRA32, false);
-            }
+                if (_colourImage == null || _colourImage.Length != width * height * 4)
+                    _colourImage = new byte[width * height * 4];
 
-            colourImage.CopyTo(_kinectFeedTexture.GetRawTextureData());
-            _kinectFeedTexture.Apply();
-            kinectFeed.texture = _kinectFeedTexture;
+                colourImage.CopyTo(_colourImage);
+            }
         }
 
         public void StartOpening()

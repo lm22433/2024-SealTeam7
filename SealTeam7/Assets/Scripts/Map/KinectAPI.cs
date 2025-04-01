@@ -173,6 +173,8 @@ namespace Map
                     _transformation.DepthImageToColorCamera(capture.DepthImage, _transformedDepthImage);
                     stopwatch.Stop();
                     Console.WriteLine($"Get Capture: {stopwatch.ElapsedMilliseconds} ms");
+                    
+                    OpeningManager.GetInstance().UpdateKinectFeed(capture.ColorImage.DuplicateReference());
 
                     if (PythonManager.IsInitialized)
                     {
