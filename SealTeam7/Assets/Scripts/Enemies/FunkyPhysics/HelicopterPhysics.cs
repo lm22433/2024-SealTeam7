@@ -9,6 +9,12 @@ namespace Enemies.FunkyPhysics
     {
         private bool _exploded;
 
+        public override void Init()
+        {
+            base.Init();
+            _exploded = false;
+        }
+
         protected override void EnemyUpdate()
         {
             if (Self.Grounded && !Self.IsDying) Self.SetupDeath();

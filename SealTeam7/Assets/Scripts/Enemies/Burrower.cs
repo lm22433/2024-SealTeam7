@@ -32,7 +32,7 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-            if (State is EnemyState.Dying) return;
+            base.EnemyUpdate();
             
             coreTargetHeightOffset = Burrowing ? -burrowDepth : 0f;
             Debug.Log(State);

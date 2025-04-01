@@ -107,9 +107,10 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  props:
+  horizontalProps:
   - {fileID: 5474418017215342941}
   - {fileID: 3727117144722257347}
+  verticalProps: []
   propellerSpeed: 1000
   helicopterSound:
     idInternal: 0

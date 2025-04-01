@@ -5,7 +5,8 @@ namespace Enemies
 {
     public class Aircraft : Enemy
     {
-        [SerializeField] private Transform[] props;
+        [SerializeField] private Transform[] horizontalProps;
+        [SerializeField] private Transform[] verticalProps;
         [SerializeField] private float propellerSpeed;
         
         public override void Init()
@@ -21,7 +22,8 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-            foreach (var prop in props) prop.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
+            foreach (var prop in horizontalProps) prop.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
+            foreach (var prop in verticalProps) prop.Rotate(Vector3.up * (propellerSpeed * Time.deltaTime));
             
             switch (State)
             {

@@ -4030,6 +4030,7 @@ MonoBehaviour:
   godlyHands:
   - {fileID: 332022279}
   - {fileID: 1357934831}
+  enemyTooltipDuration: 5
   mapUpdateInterval: 1
   pathingDepth: 300
   pathFindInterval: 5
@@ -4049,8 +4050,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 59ad0fda55012974ebc9fb1e960c1cfb, type: 2}
   - {fileID: 11400000, guid: 9ad19be5e22b0f84abb29ea1936bd113, type: 2}
   - {fileID: 11400000, guid: ee8266e5ee4171d409a616dab83429cd, type: 2}
-  cargoPlane: {fileID: 0}
   sqrMaxEnemyDistance: 0
+  lastDeadEnemy: {fileID: 0}
 --- !u!114 &2085838832
 MonoBehaviour:
   m_ObjectHideFlags: 0

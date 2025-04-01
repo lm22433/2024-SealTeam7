@@ -9,9 +9,10 @@ namespace Enemies.FunkyPhysics
         private Vector3 _newGravity;
         private bool _falling;
 
-        protected override void Start()
+        public override void Init()
         {
-            base.Start();
+            base.Init();
+            parachute.SetActive(true);
             Rb.useGravity = false;
             _newGravity = new Vector3(0, -newGrav, 0);
             _falling = true;

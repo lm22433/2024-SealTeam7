@@ -75,14 +75,15 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  props:
+  horizontalProps: []
+  verticalProps:
   - {fileID: 8744100157237833968}
   - {fileID: 6173140407441893823}
   - {fileID: 512093683442363986}
   - {fileID: 6489979635338010414}
   - {fileID: 3828986379261758688}
   - {fileID: 3755298222267273415}
-  propellerSpeed: 1000
+  propellerSpeed: 2000
   spawnPoint: {fileID: 214597990731930319}
   spawnee: {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
 --- !u!114 &377835221181255017
@@ -157,7 +158,7 @@ Transform:
   m_GameObject: {fileID: 8280491399183277431}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -20, z: -20}
+  m_LocalPosition: {x: 0, y: -10, z: -40}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

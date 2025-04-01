@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Enemies.FunkyPhysics;
 using Game;
 using Map;
 using Player;
@@ -216,6 +217,7 @@ namespace Enemies.Utils
                 GameObject e = EnemyPool.GetInstance().GetFromPool(enemy, spawnPosition, spawnRotation);
                 if (!e) continue;
                 e.GetComponent<Enemy>().Init();
+                e.GetComponent<BasePhysics>().Init();
                 e.transform.SetParent(transform);
                 _enemyCount++;
             }

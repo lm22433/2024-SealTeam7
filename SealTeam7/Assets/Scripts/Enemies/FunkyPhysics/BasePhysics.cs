@@ -17,12 +17,13 @@ namespace Enemies.FunkyPhysics
         [SerializeField] protected float yeetThreshold = 0.8f;
         protected Enemy Self;
         protected Rigidbody Rb;
-        
+
         protected virtual void Start()
         {
             Rb = GetComponent<Rigidbody>();
             Self = GetComponent<Enemy>();
         }
+        public virtual void Init() {}
 
         protected virtual void Update()
         {
