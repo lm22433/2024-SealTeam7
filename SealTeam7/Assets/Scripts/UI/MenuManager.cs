@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Enemies;
+using Enemies.Utils;
 using Game;
 using TMPro;
 using UnityEngine;
@@ -175,7 +175,7 @@ namespace UI
             enemyType switch
             {
                 EnemyType.Soldier => EnemyCategory.Regular,
-                EnemyType.Parachutist => EnemyCategory.Special,
+                EnemyType.ParaSoldier => EnemyCategory.Special,
                 EnemyType.FastSoldier => EnemyCategory.Special,
                 EnemyType.SniperSoldier => EnemyCategory.Ranged,
                 EnemyType.LmgSoldier => EnemyCategory.Regular,
