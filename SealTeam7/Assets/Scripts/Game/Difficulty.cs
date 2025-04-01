@@ -10,6 +10,7 @@ namespace Game
 {
     public enum DifficultyType
     {
+        Tutorial,
         Easy,
         Normal,
         Hard,

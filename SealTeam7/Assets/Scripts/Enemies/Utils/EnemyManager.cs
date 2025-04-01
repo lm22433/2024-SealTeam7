@@ -155,59 +155,15 @@ namespace Enemies.Utils
 
         private IEnumerator SpawnWaves()
         {
-            yield return new WaitForSeconds(initialStartDelay);
-            
-            while (GameManager.GetInstance().GameActive)
+            if (_difficulty.difficultyType == DifficultyType.Tutorial)
             {
-                _currentWave++;
-                
-                int waveEnemyGroups = _difficulty.GetWaveEnemyGroupCount(_currentWave);
-                float spawnDelay = _difficulty.GetWaveSpawnDelay(_currentWave);
-                float waveTimeLimit = _difficulty.GetWaveTimeLimit(_currentWave);
-
-                float waveStartTime = Time.time;
-                
-                Debug.Log($"Wave {_currentWave} - Enemy Groups: {waveEnemyGroups}, Spawn Delay: {spawnDelay:F2}s, Time Limit: {waveTimeLimit:F2}s");
-
-                for (int i = 0; i < waveEnemyGroups; i++)
-                {
-                    yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
-                    
-                    Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
-                    
-                    EnemyData chosenEnemy = _difficulty.GetRandomEnemy(enemyData, _currentWave);
-                    if (!chosenEnemy) continue;
-                    
-                    if (!chosenEnemy.tooltipShown)
-                    {
-                        GameManager.GetInstance().DisplayTooltip(chosenEnemy.tooltipText, enemyTooltipDuration);
-                        chosenEnemy.tooltipShown = true;
-                    }
-                    
-                    int finalGroupSize = Mathf.Min(chosenEnemy.GetGroupSpawnSize(_difficulty, _currentWave), maxEnemyCount - _enemyCount);
-                    
-                    for (int j = 0; j < finalGroupSize; j++)
-                    {
-                        Vector2 spawnOffset2D = Random.insideUnitCircle.normalized * chosenEnemy.groupSpacing;
-                        Vector3 spawnOffset = new Vector3(spawnOffset2D.x, 4f, spawnOffset2D.y);
-                        SpawnEnemies(chosenEnemy, spawn.position + spawnOffset, spawn.rotation);
-                    }
-                    
-                    yield return new WaitForSeconds(spawnDelay);
-                    if (Time.time - waveStartTime >= waveTimeLimit) break;
-                }
-                
-                while (_enemyCount > 0 && (Time.time - waveStartTime) < waveTimeLimit)
-                {
-                    yield return null;
-                }
-
-                if (_enemyCount == 0 && (Time.time - waveStartTime) < waveTimeLimit)
-                {
-                    GameManager.GetInstance().ApplyWaveClearedEarlyBonus();
-                    yield return new WaitForSeconds(1f);
-                }
+                GameManager.GetInstance().DisplayTooltip("Welcome to the tutorial! Bury the soldiers to protect " +
+                                                         "your base. Watch out – your hands take damage too!", 10f);
+                SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.Soldier), 
+                    spawnPoints[5].position, spawnPoints[5].rotation, 6);
             }
+
+            yield return null;
         }
 
         public void SpawnEnemies(EnemyData enemy, Vector3 spawnPosition, Quaternion spawnRotation, int enemyCount = 1)
