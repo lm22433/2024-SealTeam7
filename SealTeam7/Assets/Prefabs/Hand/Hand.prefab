@@ -191,22 +191,22 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  - -8
-  - -16
-  - -24
-  - -32
-  - -8
-  - -16
-  - -24
-  - -32
-  - -8
-  - -16
-  - -24
-  - -32
-  - -4
-  - -8
-  - -16
-  - -24
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
   handMaterial: {fileID: 0}
   maxHandSpeed: 0
   maxFramesWithoutHand: 10
@@ -215,6 +215,7 @@ MonoBehaviour:
   _renderer: {fileID: 2433431767938355854}
   handStartFadeSpeed: 600
   handMaxFadeSpeed: 2000
+  speedTimeMeasure: 0
   handSpeed: 0
 --- !u!114 &6961489748271865038
 MonoBehaviour:

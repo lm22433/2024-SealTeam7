@@ -1,7 +1,6 @@
 using System.Collections;
 using Map;
 using UnityEngine;
-using UnityEditor;
 
 public class HandReconstruction : MonoBehaviour
 {
@@ -9,7 +8,6 @@ public class HandReconstruction : MonoBehaviour
 
     [Header("Hand Calibration")]
     [SerializeField] private GameObject[] bones; //Must be length 18 (palm - 4 fingers right to left - thumb all bottom to top)
-    [SerializeField] private MapManager mapManager;
     [SerializeField] private GameObject hand;
     [SerializeField] private float _lerpFactor;
     [SerializeField] private float _thresholdDst;
@@ -37,7 +35,6 @@ public class HandReconstruction : MonoBehaviour
 
     void Start()
     {
-        mapManager = MapManager.GetInstance();
         positions = new Vector3[21];
         lastPosition = Vector3.zero;
 
@@ -58,7 +55,7 @@ public class HandReconstruction : MonoBehaviour
     private void FixedUpdate()
     {
         //Get hand points Vector3[21]
-        var tempPositions = mapManager.GetHandPositions(_handNum);
+        var tempPositions = MapManager.GetInstance().GetHandPositions(_handNum);
 
         if (tempPositions != null) {   
             nullFrameCount = 0;
@@ -162,19 +159,4 @@ public class HandReconstruction : MonoBehaviour
         );
     }
 
-    private void OnDrawGizmos()
-    {
-        if (EditorApplication.isPlaying) {
-            Vector3 targetDir = positions[6] - positions[5];
-
-            Gizmos.color = Color.black;
-            Gizmos.DrawLine(positions[5], positions[5] + targetDir);
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(positions[0], positions[0] + transform.right * 10);
-
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(positions[5], 2);
-            Gizmos.DrawSphere(positions[6], 2);
-        }
-    }
 }
