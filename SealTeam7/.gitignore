@@ -76,7 +76,6 @@ crashlytics-build.properties
 .idea/
 *.blob
 
-/[Aa]ssets/PythonServer/venv*
 /[Aa]ssets/PythonServer/.venv*
 
 .cache
