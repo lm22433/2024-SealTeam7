@@ -26,6 +26,8 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - FRESNEL_ON
+  - _MAIN_LIGHT_SHADOWS
+  - _MAIN_LIGHT_SHADOWS_CACADE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -43,7 +45,7 @@ Material:
     - _FresnelThreshold: 0.489
     - _Fresnel_Strength: 0.566
     - _QueueControl: 0
-    - _Smoothness: 1.81
+    - _Smoothness: 2
     m_Colors:
     - _Tint: {r: 0.016820943, g: 0.074129745, b: 0.509434, a: 0}
   m_BuildTextureStacks: []
