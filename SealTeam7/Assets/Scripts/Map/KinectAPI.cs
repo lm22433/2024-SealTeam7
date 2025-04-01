@@ -355,7 +355,7 @@ namespace Map
             
             var offsetLeft = new Vector3();
             var offsetRight = new Vector3();
-            const float wristYOffset = -40f;
+            const float wristYOffset = -30f;
             if (leftHandDepth.HasValue)
             {
                 offsetLeft = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
