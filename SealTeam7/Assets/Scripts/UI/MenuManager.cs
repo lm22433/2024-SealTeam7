@@ -60,6 +60,13 @@ namespace UI
         [SerializeField] private Sprite disabledButtonSprite;
 
         [Header("Music Settings")]
+        [SerializeField] private Slider masterVolumeSlider;
+        [SerializeField] private TMP_Text masterVolumeSliderText;
+        [SerializeField] private Slider musicVolumeSlider;
+        [SerializeField] private TMP_Text musicVolumeSliderText;
+        [SerializeField] private Slider SFXVolumeSlider;
+        [SerializeField] private TMP_Text SFXVolumeSliderText;
+
         [SerializeField] private AK.Wwise.Event mainMenuMusic;
         [SerializeField] private AK.Wwise.Event introMusic;
         [SerializeField] private AK.Wwise.Event gameAmbience;
@@ -169,6 +176,22 @@ namespace UI
             int seconds = currentDuration % 60;
             string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
             durationSliderText.SetText($"{minutes}:{secondsStr}");
+
+            AddSoundSliderCallbacks();
+        }
+
+        private void AddSoundSliderCallbacks() {
+            masterVolumeSlider.onValueChanged.AddListener(_ => {
+                masterVolumeSliderText.SetText($"{(int)masterVolumeSlider.value}%");
+            });
+
+            musicVolumeSlider.onValueChanged.AddListener(_ => {
+                musicVolumeSliderText.SetText($"{(int)musicVolumeSlider.value}%");
+            });
+
+            SFXVolumeSlider.onValueChanged.AddListener(_ => {
+                SFXVolumeSliderText.SetText($"{(int)SFXVolumeSlider.value}%");
+            });
         }
 
         private static EnemyCategory GetEnemyCategoryFromEnemyType(EnemyType enemyType) =>

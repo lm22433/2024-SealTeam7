@@ -13,9 +13,9 @@ namespace Sound
     public class SoundManager : MonoBehaviour
     {   
         [Header("Volume Settings")] 
-        [SerializeField, Range(0f, 1f)] private float masterVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float musicVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float soundEffectVolume = 1f;
+        [SerializeField, Range(0f, 100f)] private float masterVolume = 100f;
+        [SerializeField, Range(0f, 100f)] private float musicVolume = 100f;
+        [SerializeField, Range(0f, 100f)] private float soundEffectVolume = 100f;
         
         [SerializeField] private AK.Wwise.RTPC soundEffectRTPC;
         [SerializeField] private AK.Wwise.RTPC musicRTPC;
@@ -28,8 +28,8 @@ namespace Sound
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
 
-            musicRTPC.SetGlobalValue(masterVolume * musicVolume * 100f);
-            soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume * 100f);
+            musicRTPC.SetGlobalValue(masterVolume * musicVolume);
+            soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume);
         }
 
         private void OnApplicationQuit() {
@@ -38,23 +38,23 @@ namespace Sound
         }
 
         public void SetMasterVolume(float volume) {
-            if (volume >= 0 && volume <= 1) {
+            if (volume >= 0 && volume <= 100) {
                 masterVolume = volume;
 
-                musicRTPC.SetGlobalValue(masterVolume * musicVolume * 100f);
-                soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume * 100f);
+                musicRTPC.SetGlobalValue(masterVolume * musicVolume);
+                soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume);
             } 
         }
         
         public void SetSoundEffectVolume(float volume) {
-            if (volume >= 0 && volume <= 1) {
+            if (volume >= 0 && volume <= 100) {
                 soundEffectVolume = volume;
-                soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume * 100f);
+                soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume);
             } 
         }
 
         public void SetMusicVolume(float volume) {
-            if (volume >= 0 && volume <= 1) {
+            if (volume >= 0 && volume <= 100) {
                 musicVolume = volume;
                 musicRTPC.SetGlobalValue(masterVolume * musicVolume);
             } 
