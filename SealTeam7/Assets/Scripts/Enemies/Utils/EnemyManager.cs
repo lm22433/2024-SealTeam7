@@ -162,7 +162,6 @@ namespace Enemies.Utils
                 
                 SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.Soldier), 
                     spawnPoints[5].position, spawnPoints[5].rotation, 6);
-                
                 yield return new WaitForSeconds(20f);
                 
                 GameManager.GetInstance().DisplayTooltip("These soldiers are faster and attack individually. Bury " +
@@ -173,6 +172,11 @@ namespace Enemies.Utils
                 yield return new WaitForSeconds(5f);
                 SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.FastSoldier),
                     spawnPoints[7].position, spawnPoints[7].rotation, 1);
+                yield return new WaitForSeconds(5f);
+                
+                GameManager.GetInstance().DisplayTooltip("Vehicles such as tanks need to be buried multiple times. " +
+                                                         "Try channelling them close together and wiping them out " +
+                                                         "all at once!", 10f);
             }
 
             yield return null;
