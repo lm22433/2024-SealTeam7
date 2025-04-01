@@ -1,11 +1,8 @@
-using System;
 using Game;
 using UnityEngine;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine.Rendering;
-using Debug = UnityEngine.Debug;
 
 namespace Map
 {
@@ -43,16 +40,6 @@ namespace Map
 
     public class BackgroundChunk : MonoBehaviour
     {
-        private struct InterpolateMarginDiagonalKernelReturnType
-        {
-            public float GradPerpInner;
-            public float GradPerpOuter;
-            public float A;
-            public float AGrad;
-            public float B;
-            public float BGrad;
-        }
-        
         private BackgroundChunkSettings _settings;
         private float[,] _heightMap;
         
