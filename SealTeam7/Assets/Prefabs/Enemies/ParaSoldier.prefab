@@ -288,7 +288,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 20
   acceleration: 100
-  groundedOffset: 8
+  groundedOffset: 9
   flyHeight: 0
   aimSpeed: 20
   attackRange: 100

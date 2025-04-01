@@ -72,7 +72,7 @@ namespace Enemies
                 transform.position.z
             );
             
-            Grounded = !Burrowing && Grounded;
+            //Grounded = !Burrowing && Grounded;
             Rb.freezeRotation = Burrowing;
             Rb.detectCollisions = !Burrowing;
         }

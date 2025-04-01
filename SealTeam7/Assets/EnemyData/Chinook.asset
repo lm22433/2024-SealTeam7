@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.2
   maxSpawnChance: 0.35
   spawnChanceGrowthRate: 0.12
+  tooltipText: 'Chinook:
+
+    Holds many enemies inside!'
+  tooltipShown: 0
