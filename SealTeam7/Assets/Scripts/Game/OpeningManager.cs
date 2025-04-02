@@ -56,7 +56,7 @@ namespace Game
                 {
                     _kinectFeedTexture.LoadRawTextureData(_colourImage);
                     _kinectFeedTexture.Apply();
-                    //openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
+                    openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
                 }
             }
 
