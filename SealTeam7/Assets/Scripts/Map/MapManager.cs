@@ -179,6 +179,7 @@ namespace Map
 
             foreach (var chunk in _bgChunks)
             {
+                Debug.Log("Updating background chunk");
                 chunk.UpdateHeights();
             }
         }
