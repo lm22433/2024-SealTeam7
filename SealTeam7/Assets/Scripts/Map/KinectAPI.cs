@@ -55,11 +55,13 @@ namespace Map
         private readonly int _yOffsetEnd;
         private readonly Size _gaussianKernelSize;
         private readonly float _gaussianKernelSigma;
+        private Capture _capture;
 
         private Action _onHeightUpdate;
 
         private bool _running;
         private Task _getCaptureTask;
+        private Task _asyncPythonTask;
         private int _leftHandAbsentCount = 0;
         private int _rightHandAbsentCount = 0;
 
@@ -135,6 +137,7 @@ namespace Map
             Debug.Log("sTARTING TASK");
             _running = true;
             _getCaptureTask = Task.Run(GetCaptureTask);
+            _asyncPythonTask = Task.Run(GetPythonAsync);
         }
         
         public Vector3[] GetHandPositions(int hand) => hand == 0 ? HandLandmarks.Right : HandLandmarks.Left;
@@ -153,31 +156,21 @@ namespace Map
             _tmpImage.Dispose();
             _dilationKernel.Dispose();
         }
-        
-        private void GetCaptureTask()
+
+        private void GetPythonAsync()
         {
-            PythonManager.Initialize();
-            
-            while (_running)
+            if (PythonManager.IsInitialized)
             {
-                // if (!GameManager.GetInstance().IsGameActive()) continue;
-                
-                try
+                PythonManager.Initialize();
+
+                while (_running)
                 {
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
-                    Debug.Log("Attempting to grab capture from Kinect!");
-                    using Capture capture = _kinect.GetCapture();
-                    Debug.Log("Successfully grabbed capture from Kinect!");
-
-                    _transformation.DepthImageToColorCamera(capture.DepthImage, _transformedDepthImage);
-                    stopwatch.Stop();
-                    Console.WriteLine($"Get Capture: {stopwatch.ElapsedMilliseconds} ms");
-
-                    if (PythonManager.IsInitialized)
+                    try
                     {
-                        stopwatch.Restart();
-                        var hl = PythonManager.ProcessFrame(capture.ColorImage);
+                        var stopwatch = new Stopwatch();
+                        stopwatch.Start();
+                        
+                        var hl = PythonManager.ProcessFrame(_capture.ColorImage);
                         stopwatch.Stop();
                         Console.WriteLine($"Process Frame: {stopwatch.ElapsedMilliseconds} ms");
 
@@ -192,6 +185,37 @@ namespace Map
                         // Saves adjusted hand landmarks to HandLandmarks
                         UpdateHandLandmarks(hl, _transformedDepthImage);
                     }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
+                }
+            }
+            
+            if (PythonManager.IsInitialized) {
+                PythonManager.Dispose();
+            }
+        }
+        
+        private void GetCaptureTask()
+        {
+            //PythonManager.Initialize();
+            
+            while (_running)
+            {
+                // if (!GameManager.GetInstance().IsGameActive()) continue;
+                
+                try
+                {
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    Debug.Log("Attempting to grab capture from Kinect!");
+                    _capture = _kinect.GetCapture();
+                    Debug.Log("Successfully grabbed capture from Kinect!");
+
+                    _transformation.DepthImageToColorCamera(_capture.DepthImage, _transformedDepthImage);
+                    stopwatch.Stop();
+                    Console.WriteLine($"Get Capture: {stopwatch.ElapsedMilliseconds} ms");
 
                     UpdateHeightMap(_transformedDepthImage, HandLandmarks);
                     
@@ -200,9 +224,9 @@ namespace Map
                 }
             }
             
-            if (PythonManager.IsInitialized) {
-                PythonManager.Dispose();
-            }
+            // if (PythonManager.IsInitialized) {
+            //     PythonManager.Dispose();
+            // }
         }
 
         private void UpdateHeightMap(Image depthImage, HandLandmarks handLandmarks)
