@@ -142,6 +142,15 @@ namespace Enemies
         
         protected virtual void UpdateState()
         {
+            if (Invulnerable)
+            {
+                // If the enemy is invulnerable, don't let the heights affect them
+                transform.position = new Vector3(
+                    transform.position.x,
+                    MapManager.GetInstance().GetHeight(transform.position),
+                    transform.position.z);
+            }
+            
 			if (State is EnemyState.Dying) return;
             
             var coreTarget = new Vector3(
