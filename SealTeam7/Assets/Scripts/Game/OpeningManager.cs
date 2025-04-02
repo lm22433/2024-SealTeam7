@@ -68,7 +68,7 @@ namespace Game
             if (_isPlaying && _isOpeningFade) {
                 float current = openingImageFadeMat.GetFloat("_TransitionProgress");
 
-                float adjusted = current + (Time.deltaTime / kinectFeedDuration);
+                float adjusted = current + (Time.deltaTime / (kinectFeedDuration / 2));
 
                 if (adjusted <= 1) {
                     openingImageFadeMat.SetFloat("_TransitionProgress", adjusted);
@@ -102,16 +102,18 @@ namespace Game
         {
             if (_isPlaying) throw new Exception("The opening sequence is already playing!");
             _isPlaying = true;
-            _isOpeningFade = true;
+
             kinectFeed.gameObject.SetActive(true);
             StartCoroutine(PlayOpeningSequence());
         }
         
         private IEnumerator PlayOpeningSequence()
         {
-            yield return new WaitForSeconds(kinectFeedDuration);
-            _isOpeningFade = false;
+            yield return new WaitForSeconds(kinectFeedDuration / 2);
+            _isOpeningFade = true;
+            yield return new WaitForSeconds(kinectFeedDuration / 2);
             // TODO: Fade
+            _isOpeningFade = false;
             kinectFeed.gameObject.SetActive(false);
             imagePlane.gameObject.SetActive(false);
             
