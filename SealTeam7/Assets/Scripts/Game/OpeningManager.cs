@@ -39,7 +39,6 @@ namespace Game
             mainCamera.transform.rotation = startRotation;
 
             openingImageFadeMat.SetFloat("_TransitionProgress", 0);
-            openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
         }
 
         private void Update()
@@ -57,7 +56,7 @@ namespace Game
                 {
                     _kinectFeedTexture.LoadRawTextureData(_colourImage);
                     _kinectFeedTexture.Apply();
-                    openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
+                    //openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
                 }
             }
 
