@@ -33,7 +33,7 @@ class ShiftingSandsApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
-        fontFamily: 'Montserrat',
+        fontFamily: 'JetBrainsMono',
       ),
       initialRoute: window.location.pathname ?? "/",
       onGenerateRoute: (settings) {

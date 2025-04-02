@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shifting_sands/components/footer.dart';
+import 'package:shifting_sands/components/hero.dart';
 import 'package:shifting_sands/components/navbar.dart';
 import 'package:shifting_sands/models/game_result.dart';
 
@@ -28,6 +29,7 @@ class LeaderboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: const Navbar(),
       body: StreamBuilder<List<GameResult>>(
         stream: getGameResults(),
@@ -66,80 +68,7 @@ class LeaderboardPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Hero section with background
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Background image with gradient overlay
-                    ShaderMask(
-                      shaderCallback: (rect) {
-                        return LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.7),
-                            Colors.black.withOpacity(0.9)
-                          ],
-                        ).createShader(rect);
-                      },
-                      blendMode: BlendMode.darken,
-                      child: Image.asset(
-                        'assets/images/hero_background.jpg',
-                        height: 300,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    // Hero content
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'LEADERBOARD',
-                            style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            'THE BEST SHIFTING SANDS PLAYERS',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: primaryAccent,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Podium section
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 24),
-                  color: Colors.black87,
-                  child: Column(
-                    children: [
-                      const Text(
-                        'TOP PERFORMERS',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: primaryAccent,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      topThree.isNotEmpty ? buildPodium(topThree) : const SizedBox.shrink(),
-                    ],
-                  ),
-                ),
+                HeroWidget(content: topThree.isNotEmpty ? buildPodium(topThree) : const SizedBox.shrink()),
 
                 // Rankings table section
                 Container(
@@ -276,6 +205,10 @@ class LeaderboardPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget _buildHeroContent() {
+    return const Padding(padding: EdgeInsets.symmetric(horizontal: 24));
   }
 
   // Add this helper method for scoring items
