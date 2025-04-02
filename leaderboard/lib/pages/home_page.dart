@@ -65,9 +65,9 @@ class HomePage extends StatelessWidget {
                               _buildFeatureItem(
                                   Icons.gamepad, 'Interactive Terrain'),
                               const SizedBox(width: 24),
-                              _buildFeatureItem(Icons.public, 'Godly Hands'),
+                              _buildFeatureItem(Icons.public, 'Hand Reconstruction'),
                               const SizedBox(width: 24),
-                              _buildFeatureItem(Icons.psychology, 'Enemy AI'),
+                              _buildFeatureItem(Icons.psychology, 'Custom Enemy AI'),
                             ],
                           ),
                         ],
@@ -113,34 +113,34 @@ class HomePage extends StatelessWidget {
                   crossAxisSpacing: 20,
                   children: [
                     _buildFeatureCard(
-                      'assets/images/feature1.jpg',
-                      'Enemy Types',
-                      'Multiple enemy tiers with unique abilities and challenges',
+                      'assets/gifs/terrain.gif',
+                      'Terrain Generation',
+                      'Real-time terrain generation using the Azure Kinect v3',
                     ),
                     _buildFeatureCard(
-                      'assets/images/feature2.jpg',
-                      'Sand Manipulation',
-                      'Shape the terrain to create defenses or traps',
-                    ),
-                    _buildFeatureCard(
-                      'assets/images/feature3.jpg',
-                      'Central Core',
-                      'Protect your base from the encroaching enemy forces',
-                    ),
-                    _buildFeatureCard(
-                      'assets/images/feature4.jpg',
-                      'Score System',
-                      'Earn points for kills, combos, and survival time',
+                      'assets/gifs/hands.gif',
+                      'Hand Reconstruction',
+                      'Fully responsive hand-tracking and reconstruction in-game',
                     ),
                     _buildFeatureCard(
                       'assets/images/feature5.jpg',
-                      'Real-time Feedback',
-                      'Experience responsive terrain manipulation',
+                      '???',
+                      '???',
                     ),
                     _buildFeatureCard(
-                      'assets/images/feature6.jpg',
-                      'Gesture System',
-                      'Trigger special abilities with hand gestures',
+                      'assets/gifs/enemy.gif',
+                      'Enemies',
+                      'Several custom enemies designed, modelled and implemented in-house',
+                    ),
+                    _buildFeatureCard(
+                      'assets/gifs/ai.gif',
+                      'Custom Enemy AI',
+                      'Custom enemy AI implementation built from scratch based on A* search',
+                    ),
+                    _buildFeatureCard(
+                      'assets/gifs/???.gif',
+                      'Tailored Difficulties',
+                      '???',
                     ),
                   ],
                 ),
@@ -187,7 +187,7 @@ class HomePage extends StatelessWidget {
                               ),
                               const SizedBox(height: 16),
                               const Text(
-                                'The MVP release was the initial implementation of our orignal idea to have one Gamemaster against a team of digital, real players. However, following feedback from testing, we decided to pivot and take the tech we had implemented and focus in on the core mechanics that testers found fun.',
+                                'The MVP release was the initial implementation of our original idea to have one Gamemaster against a team of digital, real players. We used the Azure Kinect v3 to capture both depth images and colour images of the sandbox. At this stage, the depth image was used to map the topology of the sand into in-game terrain that could be used as the battlefield for the digital players. We used an open-source networking library called FishNet to network the game, however we found that sending the height data over the network was extremely inefficient.\n\nFollowing feedback from extensive user testing, we decided to pivot and take the tech we had implemented and focus in on the core mechanics that testers found fun, the sand!',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.white70,
@@ -344,53 +344,6 @@ class HomePage extends StatelessWidget {
                             'assets/images/final.jpeg',
                             fit: BoxFit.cover,
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // University Project Section
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 24),
-            color: const Color(0xFF1A1A1A),
-            child: Row(
-              children: [
-                Image.asset(
-                  'assets/images/university_logo.png',
-                  height: 120,
-                ),
-                const SizedBox(width: 48),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'UNIVERSITY OF BRISTOL',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'COMS30042 Team Project',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Color(0xFFD2B48C),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'This game is being developed as part of the COMS30042 Team Project at the University of Bristol. Our team is working together to create an innovative gaming experience that combines physical interaction with digital gameplay.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
-                          height: 1.6,
                         ),
                       ),
                     ],

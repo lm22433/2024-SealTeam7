@@ -6,8 +6,16 @@ import 'package:shifting_sands/components/hero.dart';
 import 'package:shifting_sands/components/navbar.dart';
 import 'package:shifting_sands/models/game_result.dart';
 
-class LeaderboardPage extends StatelessWidget {
+class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
+
+  @override
+  State<LeaderboardPage> createState() => _LeaderboardPageState();
+}
+
+class _LeaderboardPageState extends State<LeaderboardPage> {
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _rankingsKey = GlobalKey();
 
   static const Color primaryAccent = Color(0xFFD2B48C);
   static const Color darkBackground = Color(0xFF1A1A1A);
@@ -26,8 +34,27 @@ class LeaderboardPage extends StatelessWidget {
     });
   }
 
+  void _scrollToRankings() {
+    if (_rankingsKey.currentContext != null) {
+      Scrollable.ensureVisible(
+        _rankingsKey.currentContext!,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isLargeScreen = screenWidth > 1100;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: const Navbar(),
@@ -65,19 +92,22 @@ class LeaderboardPage extends StatelessWidget {
           final topThree = gameResults.take(gameResults.length >= 3 ? 3 : gameResults.length).toList();
 
           return SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Hero section with podium
                 HeroWidget(content: topThree.isNotEmpty ? buildPodium(topThree) : const SizedBox.shrink()),
 
-                // Rankings table section
+                // Combined Rankings & Scoring section - side by side for large screens
                 Container(
+                  key: _rankingsKey,
                   padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 24),
                   color: darkBackground,
                   child: Column(
                     children: [
                       const Text(
-                        'ALL RANKINGS',
+                        'LEADERBOARD',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -86,69 +116,51 @@ class LeaderboardPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: cardBackground,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: buildRankingsTable(gameResults),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.info_outline,
-                            color: Colors.white54,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Rankings are updated in real-time',
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.6),
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
 
-                // About scoring section
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 24),
-                  color: Colors.black87,
-                  child: Column(
-                    children: [
-                      const Text(
-                        'HOW SCORING WORKS',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: primaryAccent,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 48),
-                      Row(
+                      // Two-column layout for large screens, stacked for small screens
+                      isLargeScreen
+                          ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Leaderboard table (left side - 65%)
                           Expanded(
+                            flex: 65,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: cardBackground,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: buildRankingsTable(gameResults),
+                            ),
+                          ),
+
+                          const SizedBox(width: 24),
+
+                          // Scoring system (right side - 35%)
+                          Expanded(
+                            flex: 35,
                             child: Container(
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
                                 color: cardBackground,
                                 borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,18 +191,116 @@ class LeaderboardPage extends StatelessWidget {
                                   _buildScoringItem('Survival Time', '1 point per second survived'),
                                   const SizedBox(height: 16),
                                   _buildScoringItem('Difficulty Multiplier', 'Easy: ×1, Medium: ×1.5, Hard: ×2'),
+                                  const SizedBox(height: 24),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      'assets/images/gameplay1.jpg',
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
-                          const SizedBox(width: 24),
-                          Expanded(
-                            child: ClipRRect(
+                        ],
+                      )
+                          : Column(
+                        children: [
+                          // Leaderboard table (stacked on top for small screens)
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 24),
+                            decoration: BoxDecoration(
+                              color: cardBackground,
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.asset(
-                                'assets/images/gameplay1.jpg',
-                                fit: BoxFit.cover,
-                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: buildRankingsTable(gameResults),
+                          ),
+
+                          // Scoring system (stacked below for small screens)
+                          Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: cardBackground,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Row(
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.trophy,
+                                      color: primaryAccent,
+                                      size: 24,
+                                    ),
+                                    SizedBox(width: 16),
+                                    Text(
+                                      'Scoring System',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+                                _buildScoringItem('Enemy Kills', '10-50 points per enemy based on type'),
+                                const SizedBox(height: 16),
+                                _buildScoringItem('Wave Completion', '100 points × wave number'),
+                                const SizedBox(height: 16),
+                                _buildScoringItem('Survival Time', '1 point per second survived'),
+                                const SizedBox(height: 16),
+                                _buildScoringItem('Difficulty Multiplier', 'Easy: ×1, Medium: ×1.5, Hard: ×2'),
+                                const SizedBox(height: 24),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.asset(
+                                    'assets/images/gameplay1.jpg',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            color: Colors.white54,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Rankings are updated in real-time',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.6),
+                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -198,6 +308,7 @@ class LeaderboardPage extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 const Footer(),
               ],
             ),
@@ -207,11 +318,6 @@ class LeaderboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroContent() {
-    return const Padding(padding: EdgeInsets.symmetric(horizontal: 24));
-  }
-
-  // Add this helper method for scoring items
   Widget _buildScoringItem(String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +358,6 @@ class LeaderboardPage extends StatelessWidget {
     );
   }
 
-  // Complete the buildRankingsTable function
   Widget buildRankingsTable(List<GameResult> gameResults) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -428,46 +533,90 @@ class LeaderboardPage extends StatelessWidget {
   }
 
   Widget buildPodium(List<GameResult> topThree) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Column(
       children: [
-        // 2nd Place - Left
-        if (topThree.length >= 2)
-          _buildPodiumPlayer(
-            topThree[1],
-            160,
-            Colors.grey.shade300,
-            FontAwesomeIcons.medal,
-            '2',
-            CrossAxisAlignment.end,
+        // Title at the top
+        Padding(
+          padding: const EdgeInsets.only(bottom: 32, top: 16),
+          child: Text(
+            'TOP 3',
+            style: TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+              color: primaryAccent,
+              letterSpacing: 2.0,
+            ),
           ),
+        ),
+        // Podium content
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            // 2nd Place - Left
+            if (topThree.length >= 2)
+              _buildPodiumPlayer(
+                topThree[1],
+                160,
+                Colors.grey.shade300,
+                FontAwesomeIcons.medal,
+                '2',
+                CrossAxisAlignment.center,
+              ),
 
-        const SizedBox(width: 24),
+            const SizedBox(width: 24),
 
-        // 1st Place - Center (taller)
-        if (topThree.isNotEmpty)
-          _buildPodiumPlayer(
-            topThree[0],
-            200,
-            primaryAccent,
-            FontAwesomeIcons.crown,
-            '1',
-            CrossAxisAlignment.center,
+            // 1st Place - Center (taller)
+            if (topThree.isNotEmpty)
+              _buildPodiumPlayer(
+                topThree[0],
+                200,
+                primaryAccent,
+                FontAwesomeIcons.crown,
+                '1',
+                CrossAxisAlignment.center,
+              ),
+
+            const SizedBox(width: 24),
+
+            // 3rd Place - Right
+            if (topThree.length >= 3)
+              _buildPodiumPlayer(
+                topThree[2],
+                130,
+                Colors.brown.shade300,
+                FontAwesomeIcons.award,
+                '3',
+                CrossAxisAlignment.center,
+              ),
+          ],
+        ),
+
+        // Jump button at the bottom of podium
+        Padding(
+          padding: const EdgeInsets.only(top: 40, bottom: 20),
+          child: Center(
+            child: ElevatedButton.icon(
+              onPressed: _scrollToRankings,
+              icon: const Icon(Icons.arrow_downward, color: darkBackground),
+              label: const Text(
+                'VIEW ALL RANKINGS',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: darkBackground,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryAccent,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 4,
+              ),
+            ),
           ),
-
-        const SizedBox(width: 24),
-
-        // 3rd Place - Right
-        if (topThree.length >= 3)
-          _buildPodiumPlayer(
-            topThree[2],
-            130,
-            Colors.brown.shade300,
-            FontAwesomeIcons.award,
-            '3',
-            CrossAxisAlignment.start,
-          ),
+        ),
       ],
     );
   }
