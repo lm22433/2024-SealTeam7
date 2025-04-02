@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f50cd2b5c08b567519de3da19c99e815
+guid: d2fadb133c7e428fb938ec6f2fabecd5
 labels:
 - NuGetForUnity
 PluginImporter:
@@ -18,7 +18,9 @@ PluginImporter:
       settings:
         'Exclude ': 1
         Exclude Android: 1
+        Exclude Bratwurst: 1
         Exclude CloudRendering: 1
+        Exclude Editor: 1
         Exclude EmbeddedLinux: 1
         Exclude GameCoreScarlett: 1
         Exclude GameCoreXboxOne: 1
@@ -31,6 +33,7 @@ PluginImporter:
         Exclude Switch: 1
         Exclude VisionOS: 1
         Exclude WebGL: 1
+        Exclude Win: 1
         Exclude Win64: 1
         Exclude WindowsStoreApps: 1
         Exclude XboxOne: 1
@@ -41,6 +44,12 @@ PluginImporter:
       settings:
         CPU: x86
         DefaultValueInitialized: true
+    Linux64:
+      enabled: 0
+      settings: {}
+    OSXUniversal:
+      enabled: 0
+      settings: {}
     Win:
       enabled: 1
       settings:
@@ -53,6 +62,9 @@ PluginImporter:
       enabled: 0
       settings:
         CPU: x86
+    iOS:
+      enabled: 0
+      settings: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

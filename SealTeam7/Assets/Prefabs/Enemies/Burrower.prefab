@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2013928995460809366}
   - component: {fileID: 6137134856117979157}
-  - component: {fileID: 828698031663403021}
   - component: {fileID: 1762384143968135915}
+  - component: {fileID: 828698031663403021}
   m_Layer: 0
   m_Name: Burrower
   m_TagString: Untagged
@@ -54,12 +54,12 @@ MonoBehaviour:
   forceOffset: {x: 0, y: -1, z: 1}
   moveSpeed: 20
   acceleration: 100
-  groundedOffset: 8
+  groundedOffset: 6
   flyHeight: 0
   aimSpeed: 5
-  attackRange: 30
+  attackRange: 40
   attackInterval: 5
-  stopMovingThreshold: 10
+  stopMovingThreshold: 20
   coreTargetHeightOffset: 0
   attackDamage: 4
   killScore: 500
@@ -83,7 +83,28 @@ MonoBehaviour:
   gracePeriod: 0
   drill: {fileID: 1539957999329854138}
   drillSpeed: 1000
-  burrowDepth: 50
+  burrowDepth: 100
+  diveSpeed: 100
+--- !u!114 &1762384143968135915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772852043545815630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dde076dee4ffe4143980428613d0b2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravityDefiance: 5
+  defianceThreshold: 20
+  sinkFactor: 8
+  fallDeathVelocityY: 40
+  jumpForce: 10
+  laplaceLocation: 0
+  laplaceScale: 2
+  yeetThreshold: 0.8
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -111,26 +132,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &1762384143968135915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2772852043545815630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dde076dee4ffe4143980428613d0b2f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gravityDefiance: 5
-  defianceThreshold: 20
-  sinkFactor: 8
-  fallDeathVelocityY: 25
-  jumpForce: 10
-  laplaceLocation: 0
-  laplaceScale: 2
-  yeetThreshold: 0.8
 --- !u!1001 &1273045529044028289
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -551,7 +552,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4572920817291012112}
   m_SourcePrefab: {fileID: 100100000, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
 --- !u!4 &1539957999329854138 stripped
 Transform:
@@ -563,3 +567,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
   m_PrefabInstance: {fileID: 3988394666948130318}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4294452727100754783 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
+  m_PrefabInstance: {fileID: 3988394666948130318}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &4572920817291012112
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4294452727100754783}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7, y: 3.5, z: 7}
+  m_Center: {x: 0, y: 0.5, z: -2}

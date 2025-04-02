@@ -18,11 +18,12 @@ namespace Enemies.FunkyPhysics
         protected Enemy Self;
         protected Rigidbody Rb;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             Rb = GetComponent<Rigidbody>();
             Self = GetComponent<Enemy>();
         }
+        
         public virtual void Init() {}
 
         protected virtual void Update()

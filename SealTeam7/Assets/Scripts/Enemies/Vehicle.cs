@@ -52,9 +52,9 @@ namespace Enemies
                 DisallowMovement = true;
             }
             
-            // gun rotation
             switch (State)
             {
+                case EnemyState.MoveAndAttack:
                 case EnemyState.Moving:
                 {
                     if (DisallowMovement || Rb.position.y > MapManager.GetInstance().GetHeight(transform.position) + groundedOffset)

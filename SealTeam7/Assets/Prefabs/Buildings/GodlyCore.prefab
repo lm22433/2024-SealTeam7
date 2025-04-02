@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5995423900670201514}
   - component: {fileID: 4994746297924202127}
   - component: {fileID: 8712459298881639221}
+  - component: {fileID: 8611628195515774974}
   m_Layer: 0
   m_Name: GodlyCore
   m_TagString: Untagged
@@ -99,4 +100,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 154a2adaa336411dafb323224b1bd428, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armour: 9
+  armour: 0
+--- !u!64 &8611628195515774974
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3336293177548899692}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5495902117074765545, guid: 87a15695ce861481bbcf29b15c9e29f1, type: 3}

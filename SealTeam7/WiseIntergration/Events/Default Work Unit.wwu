@@ -43,7 +43,7 @@
 						<Action Name="" ID="{2D9375FA-2749-49E5-B8C4-94C9E44C3BA8}" ShortID="576903299">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="DesertWind" ID="{9DD95D44-29F5-470A-9890-B3DD71BB7025}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+									<ObjectRef Name="DesertAmbiance" ID="{9DD95D44-29F5-470A-9890-B3DD71BB7025}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -89,7 +89,7 @@
 					<ChildrenList>
 						<Action Name="" ID="{85522AFA-AC61-4F1A-98E3-DE4E9E795426}" ShortID="106576009">
 							<PropertyList>
-								<Property Name="Probability" Type="Real64" Value="10"/>
+								<Property Name="Probability" Type="Real64" Value="3"/>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
@@ -99,7 +99,7 @@
 						</Action>
 						<Action Name="" ID="{3E9C7A0F-6B90-4070-8A46-EA9029689038}" ShortID="545155336">
 							<PropertyList>
-								<Property Name="Probability" Type="Real64" Value="2"/>
+								<Property Name="Probability" Type="Real64" Value="0.5"/>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Target">
@@ -153,6 +153,17 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="CelebrationFanfare" ID="{85869B74-7530-4283-805C-75F60C7FB91B}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_WaveIncoming" ID="{BAF55726-48DF-43F5-9B82-70F365B78F6E}">
+					<ChildrenList>
+						<Action Name="" ID="{BFAF79F5-A93B-490B-B9AA-07A6FA3074D4}" ShortID="78691214">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="WaveIncoming" ID="{B4CB688E-04AB-44F4-9AA6-8992AACA1C4C}" WorkUnitID="{3B240B8C-B74C-4767-84A9-2AAC71A0B97D}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
