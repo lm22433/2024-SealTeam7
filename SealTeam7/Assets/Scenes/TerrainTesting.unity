@@ -876,7 +876,7 @@ MonoBehaviour:
   mapSize: 880
   chunkRow: 1
   chunkSize: 880
-  heightScale: 200
+  heightScale: 450
   lerpFactor: 0.2
   lodInfo:
     lod: 4
@@ -884,13 +884,13 @@ MonoBehaviour:
     pathingLod: 8
   bgChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
   bgAverageHeight: 150
-  bgBaseHeightScale: 50
+  bgBaseHeightScale: 25
   bgBaseNoiseScale: 0.01
   bgRoughnessHeightScale: 1
   bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
   bgChunkMargin: 1
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
@@ -3205,15 +3205,15 @@ PrefabInstance:
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: 'difficulties.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 219239590845e4742be208760b5b7a71, type: 2}
+      objectReference: {fileID: 11400000, guid: a0c59461ebefa4ef49d1eea75c4e00a4, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: 'difficulties.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: 56ddbcfd438354956822f2ccc98c0b9d, type: 2}
+      objectReference: {fileID: 11400000, guid: 219239590845e4742be208760b5b7a71, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: 'difficulties.Array.data[2]'
       value: 
-      objectReference: {fileID: 11400000, guid: a0c59461ebefa4ef49d1eea75c4e00a4, type: 2}
+      objectReference: {fileID: 11400000, guid: 56ddbcfd438354956822f2ccc98c0b9d, type: 2}
     - target: {fileID: 5012862232316410417, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: 'difficulties.Array.data[3]'
       value: 

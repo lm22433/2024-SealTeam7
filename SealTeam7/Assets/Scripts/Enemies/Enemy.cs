@@ -53,7 +53,8 @@ namespace Enemies
         [SerializeField] protected AK.Wwise.Event gunFireSound;
         [SerializeField] protected AK.Wwise.Event deathSoundEffect;
 
-        public bool DisallowMovement;
+        public bool DisallowMovement = false;
+        public bool Invulnerable = false;
 
         protected float SqrAttackRange;
         protected float SqrStopMovingThreshold;
@@ -97,11 +98,13 @@ namespace Enemies
             LastAttack = attackInterval;
             LastPathFind = PathFindInterval;
             DeathDuration = 3.0f;
+            DisallowMovement = false;
+            Invulnerable = false;
         }
 
 		public virtual void SetupDeath()
         {
-            if (State == EnemyState.Dying) return;
+            if (State == EnemyState.Dying || Invulnerable) return;
             
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
             {

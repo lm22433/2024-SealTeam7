@@ -310,6 +310,8 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
+  DisallowMovement: 0
+  Invulnerable: 0
   gun: {fileID: 4121728789607564128}
 --- !u!54 &4195251952092455746
 Rigidbody:
@@ -377,7 +379,7 @@ MonoBehaviour:
   defianceThreshold: 20
   sinkFactor: 10
   fallDeathVelocityY: 200
-  jumpForce: 10
+  jumpForce: 50
   laplaceLocation: 0
   laplaceScale: 2
   yeetThreshold: 0.8
