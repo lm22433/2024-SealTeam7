@@ -124,11 +124,11 @@ namespace Enemies
             obj.transform.parent = EnemyManager.transform;
 
             obj.TryGetComponent(out Projectile proj);
-            proj.Init();
             proj.projectileType = projectileType;
             proj.TargetPosition = TargetPosition;
             proj.ToDamage = toDamage;
             proj.Damage = attackDamage;
+            proj.Init();
         }
 
         protected abstract float Heuristic(Node start, Node end);
