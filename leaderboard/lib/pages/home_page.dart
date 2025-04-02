@@ -123,7 +123,7 @@ class HomePage extends StatelessWidget {
                       'Fully responsive hand-tracking and reconstruction in-game',
                     ),
                     _buildFeatureCard(
-                      'assets/images/feature5.jpg',
+                      'assets/gifs/???.gif',
                       '???',
                       '???',
                     ),
@@ -139,7 +139,7 @@ class HomePage extends StatelessWidget {
                     ),
                     _buildFeatureCard(
                       'assets/gifs/???.gif',
-                      'Tailored Difficulties',
+                      '???',
                       '???',
                     ),
                   ],

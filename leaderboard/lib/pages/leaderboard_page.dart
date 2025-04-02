@@ -52,9 +52,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isLargeScreen = screenWidth > 1100;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: const Navbar(),
@@ -99,7 +96,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 // Hero section with podium
                 HeroWidget(content: topThree.isNotEmpty ? buildPodium(topThree) : const SizedBox.shrink()),
 
-                // Combined Rankings & Scoring section - side by side for large screens
+                // Combined Rankings & Scoring section - always side by side
                 Container(
                   key: _rankingsKey,
                   padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 24),
@@ -117,9 +114,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       ),
                       const SizedBox(height: 32),
 
-                      // Two-column layout for large screens, stacked for small screens
-                      isLargeScreen
-                          ? Row(
+                      // Fixed side-by-side layout (no responsive behavior)
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Leaderboard table (left side - 65%)
@@ -139,7 +135,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 ],
                               ),
                               clipBehavior: Clip.antiAlias,
-                              child: buildRankingsTable(gameResults),
+                              padding: const EdgeInsets.all(8), // Added 8px padding around the table
+                              child: Center( // Center the table within the card
+                                child: buildRankingsTable(gameResults),
+                              ),
                             ),
                           ),
 
@@ -148,139 +147,61 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           // Scoring system (right side - 35%)
                           Expanded(
                             flex: 35,
-                            child: Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: cardBackground,
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    spreadRadius: 2,
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 5),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Row(
-                                    children: [
-                                      Icon(
-                                        FontAwesomeIcons.trophy,
-                                        color: primaryAccent,
-                                        size: 24,
-                                      ),
-                                      SizedBox(width: 16),
-                                      Text(
-                                        'Scoring System',
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                            child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(24),
+                                    decoration: BoxDecoration(
+                                      color: cardBackground,
+                                      borderRadius: BorderRadius.circular(8),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.3),
+                                          spreadRadius: 2,
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 5),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 24),
-                                  _buildScoringItem('Enemy Kills', '10-50 points per enemy based on type'),
-                                  const SizedBox(height: 16),
-                                  _buildScoringItem('Wave Completion', '100 points × wave number'),
-                                  const SizedBox(height: 16),
-                                  _buildScoringItem('Survival Time', '1 point per second survived'),
-                                  const SizedBox(height: 16),
-                                  _buildScoringItem('Difficulty Multiplier', 'Easy: ×1, Medium: ×1.5, Hard: ×2'),
-                                  const SizedBox(height: 24),
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.asset(
-                                      'assets/images/gameplay1.jpg',
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                          : Column(
-                        children: [
-                          // Leaderboard table (stacked on top for small screens)
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 24),
-                            decoration: BoxDecoration(
-                              color: cardBackground,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 5),
-                                ),
-                              ],
-                            ),
-                            clipBehavior: Clip.antiAlias,
-                            child: buildRankingsTable(gameResults),
-                          ),
-
-                          // Scoring system (stacked below for small screens)
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: cardBackground,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 5),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Row(
-                                  children: [
-                                    Icon(
-                                      FontAwesomeIcons.trophy,
-                                      color: primaryAccent,
-                                      size: 24,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Row(
+                                          children: [
+                                            Icon(
+                                              FontAwesomeIcons.trophy,
+                                              color: primaryAccent,
+                                              size: 24,
+                                            ),
+                                            SizedBox(width: 16),
+                                            Text(
+                                              'Scoring System',
+                                              style: TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 24),
+                                        _buildScoringItem('Enemy Kills', '10-50 points per enemy based on type'),
+                                        const SizedBox(height: 16),
+                                        _buildScoringItem('Wave Completion', '100 points × wave number'),
+                                        const SizedBox(height: 16),
+                                        _buildScoringItem('Survival Time', '1 point per second survived'),
+                                        const SizedBox(height: 16),
+                                        _buildScoringItem('Difficulty Multiplier', 'Easy: ×1, Medium: ×1.5, Hard: ×2'),
+                                        const SizedBox(height: 16),
+                                        _buildScoringItem('Kill Streak', 'Bonus points for consecutive kills'),
+                                        const SizedBox(height: 16),
+                                        _buildScoringItem('Health Bonus', '100 points for each 10% health remaining'),
+                                        // Image removed and additional scoring items added
+                                        // to ensure equal height with the rankings table
+                                      ],
                                     ),
-                                    SizedBox(width: 16),
-                                    Text(
-                                      'Scoring System',
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 24),
-                                _buildScoringItem('Enemy Kills', '10-50 points per enemy based on type'),
-                                const SizedBox(height: 16),
-                                _buildScoringItem('Wave Completion', '100 points × wave number'),
-                                const SizedBox(height: 16),
-                                _buildScoringItem('Survival Time', '1 point per second survived'),
-                                const SizedBox(height: 16),
-                                _buildScoringItem('Difficulty Multiplier', 'Easy: ×1, Medium: ×1.5, Hard: ×2'),
-                                const SizedBox(height: 24),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    'assets/images/gameplay1.jpg',
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
-                                ),
-                              ],
+                                  );
+                                }
                             ),
                           ),
                         ],
@@ -368,56 +289,90 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         horizontalMargin: 16,
         columns: const [
           DataColumn(
-            label: Text(
-              'RANK',
-              style: TextStyle(
-                color: primaryAccent,
-                fontWeight: FontWeight.bold,
+            label: Center(
+              child: Text(
+                'RANK',
+                style: TextStyle(
+                  color: primaryAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           DataColumn(
-            label: Text(
-              'PLAYER',
-              style: TextStyle(
-                color: primaryAccent,
-                fontWeight: FontWeight.bold,
+            label: Center(
+              child: Text(
+                'PLAYER NAME',
+                style: TextStyle(
+                  color: primaryAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           DataColumn(
-            label: Text(
-              'DIFFICULTY',
-              style: TextStyle(
-                color: primaryAccent,
-                fontWeight: FontWeight.bold,
+            label: Center(
+              child: Text(
+                'DIFFICULTY',
+                style: TextStyle(
+                  color: primaryAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           DataColumn(
-            label: Text(
-              'SCORE',
-              style: TextStyle(
-                color: primaryAccent,
-                fontWeight: FontWeight.bold,
+            label: Center(
+              child: Text(
+                'SCORE',
+                style: TextStyle(
+                  color: primaryAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           DataColumn(
-            label: Text(
-              'TIME (s)',
-              style: TextStyle(
-                color: primaryAccent,
-                fontWeight: FontWeight.bold,
+              label: Center(
+                child: Text(
+                  'ENEMIES KILLED',
+                  style: TextStyle(
+                    color: primaryAccent,
+                    fontWeight: FontWeight.bold,
+                  )
+                ),
+              ),
+          ),
+          DataColumn(
+            label: Center(
+              child: Text(
+                'WAVES',
+                style: TextStyle(
+                  color: primaryAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           DataColumn(
-            label: Text(
-              'WAVES',
-              style: TextStyle(
-                color: primaryAccent,
-                fontWeight: FontWeight.bold,
+            label: Center(
+              child: Text(
+                'TIME (s)',
+                style: TextStyle(
+                  color: primaryAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          DataColumn(
+            label: Center(
+              child: Text(
+                'DAMAGE TAKEN',
+                style: TextStyle(
+                  color: primaryAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -441,88 +396,116 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             color: MaterialStateProperty.all(rowColor),
             cells: [
               DataCell(
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isTopThree ? _getRankColor(index) : Colors.grey.withOpacity(0.2),
-                    border: isTopThree ? Border.all(color: _getRankColor(index).withOpacity(0.6), width: 2) : null,
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${index + 1}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isTopThree ? Colors.black : Colors.white,
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isTopThree ? _getRankColor(index) : Colors.grey.withOpacity(0.2),
+                      border: isTopThree ? Border.all(color: _getRankColor(index).withOpacity(0.6), width: 2) : null,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${index + 1}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isTopThree ? Colors.black : Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-              DataCell(Row(
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: darkBackground,
-                      border: Border.all(color: _getRankColor(index).withOpacity(0.6), width: 2),
-                    ),
-                    child: Center(
-                      child: Text(
-                        game.playerName.substring(0, 1).toUpperCase(),
-                        style: const TextStyle(color: Colors.white, fontSize: 14),
+              DataCell(Center(
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: darkBackground,
+                        border: Border.all(color: _getRankColor(index).withOpacity(0.6), width: 2),
+                      ),
+                      child: Center(
+                        child: Text(
+                          game.playerName.substring(0, 1).toUpperCase(),
+                          style: const TextStyle(color: Colors.white, fontSize: 14),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    game.playerName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
+                    const SizedBox(width: 12),
+                    Text(
+                      game.playerName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+              DataCell(Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _getDifficultyColor(game.difficulty).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _getDifficultyColor(game.difficulty).withOpacity(0.5),
+                      width: 1,
                     ),
                   ),
-                ],
-              )),
-              DataCell(Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: _getDifficultyColor(game.difficulty).withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _getDifficultyColor(game.difficulty).withOpacity(0.5),
-                    width: 1,
+                  child: Text(
+                    game.difficulty.toUpperCase(),
+                    style: TextStyle(
+                      color: _getDifficultyColor(game.difficulty),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
+              )),
+              DataCell(Center(
                 child: Text(
-                  game.difficulty.toUpperCase(),
-                  style: TextStyle(
-                    color: _getDifficultyColor(game.difficulty),
+                  game.score.toString(),
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    color: Colors.white,
                   ),
                 ),
               )),
-              DataCell(Text(
-                game.score.toString(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              DataCell(Center(
+                child: Text(
+                  game.totalEnemiesDefeated.toString(),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                  ),
                 ),
               )),
-              DataCell(Text(
-                game.timeSurvived.toString(),
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+              DataCell(Center(
+                child: Text(
+                  game.wavesCleared.toString(),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                  ),
                 ),
               )),
-              DataCell(Text(
-                game.wavesCleared.toString(),
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+              DataCell(Center(
+                child: Text(
+                  game.timeSurvived.toString(),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+              )),
+              DataCell(Center(
+                child: Text(
+                  game.totalDamageTaken.toString(),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                  ),
                 ),
               )),
             ],
@@ -561,7 +544,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 Colors.grey.shade300,
                 FontAwesomeIcons.medal,
                 '2',
-                CrossAxisAlignment.center,
               ),
 
             const SizedBox(width: 24),
@@ -574,7 +556,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 primaryAccent,
                 FontAwesomeIcons.crown,
                 '1',
-                CrossAxisAlignment.center,
               ),
 
             const SizedBox(width: 24),
@@ -587,7 +568,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 Colors.brown.shade300,
                 FontAwesomeIcons.award,
                 '3',
-                CrossAxisAlignment.center,
               ),
           ],
         ),
@@ -627,10 +607,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       Color accentColor,
       IconData trophyIcon,
       String rankText,
-      CrossAxisAlignment alignment,
       ) {
     return Column(
-      crossAxisAlignment: alignment,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Trophy/medal icon
         Icon(
