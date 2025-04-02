@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.6
   maxSpawnChance: 0.3
   spawnChanceGrowthRate: 0.12
+  tooltipText: 'Machine Gunner:
+
+    Like soldiers but with a much higher fire rate!'
+  tooltipShown: 0

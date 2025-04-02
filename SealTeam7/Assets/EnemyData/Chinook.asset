@@ -20,3 +20,8 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.2
   maxSpawnChance: 0.35
   spawnChanceGrowthRate: 0.12
+  tooltipText: 'Chinook:
+
+    Spawns a wide range of enemy units; raining death from
+    above!'
+  tooltipShown: 0

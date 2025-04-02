@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{B94DA0AB-228D-465F-9C82-287D3D575D75}",
     "Language": "SFX",
-    "Hash": "{88A14C22-CD38-E968-535D-3A8B7C47E7D6}",
+    "Hash": "{4EB4E23D-7C86-D9BC-DF22-4AA17849C597}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
     "ShortName": "SoundEffects",
     "Path": "SoundEffects.bnk",
@@ -381,9 +381,24 @@
        ]
       }
      }
+    ],
+    "GameParameters": [
+     {
+      "Id": "1985131783",
+      "Name": "SoundEffectVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SoundEffectVolume",
+      "GUID": "{70821926-0A62-41CB-8BF7-8D695593EEA0}"
+     },
+     {
+      "Id": "2346531308",
+      "Name": "MusicVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\MusicVolume",
+      "GUID": "{45C8588C-CEB8-45E8-BFF0-BCC9120D0975}",
+      "Color": "1"
+     }
     ]
    }
   ],
-  "FileHash": "{AB88C65C-B922-0AB3-588F-B03CA4C09C91}"
+  "FileHash": "{5C23FF8C-76E0-6253-A998-92D6B03D6A39}"
  }
 }

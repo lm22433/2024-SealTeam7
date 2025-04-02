@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.8
   maxSpawnChance: 0.15
   spawnChanceGrowthRate: 0.22
+  tooltipText: 'Burrower:
+
+    Burrows under the sand! Dig it out to kill it!'
+  tooltipShown: 0

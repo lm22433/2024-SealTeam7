@@ -7,17 +7,17 @@ namespace Enemies.FunkyPhysics
 {
     public class HelicopterPhysics : BasePhysics
     {
-        [SerializeField] private Transform mainPropeller;
-        [SerializeField] private Transform subPropeller;
-        [SerializeField] private float propellerSpeed;
         private bool _exploded;
+
+        public override void Init()
+        {
+            base.Init();
+            _exploded = false;
+        }
 
         protected override void EnemyUpdate()
         {
             if (Self.Grounded && !Self.IsDying) Self.SetupDeath();
-            
-            mainPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
-            subPropeller.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime));
             
             if (Self.IsDying && !_exploded)
             {

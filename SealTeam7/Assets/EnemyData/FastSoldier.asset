@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 2.6
   maxSpawnChance: 0.6
   spawnChanceGrowthRate: 0.14
+  tooltipText: 'Speedster:
+
+    Like soldiers, but fast!'
+  tooltipShown: 0

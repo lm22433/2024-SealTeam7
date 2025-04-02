@@ -23,3 +23,5 @@ MonoBehaviour:
   initialWaveTimeLimit: 15
   minimumWaveTimeLimit: 8
   timeReductionPerWave: 2
+  initialCargoPlaneDelay: 30
+  cargoPlaneSpawnDelay: 30

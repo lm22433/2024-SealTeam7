@@ -8,6 +8,12 @@ namespace Enemies.FunkyPhysics
     public class TankPhysics : BasePhysics
     {
 		private bool _exploded;
+		
+		public override void Init()
+		{
+			base.Init();
+			_exploded = false;
+		}
 
         protected override void EnemyUpdate()
         {
