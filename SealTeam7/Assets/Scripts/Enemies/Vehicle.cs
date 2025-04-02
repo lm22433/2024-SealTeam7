@@ -45,8 +45,12 @@ namespace Enemies
         protected override void EnemyUpdate()
         {
             _deathTime += Time.deltaTime;
-            
-            DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f;
+
+            // Stop moving if vehicle is on its side
+            if (!DisallowMovement && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f)
+            {
+                DisallowMovement = true;
+            }
             
             // gun rotation
             switch (State)

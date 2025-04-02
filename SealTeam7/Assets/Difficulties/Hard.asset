@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hard
   m_EditorClassIdentifier: 
   difficultyName: Hard
-  difficultyType: 2
+  difficultyType: 3
   initialGroupCount: 12
   growthFactor: 1.4
   exponent: 0.75

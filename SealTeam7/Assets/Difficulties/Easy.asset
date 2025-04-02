@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Easy
   m_EditorClassIdentifier: 
   difficultyName: Easy
-  difficultyType: 0
+  difficultyType: 1
   initialGroupCount: 6
   growthFactor: 1.2
   exponent: 0.7

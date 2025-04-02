@@ -10,6 +10,7 @@ using Map;
 using Player;
 using Projectiles;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Enemies.Utils
@@ -161,37 +162,90 @@ namespace Enemies.Utils
                 
                 GameManager.GetInstance().DisplayTooltip("Welcome to the tutorial! Bury the soldiers to protect " +
                                                          "your base. Watch out – your hands take damage too!", 10f);
-
                 yield return new WaitForSeconds(2f);
 
-                Spawn(EnemyType.Soldier, 5, 6);
-                
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 3, columns: 4);
                 yield return new WaitForSeconds(20f);
                 
-                GameManager.GetInstance().DisplayTooltip("These soldiers are faster and attack individually. Bury " +
-                                                         "them before they get too close!", 10f);
-                
-                SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.FastSoldier),
-                    spawnPoints[3].position, spawnPoints[3].rotation);
-                yield return new WaitForSeconds(5f);
-                SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.FastSoldier),
-                    spawnPoints[7].position, spawnPoints[7].rotation);
-                yield return new WaitForSeconds(5f);
-                
-                GameManager.GetInstance().DisplayTooltip("Vehicles such as tanks need to be buried multiple times. " +
-                                                         "Try channelling them close together and wiping them out " +
-                                                         "all at once!", 10f);
+                GameManager.GetInstance().DisplayTooltip("Vehicles need to be buried multiple times. Try getting them " +
+                                                         "close together and killing them all in two swift motions!", 10f);
 
-                yield return SpawnAtInterval(EnemyType.Tank, 4, 10, 3f);
+                yield return SpawnAtInterval(EnemyType.Tank, spawnPoint: 4, count: 10, interval: 3f);
+                yield return new WaitForSeconds(20f);
+                
+                GameManager.GetInstance().DisplayTooltip("These enemies burrow under the sand and must be dug out, " +
+                                                         "not buried. Look out for their dust trails!", 10f);
+                
+                for (var i = 3; i <= 7; i++)
+                {
+                    Spawn(EnemyType.FastSoldier, spawnPoint: i);
+                    yield return new WaitForSeconds(1f);
+                }
+                yield return new WaitForSeconds(11f);
+                
+                GameManager.GetInstance().DisplayTooltip("That's it for the tutorial! Remember to read the popups as " +
+                                                         "new enemies arrive. Good luck – now shift some sand!", 8f);
+                yield return new WaitForSeconds(8f);
+                
+                // Return to main menu
+                MapManager.GetInstance().Quit();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
 
-            yield return null;
+            else
+            {
+                var difficultyWaitMultiplier = 1f;
+                
+                yield return new WaitForSeconds(5f);
+                
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 3, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 7, rows: 3, columns: 4);
+                yield return new WaitForSeconds(5f*difficultyWaitMultiplier);
+                
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 3, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 7, rows: 3, columns: 4);
+                yield return new WaitForSeconds(5f*difficultyWaitMultiplier);
+                
+                
+            }
         }
         
-        private void Spawn(EnemyType enemy, int spawnPoint, int count)
+        private void Spawn(EnemyType enemy, int spawnPoint)
         {
             var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
-            SpawnEnemies(data, spawnPoints[spawnPoint].position, spawnPoints[spawnPoint].rotation, count);
+            SpawnEnemies(data, spawnPoints[spawnPoint].position, spawnPoints[spawnPoint].rotation);
+        }
+
+        private IEnumerator SpawnGrid(EnemyType enemy, int spawnPoint, int rows, int columns)
+        {
+            var spacing = 8f;
+            var spawnPosition = spawnPoints[spawnPoint].position;
+            var spawnRotation = spawnPoints[spawnPoint].rotation.normalized;
+            var zVector = spawnRotation * Vector3.forward;
+            var xVector = spawnRotation * Vector3.right;
+            var gridHeight = (rows - 1)*spacing;
+            var gridWidth = (columns - 1)*spacing;
+            var startPos = spawnPosition - gridHeight/2*zVector - gridWidth/2*xVector;
+
+            var enemyComps = new Enemy[rows*columns];
+            for (var z = 0; z < rows; z++)
+            {
+                for (var x = 0; x < columns; x++)
+                {
+                    var pos = startPos + zVector*(z*spacing) + xVector*(x*spacing);
+                    var enemyComp = SpawnAndGetEnemy(enemyData.FirstOrDefault(e => e.enemyType == enemy), pos, spawnRotation);
+                    enemyComp.DisallowMovement = true;
+                    enemyComps[z*columns + x] = enemyComp;
+                    yield return new WaitForSeconds(0.05f);
+                }
+            }
+
+            for (var i = 0; i < rows*columns; i++)
+            {
+                enemyComps[i].DisallowMovement = false;
+            }
         }
 
         private IEnumerator SpawnAtInterval(EnemyType enemy, int spawnPoint, int count, float interval = 1f)
@@ -203,17 +257,23 @@ namespace Enemies.Utils
                 yield return new WaitForSeconds(interval);
             }
         }
+        
+        private Enemy SpawnAndGetEnemy(EnemyData enemy, Vector3 spawnPosition, Quaternion spawnRotation)
+        {
+            GameObject e = EnemyPool.GetInstance().GetFromPool(enemy, spawnPosition, spawnRotation);
+            var enemyComp = e.GetComponent<Enemy>();
+            enemyComp.Init();
+            e.GetComponent<BasePhysics>().Init();
+            e.transform.SetParent(transform);
+            _enemyCount++;
+            return enemyComp;
+        }
 
         public void SpawnEnemies(EnemyData enemy, Vector3 spawnPosition, Quaternion spawnRotation, int enemyCount = 1)
         {
             for (int i = 0; i < enemyCount; i++)
             {
-                GameObject e = EnemyPool.GetInstance().GetFromPool(enemy, spawnPosition, spawnRotation);
-                if (!e) continue;
-                e.GetComponent<Enemy>().Init();
-                e.GetComponent<BasePhysics>().Init();
-                e.transform.SetParent(transform);
-                _enemyCount++;
+                SpawnAndGetEnemy(enemy, spawnPosition, spawnRotation);
             }
         }
 

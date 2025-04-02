@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Normal
   m_EditorClassIdentifier: 
   difficultyName: Normal
-  difficultyType: 1
+  difficultyType: 2
   initialGroupCount: 9
   growthFactor: 1.3
   exponent: 0.7

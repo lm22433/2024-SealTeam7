@@ -53,12 +53,13 @@ namespace Enemies
         [SerializeField] protected AK.Wwise.Event gunFireSound;
         [SerializeField] protected AK.Wwise.Event deathSoundEffect;
 
+        public bool DisallowMovement;
+
         protected float SqrAttackRange;
         protected float SqrStopMovingThreshold;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
         protected EnemyState State;
-        protected bool DisallowMovement;
         protected bool DisallowShooting;
         protected float LastAttack;
         protected Vector3 TargetPosition;

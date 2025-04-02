@@ -859,7 +859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseSpeed: 0.01
-  noiseScale: 0.01
+  noiseScale: 0.006
   width: 880
   height: 880
   xOffsetStart: 480
@@ -876,7 +876,7 @@ MonoBehaviour:
   mapSize: 880
   chunkRow: 1
   chunkSize: 880
-  heightScale: 450
+  heightScale: 200
   lerpFactor: 0.2
   lodInfo:
     lod: 4
@@ -890,7 +890,7 @@ MonoBehaviour:
   bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
   bgChunkMargin: 1
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0

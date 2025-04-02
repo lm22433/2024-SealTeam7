@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Impossible
   m_EditorClassIdentifier: 
   difficultyName: IMPOSSIBLE
-  difficultyType: 3
+  difficultyType: 4
   initialGroupCount: 15
   growthFactor: 1.5
   exponent: 0.8
