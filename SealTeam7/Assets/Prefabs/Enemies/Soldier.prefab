@@ -107,6 +107,8 @@ MonoBehaviour:
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
   State: 0
+  TargetRotation: {x: 0, y: 0, z: 0, w: 0}
+  TargetDirection: {x: 0, y: 0, z: 0}
   gun: {fileID: 4797994724752532913}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
@@ -124,7 +126,10 @@ MonoBehaviour:
   defianceThreshold: 20
   sinkFactor: 10
   fallDeathVelocityY: 40
-  jumpForce: 10
+  jumpForce: 100
+  laplaceLocation: 0
+  laplaceScale: 2
+  yeetThreshold: 0.8
 --- !u!54 &4195251952092455746
 Rigidbody:
   m_ObjectHideFlags: 0
