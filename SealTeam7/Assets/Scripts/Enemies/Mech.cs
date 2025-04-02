@@ -36,6 +36,7 @@ namespace Enemies
             
             BuriedAmount = 3.0f;
             _attackDelay = 0.0f;
+            State = EnemyState.AttackCore;
             
             _lastTargetChange = 0f;
             _proj = null;
