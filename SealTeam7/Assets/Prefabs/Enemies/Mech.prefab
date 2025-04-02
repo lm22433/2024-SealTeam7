@@ -5051,14 +5051,22 @@ MonoBehaviour:
   muzzle: {fileID: 8070942347698178131}
   projectileType: 5
   projectile: {fileID: 4591771593478182790, guid: 23c7ae9bb4d147e438d63eae46a591b7, type: 3}
+  gunFireSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  deathSoundEffect:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
   mmodel: {fileID: 858161197960073387}
   msphere: {fileID: 3529544802325209347}
   primaryRb: {fileID: 828698031663403021}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 4096
-  rollSpeed: 45
-  tolerance: 0.00025
+  rollSpeed: 120
+  tolerance: 0.0005
   nw: {fileID: 1651515168235878815}
   ne: {fileID: 7909593846825086021}
   sw: {fileID: 3920052913096932816}
