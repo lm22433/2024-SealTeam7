@@ -26,6 +26,8 @@ namespace Game
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private GameObject healthBar;
+        [SerializeField] private GameObject tooltipPrefab;
+        [SerializeField] private Transform tooltipContainer;
 
         [Header("Sound Options")]
         [SerializeField] private AK.Wwise.Event celebrationFanfare;
@@ -93,6 +95,13 @@ namespace Game
                 (float) _health / maxHealth, 
                 healthBar.transform.localScale.y, 
                 healthBar.transform.localScale.z);
+        }
+        
+        public void DisplayTooltip(string text, float duration)
+        {
+            var toolTip = Instantiate(tooltipPrefab, tooltipContainer);
+            toolTip.GetComponentInChildren<TMP_Text>().text = text;
+            Destroy(toolTip, duration);
         }
 
         public void StartGame()

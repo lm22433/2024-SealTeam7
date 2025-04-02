@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 3
   maxSpawnChance: 0.8
   spawnChanceGrowthRate: 0.1
+  tooltipText: 'Soldier:
+
+    Basic ground unit, bury them or send them flying!'
+  tooltipShown: 0

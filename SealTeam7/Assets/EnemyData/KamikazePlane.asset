@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.7
   maxSpawnChance: 0.12
   spawnChanceGrowthRate: 0.26
+  tooltipText: 'Drone:
+
+    Heads straight for your tower and deals big damage!'
+  tooltipShown: 0

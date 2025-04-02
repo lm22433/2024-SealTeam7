@@ -10,11 +10,21 @@ namespace Enemies
         [SerializeField] private Transform drill;
         [SerializeField] private float drillSpeed;
         [SerializeField] private float burrowDepth;
-        private bool _burrowing;
-        
+        [SerializeField] private float diveSpeed = 1f;
+        protected internal bool Burrowing;
+        private float _newHeight;
+
+        public override void Init()
+        {
+            base.Init();
+            Burrowing = false;
+            transform.position = new Vector3(transform.position.x, burrowDepth, transform.position.z);
+            Rb.linearVelocity = Vector3.zero;
+        }
+
         protected override float Heuristic(Node start, Node end)
         {
-            return 0f;
+            return start.WorldPos.y < burrowDepth + 20f ? 1000000000f : 0f;
         }
 
         protected override void Attack(PlayerDamageable toDamage)
@@ -24,82 +34,66 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
-            Rb.freezeRotation = _burrowing;
-            Rb.detectCollisions = !_burrowing;
+            base.EnemyUpdate();
             
-            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
+            // WOULD DIE EXPOSED
+            if (!Grounded && Burrowing && State is EnemyState.Moving)
+            {
+                SetupDeath();
+            }
+            
+            coreTargetHeightOffset = transform.position.y - MapManager.GetInstance().GetHeight(transform.position);
             drill.Rotate(Time.deltaTime * drillSpeed * Vector3.forward);
             
             switch (State)
             {
                 case EnemyState.Moving:
                 {
-                    if (!_burrowing) _burrowing = true;
-                    
-                    transform.position = new Vector3(
-                        transform.position.x,
-                        MapManager.GetInstance().GetHeight(transform.position) - burrowDepth,
-                        transform.position.z
-                    );
-                    
-                    TargetDirection = (Path[PathIndex] - new Vector3(
-                        transform.position.x,
-                        MapManager.GetInstance().GetHeight(transform.position),
-                        transform.position.z
-                    )).normalized;
-                    TargetRotation = Quaternion.LookRotation(TargetDirection, MapManager.GetInstance().GetNormal(transform.position));
+                    if (!Burrowing && Grounded)
+                    {
+                        Burrowing = true;
+                        transform.position = new Vector3(transform.position.x, burrowDepth, transform.position.z);
+                        Rb.linearVelocity = Vector3.zero;
+                    }
                     
                     break;
                 }
                 case EnemyState.AttackCore:
-                {
-                    if (_burrowing)
-                    {
-                        Rb.linearVelocity = Vector3.zero;
-                        transform.position = new Vector3(
-                            transform.position.x,
-                            MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
-                            transform.position.z
-                        );
-                        
-                        _burrowing = false;
-                    }
-
-                    break;
-                }
                 case EnemyState.AttackHands:
-                {
-                    if (_burrowing)
-                    {
-                        Rb.linearVelocity = Vector3.zero;
-                        transform.position = new Vector3(
-                            transform.position.x,
-                            MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
-                            transform.position.z
-                        );
-                        
-                        _burrowing = false;
-                    }
-
-                    var xAngle = Quaternion.LookRotation(TargetPosition - drill.position).eulerAngles.x - transform.eulerAngles.x;
-                    var drillRotation = Quaternion.Euler(xAngle, 0f, 0f);
-                    drill.localRotation = Quaternion.Slerp(drill.localRotation, drillRotation * Quaternion.AngleAxis(-90, Vector3.right), aimSpeed * Time.deltaTime);
-                    
-                    break;
-                }
                 case EnemyState.Idle:
                 {
-                    if (_burrowing)
+                    if (!Burrowing && Grounded && transform.position.y <= MapManager.GetInstance().GetHeight(transform.position))
                     {
-                        Rb.linearVelocity = Vector3.zero;
-                        transform.position = new Vector3(
-                            transform.position.x,
-                            MapManager.GetInstance().GetHeight(transform.position) + groundedOffset,
-                            transform.position.z
-                        );
-                        
-                        _burrowing = false;
+                        Burrowing = true;
                     }
+                    break;
+                }
+            }
+            
+            Rb.useGravity = !Burrowing;
+            Rb.freezeRotation = Burrowing;
+            Rb.detectCollisions = !Burrowing;
+        }
+
+        protected override void EnemyFixedUpdate()
+        {
+            switch (State)
+            {
+                case EnemyState.AttackCore:
+                case EnemyState.AttackHands:
+                case EnemyState.MoveAndAttack:
+                case EnemyState.Idle:
+                {
+                    if (Burrowing)
+                    {
+                        Rb.AddForce(Vector3.up * diveSpeed);
+                        if (!Grounded)
+                        {
+                            Rb.AddForce(Vector3.down * (10f * diveSpeed), ForceMode.Impulse);
+                            Burrowing = false;
+                        }
+                    }
+                    
                     break;
                 }
             }

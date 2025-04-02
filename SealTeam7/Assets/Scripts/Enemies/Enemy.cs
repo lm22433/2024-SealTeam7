@@ -6,7 +6,6 @@ using Map;
 using Player;
 using Projectiles;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace Enemies
@@ -74,7 +73,7 @@ namespace Enemies
         protected internal float BuriedAmount = 0.5f;
         private int _handIndex;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             EnemyManager = EnemyManager.GetInstance();
             Rb = GetComponent<Rigidbody>();
@@ -216,7 +215,7 @@ namespace Enemies
                 TargetDirection = Vector3.ProjectOnPlane(TargetPosition - transform.position, Vector3.up).normalized;
             }
             
-            if (State is EnemyState.Moving or EnemyState.MoveAndAttack) TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetDirection).eulerAngles.y, transform.eulerAngles.z);
+            if (State is EnemyState.Moving or EnemyState.MoveAndAttack) TargetRotation = Quaternion.Euler(transform.eulerAngles.x, Quaternion.LookRotation(TargetDirection).eulerAngles.y, transform.eulerAngles.z).normalized;
         }
 
         private void RequestPath()
@@ -296,6 +295,7 @@ namespace Enemies
         public void OnDrawGizmosSelected()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
+            if (Path == null) return;
             
             Gizmos.color = Color.green;
             if (Path.Length > 0) Gizmos.DrawCube(Path[PathIndex], Vector3.one);

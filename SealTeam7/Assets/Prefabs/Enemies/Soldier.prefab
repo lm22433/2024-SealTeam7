@@ -86,7 +86,7 @@ MonoBehaviour:
   acceleration: 100
   groundedOffset: 7
   flyHeight: 0
-  aimSpeed: 100
+  aimSpeed: 20
   attackRange: 100
   attackInterval: 1
   stopMovingThreshold: 60
@@ -125,7 +125,7 @@ MonoBehaviour:
   defianceThreshold: 20
   sinkFactor: 10
   fallDeathVelocityY: 40
-  jumpForce: 10
+  jumpForce: 35
   laplaceLocation: 0
   laplaceScale: 2
   yeetThreshold: 0.8

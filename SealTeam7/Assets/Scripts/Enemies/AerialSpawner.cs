@@ -27,7 +27,11 @@ namespace Enemies
         
         protected override void Attack(PlayerDamageable toDamage)
         {
-            EnemyManager.SpawnerSpawn(spawnPoint.position, spawnee, attackDamage);
+            for (var i = 0; i < attackDamage; i++)
+            {
+                var offset = new Vector3((Random.Range(0, 1) * 2 - 1) * i, 0f, (Random.Range(0, 1) * 2 - 1) * i);
+                EnemyManager.SpawnEnemies(spawnee, spawnPoint.position + offset, spawnPoint.rotation);
+            }
         }
 
         protected override void UpdateTarget()
@@ -43,6 +47,7 @@ namespace Enemies
 
         protected override void EnemyUpdate()
         {
+            base.EnemyUpdate();
             if ((transform.position - TargetPosition).sqrMagnitude < 1000f) EnemyManager.Kill(this);
         }
     }

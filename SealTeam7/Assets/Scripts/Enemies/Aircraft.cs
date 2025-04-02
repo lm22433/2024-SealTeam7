@@ -5,6 +5,10 @@ namespace Enemies
 {
     public class Aircraft : Enemy
     {
+        [SerializeField] private Transform[] horizontalProps;
+        [SerializeField] private Transform[] verticalProps;
+        [SerializeField] private float propellerSpeed;
+        
         public override void Init()
         {
             base.Init();
@@ -18,6 +22,9 @@ namespace Enemies
         
         protected override void EnemyUpdate()
         {
+            foreach (var prop in horizontalProps) prop.Rotate(Vector3.forward * (propellerSpeed * Time.deltaTime)); // Kind of fucked. Jank Blender. Don't touch.
+            foreach (var prop in verticalProps) prop.Rotate(Vector3.up * (propellerSpeed * Time.deltaTime));
+            
             switch (State)
             {
                 case EnemyState.AttackCore:
@@ -26,7 +33,7 @@ namespace Enemies
                     TargetRotation = Quaternion.Euler(
                         transform.eulerAngles.x,
                         Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
+                        transform.eulerAngles.z).normalized;
                     break;
                 }
                 case EnemyState.AttackHands:
@@ -34,7 +41,7 @@ namespace Enemies
                     TargetRotation = Quaternion.Euler(
                         transform.eulerAngles.x,
                         Quaternion.LookRotation(TargetPosition - transform.position).eulerAngles.y,
-                        transform.eulerAngles.z);
+                        transform.eulerAngles.z).normalized;
                     break;
                 }
             }

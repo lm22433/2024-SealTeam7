@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 2
   maxSpawnChance: 0.24
   spawnChanceGrowthRate: 0.14
+  tooltipText: 'RPG Soldier:
+
+    Fires longer range shells that do more damage!'
+  tooltipShown: 0

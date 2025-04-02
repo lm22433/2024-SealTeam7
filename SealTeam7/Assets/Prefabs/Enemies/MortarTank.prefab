@@ -9743,13 +9743,16 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  gun: {fileID: 5401406604641473446}
+  State: 0
+  TargetRotation: {x: 0, y: 0, z: 0, w: 0}
+  TargetDirection: {x: 0, y: 0, z: 0}
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
   smokeDmg: {fileID: 8715206472391717232}
   maxLives: 2
   gracePeriod: 2
+  gun: {fileID: 5401406604641473446}
 --- !u!114 &3729924882987787105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9766,6 +9769,10 @@ MonoBehaviour:
   defianceThreshold: 20
   sinkFactor: 8
   fallDeathVelocityY: 40
+  jumpForce: 10
+  laplaceLocation: 0
+  laplaceScale: 2
+  yeetThreshold: 0.8
 --- !u!54 &828698031663403021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10088,13 +10095,42 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3652011956315678642, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5255479006849529737}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7828761191472934950}
   m_SourcePrefab: {fileID: 100100000, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}
 --- !u!4 &5401406604641473446 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3652011956315678642, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}
   m_PrefabInstance: {fileID: 8672573018607088660}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8402101618656102725 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}
+  m_PrefabInstance: {fileID: 8672573018607088660}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &7828761191472934950
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8402101618656102725}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5, z: 3.5}
+  m_Center: {x: 0, y: 0, z: -0.6}
 --- !u!4 &9210303565649351679 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: de37e273d07f448aebbfbe79e71f94ef, type: 3}

@@ -5223,8 +5223,8 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -5294,7 +5294,7 @@ MonoBehaviour:
   handTracking: 1
   mainMenu: {fileID: 6223871781672808861}
   settingsMenu: {fileID: 565605014558533912}
-  playerHUD: {fileID: 0}
+  playerHUD: {fileID: 3956465663376442824, guid: 55bf366f65c2a3f4190381fc83535ca1, type: 3}
   gameOverMenu: {fileID: 1526507958271758868}
   gameSettings: {fileID: 8748426856762142731}
   audioSettings: {fileID: 946491611803073720}

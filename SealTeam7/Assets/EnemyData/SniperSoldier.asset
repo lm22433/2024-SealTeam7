@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.4
   maxSpawnChance: 0.3
   spawnChanceGrowthRate: 0.12
+  tooltipText: 'Sniper:
+
+    Very long range ground unit!'
+  tooltipShown: 0

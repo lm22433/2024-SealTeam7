@@ -86,10 +86,10 @@ MonoBehaviour:
   moveSpeed: 10
   acceleration: 20
   groundedOffset: 5
-  flyHeight: 250
+  flyHeight: 220
   aimSpeed: 10
-  attackRange: 500
-  attackInterval: 20
+  attackRange: 180
+  attackInterval: 60
   stopMovingThreshold: 0
   coreTargetHeightOffset: 0
   attackDamage: 16
@@ -107,7 +107,11 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  State: 0
+  horizontalProps:
+  - {fileID: 5184208950113074523}
+  - {fileID: 8550081513951055953}
+  verticalProps: []
+  propellerSpeed: 1000
   helicopterSound:
     idInternal: 0
     valueGuidInternal: 
@@ -136,9 +140,9 @@ MonoBehaviour:
   sinkFactor: 0
   fallDeathVelocityY: 60
   jumpForce: 10
-  mainPropeller: {fileID: 5184208950113074523}
-  subPropeller: {fileID: 8550081513951055953}
-  propellerSpeed: 1000
+  laplaceLocation: 0
+  laplaceScale: 2
+  yeetThreshold: 0.8
 --- !u!54 &7202123808863129688
 Rigidbody:
   m_ObjectHideFlags: 0

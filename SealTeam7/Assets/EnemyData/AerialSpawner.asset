@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 0
   maxSpawnChance: 0
   spawnChanceGrowthRate: 0
+  tooltipText: 'Cargo Plane:
+
+    Flies overhead and drops paratroopers!'
+  tooltipShown: 0

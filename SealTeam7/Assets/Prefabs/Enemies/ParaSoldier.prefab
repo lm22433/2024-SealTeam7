@@ -288,9 +288,9 @@ MonoBehaviour:
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 20
   acceleration: 100
-  groundedOffset: 7
+  groundedOffset: 9
   flyHeight: 0
-  aimSpeed: 100
+  aimSpeed: 20
   attackRange: 100
   attackInterval: 1
   stopMovingThreshold: 60
@@ -378,12 +378,12 @@ MonoBehaviour:
   gravityDefiance: 10
   defianceThreshold: 20
   sinkFactor: 10
-  fallDeathVelocityY: 40
+  fallDeathVelocityY: 200
   jumpForce: 10
   laplaceLocation: 0
   laplaceScale: 2
   yeetThreshold: 0.8
-  newGrav: 4
+  newGrav: 2
   parachute: {fileID: 8471793977157900626}
 --- !u!1 &4459071965079726792
 GameObject:

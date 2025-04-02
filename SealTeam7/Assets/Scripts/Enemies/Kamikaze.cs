@@ -21,6 +21,8 @@ namespace Enemies
 
         protected override void EnemyUpdate()
         {
+            base.EnemyUpdate();
+            
             switch (State)
             {
                 case EnemyState.Moving:
