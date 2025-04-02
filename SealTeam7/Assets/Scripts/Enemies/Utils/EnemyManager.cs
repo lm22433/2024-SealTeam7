@@ -158,34 +158,29 @@ namespace Enemies.Utils
         {
             if (_difficulty.difficultyType == DifficultyType.Tutorial)
             {
-                yield return new WaitForSeconds(3f);
+                _currentWave = 0;
+                IncrementWaveNumber();
+                yield return Wait(3f);
                 
-                GameManager.GetInstance().DisplayTooltip("Welcome to the tutorial! Bury the soldiers to protect " +
-                                                         "your base. Watch out – your hands take damage too!", 10f);
-                yield return new WaitForSeconds(2f);
-
+                Toast("Welcome to the tutorial! Bury the soldiers to protect your base. Watch out – your hands take damage too!", 10f);
+                yield return Wait(2f);
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 3, columns: 4);
-                yield return new WaitForSeconds(20f);
+                yield return Wait(20f);
                 
-                GameManager.GetInstance().DisplayTooltip("Vehicles need to be buried multiple times. Try getting them " +
-                                                         "close together and killing them all in two swift motions!", 10f);
-
+                Toast("Vehicles need to be buried multiple times. Try getting them close together and killing them all in two swift motions!", 10f);
                 yield return SpawnAtInterval(EnemyType.Tank, spawnPoint: 4, count: 10, interval: 3f);
-                yield return new WaitForSeconds(20f);
+                yield return Wait(20f);
                 
-                GameManager.GetInstance().DisplayTooltip("These enemies burrow under the sand and must be dug out, " +
-                                                         "not buried. Look out for their dust trails!", 10f);
-                
+                Toast("These enemies burrow under the sand and must be dug out, not buried. Look out for their dust trails!", 10f);
                 for (var i = 3; i <= 7; i++)
                 {
-                    Spawn(EnemyType.FastSoldier, spawnPoint: i);
+                    Spawn(EnemyType.Burrower, spawnPoint: i);
                     yield return new WaitForSeconds(1f);
                 }
-                yield return new WaitForSeconds(11f);
+                yield return Wait(11f);
                 
-                GameManager.GetInstance().DisplayTooltip("That's it for the tutorial! Remember to read the popups as " +
-                                                         "new enemies arrive. Good luck – now shift some sand!", 8f);
-                yield return new WaitForSeconds(8f);
+                Toast("That's it for the tutorial! Remember to read the popups as new enemies arrive. Good luck – now shift some sand!", 8f);
+                yield return Wait(8f);
                 
                 // Return to main menu
                 MapManager.GetInstance().Quit();
@@ -194,20 +189,52 @@ namespace Enemies.Utils
 
             else
             {
-                var difficultyWaitMultiplier = 1f;
-                
                 yield return new WaitForSeconds(5f);
                 
+                // Wave 1
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 3, rows: 3, columns: 4);
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 3, columns: 4);
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 7, rows: 3, columns: 4);
-                yield return new WaitForSeconds(5f*difficultyWaitMultiplier);
+                yield return Wait(5f);
                 
+                yield return SpawnGrid(EnemyType.SniperSoldier, spawnPoint: 2, rows: 3, columns: 3);
+                yield return SpawnGrid(EnemyType.SniperSoldier, spawnPoint: 8, rows: 3, columns: 3);
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 3, rows: 3, columns: 4);
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 3, columns: 4);
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 7, rows: 3, columns: 4);
-                yield return new WaitForSeconds(5f*difficultyWaitMultiplier);
+                yield return Wait(10f);
+                IncrementWaveNumber();
                 
+                // Wave 2
+                Spawn(EnemyType.FastSoldier, spawnPoint: 5);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 3, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 7, rows: 3, columns: 4);
+                yield return Wait(5f);
+                
+                Spawn(EnemyType.FastSoldier, spawnPoint: 3);
+                Spawn(EnemyType.FastSoldier, spawnPoint: 4);
+                Spawn(EnemyType.FastSoldier, spawnPoint: 5);
+                Spawn(EnemyType.FastSoldier, spawnPoint: 6);
+                Spawn(EnemyType.FastSoldier, spawnPoint: 7);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 3, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 4, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 6, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 7, rows: 3, columns: 4);
+                yield return Wait(5f);
+                
+                Spawn(EnemyType.FastSoldier, spawnPoint: 3);
+                Spawn(EnemyType.FastSoldier, spawnPoint: 4);
+                Spawn(EnemyType.FastSoldier, spawnPoint: 5);
+                Spawn(EnemyType.FastSoldier, spawnPoint: 6);
+                Spawn(EnemyType.FastSoldier, spawnPoint: 7);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 3, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.RpgSoldier, spawnPoint: 4, rows: 2, columns: 5);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 3, columns: 4);
+                yield return SpawnGrid(EnemyType.RpgSoldier, spawnPoint: 6, rows: 2, columns: 5);
+                yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 7, rows: 3, columns: 4);
+                yield return Wait(10f);
+
                 
             }
         }
@@ -218,8 +245,10 @@ namespace Enemies.Utils
             SpawnEnemies(data, spawnPoints[spawnPoint].position, spawnPoints[spawnPoint].rotation);
         }
 
-        private IEnumerator SpawnGrid(EnemyType enemy, int spawnPoint, int rows, int columns)
+        private IEnumerator SpawnGrid(EnemyType enemy, int spawnPoint, float rows, float columns)
         {
+            var numRows = (int) rows;  //TODO: scale by difficulty multiplier
+            var numColumns = (int) columns;
             var spacing = 8f;
             var spawnPosition = spawnPoints[spawnPoint].position;
             var spawnRotation = spawnPoints[spawnPoint].rotation.normalized;
@@ -229,7 +258,7 @@ namespace Enemies.Utils
             var gridWidth = (columns - 1)*spacing;
             var startPos = spawnPosition - gridHeight/2*zVector - gridWidth/2*xVector;
 
-            var enemyComps = new Enemy[rows*columns];
+            var enemyComps = new Enemy[numRows*numColumns];
             for (var z = 0; z < rows; z++)
             {
                 for (var x = 0; x < columns; x++)
@@ -237,7 +266,7 @@ namespace Enemies.Utils
                     var pos = startPos + zVector*(z*spacing) + xVector*(x*spacing);
                     var enemyComp = SpawnAndGetEnemy(enemyData.FirstOrDefault(e => e.enemyType == enemy), pos, spawnRotation);
                     enemyComp.DisallowMovement = true;
-                    enemyComps[z*columns + x] = enemyComp;
+                    enemyComps[z*numColumns + x] = enemyComp;
                     yield return new WaitForSeconds(0.05f);
                 }
             }
@@ -275,6 +304,22 @@ namespace Enemies.Utils
             {
                 SpawnAndGetEnemy(enemy, spawnPosition, spawnRotation);
             }
+        }
+
+        private IEnumerator Wait(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);  //TODO: scale by difficulty multiplier
+        }
+        
+        private void Toast(string message, float duration)
+        {
+            GameManager.GetInstance().DisplayTooltip(message, duration);
+        }
+
+        private void IncrementWaveNumber()
+        {
+            //TODO: update UI
+            _currentWave++;
         }
 
         private void GetDataFromDeadEnemy(Enemy enemy)
