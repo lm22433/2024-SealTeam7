@@ -77,7 +77,7 @@ namespace BattleCam {
         }
 
         private void Update() {
-            if (GameManager.GetInstance().GameActive) {
+            if (GameManager.GetInstance().IsGameActive()) {
                 breakingNewsTransition.SetActive(false);
             } else {
                 breakingNewsTransition.SetActive(true);
