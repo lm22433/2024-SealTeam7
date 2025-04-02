@@ -65,6 +65,7 @@ namespace Enemies.Utils
         private static EnemyManager _instance;
         private Difficulty _difficulty;
         private int _currentWave;
+        private LinkedList<Enemy> _spawningEnemies = new();
 
         private void Awake()
         {
@@ -193,16 +194,19 @@ namespace Enemies.Utils
                 
                 // Wave 1
                 yield return SpawnGrids(EnemyType.Soldier, spawnPoints: new[] { 3, 5, 7 }, 4, 6);
+                yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
 
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
+                yield return ReleaseSpawningEnemies();
                 yield return Wait(30f);
                 IncrementWaveNumber();
                 
                 // Wave 2
                 Spawn(EnemyType.FastSoldier, spawnPoint: 5);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
+                yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
                 
                 Spawn(EnemyType.FastSoldier, spawnPoint: 3);
@@ -210,6 +214,7 @@ namespace Enemies.Utils
                 Spawn(EnemyType.FastSoldier, spawnPoint: 6);
                 Spawn(EnemyType.FastSoldier, spawnPoint: 7);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
+                yield  return ReleaseSpawningEnemies();
                 yield return Wait(10f);
                 
                 Spawn(EnemyType.FastSoldier, spawnPoint: 3);
@@ -217,8 +222,9 @@ namespace Enemies.Utils
                 Spawn(EnemyType.FastSoldier, spawnPoint: 5);
                 Spawn(EnemyType.FastSoldier, spawnPoint: 6);
                 Spawn(EnemyType.FastSoldier, spawnPoint: 7);
-                yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 4, 5);
+                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 6 }, 4, 5);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
+                yield return ReleaseSpawningEnemies();
                 yield return Wait(30f);
                 IncrementWaveNumber();
                 
@@ -242,11 +248,9 @@ namespace Enemies.Utils
             var numColumns = (int) columns;
             var spacing = 8f;  // TODO: set spacing depending on enemy type?
             var timeInterval = 0.01f;  // TODO: set depending on num rows and columns?
-            var enemyComps = new Enemy[spawnPoints.Length*numRows*numColumns];
-
-            for (var i = 0; i < spawnPoints.Length; i++)
+            
+            foreach (var spawnPoint in spawnPoints)
             {
-                var spawnPoint = spawnPoints[i];
                 var spawnPosition = this.spawnPoints[spawnPoint].position;
                 var spawnRotation = this.spawnPoints[spawnPoint].rotation.normalized;
                 var zVector = spawnRotation * Vector3.forward;
@@ -260,22 +264,10 @@ namespace Enemies.Utils
                     for (var x = 0; x < numColumns; x++)
                     {
                         var pos = startPos + zVector * (z * spacing) + xVector * (x * spacing);
-                        var enemyComp = SpawnAndGetEnemy(enemyData.FirstOrDefault(e => e.enemyType == enemy), pos,
-                            spawnRotation);
-                        enemyComp.DisallowMovement = true;
-                        enemyComp.Invulnerable = true;
-                        enemyComps[i*numRows*numColumns + z*numColumns + x] = enemyComp;
+                        SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == enemy), pos, spawnRotation);
                         yield return new WaitForSeconds(timeInterval);
                     }
                 }
-            }
-
-            yield return Wait(0.5f);
-
-            for (var i = 0; i < spawnPoints.Length*numRows*numColumns; i++)
-            {
-                enemyComps[i].DisallowMovement = false;
-                enemyComps[i].Invulnerable = false;
             }
         }
 
@@ -288,23 +280,35 @@ namespace Enemies.Utils
                 yield return new WaitForSeconds(interval);
             }
         }
-        
-        private Enemy SpawnAndGetEnemy(EnemyData enemy, Vector3 spawnPosition, Quaternion spawnRotation)
+
+        private IEnumerator ReleaseSpawningEnemies()
         {
-            GameObject e = EnemyPool.GetInstance().GetFromPool(enemy, spawnPosition, spawnRotation);
-            var enemyComp = e.GetComponent<Enemy>();
-            enemyComp.Init();
-            e.GetComponent<BasePhysics>().Init();
-            e.transform.SetParent(transform);
-            _enemyCount++;
-            return enemyComp;
+            yield return Wait(0.5f);
+            
+            foreach (var spawningEnemy in _spawningEnemies)
+            {
+                spawningEnemy.DisallowMovement = false;
+                spawningEnemy.Invulnerable = false;
+            }
+            
+            _spawningEnemies.Clear();
         }
 
         public void SpawnEnemies(EnemyData enemy, Vector3 spawnPosition, Quaternion spawnRotation, int enemyCount = 1)
         {
             for (int i = 0; i < enemyCount; i++)
             {
-                SpawnAndGetEnemy(enemy, spawnPosition, spawnRotation);
+                GameObject e = EnemyPool.GetInstance().GetFromPool(enemy, spawnPosition, spawnRotation);
+                
+                var enemyComp = e.GetComponent<Enemy>();
+                enemyComp.Init();
+                enemyComp.DisallowMovement = true;
+                enemyComp.Invulnerable = true;
+                _spawningEnemies.AddLast(enemyComp);
+                
+                e.GetComponent<BasePhysics>().Init();
+                e.transform.SetParent(transform);
+                _enemyCount++;
             }
         }
 
