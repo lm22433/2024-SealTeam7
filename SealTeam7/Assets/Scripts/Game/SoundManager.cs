@@ -28,8 +28,8 @@ namespace Sound
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
 
-            musicRTPC.SetGlobalValue(masterVolume * musicVolume);
-            soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume);
+            musicRTPC.SetGlobalValue(masterVolume * musicVolume / 100f);
+            soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume / 100f);
         }
 
         private void OnApplicationQuit() {
@@ -41,22 +41,22 @@ namespace Sound
             if (volume >= 0 && volume <= 100) {
                 masterVolume = volume;
 
-                musicRTPC.SetGlobalValue(masterVolume * musicVolume);
-                soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume);
+                musicRTPC.SetGlobalValue(masterVolume * musicVolume / 100f);
+                soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume / 100f);
             } 
         }
         
         public void SetSoundEffectVolume(float volume) {
             if (volume >= 0 && volume <= 100) {
                 soundEffectVolume = volume;
-                soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume);
+                soundEffectRTPC.SetGlobalValue(masterVolume * soundEffectVolume / 100f);
             } 
         }
 
         public void SetMusicVolume(float volume) {
             if (volume >= 0 && volume <= 100) {
                 musicVolume = volume;
-                musicRTPC.SetGlobalValue(masterVolume * musicVolume);
+                musicRTPC.SetGlobalValue(masterVolume * musicVolume / 100f);
             } 
         }
 

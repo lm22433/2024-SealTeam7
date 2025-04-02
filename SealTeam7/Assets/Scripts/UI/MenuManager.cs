@@ -6,6 +6,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Enemies.Utils;
+using Map;
+using UnityEngine.SceneManagement;
 
 namespace UI
 {
@@ -127,8 +129,13 @@ namespace UI
 
             if (Input.GetKeyDown("r"))
             {
-                GameManager.GetInstance().StartGame();
+                RestartGame();
             }
+        }
+
+        public void RestartGame() {
+            MapManager.GetInstance().Quit();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         private void PauseGame()
