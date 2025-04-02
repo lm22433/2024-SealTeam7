@@ -199,8 +199,10 @@ namespace Enemies.Utils
             else
             {
                 yield return new WaitForSeconds(5f);
+                _currentWave = 0;
                 
                 // Wave 1
+                IncrementWaveNumber();
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
@@ -209,9 +211,9 @@ namespace Enemies.Utils
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(30f);
-                IncrementWaveNumber();
-                
+
                 // Wave 2
+                IncrementWaveNumber();
                 Spawn(EnemyType.FastSoldier, 5);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
@@ -227,9 +229,9 @@ namespace Enemies.Utils
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(30f);
-                IncrementWaveNumber();
-                
+
                 // Wave 3
+                IncrementWaveNumber();
                 yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 6, 3);
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
                 yield return ReleaseSpawningEnemies();
@@ -241,9 +243,9 @@ namespace Enemies.Utils
 
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 5, 7 }, 5, 3f);
                 yield return Wait(20f);
-                IncrementWaveNumber();
-                
+
                 // Wave 4
+                IncrementWaveNumber();
                 yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 7 }, 2, 3f);
                 yield return Wait(10f);
                 
@@ -253,9 +255,9 @@ namespace Enemies.Utils
                 yield return Wait(30f);
                 
                 Toast("A HUGE wave of enemies is approaching...", duration: 10f);
-                IncrementWaveNumber();
-                
+
                 // Wave 5
+                IncrementWaveNumber();
                 yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3, 3f);
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
                 yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 5, 7 }, 5, 8);
@@ -276,6 +278,8 @@ namespace Enemies.Utils
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
                 yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 5, 6, 7 }, 2, 3f);
                 yield return Wait(40f);
+                
+                // Wave 6
                 IncrementWaveNumber();
             }
         }
@@ -365,12 +369,18 @@ namespace Enemies.Utils
                 var enemyComp = e.GetComponent<Enemy>();
                 enemyComp.Init();
                 enemyComp.DisallowMovement = true;
-                enemyComp.Spawning = true;
+                enemyComp.Spawning = false;  // TODO: set to true and fix physics
                 _spawningEnemies.AddLast(enemyComp);
 
                 e.GetComponent<BasePhysics>().Init();
                 e.transform.SetParent(transform);
                 _enemyCount++;
+
+                if (!enemy.tooltipShown)
+                {
+                    Toast(enemy.tooltipText, enemyTooltipDuration);
+                    enemy.tooltipShown = true;
+                }
             }
         }
 
