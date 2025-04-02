@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -5,7 +6,7 @@ namespace Enemies
 {
     public class Tank : Vehicle
     {
-        [SerializeField] private Transform gun;
+        [SerializeField] [CanBeNull] private Transform gun;
         
         protected override void EnemyUpdate()
         {
@@ -14,7 +15,7 @@ namespace Enemies
             DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
             
             // gun rotation
-            switch (State)
+            if (gun) switch (State)
             {
                 case EnemyState.Moving:
                 {
