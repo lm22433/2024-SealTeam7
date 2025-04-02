@@ -4032,7 +4032,7 @@ MonoBehaviour:
   - {fileID: 1357934831}
   enemyTooltipDuration: 5
   mapUpdateInterval: 1
-  pathingDepth: 300
+  pathingDepth: 350
   pathFindInterval: 5
   enemyData:
   - {fileID: 11400000, guid: 11214c7990501be48a622d04de42f72d, type: 2}

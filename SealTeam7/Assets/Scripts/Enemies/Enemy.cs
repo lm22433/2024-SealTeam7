@@ -57,13 +57,13 @@ namespace Enemies
         protected float SqrStopMovingThreshold;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
-        [SerializeField] protected EnemyState State;
+        protected EnemyState State;
         protected bool DisallowMovement;
         protected bool DisallowShooting;
         protected float LastAttack;
         protected Vector3 TargetPosition;
-        [SerializeField] protected Quaternion TargetRotation;
-        [SerializeField] protected Vector3 TargetDirection;
+        protected Quaternion TargetRotation;
+        protected Vector3 TargetDirection;
         protected Vector3[] Path;
         protected int PathIndex;
         protected float PathFindInterval;
@@ -74,7 +74,7 @@ namespace Enemies
         protected internal float BuriedAmount = 0.5f;
         private int _handIndex;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             EnemyManager = EnemyManager.GetInstance();
             Rb = GetComponent<Rigidbody>();
@@ -296,6 +296,7 @@ namespace Enemies
         public void OnDrawGizmosSelected()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
+            if (Path == null) return;
             
             Gizmos.color = Color.green;
             if (Path.Length > 0) Gizmos.DrawCube(Path[PathIndex], Vector3.one);

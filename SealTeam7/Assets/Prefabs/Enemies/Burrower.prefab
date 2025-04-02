@@ -54,7 +54,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: -1, z: 1}
   moveSpeed: 20
   acceleration: 100
-  groundedOffset: 8
+  groundedOffset: 6
   flyHeight: 0
   aimSpeed: 5
   attackRange: 40
@@ -76,9 +76,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  State: 0
-  TargetRotation: {x: 0, y: 0, z: 0, w: 0}
-  TargetDirection: {x: 0, y: 0, z: 0}
   dustTrails:
   - {fileID: 5770329497031736057}
   smokeDmg: {fileID: 2721249449161740631}
@@ -86,7 +83,7 @@ MonoBehaviour:
   gracePeriod: 0
   drill: {fileID: 1539957999329854138}
   drillSpeed: 1000
-  burrowDepth: 50
+  burrowDepth: 100
   diveSpeed: 100
 --- !u!114 &1762384143968135915
 MonoBehaviour:
@@ -555,7 +552,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4572920817291012112}
   m_SourcePrefab: {fileID: 100100000, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
 --- !u!4 &1539957999329854138 stripped
 Transform:
@@ -567,3 +567,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
   m_PrefabInstance: {fileID: 3988394666948130318}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4294452727100754783 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a3bffef2b20b24e86b7dc0be5e49fa71, type: 3}
+  m_PrefabInstance: {fileID: 3988394666948130318}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &4572920817291012112
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4294452727100754783}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7, y: 3.5, z: 7}
+  m_Center: {x: 0, y: 0.5, z: -2}

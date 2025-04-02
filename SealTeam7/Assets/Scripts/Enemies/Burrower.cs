@@ -19,11 +19,12 @@ namespace Enemies
             base.Init();
             Burrowing = false;
             transform.position = new Vector3(transform.position.x, burrowDepth, transform.position.z);
+            Rb.linearVelocity = Vector3.zero;
         }
 
         protected override float Heuristic(Node start, Node end)
         {
-            return 0f;
+            return start.WorldPos.y < burrowDepth + 20f ? 1000000000f : 0f;
         }
 
         protected override void Attack(PlayerDamageable toDamage)
@@ -36,7 +37,7 @@ namespace Enemies
             base.EnemyUpdate();
             
             // WOULD DIE EXPOSED
-            if (transform.position.y >= MapManager.GetInstance().GetHeight(EnemyManager.godlyCore.transform.position) && Burrowing && !IsDying && State is EnemyState.Moving)
+            if (!Grounded && Burrowing && State is EnemyState.Moving)
             {
                 SetupDeath();
             }
@@ -52,6 +53,7 @@ namespace Enemies
                     {
                         Burrowing = true;
                         transform.position = new Vector3(transform.position.x, burrowDepth, transform.position.z);
+                        Rb.linearVelocity = Vector3.zero;
                     }
                     
                     break;
@@ -87,7 +89,7 @@ namespace Enemies
                         Rb.AddForce(Vector3.up * diveSpeed);
                         if (!Grounded)
                         {
-                            Rb.AddForce(Vector3.down * (2 * diveSpeed), ForceMode.Impulse);
+                            Rb.AddForce(Vector3.down * (10f * diveSpeed), ForceMode.Impulse);
                             Burrowing = false;
                         }
                     }
