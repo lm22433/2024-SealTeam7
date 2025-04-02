@@ -41,9 +41,9 @@ namespace Enemies
         [SerializeField] protected internal int killScore;
         
         [Header("Visual Effects")]
-        [SerializeField] private VisualEffect deathParticles;
-        [SerializeField] private Transform model;
-        [SerializeField] private Transform muzzle;
+        [SerializeField] protected VisualEffect deathParticles;
+        [SerializeField] protected Transform model;
+        [SerializeField] protected Transform muzzle;
         [Header("Projectiles")]
         [SerializeField] public ProjectileType projectileType;
         [SerializeField] public GameObject projectile;
