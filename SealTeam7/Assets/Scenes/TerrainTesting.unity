@@ -1211,11 +1211,11 @@ MonoBehaviour:
   endPosition: {x: 440, y: 700, z: 0}
   endRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
   duration: 3
-  kinectFeed: {fileID: 709892230}
+  imagePlane: {fileID: 1089234596}
+  openingImageFadeMat: {fileID: 2100000, guid: 126e086cbc7ce0e4c815fe523ffe7a43, type: 2}
   kinectFeedDuration: 5
   gameViewDuration: 2
-  openingImageFadeMat: {fileID: 2100000, guid: 126e086cbc7ce0e4c815fe523ffe7a43, type: 2}
-  imagePlane: {fileID: 1089234596}
+  _kinectFeedTexture: {fileID: 0}
 --- !u!1 &594167916
 GameObject:
   m_ObjectHideFlags: 0
@@ -1295,7 +1295,7 @@ MonoBehaviour:
   bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
   bgChunkMargin: 1
-  isKinectPresent: 0
+  isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0

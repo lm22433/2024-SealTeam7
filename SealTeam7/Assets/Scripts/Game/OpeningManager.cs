@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using Map;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game
 {
@@ -17,19 +15,18 @@ namespace Game
         [SerializeField] private float duration;
 
         [Header("Visual Settings")] 
-        [SerializeField] private RawImage kinectFeed;
+        [SerializeField] private GameObject imagePlane;
+        [SerializeField] private Material openingImageFadeMat;
         [SerializeField] private float kinectFeedDuration;
         // [SerializeField] private float kinectFeedFadeDuration = 0.5f;
         [SerializeField] private float gameViewDuration;
-        [SerializeField] Material openingImageFadeMat;
-        [SerializeField] GameObject imagePlane;
         
         private static OpeningManager _instance;
 
         private byte[] _colourImage;
         private readonly object _lock = new();
         
-        private Texture2D _kinectFeedTexture;
+        [SerializeField] private Texture2D _kinectFeedTexture;
         private bool _isPlaying = false;
         private bool _isOpeningFade = false;
 
@@ -38,12 +35,11 @@ namespace Game
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
             
-            //kinectFeed.gameObject.SetActive(false);
             mainCamera.transform.position = startPosition;
             mainCamera.transform.rotation = startRotation;
 
-            openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
             openingImageFadeMat.SetFloat("_TransitionProgress", 0);
+            openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
         }
 
         private void Update()
@@ -53,7 +49,6 @@ namespace Game
             if (_kinectFeedTexture == null)
             {
                 _kinectFeedTexture = new Texture2D(1920, 1080, TextureFormat.BGRA32, false);
-                kinectFeed.texture = _kinectFeedTexture;
             }
 
             lock (_lock)
@@ -62,6 +57,7 @@ namespace Game
                 {
                     _kinectFeedTexture.LoadRawTextureData(_colourImage);
                     _kinectFeedTexture.Apply();
+                    openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
                 }
             }
 
@@ -103,7 +99,6 @@ namespace Game
             if (_isPlaying) throw new Exception("The opening sequence is already playing!");
             _isPlaying = true;
 
-            kinectFeed.gameObject.SetActive(true);
             StartCoroutine(PlayOpeningSequence());
         }
         
@@ -112,9 +107,7 @@ namespace Game
             yield return new WaitForSeconds(kinectFeedDuration / 2);
             _isOpeningFade = true;
             yield return new WaitForSeconds(kinectFeedDuration / 2);
-            // TODO: Fade
             _isOpeningFade = false;
-            kinectFeed.gameObject.SetActive(false);
             imagePlane.gameObject.SetActive(false);
             
             yield return new WaitForSeconds(gameViewDuration);
