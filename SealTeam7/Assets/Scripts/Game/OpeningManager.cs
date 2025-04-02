@@ -21,6 +21,8 @@ namespace Game
         [SerializeField] private float kinectFeedDuration;
         // [SerializeField] private float kinectFeedFadeDuration = 0.5f;
         [SerializeField] private float gameViewDuration;
+        [SerializeField] Material openingImageFadeMat;
+        [SerializeField] GameObject imagePlane;
         
         private static OpeningManager _instance;
 
@@ -29,15 +31,19 @@ namespace Game
         
         private Texture2D _kinectFeedTexture;
         private bool _isPlaying = false;
+        private bool _isOpeningFade = false;
 
         private void Awake()
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
             
-            kinectFeed.gameObject.SetActive(false);
+            //kinectFeed.gameObject.SetActive(false);
             mainCamera.transform.position = startPosition;
             mainCamera.transform.rotation = startRotation;
+
+            openingImageFadeMat.SetTexture("_CameraFeed", _kinectFeedTexture);
+            openingImageFadeMat.SetFloat("_TransitionProgress", 0);
         }
 
         private void Update()
@@ -58,6 +64,20 @@ namespace Game
                     _kinectFeedTexture.Apply();
                 }
             }
+
+            if (_isPlaying && _isOpeningFade) {
+                float current = openingImageFadeMat.GetFloat("_TransitionProgress");
+
+                float adjusted = current + (Time.deltaTime / kinectFeedDuration);
+
+                if (adjusted <= 1) {
+                    openingImageFadeMat.SetFloat("_TransitionProgress", adjusted);
+                } else {
+                    openingImageFadeMat.SetFloat("_TransitionProgress", 1);
+                }
+            }
+
+
         }
 
         public static OpeningManager GetInstance() => _instance;
@@ -82,6 +102,7 @@ namespace Game
         {
             if (_isPlaying) throw new Exception("The opening sequence is already playing!");
             _isPlaying = true;
+            _isOpeningFade = true;
             kinectFeed.gameObject.SetActive(true);
             StartCoroutine(PlayOpeningSequence());
         }
@@ -89,9 +110,10 @@ namespace Game
         private IEnumerator PlayOpeningSequence()
         {
             yield return new WaitForSeconds(kinectFeedDuration);
-         
+            _isOpeningFade = false;
             // TODO: Fade
             kinectFeed.gameObject.SetActive(false);
+            imagePlane.gameObject.SetActive(false);
             
             yield return new WaitForSeconds(gameViewDuration);
             
