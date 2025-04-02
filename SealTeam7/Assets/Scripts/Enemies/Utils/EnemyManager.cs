@@ -103,7 +103,7 @@ namespace Enemies.Utils
         public void StartSpawning()
         {
             StartCoroutine(SpawnWaves());
-            StartCoroutine(SpawnCargoPlanes());
+            // StartCoroutine(SpawnCargoPlanes());
         }
 
         public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
@@ -157,29 +157,51 @@ namespace Enemies.Utils
         {
             if (_difficulty.difficultyType == DifficultyType.Tutorial)
             {
+                yield return new WaitForSeconds(3f);
+                
                 GameManager.GetInstance().DisplayTooltip("Welcome to the tutorial! Bury the soldiers to protect " +
                                                          "your base. Watch out – your hands take damage too!", 10f);
+
+                yield return new WaitForSeconds(2f);
+
+                Spawn(EnemyType.Soldier, 5, 6);
                 
-                SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.Soldier), 
-                    spawnPoints[5].position, spawnPoints[5].rotation, 6);
                 yield return new WaitForSeconds(20f);
                 
                 GameManager.GetInstance().DisplayTooltip("These soldiers are faster and attack individually. Bury " +
                                                          "them before they get too close!", 10f);
                 
                 SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.FastSoldier),
-                    spawnPoints[3].position, spawnPoints[3].rotation, 1);
+                    spawnPoints[3].position, spawnPoints[3].rotation);
                 yield return new WaitForSeconds(5f);
                 SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == EnemyType.FastSoldier),
-                    spawnPoints[7].position, spawnPoints[7].rotation, 1);
+                    spawnPoints[7].position, spawnPoints[7].rotation);
                 yield return new WaitForSeconds(5f);
                 
                 GameManager.GetInstance().DisplayTooltip("Vehicles such as tanks need to be buried multiple times. " +
                                                          "Try channelling them close together and wiping them out " +
                                                          "all at once!", 10f);
+
+                yield return SpawnAtInterval(EnemyType.Tank, 4, 10, 3f);
             }
 
             yield return null;
+        }
+        
+        private void Spawn(EnemyType enemy, int spawnPoint, int count)
+        {
+            var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
+            SpawnEnemies(data, spawnPoints[spawnPoint].position, spawnPoints[spawnPoint].rotation, count);
+        }
+
+        private IEnumerator SpawnAtInterval(EnemyType enemy, int spawnPoint, int count, float interval = 1f)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
+                SpawnEnemies(data, spawnPoints[spawnPoint].position, spawnPoints[spawnPoint].rotation);
+                yield return new WaitForSeconds(interval);
+            }
         }
 
         public void SpawnEnemies(EnemyData enemy, Vector3 spawnPosition, Quaternion spawnRotation, int enemyCount = 1)
@@ -194,7 +216,7 @@ namespace Enemies.Utils
                 _enemyCount++;
             }
         }
-        
+
         private void GetDataFromDeadEnemy(Enemy enemy)
         {
             if (enemy.enemyType is EnemyType.Necromancer) return;
