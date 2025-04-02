@@ -220,9 +220,12 @@ namespace Game
         
         public static GameManager GetInstance() => _instance;
         public bool IsGameActive() => _gameActive;
+        public Difficulty GetDifficulty() => _difficulty;
         public float GetTimer() => _timer;
+        public float GetTimeSurvived() => _timeSurvived;
         public int GetScore() => _score;
         public bool IsSandboxMode() => _sandboxMode;
+        public int GetDamageTaken() => maxHealth - _health;
         public bool IsEndlessMode() => _endlessMode;
         public bool IsHandTracking() => _handTracking;
     }
