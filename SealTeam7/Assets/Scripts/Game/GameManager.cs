@@ -26,8 +26,6 @@ namespace Game
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private TMP_Text waveText;
         [SerializeField] private GameObject healthBar;
-        [SerializeField] private TMP_Text gameoverScoreText;
-        [SerializeField] private TMP_Text gameoverText;
         [SerializeField] private GameObject tooltipPrefab;
         [SerializeField] private Transform tooltipContainer;
 
