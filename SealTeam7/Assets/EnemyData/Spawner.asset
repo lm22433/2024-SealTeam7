@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.8
   maxSpawnChance: 0.5
   spawnChanceGrowthRate: 0.21
+  tooltipText: 'Truck:
+
+    Holds a number of soldiers inside! Has two lives!'
+  tooltipShown: 0

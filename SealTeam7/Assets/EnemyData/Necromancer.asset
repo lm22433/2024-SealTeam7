@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.8
   maxSpawnChance: 0.2
   spawnChanceGrowthRate: 0.21
+  tooltipText: 'Ambulance:
+
+    Revives a recently dead enemy!'
+  tooltipShown: 0

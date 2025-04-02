@@ -37,6 +37,10 @@ namespace Game
         public float minimumWaveTimeLimit;
         public float timeReductionPerWave;
         
+        [Header("Cargo Plane Spawning")]
+        public float initialCargoPlaneDelay;
+        public float cargoPlaneSpawnDelay;
+        
         public int GetWaveEnemyGroupCount(int currentWave) => 
             Mathf.FloorToInt(initialGroupCount + growthFactor * Mathf.Pow(currentWave, exponent));
         

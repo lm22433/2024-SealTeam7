@@ -11,13 +11,9 @@ void MainLight_half(float3 WorldPos, out half3 Direction, out half3 Color, out h
     #else
     half4 shadowCoord = TransformWorldToShadowCoord(WorldPos);
     #endif
-    Light mainLight = GetMainLight(shadowCoord);
+    Light mainLight = GetMainLight(shadowCoord, WorldPos, 1);
     Direction = mainLight.direction;
     Color = mainLight.color;
-    ShadowSamplingData shadowSamplingData = GetMainLightShadowSamplingData();
-    float shadowStrength = GetMainLightShadowStrength();
-    half ShadowAttenuation = SampleShadowmap(shadowCoord, TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_MainLightShadowmapTexture), shadowSamplingData, shadowStrength, false);
-    //Attenuation = mainLight.distanceAttenuation * ShadowAttenuation;
-    Attenuation = ShadowAttenuation;
+    Attenuation = mainLight.distanceAttenuation * mainLight.shadowAttenuation;
     #endif
 }

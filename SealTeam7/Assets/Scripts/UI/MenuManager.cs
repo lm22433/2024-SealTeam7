@@ -211,9 +211,14 @@ namespace UI
                 EnemyType.LmgSoldier => EnemyCategory.Regular,
                 EnemyType.RpgSoldier => EnemyCategory.Regular,
                 EnemyType.Tank => EnemyCategory.Heavy,
+                EnemyType.MortarTank => EnemyCategory.Heavy,
+                EnemyType.Spawner => EnemyCategory.Spawner,
                 EnemyType.KamikazePlane => EnemyCategory.Special,
                 EnemyType.Helicopter => EnemyCategory.Heavy,
                 EnemyType.Chinook => EnemyCategory.Spawner,
+                EnemyType.AerialSpawner => EnemyCategory.Spawner,
+                EnemyType.Burrower => EnemyCategory.Special,
+                EnemyType.Necromancer => EnemyCategory.Special,
                 EnemyType.Mech => EnemyCategory.Heavy,
                 _ => throw new ArgumentOutOfRangeException(nameof(enemyType), enemyType, null)
             };
