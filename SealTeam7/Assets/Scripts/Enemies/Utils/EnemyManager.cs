@@ -64,6 +64,8 @@ namespace Enemies.Utils
         private static EnemyManager _instance;
         private Difficulty _difficulty;
         private int _currentWave;
+        private int _enemiesKilled;
+        private readonly Dictionary<EnemyType, int> _enemiesKilledDetailed = new();
 
         private void Awake()
         {
@@ -95,6 +97,9 @@ namespace Enemies.Utils
         public void Kill(Enemy enemy)
         {
             _enemyCount--;
+            _enemiesKilled++;
+            if (!_enemiesKilledDetailed.TryAdd(enemy.enemyType, 1))
+                _enemiesKilledDetailed[enemy.enemyType]++;
             GetDataFromDeadEnemy(enemy);
             GameManager.GetInstance().RegisterKill(enemy.killScore);
             EnemyPool.GetInstance().ReturnToPool(enemy.enemyType, enemy.gameObject);
@@ -102,10 +107,13 @@ namespace Enemies.Utils
 
         public void StartSpawning()
         {
-            StartCoroutine(SpawnWaves());
-            StartCoroutine(SpawnCargoPlanes());
+            if (!GameManager.GetInstance().IsSandboxMode())
+            {
+                StartCoroutine(SpawnWaves());
+                StartCoroutine(SpawnCargoPlanes());
+            }
         }
-
+        
         public void SetDifficulty(Difficulty difficulty) => _difficulty = difficulty;
 
         private void PathThread()
@@ -133,7 +141,7 @@ namespace Enemies.Utils
             yield return new WaitForSeconds(initialStartDelay);
             yield return new WaitForSeconds(_difficulty.initialCargoPlaneDelay);
             
-            while (GameManager.GetInstance().GameActive)
+            while (GameManager.GetInstance().IsGameActive())
             {
                 yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
                     
@@ -157,7 +165,7 @@ namespace Enemies.Utils
         {
             yield return new WaitForSeconds(initialStartDelay);
             
-            while (GameManager.GetInstance().GameActive)
+            while (GameManager.GetInstance().IsGameActive())
             {
                 _currentWave++;
                 
@@ -242,5 +250,9 @@ namespace Enemies.Utils
         }
         
         public static EnemyManager GetInstance() => _instance;
+        
+        public int GetWave() => _currentWave;
+        public int GetEnemiesKilled() => _enemiesKilled;
+        public Dictionary<EnemyType, int> GetEnemiesKilledDetailed() => _enemiesKilledDetailed;
     }
 }

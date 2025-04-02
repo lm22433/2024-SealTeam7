@@ -22,5 +22,6 @@ MonoBehaviour:
   spawnChanceGrowthRate: 0.12
   tooltipText: 'Chinook:
 
-    Holds many enemies inside!'
+    Spawns a wide range of enemy units; raining death from
+    above!'
   tooltipShown: 0

@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 293108071531977410}
   serializedVersion: 2
   m_LocalRotation: {x: -0.67559016, y: -0, z: -0, w: 0.7372774}
-  m_LocalPosition: {x: 0.4, y: -0.6, z: -1.166}
+  m_LocalPosition: {x: 0.4, y: -0.634, z: -0.779}
   m_LocalScale: {x: 0.1, y: 0.10000001, z: 0.10000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5091,7 +5091,7 @@ Transform:
   m_GameObject: {fileID: 2325727739015341921}
   serializedVersion: 2
   m_LocalRotation: {x: -0.67559016, y: -0, z: -0, w: 0.7372774}
-  m_LocalPosition: {x: -0.4, y: -0.6, z: -1.166}
+  m_LocalPosition: {x: -0.4, y: -0.64, z: -0.708}
   m_LocalScale: {x: 0.1, y: 0.10000001, z: 0.10000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9953,7 +9953,7 @@ MonoBehaviour:
   forceOffset: {x: 0, y: -2, z: 1}
   moveSpeed: 15
   acceleration: 100
-  groundedOffset: 8
+  groundedOffset: 12
   flyHeight: 0
   aimSpeed: 5
   attackRange: 200
@@ -9975,11 +9975,14 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  State: 0
+  TargetRotation: {x: 0, y: 0, z: 0, w: 0}
+  TargetDirection: {x: 0, y: 0, z: 0}
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
   smokeDmg: {fileID: 763469492654417899}
-  maxLives: 1
+  maxLives: 2
   gracePeriod: 2
   spawnee: {fileID: 11400000, guid: 1df4d49f487e6cf4f8689def349bbb53, type: 2}
 --- !u!114 &3729924882987787105
@@ -10633,8 +10636,37 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d94ce032e3bca42848449d005d8cfa9d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4214411653028738220}
   m_SourcePrefab: {fileID: 100100000, guid: d94ce032e3bca42848449d005d8cfa9d, type: 3}
+--- !u!1 &3878645027845608878 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d94ce032e3bca42848449d005d8cfa9d, type: 3}
+  m_PrefabInstance: {fileID: 4112594376199219455}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &4214411653028738220
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3878645027845608878}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.75, y: 3, z: 4.5}
+  m_Center: {x: 0, y: 0, z: 0.2}
 --- !u!4 &4510469061618093844 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d94ce032e3bca42848449d005d8cfa9d, type: 3}

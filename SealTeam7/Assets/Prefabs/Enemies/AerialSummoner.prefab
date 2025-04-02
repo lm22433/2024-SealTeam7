@@ -75,6 +75,9 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  State: 0
+  TargetRotation: {x: 0, y: 0, z: 0, w: 0}
+  TargetDirection: {x: 0, y: 0, z: 0}
   horizontalProps: []
   verticalProps:
   - {fileID: 8744100157237833968}
@@ -267,7 +270,7 @@ PrefabInstance:
     - target: {fileID: 4986366023162638858, guid: 3d751f87b979b4231871a8d54de4d035, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3f752136a62f8c44ca0ee0ba34f5cdcf, type: 2}
+      objectReference: {fileID: 2100000, guid: 1755daae98ef621428f4cc26783b4c9b, type: 2}
     - target: {fileID: 5042031985314049715, guid: 3d751f87b979b4231871a8d54de4d035, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

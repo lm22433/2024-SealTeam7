@@ -6,7 +6,6 @@ using Map;
 using Player;
 using Projectiles;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace Enemies
@@ -42,9 +41,9 @@ namespace Enemies
         [SerializeField] protected internal int killScore;
         
         [Header("Visual Effects")]
-        [SerializeField] private VisualEffect deathParticles;
-        [SerializeField] private Transform model;
-        [SerializeField] private Transform muzzle;
+        [SerializeField] protected VisualEffect deathParticles;
+        [SerializeField] protected Transform model;
+        [SerializeField] protected Transform muzzle;
         [Header("Projectiles")]
         [SerializeField] public ProjectileType projectileType;
         [SerializeField] public GameObject projectile;
@@ -52,7 +51,7 @@ namespace Enemies
         [Header("Sound Effects")]
         [SerializeField] protected AK.Wwise.Event gunFireSound;
         [SerializeField] protected AK.Wwise.Event deathSoundEffect;
-
+        
         protected float SqrAttackRange;
         protected float SqrStopMovingThreshold;
         protected EnemyManager EnemyManager;
@@ -74,7 +73,7 @@ namespace Enemies
         protected internal float BuriedAmount = 0.5f;
         private int _handIndex;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             EnemyManager = EnemyManager.GetInstance();
             Rb = GetComponent<Rigidbody>();
@@ -125,11 +124,11 @@ namespace Enemies
             obj.transform.parent = EnemyManager.transform;
 
             obj.TryGetComponent(out Projectile proj);
-            proj.Init();
             proj.projectileType = projectileType;
             proj.TargetPosition = TargetPosition;
             proj.ToDamage = toDamage;
             proj.Damage = attackDamage;
+            proj.Init();
         }
 
         protected abstract float Heuristic(Node start, Node end);
@@ -296,6 +295,7 @@ namespace Enemies
         public void OnDrawGizmosSelected()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
+            if (Path == null) return;
             
             Gizmos.color = Color.green;
             if (Path.Length > 0) Gizmos.DrawCube(Path[PathIndex], Vector3.one);

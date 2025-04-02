@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8bffda999f834ba5a92494bfc171281b
+guid: fd498bf130d8433fa9840641adc14933
 labels:
 - NuGetForUnity
 PluginImporter:
@@ -51,8 +51,7 @@ PluginImporter:
         CPU: None
     OSXUniversal:
       enabled: 0
-      settings:
-        CPU: None
+      settings: {}
     Win:
       enabled: 0
       settings:
