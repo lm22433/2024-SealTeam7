@@ -68,9 +68,9 @@ Material:
     - _SHADOWS_SOFT: 0
     - _Smoothness: 0
     m_Colors:
-    - _AmbientColour: {r: 0.38679248, g: 0.38679248, b: 0.38679248, a: 0}
+    - _AmbientColour: {r: 0.44654083, g: 0.44654083, b: 0.44654083, a: 0}
     - _FresnelColour: {r: 0.6320754, g: 0.6320754, b: 0.6320754, a: 0}
-    - _SpecularColour: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}
-    - _Tint: {r: 0.764151, g: 0.3999586, b: 0.14057496, a: 0}
+    - _SpecularColour: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 0}
+    - _Tint: {r: 0.59119487, g: 0.23920158, b: 0.09481418, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
