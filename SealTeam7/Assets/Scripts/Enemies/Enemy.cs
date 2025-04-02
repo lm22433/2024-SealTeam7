@@ -6,6 +6,7 @@ using Map;
 using Player;
 using Projectiles;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace Enemies
@@ -53,7 +54,7 @@ namespace Enemies
         [SerializeField] protected AK.Wwise.Event deathSoundEffect;
 
         public bool DisallowMovement = false;
-        public bool Invulnerable = false;
+        public bool Spawning = false;
 
         protected float SqrAttackRange;
         protected float SqrStopMovingThreshold;
@@ -98,12 +99,12 @@ namespace Enemies
             LastPathFind = PathFindInterval;
             DeathDuration = 3.0f;
             DisallowMovement = false;
-            Invulnerable = false;
+            Spawning = false;
         }
 
 		public virtual void SetupDeath()
         {
-            if (State == EnemyState.Dying || Invulnerable) return;
+            if (State == EnemyState.Dying || Spawning) return;
             
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
             {
@@ -141,15 +142,6 @@ namespace Enemies
         
         protected virtual void UpdateState()
         {
-            if (Invulnerable)
-            {
-                // If the enemy is invulnerable, don't let the heights affect them
-                transform.position = new Vector3(
-                    transform.position.x,
-                    MapManager.GetInstance().GetHeight(transform.position),
-                    transform.position.z);
-            }
-            
 			if (State is EnemyState.Dying) return;
             
             var coreTarget = new Vector3(
@@ -274,6 +266,22 @@ namespace Enemies
         private void FixedUpdate()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
+            
+            if (Spawning)
+            {
+                // If the enemy is spawning, just ride the sand and don't move
+                transform.position = new Vector3(
+                    transform.position.x,
+                    MapManager.GetInstance().GetHeight(transform.position),
+                    transform.position.z);
+                Rb.isKinematic = true;
+                Rb.linearVelocity = Vector3.zero;
+                Rb.angularVelocity = Vector3.zero;
+            }
+            else
+            {
+                Rb.isKinematic = false;
+            }
             
             if (!DisallowMovement) Rb.rotation = Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime);
             

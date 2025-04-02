@@ -300,7 +300,7 @@ namespace Enemies.Utils
             var numRows = (int) rows;  //TODO: scale by difficulty multiplier
             var numColumns = (int) columns;
             var spacing = 8f;  // TODO: set spacing depending on enemy type?
-            var timeInterval = 0.01f;  // TODO: set depending on num rows and columns?
+            var timeInterval = 0.005f;  // TODO: set depending on num rows and columns?
             
             foreach (var spawnPoint in spawnPoints)
             {
@@ -345,12 +345,12 @@ namespace Enemies.Utils
 
         private IEnumerator ReleaseSpawningEnemies(bool immediate = false)
         {
-            if (!immediate) yield return Wait(0.5f);
+            if (!immediate) yield return Wait(0.2f);
             
             foreach (var spawningEnemy in _spawningEnemies)
             {
                 spawningEnemy.DisallowMovement = false;
-                spawningEnemy.Invulnerable = false;
+                spawningEnemy.Spawning = false;
             }
             
             _spawningEnemies.Clear();
@@ -365,9 +365,9 @@ namespace Enemies.Utils
                 var enemyComp = e.GetComponent<Enemy>();
                 enemyComp.Init();
                 enemyComp.DisallowMovement = true;
-                enemyComp.Invulnerable = true;
+                enemyComp.Spawning = true;
                 _spawningEnemies.AddLast(enemyComp);
-                
+
                 e.GetComponent<BasePhysics>().Init();
                 e.transform.SetParent(transform);
                 _enemyCount++;
