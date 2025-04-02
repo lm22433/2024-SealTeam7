@@ -20,3 +20,7 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 1.5
   maxSpawnChance: 0.2
   spawnChanceGrowthRate: 0.24
+  tooltipText: 'Helicopter:
+
+    Flies above the sand! Construct walls to stop it!'
+  tooltipShown: 0

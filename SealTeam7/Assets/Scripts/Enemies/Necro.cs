@@ -26,7 +26,7 @@ namespace Enemies
 
         protected override void Attack(PlayerDamageable player)
         {
-            EnemyManager.NecroSpawn(new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z - 2.0f));
+            EnemyManager.SpawnEnemies(EnemyManager.lastDeadEnemy, new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z - 2.0f), Quaternion.identity);
         }
 
         protected override void EnemyUpdate()

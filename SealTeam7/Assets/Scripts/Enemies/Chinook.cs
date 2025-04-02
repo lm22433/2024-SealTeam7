@@ -15,7 +15,7 @@ namespace Enemies
         protected override void Attack(PlayerDamageable toDamage)
         {
             base.Attack(toDamage);
-            EnemyManager.GetInstance().SpawnerSpawn(transform.position, spawnableEnemies[Random.Range(0, spawnableEnemies.Length)], spawnCount);
+            EnemyManager.GetInstance().SpawnEnemies(spawnableEnemies[Random.Range(0, spawnableEnemies.Length)], transform.position - Vector3.up * transform.lossyScale.y, Quaternion.identity, spawnCount);
         }
 
         public override void Init()
