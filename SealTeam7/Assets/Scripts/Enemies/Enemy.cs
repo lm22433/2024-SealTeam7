@@ -52,7 +52,7 @@ namespace Enemies
         [Header("Sound Effects")]
         [SerializeField] protected AK.Wwise.Event gunFireSound;
         [SerializeField] protected AK.Wwise.Event deathSoundEffect;
-
+        
         protected float SqrAttackRange;
         protected float SqrStopMovingThreshold;
         protected EnemyManager EnemyManager;

@@ -311,6 +311,8 @@ MonoBehaviour:
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
   gun: {fileID: 4121728789607564128}
+  cameraSpwanChance: 1
+  cameraHolder: {fileID: 0}
 --- !u!54 &4195251952092455746
 Rigidbody:
   m_ObjectHideFlags: 0

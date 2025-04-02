@@ -19,4 +19,13 @@ namespace Enemies.Utils
         Necromancer,
         Mech
     }
+
+    public enum EnemyCategory
+    {
+        Regular,
+        Special,
+        Heavy,
+        Ranged,
+        Spawner
+    }
 }

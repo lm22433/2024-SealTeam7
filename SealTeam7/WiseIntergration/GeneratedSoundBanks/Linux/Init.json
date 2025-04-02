@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{3CB72F4A-E716-FC4F-427E-EB7B5DE099F9}",
+    "Hash": "{7D0A1912-5728-C06F-C0C2-923B65B951BF}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -60,6 +60,19 @@
       "Name": "SS_Air_Fear",
       "ObjectPath": "\\Game Parameters\\Factory Soundseed Air Game Syncs\\SS_Air_Fear",
       "GUID": "{F72E0659-4346-4E1C-A1B1-DAB46A05101E}"
+     },
+     {
+      "Id": "1985131783",
+      "Name": "SoundEffectVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SoundEffectVolume",
+      "GUID": "{70821926-0A62-41CB-8BF7-8D695593EEA0}"
+     },
+     {
+      "Id": "2346531308",
+      "Name": "MusicVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\MusicVolume",
+      "GUID": "{45C8588C-CEB8-45E8-BFF0-BCC9120D0975}",
+      "Color": "1"
      },
      {
       "Id": "2648548617",
@@ -599,6 +612,6 @@
     ]
    }
   ],
-  "FileHash": "{04C0063B-61F9-7EEF-E941-6F95D00F1A82}"
+  "FileHash": "{05063CE9-5BA1-0CA5-B071-923DE9A776AD}"
  }
 }
