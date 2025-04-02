@@ -5323,6 +5323,12 @@ MonoBehaviour:
   highlightedButtonSprite: {fileID: 21300000, guid: 0025982e88fb147028ffdc22a573db68, type: 3}
   enabledButtonSprite: {fileID: 21300000, guid: c6c8e51a0ebdd4fd38ff0d4f989c826c, type: 3}
   disabledButtonSprite: {fileID: 21300000, guid: e2c471efed7224b8ba2b790ae9d37234, type: 3}
+  masterVolumeSlider: {fileID: 6935614848746193249}
+  masterVolumeSliderText: {fileID: 1420644992777860453}
+  musicVolumeSlider: {fileID: 100226691489082466}
+  musicVolumeSliderText: {fileID: 2860726906187932420}
+  SFXVolumeSlider: {fileID: 3879946978565458096}
+  SFXVolumeSliderText: {fileID: 4537905101764789180}
   mainMenuMusic:
     idInternal: 0
     valueGuidInternal: 
