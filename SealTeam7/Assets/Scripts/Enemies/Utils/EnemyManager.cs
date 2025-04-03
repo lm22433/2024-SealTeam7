@@ -167,11 +167,10 @@ namespace Enemies.Utils
         {
             if (_difficulty.difficultyType == DifficultyType.Tutorial)
             {
-                yield return Wait(3f);
-                _currentWave = 1;
-
                 Toast("Welcome to the tutorial! Bury the soldiers to protect your base. Watch out – your hands take damage too!", 10f);
-                yield return Wait(2f);
+                yield return Wait(5f);
+                
+                _currentWave = 1;
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 4, columns: 6);
                 yield return EndWave();
                 
@@ -197,45 +196,45 @@ namespace Enemies.Utils
 
             else
             {
-                yield return new WaitForSeconds(5f);
-                _currentWave = 1;
-                
-                // Wave 1
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
-                yield return ReleaseSpawningEnemies();
-                yield return EndWave();
-
-                // Wave 2
-                // Spawn(EnemyType.FastSoldier, 5);
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-                
-                // Spawn(EnemyType.FastSoldier, new[] { 3, 4, 6, 7 });
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-                
-                // Spawn(EnemyType.FastSoldier, new[] { 3, 4, 5, 6, 7 });
-                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 6 }, 4, 5);
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
-                yield return ReleaseSpawningEnemies();
-                yield return EndWave();
-
-                // Wave 3
-                yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 6, 3);
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-                
-                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 4, 5, 6, 7 }, 4, 5);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
+                // yield return new WaitForSeconds(5f);
+                // _currentWave = 1;
+                //
+                // // Wave 1
+                // yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
+                // yield return ReleaseSpawningEnemies();
+                // yield return Wait(10f);
+                //
+                // yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
+                // yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
+                // yield return ReleaseSpawningEnemies();
+                // yield return EndWave();
+                //
+                // // Wave 2
+                // // Spawn(EnemyType.FastSoldier, 5);
+                // yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
+                // yield return ReleaseSpawningEnemies();
+                // yield return Wait(10f);
+                //
+                // // Spawn(EnemyType.FastSoldier, new[] { 3, 4, 6, 7 });
+                // yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
+                // yield return ReleaseSpawningEnemies();
+                // yield return Wait(10f);
+                //
+                // // Spawn(EnemyType.FastSoldier, new[] { 3, 4, 5, 6, 7 });
+                // yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 6 }, 4, 5);
+                // yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
+                // yield return ReleaseSpawningEnemies();
+                // yield return EndWave();
+                //
+                // // Wave 3
+                // yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 6, 3);
+                // yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
+                // yield return ReleaseSpawningEnemies();
+                // yield return Wait(10f);
+                //
+                // yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 4, 5, 6, 7 }, 4, 5);
+                // yield return ReleaseSpawningEnemies();
+                // yield return Wait(10f);
 
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 5, 7 }, 5, 3f);
                 yield return EndWave();
@@ -337,8 +336,9 @@ namespace Enemies.Utils
         private IEnumerator SpawnAtInterval(EnemyType enemy, int[] spawnPoints, int count, float interval = 3f)
         {
             var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
+            var scaledCount = (int) (count*_difficulty.groupSizeMultiplier);
             
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < scaledCount; i++)
             {
                 foreach (var spawnPoint in spawnPoints)
                 {
@@ -378,7 +378,7 @@ namespace Enemies.Utils
                 e.TryGetComponent(out Enemy enemyComp);
                 enemyComp.Init();
                 enemyComp.DisallowMovement = true;
-                enemyComp.Spawning = true;  // TODO: set to true and fix physics
+                enemyComp.Spawning = true;
                 _spawningEnemies.AddLast(enemyComp);
 
                 e.TryGetComponent(out BasePhysics basePhysics);
