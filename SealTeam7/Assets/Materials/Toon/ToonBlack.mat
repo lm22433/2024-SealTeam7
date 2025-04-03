@@ -12,7 +12,8 @@ Material:
   m_Parent: {fileID: -876546973899608171, guid: 95257030020785e4199a57b445d93653, type: 3}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - FRESNEL_ON
+  - _MAIN_LIGHT_SHADOWS
+  - _MAIN_LIGHT_SHADOWS_CACADE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -27,13 +28,15 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _FresnelThreshold: 0
-    - _Fresnel_Strength: 0.57
+    - FRESNEL: 0
+    - _FresnelThreshold: 0.775
+    - _Fresnel_Strength: 0.574
     - _QueueControl: 0
-    - _Smoothness: 10
+    - _Smoothness: 2
     m_Colors:
-    - _AmbientColour: {r: 0.5849056, g: 0.5545567, b: 0.5545567, a: 0}
-    - _Tint: {r: 0.047169805, g: 0.047169805, b: 0.047169805, a: 0}
+    - _AmbientColour: {r: 0, g: 0, b: 0, a: 0}
+    - _FresnelColour: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}
+    - _Tint: {r: 0.09433961, g: 0.09433961, b: 0.09433961, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &5805058784032740904

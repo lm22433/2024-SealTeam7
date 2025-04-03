@@ -23,4 +23,4 @@ MonoBehaviour:
   tooltipText: 'Burrower:
 
     Burrows under the sand! Dig it out to kill it!'
-  tooltipShown: 0
+  tooltipShown: 1

@@ -83,8 +83,8 @@ MonoBehaviour:
   gracePeriod: 0
   drill: {fileID: 1539957999329854138}
   drillSpeed: 1000
-  burrowDepth: 100
-  diveSpeed: 100
+  burrowDepth: 250
+  diveSpeed: 10000
 --- !u!114 &1762384143968135915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +215,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2013928995460809366}
     m_Modifications:
+    - target: {fileID: 3367709105781857799, guid: 4e7d063109c58cc458495c43f79cef3c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3367709105781857799, guid: 4e7d063109c58cc458495c43f79cef3c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3367709105781857799, guid: 4e7d063109c58cc458495c43f79cef3c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 3367709105781857799, guid: 4e7d063109c58cc458495c43f79cef3c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -40,13 +40,17 @@ namespace Leaderboard
             });
         }
 
-        private void Start() => _databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+        private void Start()
+        {
+            _databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+        }
 
-        public FirebaseManager GetInstance() => _instance;
+        public static FirebaseManager GetInstance() => _instance;
 
         public void SaveGameResult(GameResult gameResult)
         {
             string json = JsonUtility.ToJson(gameResult);
+            Debug.Log("Saving game result: " + json);
             _databaseReference.Child("gameResults").Child(Guid.NewGuid().ToString()).SetRawJsonValueAsync(json).ContinueWithOnMainThread(
                 task =>
                 {
