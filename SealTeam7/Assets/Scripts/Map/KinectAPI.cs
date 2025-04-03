@@ -184,7 +184,7 @@ namespace Map
                 {
                     _capture = _kinect.GetCapture();
                     _transformation.DepthImageToColorCamera(_capture.DepthImage, _transformedDepthImage);
-                    OpeningManager.GetInstance().UpdateKinectFeed(capture.ColorImage.DuplicateReference());
+                    OpeningManager.GetInstance().UpdateKinectFeed(_capture.ColorImage.DuplicateReference());
                     UpdateHeightMap(_transformedDepthImage, HandLandmarks);
                 }
                 catch (Exception e)
