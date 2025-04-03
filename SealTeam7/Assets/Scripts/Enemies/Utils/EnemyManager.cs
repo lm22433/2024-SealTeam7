@@ -400,8 +400,8 @@ namespace Enemies.Utils
 
         private IEnumerator EndWave()
         {
-            yield return new WaitUntil(() => _enemyCount == 0);
-            yield return new WaitForSeconds(2f);
+            yield return new WaitUntil(() => _enemyCount < 5);
+            yield return new WaitForSeconds(5f);
             _currentWave++;
         }
 
