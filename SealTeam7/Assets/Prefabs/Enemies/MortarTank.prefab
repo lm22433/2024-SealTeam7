@@ -9718,15 +9718,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 7
-  forceOffset: {x: 0, y: -1.5, z: 1.5}
-  moveSpeed: 15
-  acceleration: 200
+  forceOffset: {x: 0, y: 0, z: 2}
+  moveSpeed: 20
+  acceleration: 100
   groundedOffset: 8
   flyHeight: 0
   aimSpeed: 5
-  attackRange: 250
+  attackRange: 350
   attackInterval: 5
-  stopMovingThreshold: 0
+  stopMovingThreshold: 50
   coreTargetHeightOffset: 10
   attackDamage: 5
   killScore: 400
@@ -9781,7 +9781,7 @@ Rigidbody:
   m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 5
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: -1, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -9790,7 +9790,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0

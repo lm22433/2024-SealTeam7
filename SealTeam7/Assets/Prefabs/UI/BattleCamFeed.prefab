@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 6581435062558198383}
   - component: {fileID: 1638000321066247622}
   - component: {fileID: 2067069610408811847}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BattleCamFeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}

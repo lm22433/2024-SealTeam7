@@ -1,3 +1,4 @@
+using System;
 using Enemies.Utils;
 using Game;
 using JetBrains.Annotations;
@@ -10,27 +11,36 @@ namespace Projectiles
     public class Projectile : MonoBehaviour
     {
         [SerializeField] private float speed;
+        [SerializeField] private float hitRadius;
         [SerializeField] [CanBeNull] private TrailRenderer trail;
         public Vector3 TargetPosition { get; set; }
         public PlayerDamageable ToDamage { get; set; }
         public int Damage { get; set; }
         public ProjectileType projectileType;
-        
+
+        [CanBeNull] private Rigidbody _rb;
         private Vector3 _startPosition;
-        private Vector3 _gravity;
+        private float _sqrHitRadius;
 
         public void Init()
         {
+            _sqrHitRadius = hitRadius * hitRadius;
             _startPosition = transform.position;
-            _gravity = new Vector3(0f, -9.81f, 0f);
             
             if (projectileType == ProjectileType.MortarProjectile)
             {
-                var rb = gameObject.AddComponent<Rigidbody>();
-                var t = 10f;
-                var p = TargetPosition - _startPosition;
-                //rb.useGravity = false;
-                rb.linearVelocity = new Vector3(p.x / t, p.y / t + 0.5f * _gravity.y * t, p.z / t);
+                _rb = gameObject.AddComponent<Rigidbody>();
+                var g = Physics.gravity;
+                var dst = TargetPosition - _startPosition;
+                
+                const float theta = 60f * Mathf.Deg2Rad;
+                
+                var v = Mathf.Sqrt(dst.magnitude * -g.y / Mathf.Sin(2 * theta));
+                var vForward = v * Mathf.Cos(theta);
+                var vUp = v * Mathf.Sin(theta);
+
+                _rb!.detectCollisions = false;
+                _rb!.linearVelocity = Vector3.ProjectOnPlane(dst.normalized, Vector3.up) * vForward + vUp * Vector3.up;
             }
             
             if (trail) trail.Clear();
@@ -45,11 +55,10 @@ namespace Projectiles
                 return;
             }
             
-            //if (TryGetComponent(out Rigidbody rb)) rb.AddForce(_gravity, ForceMode.Acceleration);
-
+            transform.rotation = Quaternion.LookRotation(_rb?.linearVelocity ?? TargetPosition - _startPosition);
             if (projectileType != ProjectileType.MortarProjectile) transform.position = Vector3.MoveTowards(transform.position, TargetPosition, speed * Time.deltaTime);
 
-            if (transform.position == TargetPosition)
+            if ((transform.position - TargetPosition).sqrMagnitude < _sqrHitRadius)
             {
                 ToDamage.TakeDamage(Damage);
                 ProjectilePool.GetInstance().ReturnToPool(projectileType, gameObject);

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4994746297924202127}
   - component: {fileID: 8712459298881639221}
   - component: {fileID: 8611628195515774974}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GodlyCore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,6 +135,14 @@ PrefabInstance:
     - target: {fileID: 1706687923554640397, guid: b1f7ffd984071f243a062013097b368f, type: 3}
       propertyPath: m_Name
       value: NecroRing
+      objectReference: {fileID: 0}
+    - target: {fileID: 1706687923554640397, guid: b1f7ffd984071f243a062013097b368f, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500391066691186138, guid: b1f7ffd984071f243a062013097b368f, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7444340218237088612, guid: b1f7ffd984071f243a062013097b368f, type: 3}
       propertyPath: m_LocalScale.x
