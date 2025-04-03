@@ -14,14 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   difficultyName: Easy
   difficultyType: 1
-  initialGroupCount: 6
-  growthFactor: 1.2
-  exponent: 0.7
-  initialSpawnDelay: 1.2
-  minimumSpawnDelay: 0.4
-  decayFactor: 0.07
-  initialWaveTimeLimit: 20
-  minimumWaveTimeLimit: 12
-  timeReductionPerWave: 1.2
-  initialCargoPlaneDelay: 30
-  cargoPlaneSpawnDelay: 30
+  groupSizeMultiplier: 0.5

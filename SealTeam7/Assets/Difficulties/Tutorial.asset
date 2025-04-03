@@ -14,14 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   difficultyName: Tutorial
   difficultyType: 0
-  initialGroupCount: 0
-  growthFactor: 0
-  exponent: 0
-  initialSpawnDelay: 0
-  minimumSpawnDelay: 0
-  decayFactor: 0
-  initialWaveTimeLimit: 0
-  minimumWaveTimeLimit: 0
-  timeReductionPerWave: 0
-  initialCargoPlaneDelay: 0
-  cargoPlaneSpawnDelay: 0
+  groupSizeMultiplier: 1
