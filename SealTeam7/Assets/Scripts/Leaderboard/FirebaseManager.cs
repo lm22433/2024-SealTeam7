@@ -40,7 +40,10 @@ namespace Leaderboard
             });
         }
 
-        private void Start() => _databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+        private void Start()
+        {
+            _databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+        }
 
         public static FirebaseManager GetInstance() => _instance;
 
