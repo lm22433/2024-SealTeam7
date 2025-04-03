@@ -138,30 +138,30 @@ namespace Enemies.Utils
             _pathFinder.FindPathAsync(request.Start, request.End, pathingDepth, request.Heuristic, request.Callback);
         }
 
-        private IEnumerator SpawnCargoPlanes()
-        {
-            yield return new WaitForSeconds(initialStartDelay);
-            yield return new WaitForSeconds(_difficulty.initialCargoPlaneDelay);
-            
-            while (GameManager.GetInstance().IsGameActive())
-            {
-                yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
-                    
-                Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
-
-                var cargo = enemyData[0];
-                
-                SpawnEnemies(cargo, spawn.position, spawn.rotation);
-                
-                if (!cargo.tooltipShown)
-                {
-                    GameManager.GetInstance().DisplayTooltip(cargo.tooltipText, enemyTooltipDuration);
-                    cargo.tooltipShown = true;
-                }
-                
-                yield return new WaitForSeconds(_difficulty.cargoPlaneSpawnDelay);
-            }
-        }
+        // private IEnumerator SpawnCargoPlanes()
+        // {
+        //     yield return new WaitForSeconds(initialStartDelay);
+        //     yield return new WaitForSeconds(_difficulty.initialCargoPlaneDelay);
+        //     
+        //     while (GameManager.GetInstance().IsGameActive())
+        //     {
+        //         yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
+        //             
+        //         Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
+        //
+        //         var cargo = enemyData[0];
+        //         
+        //         SpawnEnemies(cargo, spawn.position, spawn.rotation);
+        //         
+        //         if (!cargo.tooltipShown)
+        //         {
+        //             GameManager.GetInstance().DisplayTooltip(cargo.tooltipText, enemyTooltipDuration);
+        //             cargo.tooltipShown = true;
+        //         }
+        //         
+        //         yield return new WaitForSeconds(_difficulty.cargoPlaneSpawnDelay);
+        //     }
+        // }
 
         private IEnumerator SpawnWaves()
         {
@@ -296,8 +296,8 @@ namespace Enemies.Utils
         
         private IEnumerator SpawnGrids(EnemyType enemy, int[] spawnPoints, float rows, float columns)
         {
-            var numRows = (int) rows;  //TODO: scale by difficulty multiplier
-            var numColumns = (int) columns;
+            var numRows = (int) (rows*Mathf.Sqrt(_difficulty.groupSizeMultiplier));
+            var numColumns = (int) (columns*Mathf.Sqrt(_difficulty.groupSizeMultiplier));
             var spacing = 8f;  // TODO: set spacing depending on enemy type?
             var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
             var timePerGrid = 0.1f;
