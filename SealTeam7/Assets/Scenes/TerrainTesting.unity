@@ -1210,8 +1210,8 @@ MonoBehaviour:
   height: 880
   xOffsetStart: 480
   xOffsetEnd: 1360
-  yOffsetStart: 10
-  yOffsetEnd: 890
+  yOffsetStart: 80
+  yOffsetEnd: 960
   minimumSandDepth: 900
   maximumSandDepth: 1180
   blurRadius: 3
