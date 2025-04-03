@@ -694,6 +694,10 @@ PrefabInstance:
       propertyPath: mapManager
       value: 
       objectReference: {fileID: 594167918}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _thresholdDst
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1818,7 +1822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: _thresholdDst
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4944,7 +4948,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2622375085693350588, guid: 41a14bb21577b4b46bf94476a15cd977, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 340
+      value: 373.1
       objectReference: {fileID: 0}
     - target: {fileID: 2622375085693350588, guid: 41a14bb21577b4b46bf94476a15cd977, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4981,6 +4985,10 @@ PrefabInstance:
     - target: {fileID: 3336293177548899692, guid: 41a14bb21577b4b46bf94476a15cd977, type: 3}
       propertyPath: m_Name
       value: GodlyCore
+      objectReference: {fileID: 0}
+    - target: {fileID: 8712459298881639221, guid: 41a14bb21577b4b46bf94476a15cd977, type: 3}
+      propertyPath: armour
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
