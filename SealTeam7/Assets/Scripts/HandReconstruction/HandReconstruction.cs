@@ -84,7 +84,7 @@ public class HandReconstruction : MonoBehaviour
 
                 if (newDst >= _thresholdDst)
                 {
-                    positions[i] = tempPositions[i] + positions_offset_y[i] * -transform.up;
+                    positions[i] = Vector3.Lerp(positions[i], tempPositions[i], _lerpFactor) + positions_offset_y[i] * -transform.up;
                 }
             }
             
