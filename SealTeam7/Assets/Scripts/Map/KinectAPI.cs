@@ -55,6 +55,8 @@ namespace Map
         private readonly int _yOffsetEnd;
         private readonly Size _gaussianKernelSize;
         private readonly float _gaussianKernelSigma;
+        private readonly float _handHeightScale;
+        private readonly float _handHeightOffset;
 
         private Action _onHeightUpdate;
 
@@ -72,7 +74,8 @@ namespace Map
         public Image<Gray, float> RawHeightImage => _rawHeightImage;
 
         public KinectAPI(float heightScale, float minLerpFactor, float maxLerpFactor, int minimumSandDepth, int maximumSandDepth, 
-                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, int gaussianKernelRadius, float gaussianKernelSigma, Action onHeightUpdate)
+                int width, int height, int xOffsetStart, int xOffsetEnd, int yOffsetStart, int yOffsetEnd, ref float[,] heightMap, 
+                int gaussianKernelRadius, float gaussianKernelSigma, Action onHeightUpdate, float handHeightScale, float handHeightOffset)
         {
             _onHeightUpdate = onHeightUpdate;
             _heightScale = heightScale;
@@ -97,6 +100,8 @@ namespace Map
             _scalarOne = new MCvScalar(1f);
             _gaussianKernelSize = new Size(gaussianKernelRadius * 2 + 1, gaussianKernelRadius * 2 + 1);
             _gaussianKernelSigma = gaussianKernelSigma;
+            _handHeightScale = handHeightScale;
+            _handHeightOffset = handHeightOffset;
             
             if (minimumSandDepth > maximumSandDepth)
             {
@@ -308,7 +313,7 @@ namespace Map
                     var distance = Mathf.Abs(currentHeight - newHeight);
                     // Debug.Log("distance: " + distance);
                     // var lerpFactor = Mathf.Clamp(distance / 30f, _minLerpFactor, _maxLerpFactor);
-                    var lerpFactor = distance < 15f ? _minLerpFactor : _maxLerpFactor;
+                    var lerpFactor = distance < 17f ? _minLerpFactor : _maxLerpFactor;
                     // Debug.Log("Lerp factor: " + lerpFactor);
                     _maskedHeightImage.Data[y, x, 0] = Mathf.Lerp(currentHeight, newHeight, lerpFactor);
                 }
@@ -351,21 +356,19 @@ namespace Map
                     : depthBuffer[
                         (int)handLandmarks.Right[0].z * depthImage.WidthPixels + 1920 - (int)handLandmarks.Right[0].x];
                 // : depthImage.GetPixel<ushort>((int)handLandmarks.Right[0].z, 1920 - (int)handLandmarks.Right[0].x);
-            var depthRange = _maximumSandDepth - _minimumSandDepth;
             
             var offsetLeft = new Vector3();
             var offsetRight = new Vector3();
-            const float wristYOffset = -30f;
             if (leftHandDepth.HasValue)
             {
                 offsetLeft = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
-                    (_maximumSandDepth - leftHandDepth.Value) / depthRange * _heightScale + wristYOffset,
+                    (_maximumSandDepth - leftHandDepth.Value) * _handHeightScale + _handHeightOffset,
                     -_yOffsetStart);
             }
             if (rightHandDepth.HasValue)
             {
                 offsetRight = new Vector3(PythonManager.FlipX ? -(1920 - _xOffsetEnd) : -_xOffsetStart,
-                    (_maximumSandDepth - rightHandDepth.Value) / depthRange * _heightScale + wristYOffset,
+                    (_maximumSandDepth - rightHandDepth.Value) *_handHeightScale + _handHeightOffset,
                     -_yOffsetStart);
             }
         
