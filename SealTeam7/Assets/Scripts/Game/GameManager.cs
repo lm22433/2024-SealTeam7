@@ -117,6 +117,7 @@ namespace Game
 
             _lastSurvivalBonusTime = Time.time;
 
+            OpeningManager.GetInstance().StartOpening();
             EnemyManager.GetInstance().StartSpawning();
             
             Debug.Log("Game started!");
