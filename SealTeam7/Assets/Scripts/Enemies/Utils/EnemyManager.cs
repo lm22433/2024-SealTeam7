@@ -204,20 +204,11 @@ namespace Enemies.Utils
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
                 
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
-                yield return ReleaseSpawningEnemies();
-                yield return EndWave();
-                
                 // Wave 2
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
-                
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-                
+
                 yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 6 }, 4, 5);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
@@ -272,7 +263,7 @@ namespace Enemies.Utils
                 
                 // Wave 6
                 yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 5, 6 }, 5, 8);
-                yield return SpawnAtInterval(EnemyType.MortarTank, 8, 5);
+                yield return SpawnAtInterval(EnemyType.Necromancer, 8, 5);
                 yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3);
                 yield return Wait(10f);
                 
@@ -293,6 +284,20 @@ namespace Enemies.Utils
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
                 yield return SpawnGrids(EnemyType.FastSoldier, new[] { 1, 9 }, 1, 10);
                 yield return EndWave();
+                
+                // Wave 8
+                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 4 }, 5, 8);
+                yield return SpawnGrid(EnemyType.RpgSoldier, 5, 8, 4);
+                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 6, 7 }, 2, 2);
+                yield return ReleaseSpawningEnemies();
+                yield return SpawnAtInterval(EnemyType.AerialSpawner, new[] { 2, 8 }, 2);
+                for (var i = 0; i < 6; i++)
+                {
+                    yield return SpawnGrid(EnemyType.FastSoldier, 1, 1, 10);
+                    yield return ReleaseSpawningEnemies();
+                    yield return SpawnGrid(EnemyType.FastSoldier, 9, 1, 10);
+                    yield return ReleaseSpawningEnemies();
+                }
 
                 // Wave -
                 Toast("Get a load of this guy!", duration: 5f);
