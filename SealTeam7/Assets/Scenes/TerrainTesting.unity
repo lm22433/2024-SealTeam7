@@ -1216,7 +1216,7 @@ MonoBehaviour:
   xOffsetEnd: 1360
   yOffsetStart: 80
   yOffsetEnd: 960
-  minimumSandDepth: 900
+  minimumSandDepth: 860
   maximumSandDepth: 1180
   blurRadius: 3
   blurSigma: 5
@@ -1229,8 +1229,8 @@ MonoBehaviour:
   heightScale: 450
   lodInfo:
     lod: 1
-    colliderLod: 4
-    pathingLod: 10
+    colliderLod: 8
+    pathingLod: 8
     backgroundLod: 8
   bgChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
   bgAverageHeight: 250

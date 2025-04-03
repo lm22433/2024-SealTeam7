@@ -83,7 +83,7 @@ MonoBehaviour:
   enemyType: 0
   forceOffset: {x: 0, y: 0, z: 0}
   moveSpeed: 20
-  acceleration: 100
+  acceleration: 400
   groundedOffset: 7
   flyHeight: 0
   aimSpeed: 20
@@ -106,6 +106,9 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
+  DisallowMovement: 0
+  State: 0
+  TargetPosition: {x: 0, y: 0, z: 0}
   gun: {fileID: 4797994724752532913}
   cameraSpwanChance: 2
   cameraHolder: {fileID: 3442655919550094419}

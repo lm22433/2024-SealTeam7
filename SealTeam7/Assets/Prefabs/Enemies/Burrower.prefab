@@ -76,6 +76,9 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  DisallowMovement: 0
+  State: 0
+  TargetPosition: {x: 0, y: 0, z: 0}
   dustTrails:
   - {fileID: 5770329497031736057}
   smokeDmg: {fileID: 2721249449161740631}
@@ -83,7 +86,7 @@ MonoBehaviour:
   gracePeriod: 0
   drill: {fileID: 1539957999329854138}
   drillSpeed: 1000
-  burrowDepth: 250
+  burrowDepth: 150
   diveSpeed: 10000
 --- !u!114 &1762384143968135915
 MonoBehaviour:
