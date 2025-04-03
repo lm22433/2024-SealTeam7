@@ -289,9 +289,10 @@ namespace Enemies.Utils
         
         private void Spawn(EnemyType enemy, int[] spawnPoints)
         {
+            var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
+            
             foreach (var spawnPoint in spawnPoints)
             {
-                var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
                 SpawnEnemies(data, this.spawnPoints[spawnPoint].position, this.spawnPoints[spawnPoint].rotation);
             }
         }
@@ -305,6 +306,9 @@ namespace Enemies.Utils
             var numColumns = (int) columns;
             var spacing = 8f;  // TODO: set spacing depending on enemy type?
             var timeInterval = 0.005f;  // TODO: set depending on num rows and columns?
+            var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
+            var i = 0;
+            var enemiesToSpawnPerFrame = (int)(Time.smoothDeltaTime/timeInterval);
             
             foreach (var spawnPoint in spawnPoints)
             {
@@ -314,7 +318,7 @@ namespace Enemies.Utils
                 var xVector = spawnRotation * Vector3.right;
                 var gridHeight = (numRows - 1) * spacing;
                 var gridWidth = (numColumns - 1) * spacing;
-                var startPos = spawnPosition - gridHeight / 2 * zVector - gridWidth / 2 * xVector;
+                var startPos = spawnPosition - gridHeight / 2 * zVector - gridWidth / 2 * -xVector;
 
                 for (var z = 0; z < numRows; z++)
                 {
@@ -322,8 +326,11 @@ namespace Enemies.Utils
                     {
                         var pos = startPos + zVector * (z * spacing) - xVector * (x * spacing);
                         pos.y = MapManager.GetInstance().GetHeight(pos);
-                        SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == enemy), pos, spawnRotation);
-                        yield return new WaitForSeconds(timeInterval);
+                        SpawnEnemies(data, pos, spawnRotation);
+
+                        // yield return null waits until the next frame
+                        if (i % enemiesToSpawnPerFrame == enemiesToSpawnPerFrame - 1) yield return null;
+                        i++;
                     }
                 }
             }
@@ -334,11 +341,12 @@ namespace Enemies.Utils
         
         private IEnumerator SpawnAtInterval(EnemyType enemy, int[] spawnPoints, int count, float interval = 3f)
         {
+            var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
+            
             for (var i = 0; i < count; i++)
             {
                 foreach (var spawnPoint in spawnPoints)
                 {
-                    var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
                     SpawnEnemies(data, this.spawnPoints[spawnPoint].position, this.spawnPoints[spawnPoint].rotation);
                 }
 
@@ -374,8 +382,8 @@ namespace Enemies.Utils
                 
                 e.TryGetComponent(out Enemy enemyComp);
                 enemyComp.Init();
-                enemyComp.DisallowMovement = true;
-                enemyComp.Spawning = false;  // TODO: set to true and fix physics
+                // enemyComp.DisallowMovement = true;
+                // enemyComp.Spawning = false;  // TODO: set to true and fix physics
                 _spawningEnemies.AddLast(enemyComp);
 
                 e.TryGetComponent(out BasePhysics basePhysics);
