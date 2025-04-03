@@ -55,11 +55,13 @@ namespace Map
         private readonly int _yOffsetEnd;
         private readonly Size _gaussianKernelSize;
         private readonly float _gaussianKernelSigma;
+        private Capture _capture;
 
         private Action _onHeightUpdate;
 
         private bool _running;
         private Task _getCaptureTask;
+        private Task _asyncPythonTask;
         private int _leftHandAbsentCount = 0;
         private int _rightHandAbsentCount = 0;
 
@@ -116,13 +118,6 @@ namespace Map
             });
 
             Debug.Log("AKDK Serial Number: " + _kinect.SerialNumber);
-
-            // Initialize the transformation engine
-            // _transformation = _kinect.GetCalibration().CreateTransformation();
-            // _colourWidth = _kinect.GetCalibration().ColorCameraCalibration.ResolutionWidth;
-            // _colourHeight = _kinect.GetCalibration().ColorCameraCalibration.ResolutionHeight;
-            // _transformedDepthImage = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight,
-            //     _colourWidth * sizeof(UInt16));
             
             // Initialize the transformation engine
             _kinect.GetCalibration(DepthMode.NarrowViewUnbinned, ColorResolution.R1080p, out var calibration);
@@ -132,18 +127,20 @@ namespace Map
             _transformedDepthImage = new Image(ImageFormat.Depth16, _colourWidth, _colourHeight,
                 _colourWidth * sizeof(UInt16));
             
-            Debug.Log("sTARTING TASK");
             _running = true;
+            _capture = _kinect.GetCapture();
             _getCaptureTask = Task.Run(GetCaptureTask);
+            _asyncPythonTask = Task.Run(GetPythonAsync);
         }
         
         public Vector3[] GetHandPositions(int hand) => hand == 0 ? HandLandmarks.Right : HandLandmarks.Left;
-        
 
         public void StopKinect()
         {
             _running = false;
             _getCaptureTask.Wait();
+            _asyncPythonTask.Wait();
+            _capture.Dispose();
             _kinect.StopCameras();
             _kinect.Dispose();
             _transformedDepthImage.Dispose();
@@ -153,50 +150,24 @@ namespace Map
             _tmpImage.Dispose();
             _dilationKernel.Dispose();
         }
-        
-        private void GetCaptureTask()
+
+        private void GetPythonAsync()
         {
             PythonManager.Initialize();
-            
-            while (_running)
+        
+            if (PythonManager.IsInitialized) 
             {
-                // if (!GameManager.GetInstance().IsGameActive()) continue;
-                
-                try
+                while (_running)
                 {
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
-                    Debug.Log("Attempting to grab capture from Kinect!");
-                    using Capture capture = _kinect.GetCapture();
-                    Debug.Log("Successfully grabbed capture from Kinect!");
-
-                    _transformation.DepthImageToColorCamera(capture.DepthImage, _transformedDepthImage);
-                    stopwatch.Stop();
-                    Console.WriteLine($"Get Capture: {stopwatch.ElapsedMilliseconds} ms");
-
-                    if (PythonManager.IsInitialized)
+                    try
                     {
-                        stopwatch.Restart();
-                        var hl = PythonManager.ProcessFrame(capture.ColorImage);
-                        stopwatch.Stop();
-                        Console.WriteLine($"Process Frame: {stopwatch.ElapsedMilliseconds} ms");
-
-                        // // Skip frame if hand is absent, up to a few frames
-                        // if (hl.Left == null) _leftHandAbsentCount++;
-                        // else _leftHandAbsentCount = 0;
-                        // if (hl.Right == null) _rightHandAbsentCount++;
-                        // else _rightHandAbsentCount = 0;
-                        // if (_leftHandAbsentCount is >= 1 and <= 2) continue;
-                        // if (_rightHandAbsentCount is >= 1 and <= 2) continue;
-
-                        // Saves adjusted hand landmarks to HandLandmarks
+                        var hl = PythonManager.ProcessFrame(_capture.ColorImage);
                         UpdateHandLandmarks(hl, _transformedDepthImage);
                     }
-
-                    UpdateHeightMap(_transformedDepthImage, HandLandmarks);
-                    
-                } catch (Exception e) {
-                    Debug.Log(e);
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
                 }
             }
             
@@ -205,10 +176,25 @@ namespace Map
             }
         }
 
+        private void GetCaptureTask()
+        {
+            while (_running)
+            {
+                try
+                {
+                    _capture = _kinect.GetCapture();
+                    _transformation.DepthImageToColorCamera(_capture.DepthImage, _transformedDepthImage);
+                    UpdateHeightMap(_transformedDepthImage, HandLandmarks);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                }
+            }
+        }
+
         private void UpdateHeightMap(Image depthImage, HandLandmarks handLandmarks)
         {
-            Debug.Log($"{depthImage.HeightPixels} {depthImage.WidthPixels}");
-            
             // Raw depth from kinect
             short[] tempBuffer = new short[depthImage.HeightPixels * depthImage.WidthPixels];
             depthImage.CopyTo(tempBuffer);
@@ -345,12 +331,10 @@ namespace Map
             float? leftHandDepth = handLandmarks.Left == null
                 ? null
                 : depthBuffer[(int)handLandmarks.Left[0].z * depthImage.WidthPixels + 1920 - (int)handLandmarks.Left[0].x];
-                // : depthImage.GetPixel((int)handLandmarks.Left[0].z, 1920 - (int)handLandmarks.Left[0].x);
                 float? rightHandDepth = handLandmarks.Right == null
                     ? null
                     : depthBuffer[
                         (int)handLandmarks.Right[0].z * depthImage.WidthPixels + 1920 - (int)handLandmarks.Right[0].x];
-                // : depthImage.GetPixel<ushort>((int)handLandmarks.Right[0].z, 1920 - (int)handLandmarks.Right[0].x);
             var depthRange = _maximumSandDepth - _minimumSandDepth;
             
             var offsetLeft = new Vector3();
