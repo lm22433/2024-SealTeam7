@@ -41,6 +41,8 @@ namespace UI
         [SerializeField] private Button endlessModeButton;
         [SerializeField] private Button sandboxModeButton;
         [SerializeField] private Button handTrackingButton;
+
+        [SerializeField] private GameObject[] hands;
         
         [Header("Game Over Menu Settings")]
         [SerializeField] private TMP_Text gameOverTitleText;
@@ -130,6 +132,11 @@ namespace UI
             if (Input.GetKeyDown("r"))
             {
                 RestartGame();
+            }
+            
+            for (int i = 0; i < hands.Length; i++)
+            {
+                hands[i].SetActive(handTracking);
             }
         }
 

@@ -26,16 +26,17 @@ namespace Enemies.FunkyPhysics
                 Self.SetupDeath();
             }
             
+            // WOULD DIE EXPOSED
+            if (!Self.Grounded && !Self.IsDying)
+            {
+                Self.SetupDeath();
+            }
+            
             EnemyUpdate();
         }
 
         protected override void EnemyUpdate()
         {
-            if (Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0f && Self.Grounded && !Self.IsDying)
-            {
-                Self.SetupDeath();
-            }
-
             if (Self.IsDying && !_exploded)
             {
                 RaycastHit[] objs = Physics.SphereCastAll(transform.position, 50.0f, transform.forward, 1.0f);
