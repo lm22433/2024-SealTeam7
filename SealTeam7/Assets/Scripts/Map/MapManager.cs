@@ -6,6 +6,7 @@ using Enemies.Utils;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Python;
 
 namespace Map
 {
@@ -15,6 +16,7 @@ namespace Map
         public int lod;
         public int colliderLod;
         public int pathingLod;
+        public int backgroundLod;
     }
 
     public class MapManager : MonoBehaviour
@@ -66,6 +68,12 @@ namespace Map
         [SerializeField] private float bgRoughnessNoiseScale;
         [SerializeField] private int bgInterpolationMargin;
         [SerializeField] private int bgChunkMargin;
+        
+        [Header("")]
+        [Header("Hand Reconstruction Settings")]
+        [Header("")]
+        [SerializeField] private float handHeightScale;
+        [SerializeField] private float handHeightOffset;
         
         [Header("")]
         [Header("Environment Settings")]
@@ -128,7 +136,7 @@ namespace Map
             
             if (isKinectPresent) _kinect = new KinectAPI(heightScale, minLerpFactor, maxLerpFactor, minimumSandDepth, 
                 maximumSandDepth, width, height, xOffsetStart, xOffsetEnd, yOffsetStart, yOffsetEnd, ref _heightMap, 
-                blurRadius, blurSigma, OnHeightUpdate);
+                blurRadius, blurSigma, OnHeightUpdate, handHeightScale, handHeightOffset);
             else _noiseGenerator = new NoiseGenerator((int) (mapSize / _mapSpacing), noiseSpeed, noiseScale, heightScale, ref _heightMap, OnHeightUpdate);
 
             for (int z = -bgChunkMargin; z < chunkRow + bgChunkMargin; z++)
@@ -196,7 +204,7 @@ namespace Map
         }
         
         public Vector3[] GetHandPositions(int hand) {
-            if (isKinectPresent) {
+            if (isKinectPresent && PythonManager.IsInitialized) {
                 return _kinect.GetHandPositions(hand);
             }
 

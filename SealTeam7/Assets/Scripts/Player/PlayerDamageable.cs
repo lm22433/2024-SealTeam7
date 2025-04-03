@@ -10,7 +10,7 @@ namespace Player
 
         public void TakeDamage(int damage)
         {
-            int finalDamage = Mathf.Max(damage - armour, 1);
+            int finalDamage = damage *  (1 / armour);
             GameManager.GetInstance().TakeDamage(finalDamage);
             Debug.Log($"{gameObject.name} took {finalDamage} damage (Original: {damage}, Armour: {armour})");
         }
