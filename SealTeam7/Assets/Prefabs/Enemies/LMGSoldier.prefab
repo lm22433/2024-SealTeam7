@@ -106,9 +106,9 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
-  DisallowMovement: 0
-  Invulnerable: 0
   gun: {fileID: 4797994724752532913}
+  cameraSpwanChance: 0.01
+  cameraHolder: {fileID: 0}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
   m_ObjectHideFlags: 0

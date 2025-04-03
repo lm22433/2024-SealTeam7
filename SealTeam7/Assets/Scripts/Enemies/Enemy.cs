@@ -42,9 +42,9 @@ namespace Enemies
         [SerializeField] protected internal int killScore;
         
         [Header("Visual Effects")]
-        [SerializeField] private VisualEffect deathParticles;
-        [SerializeField] private Transform model;
-        [SerializeField] private Transform muzzle;
+        [SerializeField] protected VisualEffect deathParticles;
+        [SerializeField] protected Transform model;
+        [SerializeField] protected Transform muzzle;
         [Header("Projectiles")]
         [SerializeField] public ProjectileType projectileType;
         [SerializeField] public GameObject projectile;
@@ -129,11 +129,11 @@ namespace Enemies
             obj.transform.parent = EnemyManager.transform;
 
             obj.TryGetComponent(out Projectile proj);
-            proj.Init();
             proj.projectileType = projectileType;
             proj.TargetPosition = TargetPosition;
             proj.ToDamage = toDamage;
             proj.Damage = attackDamage;
+            proj.Init();
         }
 
         protected abstract float Heuristic(Node start, Node end);

@@ -78,6 +78,8 @@ MonoBehaviour:
   DisallowMovement: 0
   Invulnerable: 0
   gun: {fileID: 8504172332382226243}
+  cameraSpwanChance: 0.01
+  cameraHolder: {fileID: 0}
 --- !u!114 &3518766936964173033
 MonoBehaviour:
   m_ObjectHideFlags: 0
