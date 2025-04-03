@@ -12,11 +12,11 @@ namespace Leaderboard
         public long WavesCleared;
         public long TotalEnemiesDefeated;
         public long TotalDamageTaken;
-        public long TimeSurvived;
+        public double TimeSurvived;
         public Dictionary<string, long> EnemiesDefeated;
 
         public GameResult(string playerName, string difficulty, long score, long wavesCleared, long totalEnemies,
-            long damageTaken, long timeSurvived, Dictionary<string, long> enemiesDefeated)
+            long damageTaken, double timeSurvived, Dictionary<string, long> enemiesDefeated)
         {
             PlayerName = playerName;
             Difficulty = difficulty;

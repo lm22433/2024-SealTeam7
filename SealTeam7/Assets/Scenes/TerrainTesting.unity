@@ -704,7 +704,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6961489748271865038, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
   m_PrefabInstance: {fileID: 405436456}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2105704614}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31f049bbb64a4ce0b078abaae085b1d8, type: 3}
@@ -1151,6 +1151,11 @@ MonoBehaviour:
   scalingFactor: 1
   m_posOffsetData: {fileID: 0}
   listenerMask: 1
+--- !u!1 &586035709 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5768996772893462416, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+  m_PrefabInstance: {fileID: 1013589091}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &594167916
 GameObject:
   m_ObjectHideFlags: 0
@@ -1808,6 +1813,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 594167918}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+      propertyPath: _lerpFactor
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: _thresholdDst
       value: 1.5
       objectReference: {fileID: 0}
@@ -2075,7 +2084,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6961489748271865038, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
   m_PrefabInstance: {fileID: 1013589091}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 586035709}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31f049bbb64a4ce0b078abaae085b1d8, type: 3}
@@ -3873,6 +3882,18 @@ PrefabInstance:
       propertyPath: playerHUD
       value: 
       objectReference: {fileID: 1761516443}
+    - target: {fileID: 4377566423273635377, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: hands.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4377566423273635377, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'hands.Array.data[0]'
+      value: 
+      objectReference: {fileID: 586035709}
+    - target: {fileID: 4377566423273635377, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
+      propertyPath: 'hands.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2105704614}
     - target: {fileID: 4830804334825633982, guid: 247f51f98f821214eae4231bbfef129a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -5330,6 +5351,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2105704614 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5768996772893462416, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
+  m_PrefabInstance: {fileID: 405436456}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2136277955
 GameObject:
   m_ObjectHideFlags: 0
