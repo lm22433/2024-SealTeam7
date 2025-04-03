@@ -7,5 +7,6 @@ namespace Projectiles
         SniperProjectile,
         TankProjectile,
         HelicopterProjectile,
+        MortarProjectile,
     }
 }
