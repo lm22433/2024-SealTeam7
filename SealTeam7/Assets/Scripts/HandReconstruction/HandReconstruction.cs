@@ -76,6 +76,7 @@ public class HandReconstruction : MonoBehaviour
                 if (alpha <= 0.005) {
                     particleEffect.SetActive(false);
                 }
+                
                 _renderer.material.SetFloat("_TransparancyScalar", Mathf.Lerp(alpha, 0, fadePercent));
 
             } else {
@@ -97,7 +98,9 @@ public class HandReconstruction : MonoBehaviour
                 float alpha = _renderer.material.GetFloat("_TransparancyScalar");
                 if (alpha <= 0.005) {
                     particleEffect.SetActive(false);
+                    positions[0] = new Vector3(-3000, 0, -100);
                 }
+
                 _renderer.material.SetFloat("_TransparancyScalar", Mathf.Lerp(alpha, 0, fadeRate));
 
                 return;
