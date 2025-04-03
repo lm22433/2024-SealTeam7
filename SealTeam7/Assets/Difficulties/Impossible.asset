@@ -13,15 +13,5 @@ MonoBehaviour:
   m_Name: Impossible
   m_EditorClassIdentifier: 
   difficultyName: IMPOSSIBLE
-  difficultyType: 3
-  initialGroupCount: 15
-  growthFactor: 1.5
-  exponent: 0.8
-  initialSpawnDelay: 0.75
-  minimumSpawnDelay: 0.2
-  decayFactor: 0.2
-  initialWaveTimeLimit: 12
-  minimumWaveTimeLimit: 8
-  timeReductionPerWave: 2.5
-  initialCargoPlaneDelay: 30
-  cargoPlaneSpawnDelay: 30
+  difficultyType: 4
+  groupSizeMultiplier: 4
