@@ -99,6 +99,7 @@ public class HandReconstruction : MonoBehaviour
                 if (alpha <= 0.005) {
                     particleEffect.SetActive(false);
                     positions[0] = new Vector3(-3000, 0, -100);
+                    gameObject.transform.localPosition = positions[0];
                 }
 
                 _renderer.material.SetFloat("_TransparancyScalar", Mathf.Lerp(alpha, 0, fadeRate));
