@@ -89,7 +89,7 @@ namespace Game
             int minutes = (int) _timer / 60;
             int seconds = (int) _timer % 60;
             string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
-            timerText.SetText($"{minutes}:{secondsStr}");
+            timerText.SetText($"{minutes}m {secondsStr}s");
 
             healthBar.transform.localScale = new Vector3(
                 (float) _health / maxHealth, 
