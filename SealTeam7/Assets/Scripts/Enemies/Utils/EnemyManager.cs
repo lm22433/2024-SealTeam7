@@ -211,17 +211,17 @@ namespace Enemies.Utils
                 yield return EndWave();
 
                 // Wave 2
-                Spawn(EnemyType.FastSoldier, 5);
+                // Spawn(EnemyType.FastSoldier, 5);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
                 
-                Spawn(EnemyType.FastSoldier, new[] { 3, 4, 6, 7 });
+                // Spawn(EnemyType.FastSoldier, new[] { 3, 4, 6, 7 });
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
-                yield  return ReleaseSpawningEnemies();
+                yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
                 
-                Spawn(EnemyType.FastSoldier, new[] { 3, 4, 5, 6, 7 });
+                // Spawn(EnemyType.FastSoldier, new[] { 3, 4, 5, 6, 7 });
                 yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 6 }, 4, 5);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
@@ -352,7 +352,7 @@ namespace Enemies.Utils
 
         private IEnumerator ReleaseSpawningEnemies(bool immediate = false)
         {
-            if (!immediate) yield return Wait(0.2f);
+            if (!immediate) yield return Wait(0.4f);
             
             foreach (var spawningEnemy in _spawningEnemies)
             {
@@ -377,8 +377,8 @@ namespace Enemies.Utils
                 
                 e.TryGetComponent(out Enemy enemyComp);
                 enemyComp.Init();
-                // enemyComp.DisallowMovement = true;
-                // enemyComp.Spawning = false;  // TODO: set to true and fix physics
+                enemyComp.DisallowMovement = true;
+                enemyComp.Spawning = true;  // TODO: set to true and fix physics
                 _spawningEnemies.AddLast(enemyComp);
 
                 e.TryGetComponent(out BasePhysics basePhysics);

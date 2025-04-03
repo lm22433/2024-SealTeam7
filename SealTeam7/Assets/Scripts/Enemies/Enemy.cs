@@ -267,21 +267,21 @@ namespace Enemies
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
-            // if (Spawning)
-            // {
-            //     // If the enemy is spawning, just ride the sand and don't move
-            //     transform.position = new Vector3(
-            //         transform.position.x,
-            //         MapManager.GetInstance().GetHeight(transform.position),
-            //         transform.position.z);
-            //     // Rb.isKinematic = true;
-            //     Rb.linearVelocity = Vector3.zero;
-            //     Rb.angularVelocity = Vector3.zero;
-            // }
-            // else
-            // {
-            //     // Rb.isKinematic = false;
-            // }
+            if (Spawning)
+            {
+                // If the enemy is spawning, just ride the sand and don't move
+                transform.position = new Vector3(
+                    transform.position.x,
+                    MapManager.GetInstance().GetHeight(transform.position),
+                    transform.position.z);
+                // Rb.isKinematic = true;
+                Rb.linearVelocity = Vector3.zero;
+                Rb.angularVelocity = Vector3.zero;
+            }
+            else
+            {
+                // Rb.isKinematic = false;
+            }
             
             if (!DisallowMovement) Rb.rotation = Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime);
             
