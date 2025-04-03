@@ -13,6 +13,7 @@ namespace Enemies
 {
     public enum EnemyState
     {
+        Spawning,
         Moving,
         AttackCore,
         AttackHands,
@@ -52,10 +53,8 @@ namespace Enemies
         [Header("Sound Effects")]
         [SerializeField] protected AK.Wwise.Event gunFireSound;
         [SerializeField] protected AK.Wwise.Event deathSoundEffect;
-
-        public bool DisallowMovement = false;
-        public bool Spawning = false;
-
+        
+        protected bool DisallowMovement;
         protected float SqrAttackRange;
         protected float SqrStopMovingThreshold;
         protected EnemyManager EnemyManager;
@@ -89,7 +88,7 @@ namespace Enemies
             model.gameObject.SetActive(true);
             deathParticles.Stop();
 
-            State = EnemyState.Moving;
+            State = EnemyState.Spawning;
             Path = Array.Empty<Vector3>();
             TargetPosition = EnemyManager.GetInstance().godlyCore.transform.position;
             TargetRotation = Quaternion.identity;
@@ -99,12 +98,11 @@ namespace Enemies
             LastPathFind = PathFindInterval;
             DeathDuration = 3.0f;
             DisallowMovement = false;
-            Spawning = false;
         }
 
 		public virtual void SetupDeath()
         {
-            if (State == EnemyState.Dying || Spawning) return;
+            if (State is EnemyState.Dying or EnemyState.Spawning) return;
             
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
             {
@@ -120,6 +118,11 @@ namespace Enemies
 			State = EnemyState.Dying;
 		}
 
+        public void SetState(EnemyState value)
+        {
+            State = value;
+        }
+        
         protected virtual void Attack(PlayerDamageable toDamage)
         {
             gunFireSound.Post(gameObject);
@@ -266,27 +269,22 @@ namespace Enemies
         private void FixedUpdate()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
-            if (Spawning)
-            {
-                // If the enemy is spawning, just ride the sand and don't move
-                transform.position = new Vector3(
-                    transform.position.x,
-                    MapManager.GetInstance().GetHeight(transform.position),
-                    transform.position.z);
-                // Rb.isKinematic = true;
-                Rb.linearVelocity = Vector3.zero;
-                Rb.angularVelocity = Vector3.zero;
-            }
-            else
-            {
-                // Rb.isKinematic = false;
-            }
-            
+
             if (!DisallowMovement) Rb.rotation = Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime);
             
             switch (State)
             {
+                case EnemyState.Spawning:
+                {
+                    // If the enemy is spawning, just ride the sand and don't move
+                    transform.position = new Vector3(
+                        transform.position.x,
+                        MapManager.GetInstance().GetHeight(transform.position),
+                        transform.position.z);
+                    Rb.linearVelocity = Vector3.zero;
+                    Rb.angularVelocity = Vector3.zero;
+                    break;
+                }
                 case EnemyState.Moving:
                 {
                     if (!DisallowMovement) Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);

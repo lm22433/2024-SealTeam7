@@ -356,8 +356,7 @@ namespace Enemies.Utils
             
             foreach (var spawningEnemy in _spawningEnemies)
             {
-                spawningEnemy.DisallowMovement = false;
-                spawningEnemy.Spawning = false;
+                spawningEnemy.SetState(EnemyState.Moving);
             }
             
             _spawningEnemies.Clear();
@@ -377,8 +376,6 @@ namespace Enemies.Utils
                 
                 e.TryGetComponent(out Enemy enemyComp);
                 enemyComp.Init();
-                enemyComp.DisallowMovement = true;
-                enemyComp.Spawning = true;
                 _spawningEnemies.AddLast(enemyComp);
 
                 e.TryGetComponent(out BasePhysics basePhysics);

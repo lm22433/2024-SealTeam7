@@ -47,10 +47,7 @@ namespace Enemies
             _deathTime += Time.deltaTime;
 
             // Stop moving if vehicle is on its side
-            if (!DisallowMovement && Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f)
-            {
-                DisallowMovement = true;
-            }
+            DisallowMovement = Vector3.Dot(transform.up, MapManager.GetInstance().GetNormal(transform.position)) < 0.5f;
             
             switch (State)
             {
