@@ -89,7 +89,7 @@ namespace Game
             int minutes = (int) _timer / 60;
             int seconds = (int) _timer % 60;
             string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
-            timerText.SetText($"{minutes}:{secondsStr}");
+            timerText.SetText($"{minutes}m {secondsStr}s");
 
             healthBar.transform.localScale = new Vector3(
                 (float) _health / maxHealth, 
@@ -221,9 +221,12 @@ namespace Game
         
         public static GameManager GetInstance() => _instance;
         public bool IsGameActive() => _gameActive;
+        public Difficulty GetDifficulty() => _difficulty;
         public float GetTimer() => _timer;
+        public float GetTimeSurvived() => _timeSurvived;
         public int GetScore() => _score;
         public bool IsSandboxMode() => _sandboxMode;
+        public int GetDamageTaken() => maxHealth - _health;
         public bool IsEndlessMode() => _endlessMode;
         public bool IsHandTracking() => _handTracking;
     }
