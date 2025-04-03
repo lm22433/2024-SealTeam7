@@ -320,7 +320,7 @@ namespace Enemies.Utils
                 {
                     for (var x = 0; x < numColumns; x++)
                     {
-                        var pos = startPos + zVector * (z * spacing) + xVector * (x * spacing);
+                        var pos = startPos + zVector * (z * spacing) - xVector * (x * spacing);
                         pos.y = MapManager.GetInstance().GetHeight(pos);
                         SpawnEnemies(enemyData.FirstOrDefault(e => e.enemyType == enemy), pos, spawnRotation);
                         yield return new WaitForSeconds(timeInterval);
@@ -362,25 +362,26 @@ namespace Enemies.Utils
 
         public void SpawnEnemies(EnemyData enemy, Vector3 spawnPosition, Quaternion spawnRotation, int enemyCount = 1)
         {
+            if (!enemy.tooltipShown)
+            {
+                Toast(enemy.tooltipText, enemyTooltipDuration);
+                enemy.tooltipShown = true;
+            }
+            
             for (int i = 0; i < enemyCount; i++)
             {
                 GameObject e = EnemyPool.GetInstance().GetFromPool(enemy, spawnPosition, spawnRotation);
                 
-                var enemyComp = e.GetComponent<Enemy>();
+                e.TryGetComponent(out Enemy enemyComp);
                 enemyComp.Init();
                 enemyComp.DisallowMovement = true;
                 enemyComp.Spawning = false;  // TODO: set to true and fix physics
                 _spawningEnemies.AddLast(enemyComp);
 
-                e.GetComponent<BasePhysics>().Init();
+                e.TryGetComponent(out BasePhysics basePhysics);
+                basePhysics.Init();
                 e.transform.SetParent(transform);
                 _enemyCount++;
-
-                if (!enemy.tooltipShown)
-                {
-                    Toast(enemy.tooltipText, enemyTooltipDuration);
-                    enemy.tooltipShown = true;
-                }
             }
         }
 
