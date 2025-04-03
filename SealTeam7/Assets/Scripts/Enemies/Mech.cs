@@ -26,6 +26,11 @@ namespace Enemies
         [SerializeField] private float missileTargetChangeTime;
         [SerializeField] private float newMissileTargetRadius;
         [SerializeField] private Transform gun;
+        [SerializeField] private float randomTargetMaxTime;
+        [SerializeField] private float gracePeriod;
+        [SerializeField] private float detectRadius;
+        private float rollTime;
+        private float targetTime;
         private Projectile _proj;
         private float _lastTargetChange;
         
@@ -36,7 +41,8 @@ namespace Enemies
             
             BuriedAmount = 3.0f;
             _attackDelay = 0.0f;
-            State = EnemyState.AttackCore;
+            State = EnemyState.Idle;
+            msphere.SetActive(false);
             
             _lastTargetChange = 0f;
             _proj = null;
@@ -65,11 +71,19 @@ namespace Enemies
         protected override void UpdateState()
         {
             _attackDelay += Time.deltaTime;
-            if (State is EnemyState.Moving) _attackDelay = 0.0f;
-            else if (_attackDelay >= 10.0f)
+            if (_proj)
+            {
+                State = EnemyState.Moving;
+            }
+            else if (State is EnemyState.Idle && _attackDelay >= 5.0f)
             {
                 _attackDelay = 0.0f;
-                State = EnemyState.Moving;
+                State = EnemyState.AttackCore;
+            }
+            else if (_attackDelay >= 5.0f)
+            {
+                _attackDelay = 0.0f;
+                State = EnemyState.Idle;
             }
         }
 
@@ -104,6 +118,8 @@ namespace Enemies
             //     Debug.Log(normal);
             //     primaryRB.AddForce(normal.normalized * 9800f, ForceMode.Impulse);
             // }
+            
+            transform.rotation = Quaternion.LookRotation(EnemyManager.GetInstance().godlyCore.transform.position - transform.position);
 
             if (transform.position.y < (MapManager.GetInstance().GetHeight(transform.position) + (transform.lossyScale.y * 0.6f)))
             {
@@ -112,14 +128,19 @@ namespace Enemies
             }
             
             _lastTargetChange += Time.deltaTime;
+            targetTime += Time.deltaTime;
 
             if (_proj)
             {
                 if (!_proj.gameObject.activeInHierarchy) _proj = null;
-                else if (_lastTargetChange > missileTargetChangeTime)
+
+                if (rollTime >= gracePeriod)
                 {
-                    var randomCircle = Random.insideUnitCircle.normalized * newMissileTargetRadius;
-                    _proj.TargetPosition = _proj.transform.position + new Vector3(randomCircle.x, 0f, randomCircle.y);
+                    if ((transform.position - _proj.transform.position).magnitude < detectRadius)
+                    {
+                        ProjectilePool.GetInstance().ReturnToPool(_proj.projectileType, _proj.gameObject);
+                        this.SetupDeath();
+                    }
                 }
             }
             
@@ -127,6 +148,7 @@ namespace Enemies
             {
                 case EnemyState.Moving:
                 {
+                    rollTime += Time.deltaTime;
                     mmodel.SetActive(false);
                     msphere.SetActive(true);
                     if (Grounded)
@@ -153,6 +175,12 @@ namespace Enemies
                     msphere.SetActive(false);
                     break;
                 case EnemyState.AttackHands:
+                {
+                    mmodel.SetActive(true);
+                    msphere.SetActive(false);
+                    break;
+                }
+                case EnemyState.Idle:
                 {
                     mmodel.SetActive(true);
                     msphere.SetActive(false);
