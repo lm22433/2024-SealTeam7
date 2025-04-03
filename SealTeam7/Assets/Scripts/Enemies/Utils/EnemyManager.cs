@@ -11,6 +11,7 @@ using Player;
 using Projectiles;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 namespace Enemies.Utils
@@ -68,6 +69,7 @@ namespace Enemies.Utils
         private LinkedList<Enemy> _spawningEnemies = new();
         private int _enemiesKilled;
         private readonly Dictionary<EnemyType, int> _enemiesKilledDetailed = new();
+        private float _endlessSpawnGroupMultiplier = 1f;
 
         private void Awake()
         {
@@ -112,7 +114,6 @@ namespace Enemies.Utils
             if (!GameManager.GetInstance().IsSandboxMode())
             {
                 StartCoroutine(SpawnWaves());
-                // StartCoroutine(SpawnCargoPlanes());
             }
         }
 
@@ -137,31 +138,6 @@ namespace Enemies.Utils
             if (!_pathRequestQueue.TryDequeue(out var request)) return;
             _pathFinder.FindPathAsync(request.Start, request.End, pathingDepth, request.Heuristic, request.Callback);
         }
-
-        // private IEnumerator SpawnCargoPlanes()
-        // {
-        //     yield return new WaitForSeconds(initialStartDelay);
-        //     yield return new WaitForSeconds(_difficulty.initialCargoPlaneDelay);
-        //     
-        //     while (GameManager.GetInstance().IsGameActive())
-        //     {
-        //         yield return new WaitUntil(() => _enemyCount < maxEnemyCount);
-        //             
-        //         Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        //
-        //         var cargo = enemyData[0];
-        //         
-        //         SpawnEnemies(cargo, spawn.position, spawn.rotation);
-        //         
-        //         if (!cargo.tooltipShown)
-        //         {
-        //             GameManager.GetInstance().DisplayTooltip(cargo.tooltipText, enemyTooltipDuration);
-        //             cargo.tooltipShown = true;
-        //         }
-        //         
-        //         yield return new WaitForSeconds(_difficulty.cargoPlaneSpawnDelay);
-        //     }
-        // }
 
         private IEnumerator SpawnWaves()
         {
@@ -198,12 +174,12 @@ namespace Enemies.Utils
             {
                 yield return new WaitForSeconds(5f);
                 _currentWave = 1;
-                
+
                 // Wave 1
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
-                
+
                 // Wave 2
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
@@ -213,33 +189,33 @@ namespace Enemies.Utils
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
                 yield return EndWave();
-                
+
                 // Wave 3
                 yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 6, 3);
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
-                
+
                 yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 4, 5, 6, 7 }, 4, 5);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
-                
+
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 5, 7 }, 5, 3f);
                 yield return EndWave();
-                
+
                 // Wave 4
                 yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 7 }, 2, 3f);
                 yield return Wait(10f);
-                
+
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 5, 6, 7 }, 4, 6);
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
                 yield return ReleaseSpawningEnemies();
                 yield return EndWave();
-                
+
                 // Wave 5
-                Toast("A HUGE wave of enemies is approaching...", duration: 10f);
+                Toast("A HUGE wave of enemies is approaching...", duration: 5f);
                 yield return Wait(4f);
-                
+
                 yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3, 3f);
                 yield return SpawnAtInterval(EnemyType.Spawner, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
                 yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 5, 7 }, 5, 8);
@@ -260,52 +236,111 @@ namespace Enemies.Utils
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
                 yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 5, 6, 7 }, 2, 3f);
                 yield return EndWave();
-                
-                // Wave 6
-                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 5, 6 }, 5, 8);
-                yield return SpawnAtInterval(EnemyType.Necromancer, 8, 5);
-                yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3);
-                yield return Wait(10f);
-                
-                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 5, 6 }, 5, 8);
-                yield return ReleaseSpawningEnemies();
-                yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 3);
-                yield return EndWave();
-                
-                // Wave 7
-                yield return SpawnAtInterval(EnemyType.Burrower, new[] { 2 }, 4);
-                yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 8, 4);
-                yield return ReleaseSpawningEnemies();
-                yield return SpawnAtInterval(EnemyType.KamikazePlane, new[] { 3, 5, 7 }, 3);
-                yield return Wait(10f);
-                
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
-                yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 8, 4);
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
-                yield return SpawnGrids(EnemyType.FastSoldier, new[] { 1, 9 }, 1, 10);
-                yield return EndWave();
-                
-                // Wave 8
-                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 4 }, 5, 8);
-                yield return SpawnGrid(EnemyType.RpgSoldier, 5, 8, 4);
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 6, 7 }, 2, 2);
-                yield return ReleaseSpawningEnemies();
-                yield return SpawnAtInterval(EnemyType.AerialSpawner, new[] { 2, 8 }, 2);
-                for (var i = 0; i < 6; i++)
-                {
-                    yield return SpawnGrid(EnemyType.FastSoldier, 1, 1, 10);
-                    yield return ReleaseSpawningEnemies();
-                    yield return SpawnGrid(EnemyType.FastSoldier, 9, 1, 10);
-                    yield return ReleaseSpawningEnemies();
-                }
 
-                // Wave -
-                Toast("Get a load of this guy!", duration: 5f);
-                Spawn(EnemyType.Mech, 0);
-                yield return EndWave();
-   
-                // Wave 10
-                yield return SpawnAtInterval(EnemyType.Mech, new[] { 4, 5, 6 }, 2, 3f);
+                // Wave 6 (later, wave 11, 16...)
+                while (true)
+                {
+                    yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 5, 6 }, 5, 8);
+                    yield return SpawnAtInterval(EnemyType.Necromancer, 8, 5);
+                    yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3);
+                    yield return Wait(5f);
+
+                    yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 5, 6 }, 5, 8);
+                    yield return ReleaseSpawningEnemies();
+                    yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 3);
+                    yield return EndWave();
+
+                    // Wave 7
+                    yield return SpawnAtInterval(EnemyType.Burrower, new[] { 2 }, 4);
+                    yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 8, 4);
+                    yield return ReleaseSpawningEnemies();
+                    yield return SpawnAtInterval(EnemyType.KamikazePlane, new[] { 3, 5, 7 }, 3);
+                    yield return Wait(5f);
+
+                    yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
+                    yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 8, 4);
+                    yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
+                    yield return SpawnGrids(EnemyType.FastSoldier, new[] { 1, 9 }, 1, 10);
+                    yield return EndWave();
+
+                    // Wave 8
+                    yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 4 }, 5, 8);
+                    yield return SpawnGrid(EnemyType.RpgSoldier, 5, 8, 4);
+                    yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 6, 7 }, 2, 2);
+                    yield return ReleaseSpawningEnemies();
+                    yield return SpawnAtInterval(EnemyType.AerialSpawner, new[] { 2, 8 }, 2, background: true);
+                    for (var i = 0; i < 6; i++)
+                    {
+                        yield return SpawnGrid(EnemyType.FastSoldier, 1, 1, 10);
+                        yield return ReleaseSpawningEnemies();
+                        yield return Wait(1f);
+                        yield return SpawnGrid(EnemyType.FastSoldier, 9, 1, 10);
+                        yield return ReleaseSpawningEnemies();
+                        yield return Wait(1f);
+                    }
+                    yield return EndWave();
+
+                    // Wave 9
+                    yield return SpawnAtInterval(EnemyType.KamikazePlane, new[] { 3, 4 }, 6, background: true,
+                        columns: 2);
+                    yield return SpawnAtInterval(EnemyType.MortarTank, new[] { 6, 7 }, 6, background: true);
+                    yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 3, 4, 5 }, 8, 4);
+                    yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
+                    yield return ReleaseSpawningEnemies();
+                    yield return Wait(10f);
+
+                    yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 3, 4, 5 }, 8, 4);
+                    yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
+                    yield return ReleaseSpawningEnemies();
+                    yield return EndWave();
+
+                    // Wave 10
+                    Toast("A MASSIVE wave of enemies is approaching...", duration: 5f);
+                    yield return Wait(4f);
+
+                    yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 3, 7 }, 10, background: true,
+                        columns: 2);
+                    yield return SpawnAtInterval(EnemyType.KamikazePlane, new[] { 4, 6 }, 10, background: true,
+                        columns: 3);
+                    yield return SpawnAtInterval(EnemyType.Chinook, new[] { 5 }, 10, background: true, columns: 2);
+                    yield return SpawnAtInterval(EnemyType.AerialSpawner, new[] { 2, 8 }, 5, background: true,
+                        columns: 1);
+                    yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5 }, 10, background: true, columns: 3);
+                    for (var i = 0; i < 5; i++)
+                    {
+                        yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 6, 7 }, 5, 8);
+                        yield return SpawnGrid(EnemyType.SniperSoldier, 1, 3, 3);
+                        yield return ReleaseSpawningEnemies();
+                        yield return Wait(6f);
+                    }
+                    yield return Wait(10f);
+
+                    yield return SpawnAtInterval(EnemyType.Chinook, 3, 10, background: true, columns: 2);
+                    yield return SpawnAtInterval(EnemyType.Necromancer, 6, 10, background: true, columns: 2);
+                    yield return SpawnAtInterval(EnemyType.MortarTank, 7, 5, background: true, columns: 3);
+                    yield return SpawnAtInterval(EnemyType.Burrower, 8, 6, background: true, columns: 2);
+                    for (var i = 0; i < 5; i++)
+                    {
+                        yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 3, 4, 5 }, 8, 4);
+                        yield return SpawnGrid(EnemyType.SniperSoldier, 9, 3, 3);
+                        yield return ReleaseSpawningEnemies();
+                        yield return Wait(6f);
+                    }
+                    yield return EndWave();
+
+                    // Finish game or increase multiplier and go back to wave 6
+                    if (GameManager.GetInstance().IsEndlessMode())
+                    {
+                        _endlessSpawnGroupMultiplier += 0.5f;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                
+                // Easy/normal/hard/impossible mode finished
+                GameManager.GetInstance().EndGame();
             }
         }
         
@@ -327,8 +362,8 @@ namespace Enemies.Utils
         
         private IEnumerator SpawnGrids(EnemyType enemy, int[] spawnPoints, float rows, float columns)
         {
-            var numRows = (int) (rows*Mathf.Sqrt(_difficulty.groupSizeMultiplier));
-            var numColumns = (int) (columns*Mathf.Sqrt(_difficulty.groupSizeMultiplier));
+            var numRows = (int) (rows*Mathf.Sqrt(_endlessSpawnGroupMultiplier*_difficulty.groupSizeMultiplier));
+            var numColumns = (int) (columns*Mathf.Sqrt(_endlessSpawnGroupMultiplier*_difficulty.groupSizeMultiplier));
             var spacing = 8f;  // TODO: set spacing depending on enemy type?
             var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
             var timePerGrid = 0.1f;
@@ -362,23 +397,43 @@ namespace Enemies.Utils
             }
         }
 
-        private IEnumerator SpawnAtInterval(EnemyType enemy, int spawnPoint, int count, float interval = 3f) =>
-            SpawnAtInterval(enemy, new[] { spawnPoint }, count, interval);
+        private IEnumerator SpawnAtInterval(EnemyType enemy, int spawnPoint, int count, float interval = 3f, bool background = false, float columns = 1f) =>
+            SpawnAtInterval(enemy, new[] { spawnPoint }, count, interval, background, columns);
         
-        private IEnumerator SpawnAtInterval(EnemyType enemy, int[] spawnPoints, int count, float interval = 3f)
+        private IEnumerator SpawnAtInterval(EnemyType enemy, int[] spawnPoints, int count, float interval = 3f, bool background = false, float columns = 1f)
         {
-            var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
-            var scaledCount = (int) (count*_difficulty.groupSizeMultiplier);
-            
-            for (var i = 0; i < scaledCount; i++)
+            if (background)
             {
-                foreach (var spawnPoint in spawnPoints)
-                {
-                    SpawnEnemies(data, this.spawnPoints[spawnPoint].position, this.spawnPoints[spawnPoint].rotation);
-                }
+                StartCoroutine(SpawnAtInterval(enemy, spawnPoints, count, interval));
+            }
+            else
+            {
+                var numColumns = (int) (columns*_endlessSpawnGroupMultiplier*_difficulty.groupSizeMultiplier);
+                var spacing = 30f;  // TODO: set spacing depending on enemy type?
+                var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
+                var scaledCount = (int)(count*_difficulty.groupSizeMultiplier);
 
-                yield return ReleaseSpawningEnemies(immediate: true);
-                yield return new WaitForSeconds(interval);
+                for (var i = 0; i < scaledCount; i++)
+                {
+                    foreach (var spawnPoint in spawnPoints)
+                    {
+                        var spawnPosition = this.spawnPoints[spawnPoint].position;
+                        var spawnRotation = this.spawnPoints[spawnPoint].rotation.normalized;
+                        var xVector = spawnRotation * Vector3.right;
+                        var gridWidth = (numColumns - 1) * spacing;
+                        var startPos = spawnPosition - gridWidth / 2 * -xVector;
+                        
+                        for (var x = 0; x < numColumns; x++)
+                        {
+                            var pos = startPos - xVector * (x * spacing);
+                            pos.y = MapManager.GetInstance().GetHeight(pos);
+                            SpawnEnemies(data, pos, spawnRotation);
+                        }
+                    }
+
+                    yield return ReleaseSpawningEnemies(immediate: true);
+                    yield return new WaitForSeconds(interval);
+                }
             }
         }
 
