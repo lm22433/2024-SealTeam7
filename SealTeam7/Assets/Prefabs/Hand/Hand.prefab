@@ -208,6 +208,7 @@ MonoBehaviour:
   - 56
   handMaterial: {fileID: 0}
   maxHandSpeed: 0
+  particleEffect: {fileID: 440384911602824372}
   maxFramesWithoutHand: 10
   startAlpha: 0.1
   fadeRate: 0.08
