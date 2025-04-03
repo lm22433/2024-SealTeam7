@@ -86,7 +86,7 @@ MonoBehaviour:
   moveSpeed: 15
   acceleration: 20
   groundedOffset: 5
-  flyHeight: 200
+  flyHeight: 300
   aimSpeed: 10
   attackRange: 110
   attackInterval: 2
@@ -107,6 +107,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  Grounded: 0
   horizontalProps:
   - {fileID: 5474418017215342941}
   - {fileID: 3727117144722257347}

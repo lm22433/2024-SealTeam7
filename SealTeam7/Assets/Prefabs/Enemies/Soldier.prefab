@@ -106,9 +106,7 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: a7c90d926da27e946b82d60590552ddb, type: 2}
-  DisallowMovement: 0
-  State: 0
-  TargetPosition: {x: 0, y: 0, z: 0}
+  Grounded: 0
   gun: {fileID: 4797994724752532913}
   cameraSpwanChance: 2
   cameraHolder: {fileID: 3442655919550094419}
@@ -127,7 +125,7 @@ MonoBehaviour:
   gravityDefiance: 10
   defianceThreshold: 20
   sinkFactor: 10
-  fallDeathVelocityY: 40
+  fallDeathVelocityY: 80
   jumpForce: 35
   laplaceLocation: 0
   laplaceScale: 2

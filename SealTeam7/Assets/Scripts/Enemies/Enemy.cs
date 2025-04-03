@@ -70,7 +70,7 @@ namespace Enemies
         protected float PathFindInterval;
         protected float LastPathFind;
 		protected float DeathDuration;
-        protected internal bool Grounded;
+        [SerializeField] protected internal bool Grounded;
         protected internal float Buried;
         protected internal float BuriedAmount = 0.5f;
         private int _handIndex;
@@ -279,7 +279,7 @@ namespace Enemies
                     // If the enemy is spawning, just ride the sand and don't move
                     transform.position = new Vector3(
                         transform.position.x,
-                        MapManager.GetInstance().GetHeight(transform.position),
+                        flyHeight == 0 ? MapManager.GetInstance().GetHeight(transform.position) : flyHeight,
                         transform.position.z);
                     Rb.linearVelocity = Vector3.zero;
                     Rb.angularVelocity = Vector3.zero;
