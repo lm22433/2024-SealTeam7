@@ -167,18 +167,17 @@ namespace Enemies.Utils
         {
             if (_difficulty.difficultyType == DifficultyType.Tutorial)
             {
-                _currentWave = 0;
-                IncrementWaveNumber();
                 yield return Wait(3f);
-                
+                _currentWave = 1;
+
                 Toast("Welcome to the tutorial! Bury the soldiers to protect your base. Watch out – your hands take damage too!", 10f);
                 yield return Wait(2f);
                 yield return SpawnGrid(EnemyType.Soldier, spawnPoint: 5, rows: 4, columns: 6);
-                yield return Wait(20f);
+                yield return EndWave();
                 
                 Toast("Vehicles need to be buried multiple times. Try getting them close together and killing them all in two swift motions!", 10f);
                 yield return SpawnAtInterval(EnemyType.Tank, spawnPoint: 4, count: 10, interval: 3f);
-                yield return Wait(20f);
+                yield return EndWave();
                 
                 Toast("These enemies burrow under the sand and must be dug out, not buried. Look out for their dust trails!", 10f);
                 for (var i = 3; i <= 7; i++)
@@ -186,10 +185,10 @@ namespace Enemies.Utils
                     Spawn(EnemyType.Burrower, spawnPoint: i);
                     yield return new WaitForSeconds(1f);
                 }
-                yield return Wait(11f);
+                yield return EndWave();
                 
-                Toast("That's it for the tutorial! Remember to read the popups as new enemies arrive. Good luck – now shift some sand!", 8f);
-                yield return Wait(8f);
+                Toast("That's it for the tutorial! Remember to read the popups as new enemies arrive. Good luck – now shift some sand!", 6f);
+                yield return Wait(6f);
                 
                 // Return to main menu
                 MapManager.GetInstance().Quit();
@@ -199,10 +198,9 @@ namespace Enemies.Utils
             else
             {
                 yield return new WaitForSeconds(5f);
-                _currentWave = 0;
+                _currentWave = 1;
                 
                 // Wave 1
-                IncrementWaveNumber();
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
@@ -210,10 +208,9 @@ namespace Enemies.Utils
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
                 yield return ReleaseSpawningEnemies();
-                yield return Wait(30f);
+                yield return EndWave();
 
                 // Wave 2
-                IncrementWaveNumber();
                 Spawn(EnemyType.FastSoldier, 5);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
@@ -228,10 +225,9 @@ namespace Enemies.Utils
                 yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 6 }, 4, 5);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
-                yield return Wait(30f);
+                yield return EndWave();
 
                 // Wave 3
-                IncrementWaveNumber();
                 yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 6, 3);
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
                 yield return ReleaseSpawningEnemies();
@@ -242,22 +238,21 @@ namespace Enemies.Utils
                 yield return Wait(10f);
 
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 5, 7 }, 5, 3f);
-                yield return Wait(20f);
+                yield return EndWave();
 
                 // Wave 4
-                IncrementWaveNumber();
                 yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 7 }, 2, 3f);
                 yield return Wait(10f);
                 
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 5, 6, 7 }, 4, 6);
                 yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
                 yield return ReleaseSpawningEnemies();
-                yield return Wait(30f);
+                yield return EndWave();
                 
-                Toast("A HUGE wave of enemies is approaching...", duration: 10f);
-
                 // Wave 5
-                IncrementWaveNumber();
+                Toast("A HUGE wave of enemies is approaching...", duration: 10f);
+                yield return Wait(4f);
+                
                 yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3, 3f);
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
                 yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 5, 7 }, 5, 8);
@@ -277,10 +272,9 @@ namespace Enemies.Utils
                 yield return ReleaseSpawningEnemies();
                 yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
                 yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 5, 6, 7 }, 2, 3f);
-                yield return Wait(40f);
-                
+                yield return EndWave();
+
                 // Wave 6
-                IncrementWaveNumber();
             }
         }
         
@@ -305,11 +299,12 @@ namespace Enemies.Utils
             var numRows = (int) rows;  //TODO: scale by difficulty multiplier
             var numColumns = (int) columns;
             var spacing = 8f;  // TODO: set spacing depending on enemy type?
-            var timeInterval = 0.005f;  // TODO: set depending on num rows and columns?
             var data = enemyData.FirstOrDefault(e => e.enemyType == enemy);
+            var timePerGrid = 0.1f;
+            var timePerEnemy = timePerGrid/(numRows*numColumns);
+            var enemiesToSpawnPerFrame = (int)(Time.smoothDeltaTime/timePerEnemy);
+
             var i = 0;
-            var enemiesToSpawnPerFrame = (int)(Time.smoothDeltaTime/timeInterval);
-            
             foreach (var spawnPoint in spawnPoints)
             {
                 var spawnPosition = this.spawnPoints[spawnPoint].position;
@@ -403,9 +398,10 @@ namespace Enemies.Utils
             GameManager.GetInstance().DisplayTooltip(message, duration);
         }
 
-        private void IncrementWaveNumber()
+        private IEnumerator EndWave()
         {
-            //TODO: update UI
+            yield return new WaitUntil(() => _enemyCount == 0);
+            yield return new WaitForSeconds(2f);
             _currentWave++;
         }
 

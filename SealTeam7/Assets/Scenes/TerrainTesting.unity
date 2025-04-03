@@ -1230,7 +1230,7 @@ MonoBehaviour:
   bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
   bgChunkMargin: 1
-  isKinectPresent: 1
+  isKinectPresent: 0
   colliderEnabled: 1
   paused: 0
   takeSnapshot: 0
