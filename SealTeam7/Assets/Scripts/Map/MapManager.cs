@@ -6,6 +6,7 @@ using Enemies.Utils;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Python;
 
 namespace Map
 {
@@ -202,7 +203,7 @@ namespace Map
         }
         
         public Vector3[] GetHandPositions(int hand) {
-            if (isKinectPresent) {
+            if (isKinectPresent && PythonManager.IsInitialized) {
                 return _kinect.GetHandPositions(hand);
             }
 
