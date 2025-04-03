@@ -1215,8 +1215,8 @@ MonoBehaviour:
   maxLerpFactor: 0.6
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 880
-  chunkRow: 4
-  chunkSize: 220
+  chunkRow: 8
+  chunkSize: 110
   heightScale: 280
   lodInfo:
     lod: 1
@@ -1229,7 +1229,7 @@ MonoBehaviour:
   bgRoughnessHeightScale: 5
   bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
-  bgChunkMargin: 3
+  bgChunkMargin: 4
   isKinectPresent: 1
   colliderEnabled: 1
   paused: 0
@@ -2467,17 +2467,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6713373178251240243, guid: 55bf366f65c2a3f4190381fc83535ca1, type: 3}
   m_PrefabInstance: {fileID: 1353294003}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1353294006 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 912584400268772929, guid: 55bf366f65c2a3f4190381fc83535ca1, type: 3}
-  m_PrefabInstance: {fileID: 1353294003}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1353294007 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7820689980993208941, guid: 55bf366f65c2a3f4190381fc83535ca1, type: 3}
@@ -3233,7 +3222,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 00a1ad15e161fc54b810e46e20f5dc76, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -5045,6 +5034,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1910984738}
   m_CullTransparentMesh: 1
+--- !u!114 &1930585280 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 912584400268772929, guid: 55bf366f65c2a3f4190381fc83535ca1, type: 3}
+  m_PrefabInstance: {fileID: 1353294003}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1996704295
 GameObject:
   m_ObjectHideFlags: 0
@@ -5130,7 +5130,7 @@ MonoBehaviour:
   waveClearedEarlyBonusScore: 750
   scoreText: {fileID: 1353294008}
   timerText: {fileID: 1353294007}
-  waveText: {fileID: 1353294006}
+  waveText: {fileID: 1930585280}
   healthBar: {fileID: 1353294005}
   tooltipPrefab: {fileID: 7644701759601166499, guid: 09b5d8afbe63df34abc629ea92b7f9b9, type: 3}
   tooltipContainer: {fileID: 1186735802}
@@ -5883,6 +5883,10 @@ PrefabInstance:
     - target: {fileID: 4505653546065563428, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 1032
+      objectReference: {fileID: 0}
+    - target: {fileID: 4578700607318317890, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5222887827158809612, guid: dc98eaa3e820c7d4787f7ea945fd171d, type: 3}
       propertyPath: m_AnchorMax.y
