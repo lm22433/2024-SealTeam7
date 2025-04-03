@@ -1211,25 +1211,28 @@ MonoBehaviour:
   maximumSandDepth: 1180
   blurRadius: 3
   blurSigma: 5
-  minLerpFactor: 0.07
-  maxLerpFactor: 0.6
+  minLerpFactor: 0.05
+  maxLerpFactor: 0.3
   chunkPrefab: {fileID: 5106176306695275440, guid: 9385939b66b1db8e6a624c2ba3b47644, type: 3}
   mapSize: 880
-  chunkRow: 8
-  chunkSize: 110
-  heightScale: 280
+  chunkRow: 1
+  chunkSize: 880
+  heightScale: 450
   lodInfo:
     lod: 1
     colliderLod: 4
     pathingLod: 10
+    backgroundLod: 8
   bgChunkPrefab: {fileID: 5106176306695275440, guid: ddcb515a23ab7bd4da50bc83e5597b81, type: 3}
-  bgAverageHeight: 150
+  bgAverageHeight: 250
   bgBaseHeightScale: 50
   bgBaseNoiseScale: 0.01
   bgRoughnessHeightScale: 5
   bgRoughnessNoiseScale: 0.05
   bgInterpolationMargin: 100
-  bgChunkMargin: 4
+  bgChunkMargin: 1
+  handHeightScale: 1.3
+  handHeightOffset: 50
   isKinectPresent: 1
   colliderEnabled: 1
   paused: 0

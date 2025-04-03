@@ -17,6 +17,7 @@ public class HandReconstruction : MonoBehaviour
     [Header("Shader Calibration")]
     [SerializeField, Range(0,1)] private Material handMaterial;
     [SerializeField, Range(0,1)] private float maxHandSpeed;
+    [SerializeField] private GameObject particleEffect;
 
     [Header("Hand Visibility")]
     [SerializeField] private int maxFramesWithoutHand = 10;
@@ -72,10 +73,14 @@ public class HandReconstruction : MonoBehaviour
             if (handSpeed > handStartFadeSpeed) {
                 float alpha = _renderer.material.GetFloat("_TransparancyScalar");
                 float fadePercent = (handSpeed - handStartFadeSpeed) / (handMaxFadeSpeed - handStartFadeSpeed) * fadeRate;
-
+                if (alpha <= 0.005) {
+                    particleEffect.SetActive(false);
+                }
+                
                 _renderer.material.SetFloat("_TransparancyScalar", Mathf.Lerp(alpha, 0, fadePercent));
 
             } else {
+                particleEffect.SetActive(true);
                 _renderer.material.SetFloat("_TransparancyScalar", startAlpha);
             }
 
@@ -91,6 +96,11 @@ public class HandReconstruction : MonoBehaviour
         } else {
             if (nullFrameCount >= maxFramesWithoutHand) {
                 float alpha = _renderer.material.GetFloat("_TransparancyScalar");
+                if (alpha <= 0.005) {
+                    particleEffect.SetActive(false);
+                    positions[0] = new Vector3(-3000, 0, -100);
+                }
+
                 _renderer.material.SetFloat("_TransparancyScalar", Mathf.Lerp(alpha, 0, fadeRate));
 
                 return;

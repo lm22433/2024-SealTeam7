@@ -68,7 +68,7 @@ namespace Map
         {
             _settings = s;
             
-            _lodFactor = _settings.LODInfo.lod == 0 ? 1 : _settings.LODInfo.lod * 2;
+            _lodFactor = _settings.LODInfo.backgroundLod == 0 ? 1 : _settings.LODInfo.backgroundLod * 2;
             _vertexSideCount = _settings.Size / _lodFactor + 1;
 
             _colliderLodFactor = _settings.LODInfo.colliderLod == 0 ? 1 : _settings.LODInfo.colliderLod * 2;
@@ -119,8 +119,8 @@ namespace Map
         {
             InterpolateMargin(_savedMeshData.Vertices, _interpolationMargin, _vertexSideCount, 
                 _lodFactor, _settings.InterpolationDirection);
-            InterpolateMargin(_savedMeshData.ColliderVertices, _colliderInterpolationMargin, _colliderVertexSideCount, 
-                _colliderLodFactor, _settings.InterpolationDirection);
+            // InterpolateMargin(_savedMeshData.ColliderVertices, _colliderInterpolationMargin, _colliderVertexSideCount, 
+            //     _colliderLodFactor, _settings.InterpolationDirection);
             
             _meshNeedsUpdate = true;
         }
