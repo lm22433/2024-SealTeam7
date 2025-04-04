@@ -9718,7 +9718,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 7
-  forceOffset: {x: 0, y: 0, z: 2}
+  forceOffset: {x: 0, y: -2, z: 2}
   moveSpeed: 20
   acceleration: 400
   groundedOffset: 8
@@ -9781,7 +9781,7 @@ Rigidbody:
   m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 5
-  m_CenterOfMass: {x: 0, y: -1, z: 0}
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:

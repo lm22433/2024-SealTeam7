@@ -9,7 +9,6 @@ namespace Enemies
     {
         [SerializeField] private Transform drill;
         [SerializeField] private float drillSpeed;
-        [SerializeField] private float diveSpeed;
 
         private void Start()
         {

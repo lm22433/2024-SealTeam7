@@ -12,7 +12,7 @@ namespace Enemies
         {
             base.EnemyUpdate();
             
-            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.8f || !Grounded;
+            DisallowShooting = Vector3.Dot(transform.forward, TargetPosition - transform.position) < 0.5f || !Grounded;
             
             // gun rotation
             if (gun) switch (State)
