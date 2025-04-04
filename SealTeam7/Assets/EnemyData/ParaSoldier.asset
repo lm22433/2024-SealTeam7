@@ -20,3 +20,8 @@ MonoBehaviour:
   groupSpawnSizeGrowthRate: 0
   maxSpawnChance: 0
   spawnChanceGrowthRate: 0
+  tooltipText: 'Paratrooper:
+
+    Parachutes down from cargo planes, skipping over
+    your walls! '
+  tooltipShown: 0

@@ -128,7 +128,7 @@ namespace Game
             Debug.Log("Hand Tracking: " + _handTracking);
         }
         
-        private void EndGame()
+        public void EndGame()
         {
             if (!_gameActive) throw new Exception("Game has not started yet, how can it end dummy?");
 
