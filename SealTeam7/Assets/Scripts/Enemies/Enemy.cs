@@ -122,6 +122,11 @@ namespace Enemies
         {
             State = value;
         }
+
+        public EnemyType GetEnemyType()
+        {
+            return enemyType;
+        }
         
         protected virtual void Attack(PlayerDamageable toDamage)
         {

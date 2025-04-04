@@ -83,7 +83,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 10
   forceOffset: {x: 0, y: 0, z: 0}
-  moveSpeed: 15
+  moveSpeed: 30
   acceleration: 20
   groundedOffset: 5
   flyHeight: 300
@@ -107,7 +107,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  Grounded: 0
   horizontalProps:
   - {fileID: 5474418017215342941}
   - {fileID: 3727117144722257347}

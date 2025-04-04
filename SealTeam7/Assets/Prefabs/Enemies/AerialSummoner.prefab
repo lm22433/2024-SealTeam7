@@ -57,7 +57,7 @@ MonoBehaviour:
   flyHeight: 470
   aimSpeed: 10
   attackRange: 0
-  attackInterval: 20
+  attackInterval: 4
   stopMovingThreshold: 0
   coreTargetHeightOffset: 0
   attackDamage: 2

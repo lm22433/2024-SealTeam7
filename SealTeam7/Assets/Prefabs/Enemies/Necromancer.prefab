@@ -9954,7 +9954,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 14
   forceOffset: {x: 0, y: -2, z: 1}
-  moveSpeed: 15
+  moveSpeed: 20
   acceleration: 400
   groundedOffset: 8
   flyHeight: 0

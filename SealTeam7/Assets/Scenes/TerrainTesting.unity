@@ -684,7 +684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6961489748271865038, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: armour
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: _handNum
@@ -1898,7 +1898,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6961489748271865038, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: armour
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: mapManager
