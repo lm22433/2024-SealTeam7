@@ -22,5 +22,5 @@ MonoBehaviour:
   spawnChanceGrowthRate: 0.24
   tooltipText: 'Helicopter:
 
-    Flies above the sand! Construct walls to stop it!'
+    Flies above the sand! Build up high to kill it!'
   tooltipShown: 0

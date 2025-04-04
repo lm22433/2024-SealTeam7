@@ -22,6 +22,6 @@ MonoBehaviour:
   spawnChanceGrowthRate: 0.12
   tooltipText: 'Chinook:
 
-    Spawns a wide range of enemy units; raining death from
-    above!'
+    Spawns a wide range of enemy units from above! Build
+    up high to kill it!'
   tooltipShown: 0
