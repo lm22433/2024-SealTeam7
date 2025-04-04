@@ -22,5 +22,6 @@ MonoBehaviour:
   spawnChanceGrowthRate: 0
   tooltipText: 'Cargo Plane:
 
-    Flies overhead and drops paratroopers!'
+    Flies overhead and drops paratroopers! Can''t be
+    killed!'
   tooltipShown: 0
