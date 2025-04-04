@@ -10,11 +10,19 @@
     "Type": "User",
     "GUID": "{B94DA0AB-228D-465F-9C82-287D3D575D75}",
     "Language": "SFX",
-    "Hash": "{4EB4E23D-7C86-D9BC-DF22-4AA17849C597}",
+    "Hash": "{B015FD25-F735-5E4D-EB75-FBC5A0DA4843}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
     "ShortName": "SoundEffects",
     "Path": "SoundEffects.bnk",
     "Media": [
+     {
+      "Id": "108730194",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "WaveIncoming.wav",
+      "CachePath": "0F/{0F59395E-A2A7-1D28-F4C5-73C4A40A4578}.wem"
+     },
      {
       "Id": "130871781",
       "Language": "SFX",
@@ -209,8 +217,8 @@
       "ObjectPath": "\\Events\\Default Work Unit\\Play_DesertAmbiance",
       "GUID": "{85FAA578-4DB0-473E-916F-016DB8FDCEFD}",
       "DurationType": "OneShot",
-      "DurationMin": "211.47435",
-      "DurationMax": "211.47435",
+      "DurationMin": "608.58014",
+      "DurationMax": "608.58014",
       "MediaRefs": [
        {
         "Id": "222821284"
@@ -380,6 +388,20 @@
         }
        ]
       }
+     },
+     {
+      "Id": "4136339245",
+      "Name": "Play_WaveIncoming",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_WaveIncoming",
+      "GUID": "{BAF55726-48DF-43F5-9B82-70F365B78F6E}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.2927072",
+      "DurationMax": "2.2927072",
+      "MediaRefs": [
+       {
+        "Id": "108730194"
+       }
+      ]
      }
     ],
     "GameParameters": [
@@ -399,6 +421,6 @@
     ]
    }
   ],
-  "FileHash": "{5C23FF8C-76E0-6253-A998-92D6B03D6A39}"
+  "FileHash": "{6A2F9DE7-F64D-6E27-0FD6-C130DBDDE0DD}"
  }
 }

@@ -23,6 +23,7 @@ namespace AK
         static const AkUniqueID PLAY_SOLIDER_GUNFIRE = 1988800053U;
         static const AkUniqueID PLAY_SOLIDERSCREAM = 2568326629U;
         static const AkUniqueID PLAY_TANK_GUNFIRE = 3624895801U;
+        static const AkUniqueID PLAY_WAVEINCOMING = 4136339245U;
     } // namespace EVENTS
 
     namespace STATES

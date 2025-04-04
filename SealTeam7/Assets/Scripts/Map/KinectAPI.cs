@@ -155,7 +155,7 @@ namespace Map
             _dilationKernel.Dispose();
         }
 
-        private void GetPythonAsync()
+        private async Task GetPythonAsync()
         {
             PythonManager.Initialize();
         
