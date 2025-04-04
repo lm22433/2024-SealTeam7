@@ -76,7 +76,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  Grounded: 0
   dustTrails:
   - {fileID: 5770329497031736057}
   smokeDmg: {fileID: 2721249449161740631}
@@ -84,7 +83,6 @@ MonoBehaviour:
   gracePeriod: 0
   drill: {fileID: 1539957999329854138}
   drillSpeed: 1000
-  diveSpeed: 10000
 --- !u!114 &1762384143968135915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,6 +268,10 @@ PrefabInstance:
     - target: {fileID: 8689731528544676116, guid: 4e7d063109c58cc458495c43f79cef3c, type: 3}
       propertyPath: m_Name
       value: DustTrail
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754479756654689085, guid: 4e7d063109c58cc458495c43f79cef3c, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: -0.04
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

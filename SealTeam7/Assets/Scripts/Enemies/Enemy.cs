@@ -70,7 +70,7 @@ namespace Enemies
         protected float PathFindInterval;
         protected float LastPathFind;
 		protected float DeathDuration;
-        [SerializeField] protected internal bool Grounded;
+        protected internal bool Grounded;
         protected internal float Buried;
         protected internal float BuriedAmount = 0.5f;
         private int _handIndex;
