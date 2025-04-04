@@ -74,7 +74,7 @@ namespace Game
                 Debug.Log($"Survival Bonus! +{survivalBonusScore} points");
             }
             
-            if (_timer <= 0) EndGame();
+            if (_timer <= 0 && !_endlessMode) EndGame();
 
             UIUpdate();
         }
@@ -86,10 +86,18 @@ namespace Game
             int wave = EnemyManager.GetInstance().GetWave();
             waveText.SetText(wave < 10 ? $"0{wave}" : $"{wave}");
 
-            int minutes = (int) _timer / 60;
-            int seconds = (int) _timer % 60;
-            string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
-            timerText.SetText($"{minutes}m {secondsStr}s");
+            if(_endlessMode) {
+                int minutes = (int) _timeSurvived / 60;
+                int seconds = (int) _timeSurvived % 60;
+                string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
+                timerText.SetText($"{minutes}m {secondsStr}s");
+            } else {
+                int minutes = (int) _timer / 60;
+                int seconds = (int) _timer % 60;
+                string secondsStr = (seconds < 10) ? $"0{seconds}" : $"{seconds}";
+                timerText.SetText($"{minutes}m {secondsStr}s");
+            }
+            
 
             healthBar.transform.localScale = new Vector3(
                 (float) _health / maxHealth, 

@@ -1,5 +1,4 @@
 using System;
-using CandyCoded.env;
 using Firebase;
 using Firebase.AppCheck;
 using Firebase.Database;
@@ -18,18 +17,12 @@ namespace Leaderboard
         {
             if (_instance == null) _instance = this;
             else Destroy(gameObject);
-            
-            if (!env.TryParseEnvironmentVariable("FIREBASE_APP_CHECK_DEBUG_TOKEN", out string firebaseAppCheckDebugToken))
-            {
-                Debug.LogError("Could not find environment variable FIREBASE_APP_CHECK_DEBUG_TOKEN.");
-                return;
-            }
 
             FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
             {
                 if (task.Result == DependencyStatus.Available)
                 {
-                    DebugAppCheckProviderFactory.Instance.SetDebugToken(firebaseAppCheckDebugToken);
+                    DebugAppCheckProviderFactory.Instance.SetDebugToken("683EA485-3D35-4085-95D9-64B804096824");
                     FirebaseAppCheck.SetAppCheckProviderFactory(DebugAppCheckProviderFactory.Instance);
                     Debug.Log("Setup FirebaseManager successfully.");
                 }
@@ -43,6 +36,18 @@ namespace Leaderboard
         private void Start()
         {
             _databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+
+            var test =  new GameResult(
+                "test",
+                "test",
+                1,
+                1,
+                1,
+                1,
+                1,
+                null
+            );
+            SaveGameResult(test);
         }
 
         public static FirebaseManager GetInstance() => _instance;

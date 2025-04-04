@@ -395,58 +395,6 @@
 										</ObjectList>
 									</ObjectLists>
 								</MusicTrack>
-								<MusicTrack Name="fanfare-46385" ID="{B41C4DC0-0EDB-4A4F-96FF-ADF6CC2E2EC4}" ShortID="596842392">
-									<ReferenceList>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{4A85014A-3441-48A7-A243-656B4EA7B322}"/>
-										</Reference>
-										<Reference Name="TransitionRoot">
-											<Custom>
-												<MusicTransition Name="Root" ID="{BF0AD7F5-29D8-4799-958D-7DD1083BF9F8}">
-													<PropertyList>
-														<Property Name="IsFolder" Type="bool" Value="True"/>
-													</PropertyList>
-													<TransitionInfo/>
-												</MusicTransition>
-											</Custom>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="fanfare-46385" ID="{E7AF3CBC-45D2-430A-AFE8-2595A4CB7CE3}">
-											<Language>SFX</Language>
-											<AudioFile>fanfare-46385.wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="606358506"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<ObjectLists>
-										<ObjectList Name="Sequences">
-											<Reference>
-												<Local>
-													<MusicTrackSequence Name="" ID="{972D44A5-BDBB-475D-A183-29F31E651CA5}">
-														<ObjectLists>
-															<ObjectList Name="Clips">
-																<Reference>
-																	<Local>
-																		<MusicClip Name="fanfare-46385" ID="{F0B03FDF-D502-4709-86EC-06348105C72D}">
-																			<PropertyList>
-																				<Property Name="EndTrimOffset" Type="Real64" Value="2064"/>
-																				<Property Name="FadeInMode" Type="int16" Value="0"/>
-																				<Property Name="FadeOutMode" Type="int16" Value="0"/>
-																			</PropertyList>
-																			<AudioSourceRef Name="fanfare-46385" ID="{E7AF3CBC-45D2-430A-AFE8-2595A4CB7CE3}"/>
-																		</MusicClip>
-																	</Local>
-																</Reference>
-															</ObjectList>
-														</ObjectLists>
-													</MusicTrackSequence>
-												</Local>
-											</Reference>
-										</ObjectList>
-									</ObjectLists>
-								</MusicTrack>
 							</ChildrenList>
 							<ObjectLists>
 								<ObjectList Name="Cues">
