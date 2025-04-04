@@ -141,6 +141,7 @@ namespace Enemies.Utils
 
         private IEnumerator SpawnWaves()
         {
+            // Tutorial mode
             if (_difficulty.difficultyType == DifficultyType.Tutorial)
             {
                 Toast("Welcome to the tutorial! Bury the soldiers to protect your base. Watch out – your hands take damage too!", 10f);
@@ -170,77 +171,82 @@ namespace Enemies.Utils
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
 
+            // Easy, normal, hard and impossible modes
             else
             {
                 yield return new WaitForSeconds(5f);
                 _currentWave = 1;
 
-                // Wave 1
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-
-                // Wave 2
-                Toast("Blue press helicopter:\nFilms the scene from above! Does no damage and can't be killed!", 5f);
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-
-                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 6 }, 4, 5);
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
-                yield return ReleaseSpawningEnemies();
-                yield return EndWave();
-
-                // Wave 3
-                yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 6, 3);
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-
-                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 4, 5, 6, 7 }, 4, 5);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-
-                yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 5, 7 }, 5, 3f);
-                yield return EndWave();
-
-                // Wave 4
-                yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 7 }, 2, 3f);
-                yield return Wait(10f);
-
-                yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 5, 6, 7 }, 4, 6);
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
-                yield return ReleaseSpawningEnemies();
-                yield return EndWave();
-
-                // Wave 5
-                Toast("A HUGE wave of enemies is approaching...", duration: 5f);
-                yield return Wait(4f);
-
-                yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3, 3f);
-                yield return SpawnAtInterval(EnemyType.Spawner, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
-                yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 5, 7 }, 5, 8);
-                yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 8, 4);
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
-                yield return ReleaseSpawningEnemies();
-                yield return Wait(10f);
-
-                for (var i = 0; i < 6; i++)
+                // Only do waves 1-5 if the game is longer than 5 minutes (or endless)
+                if (GameManager.GetInstance().GetGameDuration() > 5*60f || GameManager.GetInstance().IsEndlessMode())
                 {
-                    yield return SpawnGrids(EnemyType.FastSoldier, new[] { 3, 4, 5, 6, 7 }, 1, 10);
+                    // Wave 1
+                    yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
                     yield return ReleaseSpawningEnemies();
-                    yield return Wait(1f);
+                    yield return EndWave();
+
+                    // Wave 2
+                    Toast("Blue press helicopter:\nFilms the scene from above! Does no damage and can't be killed!", 5f);
+                    yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
+                    yield return ReleaseSpawningEnemies();
+                    yield return Wait(10f);
+
+                    yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 6 }, 4, 5);
+                    yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 5, 7 }, 4, 6);
+                    yield return ReleaseSpawningEnemies();
+                    yield return EndWave();
+
+                    // Wave 3
+                    yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 6, 3);
+                    yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
+                    yield return ReleaseSpawningEnemies();
+                    yield return Wait(10f);
+
+                    yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 4, 5, 6, 7 }, 4, 5);
+                    yield return ReleaseSpawningEnemies();
+                    yield return Wait(10f);
+
+                    yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 5, 7 }, 5, 3f);
+                    yield return EndWave();
+
+                    // Wave 4
+                    yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 7 }, 2, 3f);
+                    yield return Wait(10f);
+
+                    yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 5, 6, 7 }, 4, 6);
+                    yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 2, 2);
+                    yield return ReleaseSpawningEnemies();
+                    yield return EndWave();
+
+                    // Wave 5
+                    Toast("A HUGE wave of enemies is approaching...", duration: 5f);
+                    yield return Wait(4f);
+
+                    yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3, 3f);
+                    yield return SpawnAtInterval(EnemyType.Spawner, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
+                    yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 3, 5, 7 }, 5, 8);
+                    yield return SpawnGrids(EnemyType.RpgSoldier, new[] { 4, 6 }, 8, 4);
+                    yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
+                    yield return ReleaseSpawningEnemies();
+                    yield return Wait(10f);
+
+                    for (var i = 0; i < 6; i++)
+                    {
+                        yield return SpawnGrids(EnemyType.FastSoldier, new[] { 3, 4, 5, 6, 7 }, 1, 10);
+                        yield return ReleaseSpawningEnemies();
+                        yield return Wait(1f);
+                    }
+
+                    yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
+                    yield return ReleaseSpawningEnemies();
+                    yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
+                    yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 5, 6, 7 }, 2, 3f);
+                    yield return EndWave();
                 }
 
-                yield return SpawnGrids(EnemyType.SniperSoldier, new[] { 2, 8 }, 3, 3);
-                yield return ReleaseSpawningEnemies();
-                yield return SpawnAtInterval(EnemyType.Tank, new[] { 3, 4, 5, 6, 7 }, 4, 3f);
-                yield return SpawnAtInterval(EnemyType.Burrower, new[] { 3, 5, 6, 7 }, 2, 3f);
-                yield return EndWave();
-
-                // Wave 6 (later, wave 11, 16...)
                 while (true)
                 {
+                    // Wave 6 (later, wave 11, 16...)
                     yield return SpawnGrids(EnemyType.LmgSoldier, new[] { 4, 5, 6 }, 5, 8);
                     yield return SpawnAtInterval(EnemyType.Necromancer, 8, 5);
                     yield return SpawnAtInterval(EnemyType.Helicopter, new[] { 4, 6 }, 3);
@@ -336,7 +342,7 @@ namespace Enemies.Utils
                     // Finish game or increase multiplier and go back to wave 6
                     if (GameManager.GetInstance().IsEndlessMode())
                     {
-                        _endlessSpawnGroupMultiplier += 0.5f;
+                        _endlessSpawnGroupMultiplier += 1f;
                     }
                     else
                     {
@@ -500,8 +506,8 @@ namespace Enemies.Utils
 
         private IEnumerator EndWave()
         {
-            yield return new WaitUntil(() => _enemyCount < 5);
-            yield return new WaitForSeconds(5f);
+            yield return new WaitUntil(() => _enemyCount < 10);
+            yield return new WaitForSeconds(3f);
             _currentWave++;
         }
 

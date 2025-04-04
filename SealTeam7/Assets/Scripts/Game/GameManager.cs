@@ -236,5 +236,6 @@ namespace Game
         public int GetDamageTaken() => maxHealth - _health;
         public bool IsEndlessMode() => _endlessMode;
         public bool IsHandTracking() => _handTracking;
+        public float GetGameDuration() => gameDuration;
     }
 }
