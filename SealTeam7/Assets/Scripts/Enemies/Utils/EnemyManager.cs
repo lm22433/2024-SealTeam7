@@ -181,6 +181,7 @@ namespace Enemies.Utils
                 yield return Wait(10f);
 
                 // Wave 2
+                Toast("Blue press helicopter:\nFilms the scene from above! Does no damage and can't be killed!", 5f);
                 yield return SpawnGrids(EnemyType.Soldier, new[] { 3, 4, 6, 7 }, 4, 6);
                 yield return ReleaseSpawningEnemies();
                 yield return Wait(10f);
