@@ -393,8 +393,8 @@ MonoBehaviour:
         guid: 78a5fa85b04d3e47916f016db8fdcefd
       Path: Events\Default Work Unit\Play_DesertAmbiance
       maxAttenuation: 0
-      maxDuration: 211.47435
-      minDuration: 211.47435
+      maxDuration: 608.58014
+      minDuration: 608.58014
     - name: Play_Explosion
       guid: 78a059959fe9a34a8ffff3c4db50cee8
       id: 4030404899
@@ -546,8 +546,8 @@ MonoBehaviour:
         guid: 2657f5badf48f5439b8270f365b78f6e
       Path: Events\Default Work Unit\Play_WaveIncoming
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 2.2927072
+      minDuration: 2.2927072
   RtpcWwu:
   - PhysicalPath: Game Parameters\Default Work Unit.wwu
     PathAndIcons:
@@ -823,5 +823,5 @@ MonoBehaviour:
   ExpandedWaapiItemIds: 0200000003000000
   AutoSyncSelection: 0
   autoPopulateEnabled: 1
-  currentDataSource: 1
+  currentDataSource: 0
   CurrentPluginConfig: 
