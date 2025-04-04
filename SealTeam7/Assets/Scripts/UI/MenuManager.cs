@@ -128,11 +128,6 @@ namespace UI
             {
                 PauseGame();
             }
-
-            if (Input.GetKeyDown("r"))
-            {
-                RestartGame();
-            }
             
             for (int i = 0; i < hands.Length; i++)
             {

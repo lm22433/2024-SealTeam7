@@ -9720,7 +9720,7 @@ MonoBehaviour:
   enemyType: 7
   forceOffset: {x: 0, y: 0, z: 2}
   moveSpeed: 20
-  acceleration: 100
+  acceleration: 400
   groundedOffset: 8
   flyHeight: 0
   aimSpeed: 5

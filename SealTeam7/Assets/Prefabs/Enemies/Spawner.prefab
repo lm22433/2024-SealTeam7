@@ -9952,7 +9952,7 @@ MonoBehaviour:
   enemyType: 8
   forceOffset: {x: 0, y: -2, z: 1}
   moveSpeed: 15
-  acceleration: 100
+  acceleration: 400
   groundedOffset: 12
   flyHeight: 0
   aimSpeed: 5

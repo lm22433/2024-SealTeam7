@@ -64,11 +64,11 @@ namespace Enemies.FunkyPhysics
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
             
-            if (Rb.linearVelocity.y > defianceThreshold && Self.Grounded)
-            {
-                Physics.Raycast(transform.position, Vector3.down, out var hit, Self.transform.localScale.y * 2.0f);
-                Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
-            }
+            // if (Rb.linearVelocity.y > defianceThreshold && Self.Grounded)
+            // {
+            //     Physics.Raycast(transform.position, Vector3.down, out var hit, Self.transform.localScale.y * 2.0f);
+            //     Rb.AddForce((Vector3.up + hit.normal).normalized * gravityDefiance, ForceMode.Impulse);
+            // }
             
             EnemyFixedUpdate();
         }

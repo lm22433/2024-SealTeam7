@@ -9,7 +9,6 @@ namespace Enemies
     {
         [SerializeField] private Transform drill;
         [SerializeField] private float drillSpeed;
-        [SerializeField] private float burrowDepth;
         [SerializeField] private float diveSpeed;
 
         private void Start()
@@ -20,7 +19,7 @@ namespace Enemies
 
         protected override float Heuristic(Node start, Node end)
         {
-            return start.WorldPos.y < burrowDepth + 20f ? 1000000000f : 0f;
+            return start.WorldPos.y < flyHeight + 20f ? 1000000000f : 0f;
         }
 
         protected override void Attack(PlayerDamageable toDamage)
@@ -32,7 +31,7 @@ namespace Enemies
         {
             base.EnemyUpdate();
             
-            transform.position = new Vector3(transform.position.x, burrowDepth, transform.position.z);
+            transform.position = new Vector3(transform.position.x, flyHeight, transform.position.z);
             coreTargetHeightOffset = transform.position.y - MapManager.GetInstance().GetHeight(transform.position);
             drill.Rotate(Time.deltaTime * drillSpeed * Vector3.forward);
         }

@@ -6,12 +6,14 @@ using Map;
 using Player;
 using Projectiles;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace Enemies
 {
     public enum EnemyState
     {
+        Spawning,
         Moving,
         AttackCore,
         AttackHands,
@@ -52,12 +54,12 @@ namespace Enemies
         [SerializeField] protected AK.Wwise.Event gunFireSound;
         [SerializeField] protected AK.Wwise.Event deathSoundEffect;
         
+        protected bool DisallowMovement;
         protected float SqrAttackRange;
         protected float SqrStopMovingThreshold;
         protected EnemyManager EnemyManager;
         protected Rigidbody Rb;
         protected EnemyState State;
-        protected bool DisallowMovement;
         protected bool DisallowShooting;
         protected float LastAttack;
         protected Vector3 TargetPosition;
@@ -68,7 +70,7 @@ namespace Enemies
         protected float PathFindInterval;
         protected float LastPathFind;
 		protected float DeathDuration;
-        protected internal bool Grounded;
+        [SerializeField] protected internal bool Grounded;
         protected internal float Buried;
         protected internal float BuriedAmount = 0.5f;
         private int _handIndex;
@@ -86,7 +88,7 @@ namespace Enemies
             model.gameObject.SetActive(true);
             deathParticles.Stop();
 
-            State = EnemyState.Moving;
+            State = EnemyState.Spawning;
             Path = Array.Empty<Vector3>();
             TargetPosition = EnemyManager.GetInstance().godlyCore.transform.position;
             TargetRotation = Quaternion.identity;
@@ -95,11 +97,12 @@ namespace Enemies
             LastAttack = attackInterval;
             LastPathFind = PathFindInterval;
             DeathDuration = 3.0f;
+            DisallowMovement = false;
         }
 
 		public virtual void SetupDeath()
         {
-            if (State == EnemyState.Dying) return;
+            if (State is EnemyState.Dying or EnemyState.Spawning) return;
             
             if (transform.position.y < MapManager.GetInstance().GetHeight(transform.position))
             {
@@ -115,6 +118,11 @@ namespace Enemies
 			State = EnemyState.Dying;
 		}
 
+        public void SetState(EnemyState value)
+        {
+            State = value;
+        }
+        
         protected virtual void Attack(PlayerDamageable toDamage)
         {
             gunFireSound.Post(gameObject);
@@ -261,11 +269,22 @@ namespace Enemies
         private void FixedUpdate()
         {
             if (!GameManager.GetInstance().IsGameActive()) return;
-            
+
             if (!DisallowMovement) Rb.rotation = Quaternion.Slerp(Rb.rotation, TargetRotation, aimSpeed * Time.fixedDeltaTime);
             
             switch (State)
             {
+                case EnemyState.Spawning:
+                {
+                    // If the enemy is spawning, just ride the sand and don't move
+                    transform.position = new Vector3(
+                        transform.position.x,
+                        flyHeight == 0 ? MapManager.GetInstance().GetHeight(transform.position) : flyHeight,
+                        transform.position.z);
+                    Rb.linearVelocity = Vector3.zero;
+                    Rb.angularVelocity = Vector3.zero;
+                    break;
+                }
                 case EnemyState.Moving:
                 {
                     if (!DisallowMovement) Rb.AddForceAtPosition(TargetDirection * (acceleration * 10f), Rb.worldCenterOfMass + forceOffset);

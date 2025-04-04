@@ -86,7 +86,7 @@ MonoBehaviour:
   moveSpeed: 10
   acceleration: 20
   groundedOffset: 5
-  flyHeight: 220
+  flyHeight: 320
   aimSpeed: 10
   attackRange: 180
   attackInterval: 60
@@ -107,15 +107,12 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
+  Grounded: 0
   horizontalProps:
   - {fileID: 5184208950113074523}
   - {fileID: 8550081513951055953}
   verticalProps: []
   propellerSpeed: 1000
-  helicopterSound:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: f53d52dbc83ca3b46abccd2e979a524e, type: 2}
   spawnableEnemies:
   - {fileID: 11400000, guid: d5c9475f7a167d04491ce8c83d9cf3cd, type: 2}
   - {fileID: 11400000, guid: 8dac9d03a92f5b54d90f651c248933e8, type: 2}
