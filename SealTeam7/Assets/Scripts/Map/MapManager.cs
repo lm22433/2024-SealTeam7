@@ -241,7 +241,6 @@ namespace Map
             return 1f / ((x2 - x1) * (z2 - z1)) * math.mul(math.mul(new float2(x2 - x, x - x1), new float2x2(new float2(Q11, Q21), new float2(Q12, Q22))), new float2(z2 - z, z - z1));
         }
 
-        // Only gets nearest vertex normal
         public Vector3 GetNormal(Vector3 position)
         {
             var normals = _chunks[0].GetNormals();
@@ -251,11 +250,20 @@ namespace Map
             percentX = Mathf.Clamp01(percentX);
             percentZ = Mathf.Clamp01(percentZ);
             
-            var normalSideCount = Mathf.FloorToInt(Mathf.Sqrt(normals.Length) - 1);
-            var x = Mathf.FloorToInt(percentX * normalSideCount);
-            var z = Mathf.FloorToInt(percentZ * normalSideCount);
+            var normalSideCount = Mathf.FloorToInt(Mathf.Sqrt(normals.Length));
+            
+            var x1 = Mathf.FloorToInt(percentX * mapSize / (lodInfo.lod != 0 ? lodInfo.lod * 2f : 1f));
+            var z1 = Mathf.FloorToInt(percentZ * mapSize / (lodInfo.lod != 0 ? lodInfo.lod * 2f : 1f));
+            var x2 = Mathf.CeilToInt(percentX * mapSize / (lodInfo.lod != 0 ? lodInfo.lod * 2f : 1f));
+            var z2 = Mathf.CeilToInt(percentZ * mapSize / (lodInfo.lod != 0 ? lodInfo.lod * 2f : 1f));
+            var Q11 = normals[z1 * normalSideCount + x1];
+            var Q21 = normals[z2 * normalSideCount + x1];
+            var Q12 = normals[z1 * normalSideCount + x2];
+            var Q22 = normals[z2 * normalSideCount + x2];
 
-            return normals[z * (normalSideCount + 1) + x];
+            var y1 = Vector3.Lerp(Q11, Q21, x2 - x1);
+            var y2 = Vector3.Lerp(Q21, Q22, x2 - x1);
+            return Vector3.Lerp(y1, y2, z2 - z1);
         }
         
         private void Update()

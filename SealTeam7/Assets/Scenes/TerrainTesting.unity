@@ -693,8 +693,6 @@ PrefabInstance:
     - target: {fileID: 9170994429799163773, guid: e5dbff914fde6f4408a0de8cd63c2dbf, type: 3}
       propertyPath: _lerpFactor
       value: 0.9
-      propertyPath: _thresholdDst
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2284,10 +2282,10 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 50
-    m_Top: 150
+    m_Top: 200
     m_Bottom: 0
   m_ChildAlignment: 2
-  m_Spacing: 50
+  m_Spacing: 100
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0

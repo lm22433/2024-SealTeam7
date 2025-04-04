@@ -9718,15 +9718,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 7
-  forceOffset: {x: 0, y: -1.5, z: 1.5}
-  moveSpeed: 15
+  forceOffset: {x: 0, y: -2, z: 2}
+  moveSpeed: 20
   acceleration: 400
   groundedOffset: 8
   flyHeight: 0
   aimSpeed: 5
-  attackRange: 250
+  attackRange: 350
   attackInterval: 5
-  stopMovingThreshold: 0
+  stopMovingThreshold: 50
   coreTargetHeightOffset: 10
   attackDamage: 5
   killScore: 400
@@ -9743,9 +9743,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: dd5030d16c07ac1429315c80d0be1684, type: 2}
-  DisallowMovement: 0
-  State: 0
-  TargetPosition: {x: 0, y: 0, z: 0}
   dustTrails:
   - {fileID: 2423127030068606280}
   - {fileID: 552652031790891173}
@@ -9793,7 +9790,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0

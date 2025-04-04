@@ -4991,6 +4991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 100
+  hitRadius: 15
   trail: {fileID: 0}
   projectileType: 4
 --- !u!1 &8258134300089666282
