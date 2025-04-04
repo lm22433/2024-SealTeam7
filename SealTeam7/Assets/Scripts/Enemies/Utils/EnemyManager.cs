@@ -381,9 +381,8 @@ namespace Enemies.Utils
                 var spawnRotation = this.spawnPoints[spawnPoint].rotation.normalized;
                 var zVector = spawnRotation * Vector3.forward;
                 var xVector = spawnRotation * Vector3.right;
-                var gridHeight = (numRows - 1) * spacing;
                 var gridWidth = (numColumns - 1) * spacing;
-                var startPos = spawnPosition - gridHeight / 2 * zVector - gridWidth / 2 * -xVector;
+                var startPos = spawnPosition - gridWidth / 2 * -xVector;
 
                 for (var z = 0; z < numRows; z++)
                 {
